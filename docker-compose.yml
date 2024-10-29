@@ -2,7 +2,7 @@ services:
   external-x10Bot-redis:
     image: redis:latest
     ports:
-      - "6378:6378"
+      - "6300:6300"
     volumes:
       - x10-external-bot_redis_data:/data
     restart: always
@@ -22,7 +22,7 @@ services:
       - external-x10Bot-redis
       - external-x10Bot-postgres
     ports:
-      - "3200:3201"
+      - "3201:3200"
     restart: always
 
   external-x10Bot-postgres:
