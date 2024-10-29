@@ -1,11 +1,11 @@
-import TelegramBot, { InlineKeyboardButton } from "node-telegram-bot-api";
-import { MessageMS, UserCallback } from "../dto/messages";
+import TelegramBot from "node-telegram-bot-api";
+import { UserCallback } from "../dto/messages";
 import { getStateMessage, redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import dotenv from 'dotenv';
 import { createEditData, MessageService } from "../services/messageService";
-import { CallbackProcessor } from "../utils/callbackProcessor";
+import { CallbackProcessor } from "../utils/CallbackProcessor";
 import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/botButtons";
 import { users_db } from "../../database/models/users";
 import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";

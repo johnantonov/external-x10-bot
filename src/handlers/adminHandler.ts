@@ -88,11 +88,14 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
 
     // work in progress, now all migrations are added to the folder sql migrations and helpers/wip 
     if (action.startsWith('db_migrate')) {
-      const step = +action.split('migrate_')[1]
+      const step = +action.split('migrate_')[1];
       try {
-        migrations[step].forEach(m => pool.query(m))
+        for (const m of migrations[step]) {
+          await pool.query(m);  
+        }
+        console.log(`Migration step ${step} completed successfully.`);
       } catch (e) {
-        console.error('error during migration process')
+        console.error('Error during migration process:', e);
       }
     }
 

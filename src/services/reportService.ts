@@ -140,6 +140,7 @@ export class ReportService {
       }
 
     } catch (e) {
+      console.error(e)
       formatError(e, 'Error to prerape report service: ')
     }
   }
@@ -196,6 +197,7 @@ export class ReportService {
       // console.log(responseData.data.data.cards)
       return extractBuyoutsFromCards(response)
     } catch (e) {
+      console.error(e)
       formatError(e, 'Error fetching buy percent: ');
       return {};
     }
@@ -306,6 +308,7 @@ export class ReportService {
       return data
 
     } catch (e) {
+      console.error(e)
       formatError(e, 'error fetching adv data: ')
       return [];
     }
@@ -358,6 +361,7 @@ export class ReportService {
       }
       return advertIds
     } catch (e) {
+      console.error(e)
       formatError(e, 'error fetching campaigns data')
       return {};
     }

@@ -1,8 +1,19 @@
 export const migrations = [
-// -------- 0  
+    // -------- 0  
     [],
-// -------- 1    
+    // -------- 1    
     [
+        `CREATE TABLE IF NOT EXISTS users (
+        chat_id BIGINT PRIMARY KEY,
+        username VARCHAR(255),
+        wb_api_key VARCHAR,
+        type VARCHAR DEFAULT 'new',
+        article BIGINT,
+        notification_time NUMERIC,
+        added_at TIMESTAMP DEFAULT NOW(),
+        last_report_call TIMESTAMP -- Убрана лишняя запятая
+        );`, 
+
         `CREATE TABLE IF NOT EXISTS articles (
         article VARCHAR NOT NULL,
         chat_id BIGINT NOT NULL,
@@ -25,18 +36,9 @@ export const migrations = [
         status VARCHAR DEFAULT 'off',
         is_active BOOLEAN DEFAULT TRUE,
         PRIMARY KEY (article, chat_id),
-        FOREIGN KEY (chat_id) REFERENCES users(chat_id) ON DELETE CASCADE);`,
+        FOREIGN KEY (chat_id) REFERENCES users(chat_id) ON DELETE CASCADE
+        );`,
 
-        `CREATE TABLE IF NOT EXISTS users (
-        chat_id BIGINT PRIMARY KEY,
-        username VARCHAR(255),
-        wb_api_key VARCHAR,
-        type VARCHAR DEFAULT 'new',
-        article BIGINT,
-        notification_time NUMERIC,
-        added_at TIMESTAMP DEFAULT NOW(),
-        last_report_call TIMESTAMP,);`, 
-    
         `CREATE OR REPLACE FUNCTION set_wb_api_key()
         RETURNS TRIGGER AS $$
         BEGIN
@@ -57,7 +59,8 @@ export const migrations = [
         click_to_cart DECIMAL,
         cart_to_order DECIMAL,
         buyout_percent DECIMAL,
-        PRIMARY KEY (category, subject_name));`,
+        PRIMARY KEY (category, subject_name)
+        );`,
 
         `CREATE TABLE IF NOT EXISTS commissions (
         "parentName" VARCHAR,
@@ -68,10 +71,7 @@ export const migrations = [
         "kgvpSupplier" DECIMAL,
         "kgvpSupplierExpress" DECIMAL,
         "paidStorageKgvp" DECIMAL,
-        PRIMARY KEY ("parentName", "subjectName"));`
+        PRIMARY KEY ("parentName", "subjectName")
+        );`
     ],
-    
-// -------- 2
-
-
-]
+];
