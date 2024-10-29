@@ -5,5 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     type VARCHAR DEFAULT 'new',
     article BIGINT,
     notification_time NUMERIC,
-    added_at TIMESTAMP DEFAULT NOW()
+    added_at TIMESTAMP DEFAULT NOW(),
+    last_report_call TIMESTAMP,
 );
+

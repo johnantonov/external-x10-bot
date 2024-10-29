@@ -1,5 +1,6 @@
 import { format, subDays } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import { User } from '../dto/user';
 
 /**
  * get yesterday date
@@ -84,4 +85,16 @@ export function sortObjDatesEntries(obj: Record<string, any>) {
     Object.entries(obj)
       .sort(([dateA], [dateB]) => new Date(dateB).getTime() - new Date(dateA).getTime()) 
   );
+}
+
+export function isReportAvailable(lastTime: User['last_report_call']) {
+  if (!lastTime) {
+    return true
+  }
+  
+  const now = new Date();
+  const lastReportTime = new Date(lastTime);
+
+  const timeDiffMinutes = (now.getTime() - lastReportTime.getTime()) / (1000 * 60);
+  return timeDiffMinutes >= 30; 
 }

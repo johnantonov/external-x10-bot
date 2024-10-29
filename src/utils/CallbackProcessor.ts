@@ -63,20 +63,17 @@ export class CallbackProcessor {
       return "on report";
     }
 
-    // if (this.off()) {
-    //   return "off";
-    // }
+    if (this.isNewMenu()) {
+      return "new menu";
+    }
 
+    if (this.getAllReportNow()) {
+      return "get all reports";
+    }
 
-    // if (this.getAllReportsNow()) {
-    //   return "get all reports";
-    // }
-
-    // if (this.changeTime()) {
-    //   return "change time";
-    // }
-
-
+    if (this.getReportNow()) {
+      return "get report";
+    }
 
     return null; // error
   }
@@ -131,5 +128,17 @@ export class CallbackProcessor {
 
   private isOnReport(): boolean {
     return this.userCallbackData.startsWith(CallbackData.onReport as string)
+  }
+
+  private isNewMenu(): boolean {
+    return this.userCallbackData.startsWith(CallbackData.returnNewMenu as string)
+  }
+
+  private getAllReportNow(): boolean {
+    return this.userCallbackData === CallbackData.getAllReportNow
+  }
+
+  private getReportNow(): boolean {
+    return this.userCallbackData.startsWith(CallbackData.getReportNow as string)
   }
 }

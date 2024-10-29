@@ -5,6 +5,8 @@ import pool from "../../database/db"
 import { migrations } from "../helpers/wip-quick-fix-migration";
 import { users_db } from "../../database/models/users";
 import axios from "axios";
+import { updateConversions } from "../utils/conversions";
+import { updateCommissions } from "../utils/comissions";
 
 dotenv.config();
 
@@ -14,7 +16,9 @@ const helpInfo = `
 /admin__clean_db_{tableName} - очистить таблицу в базе данных
 /admin__delete_user_{id} - удалить пользователя из таблицы users
 /admin__help - команды
-/send_all_data - отправить всю базу данных в Google Sheets
+/admin__send_all_data - отправить всю базу данных в Google Sheets
+/admin__get_mp_conversions - обновить базу конверсий
+/admin__get_mp_commissions - обновить базу комиссий
 `
 
 export async function handleAdminCommand(chat_id: number, command: string, bot: TelegramBot) {
@@ -104,6 +108,18 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     }).catch(error => {
       console.error('Error sending all data: ', error);
     });
+  }
+
+  // get mp conversions data 
+  if (action.startsWith('get_mp_conversions')) {
+    console.log('start to updating')
+    await updateConversions()
+  }
+
+  // get mp commissions data 
+  if (action.startsWith('get_mp_commissions')) {
+    console.log('start to updating')
+    await updateCommissions()
   }
     
   } catch (e) {

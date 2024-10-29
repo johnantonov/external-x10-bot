@@ -4,6 +4,7 @@ import { Article, article, ArticleCallbackData, ArticleStatus } from "../dto/art
 import { users_db } from "../../database/models/users";
 import { articles_db } from "../../database/models/articles";
 import { newArticleData } from "../utils/parse";
+import { MS } from "../bot";
 
 /**
  * set bot commands (now using when bot starting)
@@ -45,6 +46,7 @@ export class Options {
 
 export const CallbackData: Record<string, CallbackQuery['data']> = {
   returnMain: 'return_main',
+  returnNewMenu: 'return_new_menu',
   registrateUser: 'snu',
   newArticle: 'ton?',
   offArticle: 'tof?',
@@ -61,10 +63,11 @@ export const CallbackData: Record<string, CallbackQuery['data']> = {
   editSelfCost: 'esc?',
   editMark: 'em?',
   editTax: 'et?',
+  editAcquiring: 'acq?',
   returnArticle: 'rc?',
   editArticle: 'ea?',
   articlesMenu: 'artm?',
-  getAllReportNow: 'ar?',
+  getAllReportNow: 'arn?',
   goArticle: 'ar?',
   deleteArticle: 'da?',
   offReport: 'offr?',
@@ -73,16 +76,17 @@ export const CallbackData: Record<string, CallbackQuery['data']> = {
 
 export const mainButtons: Record<string, InlineKeyboardButton> = {
   returnMain: { text: '🔙 Вернуться в главное меню', callback_data: CallbackData.returnMain },
+  returnNewMenu: { text: '↩️ Меню', callback_data: CallbackData.returnNewMenu },
   getReportNow: { text: '📂 Сформировать отчет сейчас', callback_data: CallbackData.getReportNow },
   getAllReportNow: { text: '📂 Сформировать отчеты сейчас', callback_data: CallbackData.getAllReportNow },
-  newArticle: { text: '🔢 Новый артикул', callback_data: CallbackData.newArticle },
+  newArticle: { text: '➕ Новый артикул', callback_data: CallbackData.newArticle },
   editArticle: { text: '⚙️ Настройки товара', callback_data: CallbackData.editArticle },
   menu: { text: '↩️ Меню', callback_data: CallbackData.menu },
   menuAndEdit: { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit },
   changeTime: { text: '🕘 Настроить расписание отчетов', callback_data: CallbackData.changeTime },
-  changeWbApiKey: { text: '✏️ Изменить WB API KEY', callback_data: CallbackData.changeWbApiKey } ,
+  changeWbApiKey: { text: '🔑 Обновить WB API KEY', callback_data: CallbackData.changeWbApiKey } ,
   loading: { text: '⏳ Загрузка...', callback_data: CallbackData.loading },
-  registrateUser: { text: '➕ Подключить WB API KEY', callback_data: CallbackData.registrateUser },
+  registrateUser: { text: '🔑 Подключить WB API KEY', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
 } 
 
@@ -92,6 +96,7 @@ export const articleButtons: Record<string, ((article: any) => TelegramBot.Inlin
   editSelfCost: (article: article) => { return  { text: '💰 Указать себестоимость', callback_data: CallbackData.editSelfCost! + article } },
   editMark: (article: article) => { return  { text: '🗂 Указать маркировку', callback_data: CallbackData.editMark! + article } },
   editTax: (article: article) => { return  { text: '💸 Указать налог', callback_data: CallbackData.editTax! + article } },
+  editAcquiring: (article: article) => { return  { text: '🏧 Указать эквайринг', callback_data: CallbackData.editAcquiring! + article } },
   offArticle: (article: article) => { return  { text: '❌  Отключить телеграм отчет', callback_data: CallbackData.offTable! + article } },
   returnArticle: (article: string) => { return  { text: '↩️ Вернуться к настройкам', callback_data: CallbackData.returnArticle + article } },
   deleteArticle: (article: string) => { return  { text: '🗑 Удалить артикул', callback_data: CallbackData.deleteArticle + article } },
@@ -105,6 +110,10 @@ export const articleButtons: Record<string, ((article: any) => TelegramBot.Inlin
  */
 export const returnMenu = (edit: boolean = false) => {
   return new Options([[edit ? mainButtons.menuAndEdit : mainButtons.menu]]).reply_markup
+}
+
+export const returnNewMenu = () => {
+  return new Options([[mainButtons.returnNewMenu]]).reply_markup
 }
 
 /**
@@ -140,16 +149,18 @@ export const articleOptions = async (chat_id: number, article: article, state: A
   }
 
   const articleBtns = [
+    [articleButtons.getReportNow(article)],
     [articleButtons.editSelfCost(article), articleButtons.editMark(article)],
     [articleButtons.editTax(article), articleButtons.editReportName(article)],
+    [articleButtons.editAcquiring(article)],
     [articleButtons.deleteArticle(article)]
 
   ]
 
   if (state === 'on') {
-    articleBtns[2].push(articleButtons.offReport(article))
+    articleBtns[3].push(articleButtons.offReport(article))
   } else {
-    articleBtns[2].push(articleButtons.onReport(article))
+    articleBtns[3].push(articleButtons.onReport(article))
   }
 
   articleBtns.push([mainButtons.menuAndEdit])

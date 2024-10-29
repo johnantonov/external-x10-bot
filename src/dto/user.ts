@@ -10,6 +10,7 @@ export class User {
   article: article;
   notification_time: number | null;
   added_at: string;
+  last_report_call: number | null;
 
   [key: string]: any;
 
@@ -21,6 +22,7 @@ export class User {
     this.article = data.message_id
     this.notification_time = null
     this.added_at = `${new Date()}`
+    this.last_report_call = null
   }
 }
 

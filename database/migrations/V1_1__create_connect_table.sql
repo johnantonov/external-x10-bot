@@ -4,17 +4,18 @@ CREATE TABLE IF NOT EXISTS articles (
     wb_api_key VARCHAR,
     notification_time NUMERIC,
     title VARCHAR,
-    self_cost BIGINT,
+    self_cost DECIMAL,
     marketing_cost JSONB,
-    other_cost BIGINT,
+    other_cost DECIMAL,
     order_info JSONB,
-    mark BIGINT,
-    tax BIGINT,
-    percent_buys BIGINT,
-    percent_mp BIGINT,
-    price_before_spp BIGINT,
-    logistics BIGINT,
-    logistics_by_buys BIGINT,
+    mark DECIMAL,
+    tax DECIMAL,
+    acquiring DECIMAL,
+    percent_buys DECIMAL,
+    percent_mp DECIMAL,
+    price_before_spp DECIMAL,
+    logistics DECIMAL,
+    logistics_by_buys DECIMAL,
     size JSONB,
     status VARCHAR DEFAULT 'off',
     is_active BOOLEAN DEFAULT TRUE,
@@ -34,3 +35,25 @@ CREATE TRIGGER before_insert_articles
 BEFORE INSERT ON articles
 FOR EACH ROW
 EXECUTE FUNCTION set_wb_api_key();
+
+CREATE TABLE IF NOT EXISTS conversions (
+  date VARCHAR,
+  category VARCHAR,
+  subject_name VARCHAR,
+  click_to_cart DECIMAL,
+  cart_to_order DECIMAL,
+  buyout_percent DECIMAL,
+  PRIMARY KEY (category, subject_name)
+);
+
+CREATE TABLE IF NOT EXISTS commissions (
+  "parentName" VARCHAR,
+  "subjectName" VARCHAR,
+  "parentID" NUMERIC,
+  "subjectID" NUMERIC,
+  "kgvpMarketplace" DECIMAL,
+  "kgvpSupplier" DECIMAL,
+  "kgvpSupplierExpress" DECIMAL,
+  "paidStorageKgvp" DECIMAL,
+  PRIMARY KEY ("parentName", "subjectName")
+);

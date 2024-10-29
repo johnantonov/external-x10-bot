@@ -1,8 +1,9 @@
+import { articles_db } from "../../database/models/articles";
 import { bot, MS, RediceService } from "../bot";
 import { handleStartMenu, sendImageWithText } from "../components/botAnswers";
-import { mainOptions } from "../components/botButtons";
+import { articleOptions, mainOptions } from "../components/botButtons";
 import { AwaitingAnswer, MessageMS, UserMsg } from "../dto/messages";
-import { waitingStates } from "../redis";
+import { inputStates, waitingStates } from "../redis";
 import { awaitingHandler } from "./awaitingHandler";
 
 export async function handleMenuCommand(UserMsg: UserMsg, chat_id: number, text: string, msgs: MessageMS[]) {
@@ -25,10 +26,15 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
       await MS.saveMessages(msgs);
       return bot.editMessageText(answer.text, { chat_id, message_id: response.message_id });
     } else {
-      await MS.deleteOldAndNewMessages(chat_id, msgs);
       await RediceService.deleteUserState(chat_id);
-      const successResponse = await sendImageWithText(bot, chat_id, 'menu.jpg', answer.text, mainOptions(false, answer.type).inline_keyboard);
-      
+      await MS.deleteOldAndNewMessages(chat_id, msgs);
+      let newBtns = mainOptions(false, answer.type).inline_keyboard
+      if (inputStates?.includes(userState?.split('?')[0])) {
+        const article = await articles_db.getArticle(chat_id, userState?.split('?')[1])
+        const articleBtns = await articleOptions(chat_id, article.article, article.status)
+        if (articleBtns) newBtns = articleBtns.inline_keyboard
+      } 
+      const successResponse = await sendImageWithText(bot, chat_id, 'menu.jpg', answer.text, newBtns);
       if (successResponse) {
         await MS.saveMessage({ chat_id, message_id: successResponse.message_id, special: "menu" });
       }

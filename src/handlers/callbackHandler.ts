@@ -5,11 +5,13 @@ import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import dotenv from 'dotenv';
 import { createEditData, MessageService } from "../services/messageService";
-import { CallbackProcessor } from "../utils/CallbackProcessor";
+import { CallbackProcessor } from "../utils/callbackProcessor";
 import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/botButtons";
 import { users_db } from "../../database/models/users";
 import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
+import { runPersonReport } from "../services/reportService";
+import { isReportAvailable } from "../utils/time";
 dotenv.config();
 
 
@@ -38,7 +40,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   let editData: { text: string; options: Options['reply_markup']; image?: string } | null = null;
   
   const { chat_id, userCallbackData, message_id, username } = userCallback;
-  const type = await users_db.processUserRequest(chat_id, username)
+  const [type, last_report_call] = await users_db.processUserRequest(chat_id, username)
   const returnBtn = returnMenu(true);
   const mainBtn = mainOptions(false, type ?? 'new')
   const processor = new CallbackProcessor(userCallbackData);
@@ -57,6 +59,12 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       }
       break;
 
+    case 'new menu': 
+      await RediceService.deleteUserState(chat_id)
+      await MS.deleteAllMessages(chat_id)
+      await handleStartMenu(userCallback, '/menu', true)
+      break;
+
     case 'new user': 
       await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.usual)
       editData = createEditData('🔑 Отправьте ваш ключ :)', returnBtn);
@@ -64,7 +72,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'change key': 
       await RS.setUserState(chat_id, rStates.waitNewKey, ttls.usual)
-      editData = createEditData('🔑 Все ваши артикулы будут удалены, т.к. подключится новый ЛК. Если вы уверены то отправьте ключ.', returnBtn);
+      editData = createEditData('❗️ Если вы подключите ключ от другого личного кабинета, то перестанете получать отчеты по текущим артикулам', returnBtn);
       break;
 
     case 'articles': 
@@ -86,7 +94,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       
     case 'return article menu': 
       if (currentArticle) {
-        articleMenu = (await articleOptions(chat_id, +currentArticle, callbackObj.sts))
+        const articleToReturn = await articles_db.getArticle(chat_id, +currentArticle)
+        articleMenu = (await articleOptions(chat_id, +articleToReturn.article, articleToReturn.status))
         if (articleMenu) {
           editData = createEditData(' ', articleMenu);
         }
@@ -114,89 +123,78 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       }
       break;
 
-      case 'delete article': 
-        newButtonCallback = newArticleData(callbackObj);
-        const action = callbackObj.an;
+    case 'delete article': 
+      newButtonCallback = newArticleData(callbackObj);
+      const action = callbackObj.an;
 
-        if (!action) {
-            editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.mn + "?" + newButtonCallback));
-        } else {
-          if (action === 'no') {
-            articleMenu = (await articleOptions(chat_id, +currentArticle, callbackObj.sts))
-            if (articleMenu) {
-              editData = createEditData(' ', articleMenu);
-            } else {
-              editData = createEditData(' ', mainBtn);
-            }
+      if (!action) {
+          editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.mn + "?" + newButtonCallback));
+      } else {
+        if (action === 'no') {
+          articleMenu = (await articleOptions(chat_id, +currentArticle, callbackObj.sts))
+          if (articleMenu) {
+            editData = createEditData(' ', articleMenu);
           } else {
-            await articles_db.removeArticle(chat_id, currentArticle)
-            editData = createEditData(`✅ Вы успешно удалили артикул ${currentArticle}`, mainBtn);
+            editData = createEditData(' ', mainBtn);
           }
-        }
-
-        break;
-
-      case 'off report':  
-        const newMenuWithOnBtn = await articleOptions(chat_id, +currentArticle, 'off')
-        if (newMenuWithOnBtn) {
-          await articles_db.updateStatus(chat_id, currentArticle, 'off')
-          editData = createEditData(`✅ Вы успешно отключили отчет по артикулу ${currentArticle}`, newMenuWithOnBtn);
         } else {
-          editData = createEditData(`Возникла ошибка при получении данных об артикуле ${currentArticle}`, mainBtn);
+          await articles_db.removeArticle(chat_id, currentArticle)
+          editData = createEditData(`✅ Вы успешно удалили артикул ${currentArticle}`, mainBtn);
         }
-        break;
+      }
+      break;
 
-      case 'on report':  
-        const newMenuWithOffBtn = await articleOptions(chat_id, +currentArticle, 'on')
-        if (newMenuWithOffBtn) {
-          await articles_db.updateStatus(chat_id, currentArticle, 'on')
-          editData = createEditData(`✅ Отчет по товару ${currentArticle} включен и придет согласно расписанию`, newMenuWithOffBtn);
-        } else {
-          editData = createEditData(`Возникла ошибка при получении данных об артикуле ${currentArticle}`, mainBtn);
-        }
+    case 'off report':  
+      const newMenuWithOnBtn = await articleOptions(chat_id, +currentArticle, 'off')
+      if (newMenuWithOnBtn) {
+        await articles_db.updateStatus(chat_id, currentArticle, 'off')
+        editData = createEditData(`✅ Вы успешно отключили отчет по артикулу ${currentArticle}`, newMenuWithOnBtn);
+      } else {
+        editData = createEditData(`Возникла ошибка при получении данных об артикуле ${currentArticle}`, mainBtn);
+      }
+      break;
 
-        break;
-
-    // case 'off': 
-    //   data = parseConnectionData(userCallbackData);
-    //   newButtonCallback = newConnectionData(data);
-    //   const text = userCallbackData.startsWith(CallbackData.offConnection as string) ? 'удалить таблицу из подключений?' : 'отключить ежедневную рассылку?' 
-    //   const endText = userCallbackData.startsWith(CallbackData.offConnection as string) ? 'удалили таблицу. Вы сможете подключить ее повторно в меню "Подключения"' : 'отключили ежедневную рассылкую.' 
-    //   const action = data.an;
-    //   if (!action) {
-    //     return MS.editMessage(chat_id, message_id, 'Вы уверены, что хотите ' + text, yesNo(data.mn + "?" + newButtonCallback))
-    //   } else if (userCallbackData.endsWith(CallbackData.yes as string)) {
-    //     if (userCallbackData.startsWith(CallbackData.offConnection as string)) {
-    //       await connections_db.removeConnection(chat_id, data.ss) 
-    //     } else {
-    //       await connections_db.updateNotificationTime(chat_id, 0, data.ss)
-    //     }
-    //   } else {
-    //     return MS.editMessage(chat_id, message_id, ' ', connectionOptions(newButtonCallback, data.sts));
-    //   }
-    //   editData = createEditData(`✅ Вы успешно ` + endText, mainBtn);
-    // break;
-
-
-    // case 'get all reports': 
-    //   await bot.editMessageReplyMarkup(mainOptions(true), { chat_id, message_id })
-    //   await runPersonReport(chat_id, 'all')
-    //   await MS.deleteAllMessages(chat_id);
-    // break;
-
-    // case 'change title':
-    //   data = parseConnectionData(userCallbackData);
-    //   newButtonCallback = newConnectionData(data);;
-    //   await RS.setUserState(chat_id, rStates.waitConnectionTitle+data.ss, ttls.usual)
-    //   await MS.editMessage(chat_id, message_id, '✍️ Введите название подключения', returnConnectionMenu(newButtonCallback));
-    // break;
-
-    case 'change time': 
+    case 'on report':  
+      const newMenuWithOffBtn = await articleOptions(chat_id, +currentArticle, 'on')
+      if (newMenuWithOffBtn) {
+        await articles_db.updateStatus(chat_id, currentArticle, 'on')
+        editData = createEditData(`✅ Отчет по товару ${currentArticle} включен и придет согласно расписанию`, newMenuWithOffBtn);
+      } else {
+        editData = createEditData(`Возникла ошибка при получении данных об артикуле ${currentArticle}`, mainBtn);
+      }
+      break;
+      
+      case 'get all reports': 
+      const accessAllReports = isReportAvailable(last_report_call)
+      if (accessAllReports) {
+        await users_db.updateLastReportCall(chat_id);
+        MS.deleteAllMessages(chat_id)
+        await bot.sendMessage(chat_id, 'Подготавливаем отчеты ⌛️')
+        runPersonReport(chat_id, 'all')
+      } else {
+        editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
+      }
+      break;
+      
+    case 'get report': 
+      const accessReport = isReportAvailable(last_report_call)
+      if (accessReport) {
+        await users_db.updateLastReportCall(chat_id);
+        MS.deleteAllMessages(chat_id)
+        await bot.sendMessage(chat_id, 'Подготавливаем отчет ⌛️')
+        runPersonReport(chat_id, +currentArticle)
+      } else {
+        editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
+      }
+      break;
+      
+      case 'change time': 
       const selectedTime = +userCallbackData.split('?')[1]
       if (!selectedTime) {
         editData = { text: 'Выберите время по МСК, когда вам будет удобно получать отчеты:', options: { inline_keyboard: generateReportTimeButtons(userCallbackData) } }
       } else {
-        await articles_db.updateNotificationTime(chat_id, selectedTime);
+        await users_db.updateNotificationTime(chat_id, selectedTime);
+        await articles_db.updateNotificationTime(chat_id, selectedTime)
         editData = createEditData(`✅ Вы будете получать отчёт ежедневно в ${selectedTime}:00`, mainBtn)
       };
     break;

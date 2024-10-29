@@ -12,13 +12,13 @@ class UsersModel extends BaseModel<User> {
     super('users', pool)
   }
 
-  async processUserRequest(chat_id: number, newUsername: string | undefined): Promise<user_type | null> {
+  async processUserRequest(chat_id: number, newUsername: string | undefined): Promise<[user_type | null, number | null]> {
     try {
       const userResult = await this.select({ chat_id });
       
       if (userResult.rows.length === 0) {
         console.error(`Пользователь с chat_id ${chat_id} не найден`);
-        return null;
+        return [null, null];
       }
   
       const user = userResult.rows[0]; 
@@ -33,12 +33,30 @@ class UsersModel extends BaseModel<User> {
         await this.pool.query(query, [newUsername, chat_id]);
       }
 
-      return user.type;
+      return [user.type, user.last_report_call];
     } catch (error) {
       console.error(`Ошибка при обновлении username: ${error}`);
-      return null;
+      return [null, null];
     }
   }
+
+  async  updateLastReportCall(chat_id: number) {
+    const now = new Date();
+    await pool.query('UPDATE users SET last_report_call = $1 WHERE chat_id = $2', [now, chat_id]);
+  }
+
+  async updateNotificationTime(chat_id: number, notification_time: number): Promise<void> {
+    const values = [notification_time, chat_id]
+
+    let query = `
+      UPDATE ${this.tableName}
+      SET notification_time = $1
+      WHERE chat_id = $2
+    `;
+
+    await this.pool.query(query, values);
+  }
+
 
   async findOrCreateUser(chat_id: number, username: string | undefined): Promise<User | null> {
     const existingUser = await this.select({ chat_id });
@@ -70,7 +88,7 @@ class UsersModel extends BaseModel<User> {
     const query = `
       UPDATE ${this.tableName}
       SET wb_api_key = $1
-      WHERE chat_id
+      WHERE chat_id = $2
     `;
     await this.pool.query(query, [wb_api_key, chat_id]);
   }
@@ -117,6 +135,16 @@ class UsersModel extends BaseModel<User> {
       } else {
         return null
       }
+  }
+
+  async getReportUsers() {
+    const query = `
+      SELECT chat_id FROM ${this.tableName}
+      WHERE notification_time > 0
+    `;
+
+    const res = await this.pool.query(query);
+    return res.rows
   }
 }
 

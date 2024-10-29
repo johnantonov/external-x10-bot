@@ -13,11 +13,11 @@ dotenv.config();
  */
 export async function awaitingHandler(data: UserMsg, state: string) {
   if (!data.text) {
-    return new AwaitingAnswer({ result: false, text: "Текст отсутствует." });
+    return new AwaitingAnswer({ result: false, text: "Текст отсутствует" });
   }
   
   if (!isKey(data.text, state)) {
-    return new AwaitingAnswer({ result: false, text: "Введенные данные не соответствуют ожидаемому формату." });
+    return new AwaitingAnswer({ result: false, text: "Введенные данные не соответствуют ожидаемому формату" });
   }
 
   const { chat_id, text } = data;
@@ -28,7 +28,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     if (state === rStates.waitWbApiKey) {
       try {
         await users_db.updateType(chat_id, text);
-        return new AwaitingAnswer({ result: true, text: "✅ Вы добавили WB ключ.", type: 'registered'});
+        return new AwaitingAnswer({ result: true, text: "✅ Вы добавили WB ключ", type: 'registered'});
       } catch (e) {
         console.error('Ошибка в процессе добавления ключа вб: ', e)
         return handleError("Возникла ошибка, попробуйте еще раз.");
@@ -37,7 +37,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
       try {
         const article = state.split('?')[1]
         await articles_db.updateTitle(chat_id, article, text)
-        return new AwaitingAnswer({ result: true, text: "✅ Артикул переименован." });
+        return new AwaitingAnswer({ result: true, text: "✅ Артикул переименован" });
       } catch (e) {
         console.error('Ошибка в процессе переименования ключа: ', e)
         return handleError("Возникла ошибка, попробуйте еще раз.");
@@ -53,8 +53,8 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     } else if (state === rStates.waitNewKey) {
       try {
         const type = (await users_db.getUserById(chat_id))?.type
-        articles_db.removeArticle(chat_id)
-        return new AwaitingAnswer({ result: true, text: "✅ Вы изменили WB ключ.", type});
+        await users_db.updateWb_api_key(chat_id, text)
+        return new AwaitingAnswer({ result: true, text: "✅ Вы обновили WB ключ", type });
       } catch (e) {
         console.error('Ошибка в процессе добавления ключа вб: ', e)
         return handleError("Возникла ошибка, попробуйте позже.");
@@ -76,18 +76,27 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.log(article)
         await articles_db.updateSelf_cost(chat_id, article, +text)
         console.log(+text)
-        return new AwaitingAnswer({ result: true, text: "✅ Себестоимость товара сохранена." });
+        return new AwaitingAnswer({ result: true, text: "✅ Себестоимость товара сохранена" });
       } catch (e) {
-        console.error('Ошибка в процессе переименования ключа: ', e)
+        console.error('Ошибка в процессе обновления себестоимости: ', e)
         return handleError("Возникла ошибка, попробуйте позже.");
       }
     } else if (state.startsWith(rStates.waitTax)) {
       try {
         const article = state.split('?')[1]
         await articles_db.updateTax(chat_id, article, +text)
-        return new AwaitingAnswer({ result: true, text: "✅ Налог сохранен." });
+        return new AwaitingAnswer({ result: true, text: "✅ Налог сохранен" });
       } catch (e) {
-        console.error('Ошибка в процессе переименования ключа: ', e)
+        console.error('Ошибка в процессе сохранения налога: ', e)
+        return handleError("Возникла ошибка, попробуйте позже.");
+      }
+    } else if (state.startsWith(rStates.waitAcquiring)) {
+      try {
+        const article = state.split('?')[1]
+        await articles_db.updateAcquiring(chat_id, article, +text)
+        return new AwaitingAnswer({ result: true, text: "✅ Эквайринг сохранен" });
+      } catch (e) {
+        console.error('Ошибка в процессе сохранения эквайринга: ', e)
         return handleError("Возникла ошибка, попробуйте позже.");
       }
     }
@@ -97,18 +106,6 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     console.error('Error in awaiting handler: '+e)
     return new AwaitingAnswer({ result: false, text: "Возникла ошибка, попробуйте еще раз." })
   }
-}
-
-/**
- * check connection
- * @param {string} pass - key text
- */
-async function checkConnection(pass: string) {
-  return axios.post(process.env.PASS_CHECKER_URL!, { pass: pass }, {
-    headers: {
-        'Content-Type': 'application/json'
-    }
-  })
 }
 
 /**

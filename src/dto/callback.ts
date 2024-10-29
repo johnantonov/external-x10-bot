@@ -13,7 +13,7 @@ export type CallbackAction =
   "delete article" |
   "off report" |
   "on report" | 
-  // "edit mark" | 
-  // "edit self cost" | 
-  // // "get all reports" |
+  "new menu" | 
+  "get all reports" |
+  "get report" | 
   null;

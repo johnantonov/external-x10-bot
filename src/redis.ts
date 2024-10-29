@@ -39,6 +39,7 @@ export const waitingStates = [
   'et', 
   'awaiting_article', 
   'awaiting_new_key', 
+  'acq', 
 ]
 
 export const rStates = {
@@ -49,10 +50,10 @@ export const rStates = {
   waitTax: waitingStates[4],
   waitArticle: waitingStates[5],
   waitNewKey: waitingStates[6],
-  // articleEdits: waitingStates[7],
+  waitAcquiring: waitingStates[7],
 }
 
-export const inputStates = [rStates.waitSelfCost, rStates.waitTax, rStates.waitMark, rStates.waitArticleTitle]
+export const inputStates = [rStates.waitSelfCost, rStates.waitTax, rStates.waitMark, rStates.waitArticleTitle, rStates.waitAcquiring]
 
 export const getStateMessage = (state: string) => {
   const message = (text: string) => '📝 Укажите ' + text + ' в ответном сообщении.'
@@ -66,7 +67,8 @@ export const getStateMessage = (state: string) => {
       return message('имя товара')
     case rStates.waitSelfCost:
       return message('себестоимость товара')
-  
+    case rStates.waitAcquiring:
+      return message('процент эквайринга')
     default:
       break;
   }

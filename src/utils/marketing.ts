@@ -1,27 +1,51 @@
 import { article } from "../dto/articles";
-import { create30DaysObject } from "../utils/dates";
+import { create30DaysObject, getYesterdayDate } from "./time";
 
-export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[]) {
+export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[], advertTypes: Record<string, any>) {
   const data: Record<string, any> = {}
-
+  const yesterday = getYesterdayDate();
   userNmIds.forEach(nm => {
-    const result = create30DaysObject();
+    const result = {
+      cost: create30DaysObject(),
+      ark: { views: 0, clicks: 0 },
+      prk: { views: 0, clicks: 0 }
+    }
 
     advertisements.forEach((campaign: any) => {
       const firstDay = campaign.days[0];
       if (firstDay) {
         const isTargetCampaign = firstDay.apps.some((app: any) => {
           return app.nm.some((article: any) => {
-            return +article.nmId === +nm }
+            return Number(article.nmId) === Number(nm) }
           )
         }
       );
-      
+       
       if (isTargetCampaign) {
           campaign.days.forEach((day: any) => {
             const dayDate = new Date(day.date).toISOString().split('T')[0];
-            if (result.hasOwnProperty(dayDate)) {
-              result[dayDate] += day.sum;
+            if (result.cost.hasOwnProperty(dayDate)) {
+              let sum = 0;
+              let clicks = 0;
+              let views = 0;
+              day.apps.forEach((app: any) => {
+                app.nm.forEach((n: any) => {
+                  if (Number(n.nmId) === Number(nm)) {
+                    sum += n.sum
+                    clicks += n.clicks ?? 0
+                    views += n.views ?? 0
+                  };
+                })
+              })
+              result.cost[dayDate] += sum;
+              if (yesterday === dayDate) {
+                const object = advertTypes.find((advert: any) => advert.id === campaign.advertId);
+                if (object) {
+                  const type = object.type === 8 ? 'ark' : 'prk';
+                  result[type].clicks += clicks;
+                  result[type].views += views;
+                }
+              }
             }
           });
         }

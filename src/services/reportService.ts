@@ -4,13 +4,19 @@ import * as dotenv from 'dotenv';
 import cron from 'node-cron';
 import express from 'express';
 import pool from '../../database/db';
-import { getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } from '../utils/dates';
+import { getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { article, Article } from '../dto/articles';
 import { extractBuyoutsFromCards, processCampaigns } from '../utils/marketing';
 import { formatError, formatReportArticleMessage } from '../utils/string';
 import { createChart } from '../utils/charts';
+import { updateConversions } from '../utils/conversions';
+import { mainOptions, returnMenu, returnNewMenu } from '../components/botButtons';
+import { conversions_db } from '../../database/models/conversions';
+import { updateCommissions } from '../utils/comissions';
+import { commissions_db } from '../../database/models/commissions';
+import { User } from '../dto/user';
 const app = express();
 
 app.use(express.json());
@@ -18,12 +24,14 @@ dotenv.config();
 const port = process.env.BASE_PORT;
 
 app.post('/runReportForUser', async (req, res) => {
-  const { chat_id } = req.body;
+  const { chat_id, article } = req.body;
+
   try {
-    const RS = new ReportService(pool);
+    // const RS = new ReportService(pool);
     const user = await users_db.getUserById(chat_id);
     if (user) {
       // await RS.runForUser(user);
+      reportService.runForUser(user, article);
       res.status(200).send('Report run successfully for user.');
     } else {
       res.status(404).send('User not found.');
@@ -37,8 +45,8 @@ app.listen(port, () => {
   console.log(`API Server running on port ${port}`);
 });
 
-export function runPersonReport(chat_id: number) {
-  axios.post(`http://localhost:${process.env.BASE_PORT}/runReportForUser`, { chat_id: chat_id })
+export function runPersonReport(chat_id: number, article?: article) {
+  axios.post(`http://localhost:${process.env.BASE_PORT}/runReportForUser`, { chat_id: chat_id, article: article })
   .then(response => console.log('Report initiated: ', response.data))
   .catch(error => console.error('Failed to initiate report: ', error));
 }
@@ -51,16 +59,9 @@ export class ReportService {
   }
 
   // Fetch articles with type and matching notification_time
-  // if hour = 0, add all articles for adv data
-  async getArticlesForReport(hour: number, isPreparation: boolean = false ): Promise<Article[]> {
+  async getArticlesForReport(hour: number): Promise<Article[]> {
     try {
-      let articles;
-      if (isPreparation) {
-        articles = await articles_db.getAllArticles()
-      } else {
-        articles = await articles_db.getArticlesByTime(hour)
-      }
-  
+      const articles = await articles_db.getArticlesByTime(hour)
       return articles
     } catch(e) {
       formatError(e, 'Ошибка получения артикулов: ')
@@ -68,54 +69,79 @@ export class ReportService {
     }
   }
 
-  async prepareReportData(chat_id = 6043879539) {
-    const articles = await this.getArticlesForReport(0, true);
+  async prepareReportData(id?: number) {
+    try {
+      let userIds;
 
-    if (articles.length === 0) {
-      return console.log('No articles with status ON to fetch advertisement data.');
-    }
+      if (id) {
+        userIds = [await users_db.getUserById(id)]
+      } else {
+        userIds = await users_db.getReportUsers();
+      }
 
-    const { wb_api_key } = articles[0]
+      if (!userIds || userIds.length === 0) {
+        console.log('No users who are waiting for report');
+        return null
+      }
+  
+      for (const chat_id of userIds) {
+        const id = chat_id.chat_id
 
-    if (!wb_api_key) {
-      console.log(`No recent campaigns found for article with chat ID: ${chat_id}`);
-      // continue;
-    }
+        const articles = (await articles_db.getAllArticlesForUser(id)).rows
 
-    const advertIds = await this.getCampaigns(wb_api_key, chat_id)
-    const nms = articles.map(a => +a.article)
-
-    let advertDetailsResponse;
-    if (advertIds) {
-      advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
-    }
-
-    let advRes: any;
-    if (advertDetailsResponse) {
-      advRes = processCampaigns(advertDetailsResponse, nms)
-    }
-
-    const [monthAgoDate, yesterday] = getXDaysPeriod(30);
-    const report = (await this.fetchWbStatistics(nms, wb_api_key, yesterday, yesterday));
-
-    const yesterdayTime = yesterday + " 00:00:00"
-    const monthAgoDateTime = monthAgoDate + " 00:00:00"
-    const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
-
-    const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
-
-    for (const nm of nms) {
-      await articles_db.processMarketingCost(chat_id, +nm, advRes[nm])
-
-      await articles_db.updateFields(chat_id, +nm, {
-        order_info: report[nm]?.order_info,
-        percent_buys: percent_buys[nm], 
-        size: size[nm],
-        price_before_spp: report[nm]?.price_before_spp
+        if (articles.length === 0) {
+          return console.log('No articles with status ON to fetch advertisement data: ' + id);
+        }
         
-      })
+        const { wb_api_key } = articles[0] ?? null
+    
+        if (!wb_api_key) {
+          console.log(`No recent campaigns found for article with chat ID: ${id}`);
+          continue;
+        }
+    
+        const advertIds = await this.getCampaigns(wb_api_key, id)
+        const nms = articles.map(a => +a.article)
+    
+        let advertDetailsResponse;
+        if (advertIds) {
+          advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
+        }
+    
+        let advRes: any;
+        if (advertDetailsResponse) {
+          advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
+        }
+    
+        const [monthAgoDate, yesterday] = getXDaysPeriod(30);
+       
+        const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday));
+        
+        const yesterdayTime = yesterday + " 23:59:59"
+        const monthAgoDateTime = monthAgoDate + " 00:00:00"
+        const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
+    
+        const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
+    
+        for (const nm of nms) {
+          await articles_db.processMarketingCost(id, +nm, advRes[nm])
+    
+          await articles_db.updateFields(id, +nm, {
+            order_info: report[nm]?.order_info,
+            percent_buys: percent_buys[nm], 
+            size: size[nm],
+            price_before_spp: report[nm]?.price_before_spp
+          })
+        }
+    
+        // const testData = (await articles_db.getArticle(id, nms[0]))
+        // const message = formatReportArticleMessage(testData, yesterday)
+        console.log(`Report details for articles with chat ID ${id}`);
+      }
+
+    } catch (e) {
+      formatError(e, 'Error to prerape report service: ')
     }
-    console.log(`Report details for articles with chat ID ${chat_id}`);
   }
 
   async getNmSizeInfo(nmIDs: article[], wb_api_key: string) {
@@ -138,6 +164,7 @@ export class ReportService {
         result[el.nmID] = el.dimensions
       })
 
+      // console.log(cards)
       return result;
     } catch (error) {
       formatError(error, 'Ошибка получения данных о маркировке.')
@@ -147,50 +174,68 @@ export class ReportService {
   
 
   async getBuyPercent(nms: article[], wb_api_key: string, startDate: string, endDate: string) {
-    const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
-
-    const requestData = {           
-      nmIDs: nms,                
-      period: {                    
-        begin: startDate,
-        end: endDate
-      },
-      page: 1                
-    };
-    
-    const response = await axios.post(url, requestData, {
-      headers: {
-        'Authorization': wb_api_key,
-        'Content-Type': 'application/json'
-      }
-    })
-    
-    return extractBuyoutsFromCards(response)
+    try {
+      const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
+      
+      const requestData = {           
+        nmIDs: nms,                
+        period: {                    
+          begin: startDate,
+          end: endDate
+        },
+        page: 1                
+      };
+      
+      const response = await axios.post(url, requestData, {
+        headers: {
+          'Authorization': wb_api_key,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      // console.log(responseData.data.data.cards)
+      return extractBuyoutsFromCards(response)
+    } catch (e) {
+      formatError(e, 'Error fetching buy percent: ');
+      return {};
+    }
   }
 
   async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, endDate: string) {
-    const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
+    const periodUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
+    const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
 
-    const requestData = {
+    const periodRequestData = {
       nmIDs: articles,
       period: {
-        begin: startDate,
+        begin: startDate + ' 00:00:00',
+        end: endDate + ' 23:59:59',
+      },
+      page: 1
+    };
+
+    const yesterdayRequestData = {
+      nmIDs: articles,
+      period: {
+        begin: endDate,
         end: endDate,
       },
       timezone: 'Europe/Moscow',
       aggregationLevel: 'day',
     };
 
+    const headers = {
+      'Authorization': wb_api_key, 
+      'Content-Type': 'application/json',
+    }
+
+    const result: Record<string, any> = {};
     try {
-      const response = await axios.post(url, requestData, {
-        headers: {
-          'Authorization': wb_api_key, 
-          'Content-Type': 'application/json',
-        }
+      const yesterdayResponse = await axios.post(yesterdayUrl, yesterdayRequestData, {
+        headers: headers
       });
 
-      const result: Record<string, any> = {};
-      response.data.data.forEach((el: any) => {
+      yesterdayResponse.data.data.forEach((el: any) => {
         if (articles.includes(el.nmID)) {
           const data = el.history[0]
   
@@ -200,83 +245,134 @@ export class ReportService {
               ordersSum: data.ordersSumRub,
               buysCount: data.buyoutsCount,
               buysSum: data.buyoutsSumRub,
+              addToCartCount: data.addToCartCount,
             },
             price_before_spp: (data.ordersSumRub / data.ordersCount) || null,
           }
         }
-      })
-
-      return result
+      });
     } catch (error) {
-      formatError(error, 'Error fetching NM report statistics: ')
-      return {};
+      formatError(error, 'Error fetching yesterday report statistics: ')
     }
+
+    try {
+      const periodResponse = await axios.post(periodUrl, periodRequestData, {
+        headers: headers
+      });
+
+      for (const el of periodResponse.data.data.cards) {
+        if (articles.includes(el.nmID)) {
+          if (!result[el.nmID].order_info) result[el.nmID].order_info = {};
+          const conversData = el.statistics.selectedPeriod.conversions;
+          const ordersCount = el.statistics.selectedPeriod.ordersCount;
+          const categoryName = el.object.name;
+          const conversions = await conversions_db.getConversion(categoryName)
+          const commission = await commissions_db.getCommission(categoryName)
+          const stock = el.stocks;
+          result[el.nmID].order_info.addToCartPercent = conversData.addToCartPercent;
+          result[el.nmID].order_info.cartToOrderPercent = conversData.cartToOrderPercent;
+          result[el.nmID].order_info.buyoutsPercent = conversData.buyoutsPercent;
+          result[el.nmID].order_info.stocksMp = stock.stocksMp;
+          result[el.nmID].order_info.stocksWb = stock.stocksWb;
+          result[el.nmID].order_info.ordersCount30 = ordersCount;
+          result[el.nmID].order_info.commission = Number(commission.kgvpMarketplace) ?? 0;
+          result[el.nmID].order_info.click_to_cart = Number(conversions.click_to_cart).toFixed(2) ?? 0;
+          result[el.nmID].order_info.cart_to_order = Number(conversions.cart_to_order).toFixed(2) ?? 0;
+          result[el.nmID].order_info.fullConversion = (conversions.click_to_cart * conversions.cart_to_order).toFixed(2) ?? 0;
+        }
+      }
+
+    } catch (error) {
+      formatError(error, 'Error fetching period report statistics: ')
+    }
+
+    return result;
   }
 
   async getAdvertDetails(wb_api_key: string, advertIds: []) {
     try {
+      advertIds.forEach((obj: any) => {
+        delete obj.type;
+      });
+
       const advertDetailsResponse = await axios.post('https://advert-api.wildberries.ru/adv/v2/fullstats', advertIds, {
         headers: {
           'Authorization': wb_api_key,
           'Content-Type': 'application/json'
         }
       });
+
       const data = advertDetailsResponse.data
       return data
 
     } catch (e) {
-      formatError(e, 'error fetching adv data')
+      formatError(e, 'error fetching adv data: ')
+      return [];
     }
   }
 
   async getCampaigns(wb_api_key: string, chat_id: number) {
-    const campaignResponse = await axios.get('https://advert-api.wildberries.ru/adv/v1/promotion/count', {
-      headers: {
-        'Authorization': wb_api_key,
-        'Content-Type': 'application/json'
+    try {
+      const campaignResponse = await axios.get('https://advert-api.wildberries.ru/adv/v1/promotion/count', {
+        headers: {
+          'Authorization': wb_api_key,
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      const campaigns = campaignResponse.data.adverts || [];
+  
+      if (campaigns.length === 0) {
+        console.log(`No recent campaigns found for article with chat ID: ${chat_id}`);
+        return null
       }
-    });
+  
+      const now = new Date();
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(now.getDate() - 30);
+  
+      const recentCampaigns = campaigns.flatMap((campaign: any) => 
+        campaign.advert_list
+          .filter((advert: any) => {
+            const changeTime = new Date(advert.changeTime);
+            return changeTime >= thirtyDaysAgo && changeTime <= now;
+          })
+          .map((advert: any) => ({ 
+            ...advert, 
+            type: campaign.type
+          }))
+      )
+  
+      const last30DaysDates = getXdaysAgoArr(10);
+      const advertIds = recentCampaigns.map((advert: any) => ({
+        id: advert.advertId,
+        dates: last30DaysDates,
+        type: advert.type 
+      }));
 
-    const campaigns = campaignResponse.data.adverts || [];
-
-    if (campaigns.length === 0) {
-      console.log(`No recent campaigns found for article with chat ID: ${chat_id}`);
-      return null
+      // console.log(JSON.stringify(campaigns))
+      
+      if (advertIds.length === 0) {
+        console.error(`No recent campaigns found for article with chat ID: ${chat_id}`);
+        return null;
+      }
+      return advertIds
+    } catch (e) {
+      formatError(e, 'error fetching campaigns data')
+      return {};
     }
-
-    const now = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(now.getDate() - 30);
-
-    const recentCampaigns = campaigns.flatMap((campaign: any) => 
-      campaign.advert_list.filter((advert: any) => {
-        const changeTime = new Date(advert.changeTime);
-        return changeTime >= thirtyDaysAgo && changeTime <= now;
-      })
-    );
-
-    const last30DaysDates = getXdaysAgoArr(10);
-    const advertIds = recentCampaigns.map((advert: any) => ({ 
-      id: advert.advertId, 
-      dates: last30DaysDates 
-    }));
-    
-    if (advertIds.length === 0) {
-      console.error(`No recent campaigns found for article with chat ID: ${chat_id}`);
-      return null;
-    }
-
-    return advertIds
   }
 
   // Send message to user
   async sendMessage(chat_id: number, message: string): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`;
-  
+    const options = returnNewMenu();
+
     try {
       await axios.post(telegramApiUrl, {
         chat_id: chat_id,
         text: message,
+        reply_markup: options,
         parse_mode: 'HTML', 
       });
       console.log(`Report Service: Message sent to chat_id: ${chat_id}`);
@@ -299,31 +395,32 @@ export class ReportService {
     }
   }
 
-  async run(): Promise<void> {
+  async run(): Promise<void | null> {
     try {
       const currentHour = new Date().getHours() + 3;
+
       if (currentHour === 0) {
+        console.log('start preparing report')
         return this.prepareReportData()
       }
 
-      const articles = await this.getArticlesForReport(currentHour, false);
+      const articles = await this.getArticlesForReport(currentHour);
 
       if (articles.length > 0 ) {
         const date = getYesterdayDate();
-
         for (const item of articles) {
           if (item.wb_api_key && item.article) {
             const { article, chat_id, marketing_cost } = item;
     
               const message = formatReportArticleMessage(item, date)
-              const marketingChart = createChart(marketing_cost)
+              // const marketingChart = createChart(marketing_cost)
               this.sendMessage(chat_id, message)
-              if (marketingChart) {
-                return this.sendPhoto(chat_id, marketingChart)
-              }
+              // if (marketingChart) {
+              //   return this.sendPhoto(chat_id, marketingChart)
+              // }
             } 
           }
-        } else {
+      } else {
         console.log('No new articles to report for this hour: '+currentHour);
       }
     } catch (error) {
@@ -331,55 +428,61 @@ export class ReportService {
     } 
   }
 
-  // async runForUser(user: User): Promise<void> {
-  //   try {
-  //     if (user.type === 'old_ss' && user.ss) {
-  //       const reportData = await this.getReportsFromWebApp([user.ss]);
-  //       if (reportData[user.ss]) {
-  //         const formattedMessage = formatReportMessage(reportData[user.ss]);
-  //         await this.sendMessage(user.chat_id, formattedMessage);
-  //       }
-  //     } else if (user.type === 'new_art' && user.article && user.wb_api_key) {
-  //       const date = getYesterdayDate();
-  //       const report = await this.fetchWbStatistics([{ article: user.article, key: user.wb_api_key}], date, date);
-  //       if (report) {
-  //         const articleData = await user_articles_db.selectArticle(user.chat_id);
-  //         const data = report.data[0].history;
-  //         const message = formatReportArticleMessage(data, articleData, user, date); 
-  //         const marketingChart = createMarketingChart(articleData?.marketing_cost)
-  //         await this.sendMessage(user.chat_id, message);
-  //         if (marketingChart) {
-  //           return this.sendPhoto(user.chat_id, marketingChart)
-  //         }
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error running report for user:', error);
-  //   }
-  // }
+  async runForUser(user: User, article?: article): Promise<void> {
+    try {
+      const chat_id = user.chat_id
+      await this.prepareReportData(chat_id)
+      let articles;
+
+      if (!article || article === 'all') {
+        articles = (await articles_db.getAllArticlesForUser(chat_id)).rows 
+      } else {
+        console.log(user, article)
+        const res = (await articles_db.getArticle(chat_id, article))
+        articles = [res]
+        console.log(articles)
+      }
+      
+      if (articles.length > 0 ) {
+        const date = getYesterdayDate();
+        for (const item of articles) {
+          if (item.wb_api_key && item.article) {
+              const message = formatReportArticleMessage(item, date)
+              // const marketingChart = createChart(marketing_cost)
+              this.sendMessage(chat_id, message)
+              // if (marketingChart) {
+              //   return this.sendPhoto(chat_id, marketingChart)
+              // }
+            } 
+          }
+      } else {
+        this.sendMessage(chat_id, "Возникла ошибка при получении данных о товарах")
+      }
+    } catch (error) {
+      console.error('Error running report for user: ', error);
+    }
+  }
 
   // Schedule the report service to run every hour from 4 AM to 11 PM
   // at 00 start to getting adv info
   startCronJob() {
     cron.schedule('0 4-23 * * *', async () => {
       console.log('Running report service at:', new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }));
-      await this.prepareReportData();
-      // await this.run();
+      await this.run();
     }, {
       timezone: 'Europe/Moscow'
     });
 
     cron.schedule('0 0 * * *', async () => {
-      console.log('Running advertisement data fetch at 00:00:', new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }));
+      console.log('Running data preparing at 00:00:', new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }));
+      await updateConversions();
+      await updateCommissions();
       await this.prepareReportData();
     }, {
       timezone: 'Europe/Moscow'
     });
   }
 }
-
-
-
 
 export const reportService = new ReportService(pool);
 reportService.startCronJob();
