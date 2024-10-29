@@ -17,12 +17,12 @@ services:
       - PGUSER=${PGUSER}
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
-      - PGPORT=5432
+      - PGPORT=5400
     depends_on:
       - external-x10Bot-redis
       - external-x10Bot-postgres
     ports:
-      - "3001:3000"
+      - "3200:3201"
     restart: always
 
   external-x10Bot-postgres:
@@ -33,7 +33,7 @@ services:
       - POSTGRES_PASSWORD=${PGPASS}
       - POSTGRES_DB=${PGNAME}
     ports:
-      - "5432:5432"
+      - "5400:5400"
     volumes:
       - x10-external-bot_postgres_data:/var/lib/postgresql/data
     restart: always
@@ -48,7 +48,7 @@ services:
       - PGUSER=${PGUSER}
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
-      - PGPORT=5432
+      - PGPORT=5400
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
       - SERVICE_TYPE=report
     depends_on:
