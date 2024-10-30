@@ -13,6 +13,7 @@ services:
     working_dir: /usr/src/app
     environment:
       - REDIS_HOST=external-x10Bot-redis
+      - REDIS_PORT=6379
       - PGHOST=external-x10Bot-postgres
       - PGUSER=${PGUSER}
       - PGNAME=${PGNAME}
