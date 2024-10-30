@@ -18,7 +18,7 @@ services:
       - PGUSER=${PGUSER}
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
-      - PGPORT=5400
+      - PGPORT=5432
     depends_on:
       - external-x10Bot-redis
       - external-x10Bot-postgres
