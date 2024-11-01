@@ -40,7 +40,15 @@ class UsersModel extends BaseModel<User> {
     }
   }
 
-  async  updateLastReportCall(chat_id: number) {
+  async clearLastReportTime(chat_id?: number) {
+    if (chat_id) {
+      await pool.query('UPDATE users SET last_report_call = null WHERE chat_id = $1', [chat_id]);
+    } else {
+      await pool.query('UPDATE users SET last_report_call = null');
+    }
+  }
+
+  async updateLastReportCall(chat_id: number) {
     const now = new Date();
     await pool.query('UPDATE users SET last_report_call = $1 WHERE chat_id = $2', [now, chat_id]);
   }
@@ -140,8 +148,8 @@ class UsersModel extends BaseModel<User> {
   async getReportUsers() {
     const query = `
       SELECT chat_id FROM ${this.tableName}
-      WHERE notification_time > 0
-    `;
+      `;
+      // WHERE notification_time > 0
 
     const res = await this.pool.query(query);
     return res.rows

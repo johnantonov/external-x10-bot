@@ -93,7 +93,7 @@ export const mainButtons: Record<string, InlineKeyboardButton> = {
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
   getReportNow: (article: string) => { return { text: '📂 Сформировать отчет сейчас', callback_data: CallbackData.getReportNow + article } },
   editReportName: (article: string) => { return  { text: '✍️ Переименовать товар', callback_data: CallbackData.editArticleTitle + article } },
-  editSelfCost: (article: article) => { return  { text: '💰 Указать себестоимость', callback_data: CallbackData.editSelfCost! + article } },
+  editSelfCost: (article: article) => { return  { text: '💰 Себестоимость', callback_data: CallbackData.editSelfCost! + article } },
   editMark: (article: article) => { return  { text: '🗂 Указать маркировку', callback_data: CallbackData.editMark! + article } },
   editTax: (article: article) => { return  { text: '💸 Указать налог', callback_data: CallbackData.editTax! + article } },
   editAcquiring: (article: article) => { return  { text: '🏧 Указать эквайринг', callback_data: CallbackData.editAcquiring! + article } },

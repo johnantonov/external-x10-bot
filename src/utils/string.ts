@@ -1,5 +1,6 @@
 
 import { Article } from "../dto/articles";
+import { parsePercent } from "./report";
 
 export function formatReportArticleMessage(articleData: Article, date: string) {
   const name = articleData?.title || articleData?.article || 'Неизвестный товар';
@@ -8,26 +9,28 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   const marketingCost = parseFloat(marketing?.cost?.[date]) || 0; 
   const prk = marketing.prk || { clicks: 0, views: 0 };
   const ark = marketing.ark || { clicks: 0, views: 0 };
+  const tax = parsePercent(articleData.tax)
+  const acquiring = parsePercent(articleData.acquiring)
 
   let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
   const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
   const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
-  const krrr = ((stats.buysSum - ((selfCost ?? 0) * stats.buysCount) - articleData.mark - articleData.tax - marketingCost) / ((stats.buysSum - selfCost - articleData.mark - articleData.tax) || 1)) * 100; 
+  const krrr = ((stats.buysSum - ((selfCost ?? 0) * stats.buysCount) - articleData.mark - tax - marketingCost) / ((stats.buysSum - selfCost - articleData.mark - tax) || 1)) * 100; 
   const stocksMp = stats.stocksMp || 0;
   const stocksWb = stats.stocksWb || 0;
   const rev = (stats.buysSum ?? 0) 
   - selfCost
   - ((articleData.mark ?? 0) * (stats.buysCount ?? 0)) 
-  - ((articleData.tax ?? 0) * (stats.buysSum ?? 0)) 
-  - ((articleData.acquiring ?? 0) * (stats.buysCount ?? 0)) 
+  - (tax * (stats.buysSum ?? 0)) 
+  - ((acquiring ?? 0) * (stats.buysCount ?? 0)) 
   - ((stats.commission ?? 0) * (stats.buysCount ?? 0))
   - marketingCost;
 
   let message = `\n\nКорзины ${formatNumber(stats.addToCartCount || 0)}
-% корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart}%
+% корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
 Заказы ${formatNumber(stats.statsCount || 0)}
-% зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order}%
-% карт./рын: ${formatNumber((stats.addToCartPercent || 0) * (stats.cartToOrderPercent || 0))}% / ${stats.fullConversion}%
+% зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order ?? 0}%
+% карт./рын: ${formatNumber((stats.addToCartPercent || 0) * (stats.cartToOrderPercent || 0))}% / ${stats.fullConversion ?? 0}%
 Выкупы ${formatNumber(stats.buysCount || 0)}
 % вык 30Д ${formatNumber(stats.buyoutsPercent || 0)}%
 Клики АРК ${formatNumber(ark.clicks || 0)}
@@ -35,7 +38,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
 CTR ${formatNumber(ctr)}
 Расход РК ${formatNumber(marketingCost)}
 ДРР ${formatNumber(drr)}%
-КРРР ${formatNumber(krrr)}%
+КРРР ${isNaN(Number(krrr)) ? 0 : formatNumber(Number(krrr))}%
 Остатки ${formatNumber(stocksMp + stocksWb)}
 Хватит на: ${formatNumber((stocksMp + stocksWb) / ((stats.ordersCount30 || 1) / 30))}
 Маржа ${formatNumber((rev / (stats.buysSum || 1)) * 100)}%

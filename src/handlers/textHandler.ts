@@ -9,8 +9,10 @@ import { awaitingHandler } from "./awaitingHandler";
 export async function handleMenuCommand(UserMsg: UserMsg, chat_id: number, text: string, msgs: MessageMS[]) {
   await RediceService.deleteUserState(chat_id);
   const menu = await MS.getSpecialMsg(chat_id, 'menu');
-  await MS.deleteAllNewMessages(msgs, chat_id, 'menu');
-  return handleStartMenu(UserMsg, text as '/start' | '/menu', !menu, menu?.message_id);
+  if (text === '/menu') {
+    await MS.deleteAllNewMessages(msgs, chat_id);
+  }
+  return handleStartMenu(UserMsg, text as '/start' | '/menu', !!menu, menu?.message_id);
 }
 
 export async function handleUserState(chat_id: number, msgs: MessageMS[], userTextMessage: UserMsg) {

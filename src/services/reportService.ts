@@ -73,7 +73,7 @@ export class ReportService {
     try {
       let userIds;
 
-      if (id) {
+      if (id) { //if report start for one user
         userIds = [await users_db.getUserById(id)]
       } else {
         userIds = await users_db.getReportUsers();
@@ -120,22 +120,27 @@ export class ReportService {
         const yesterdayTime = yesterday + " 23:59:59"
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
-    
+
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
     
         for (const nm of nms) {
-          await articles_db.processMarketingCost(id, +nm, advRes[nm])
-    
+          if (advRes[nm]) {
+            await articles_db.processMarketingCost(id, +nm, advRes[nm]);
+          }
+        
+          let sizes = size[nm] || {};
+          let info = report[nm]?.order_info || {};        
+          let percentBuys = percent_buys?.[nm] ?? null;
+          let spp = report[nm]?.price_before_spp ?? null;
+        
           await articles_db.updateFields(id, +nm, {
-            order_info: report[nm]?.order_info,
-            percent_buys: percent_buys[nm], 
-            size: size[nm],
-            price_before_spp: report[nm]?.price_before_spp
-          })
+            order_info: info,
+            percent_buys: percentBuys,
+            size: sizes,
+            price_before_spp: spp
+          });
         }
     
-        // const testData = (await articles_db.getArticle(id, nms[0]))
-        // const message = formatReportArticleMessage(testData, yesterday)
         console.log(`Report details for articles with chat ID ${id}`);
       }
 
@@ -159,15 +164,16 @@ export class ReportService {
   
       const cards = response.data.cards;
       const filteredData = cards.filter((card: any) => nmIDs.includes(card.nmID))
+      // console.log(JSON.stringify("cards - " + cards))      
       const result: Record<string, any> = {};
 
       filteredData.forEach((el: any) => {
         result[el.nmID] = el.dimensions
       })
 
-      // console.log(cards)
       return result;
     } catch (error) {
+      console.log(error)
       formatError(error, 'Ошибка получения данных о маркировке.')
       return {};
     }
@@ -194,7 +200,9 @@ export class ReportService {
         }
       })
       
-      // console.log(responseData.data.data.cards)
+      const logdata = response.data
+      // console.log("BuyPercent - " + JSON.stringify(logdata))      
+
       return extractBuyoutsFromCards(response)
     } catch (e) {
       console.error(e)
@@ -237,6 +245,9 @@ export class ReportService {
         headers: headers
       });
 
+      const logdata = yesterdayResponse.data
+      // console.log("yesterdayResponse - ", JSON.stringify(logdata))      
+
       yesterdayResponse.data.data.forEach((el: any) => {
         if (articles.includes(el.nmID)) {
           const data = el.history[0]
@@ -254,6 +265,7 @@ export class ReportService {
         }
       });
     } catch (error) {
+      console.log(error)
       formatError(error, 'Error fetching yesterday report statistics: ')
     }
 
@@ -261,6 +273,14 @@ export class ReportService {
       const periodResponse = await axios.post(periodUrl, periodRequestData, {
         headers: headers
       });
+      
+      const logdata = periodResponse.data
+      // console.log("periodResponse - " + (JSON.stringify(logdata)))
+
+      if (!periodResponse.data.data.cards) {
+        console.log(`no data for ${JSON.stringify(articles)}`)
+        return result;
+      }
 
       for (const el of periodResponse.data.data.cards) {
         if (articles.includes(el.nmID)) {
@@ -277,14 +297,15 @@ export class ReportService {
           result[el.nmID].order_info.stocksMp = stock.stocksMp;
           result[el.nmID].order_info.stocksWb = stock.stocksWb;
           result[el.nmID].order_info.ordersCount30 = ordersCount;
-          result[el.nmID].order_info.commission = Number(commission.kgvpMarketplace) ?? 0;
-          result[el.nmID].order_info.click_to_cart = Number(conversions.click_to_cart).toFixed(2) ?? 0;
-          result[el.nmID].order_info.cart_to_order = Number(conversions.cart_to_order).toFixed(2) ?? 0;
-          result[el.nmID].order_info.fullConversion = (conversions.click_to_cart * conversions.cart_to_order).toFixed(2) ?? 0;
+          result[el.nmID].order_info.commission = isNaN(Number(commission?.kgvpMarketplace)) ? 0 : Number(commission?.kgvpMarketplace);
+          result[el.nmID].order_info.click_to_cart = isNaN(Number(conversions?.click_to_cart)) ? 0 : Number(conversions?.click_to_cart).toFixed(2);
+          result[el.nmID].order_info.cart_to_order = isNaN(Number(conversions?.cart_to_order)) ? 0 : Number(conversions?.cart_to_order).toFixed(2);
+          result[el.nmID].order_info.fullConversion = ((conversions?.click_to_cart ?? 0) * (conversions?.cart_to_order ?? 0)).toFixed(2) ?? 0;
         }
       }
 
     } catch (error) {
+      console.log(error)
       formatError(error, 'Error fetching period report statistics: ')
     }
 
@@ -305,6 +326,7 @@ export class ReportService {
       });
 
       const data = advertDetailsResponse.data
+      // console.log("getAdvertDetails - ", JSON.stringify(data))
       return data
 
     } catch (e) {
@@ -352,13 +374,11 @@ export class ReportService {
         dates: last30DaysDates,
         type: advert.type 
       }));
-
-      // console.log(JSON.stringify(campaigns))
       
       if (advertIds.length === 0) {
         console.error(`No recent campaigns found for article with chat ID: ${chat_id}`);
         return null;
-      }
+      }   
       return advertIds
     } catch (e) {
       console.error(e)
@@ -441,10 +461,8 @@ export class ReportService {
       if (!article || article === 'all') {
         articles = (await articles_db.getAllArticlesForUser(chat_id)).rows 
       } else {
-        console.log(user, article)
         const res = (await articles_db.getArticle(chat_id, article))
         articles = [res]
-        console.log(articles)
       }
       
       if (articles.length > 0 ) {

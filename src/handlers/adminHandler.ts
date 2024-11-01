@@ -19,6 +19,8 @@ const helpInfo = `
 /admin__send_all_data - отправить всю базу данных в Google Sheets
 /admin__get_mp_conversions - обновить базу конверсий
 /admin__get_mp_commissions - обновить базу комиссий
+/admin__clear_last_report_time_{id} - очистка времени последнего отчета
+/admin__clear_last_report_time_all - очистка времени последнего отчета у всех
 `
 
 export async function handleAdminCommand(chat_id: number, command: string, bot: TelegramBot) {
@@ -123,6 +125,19 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
   if (action.startsWith('get_mp_commissions')) {
     console.log('start to updating')
     await updateCommissions()
+  }
+
+  // get mp commissions data 
+  if (action.startsWith('clear_last_report_time')) {
+    console.log('start to clearing')
+    const id = action.split('time_')[1];
+
+    if (id === 'all') {
+      await users_db.clearLastReportTime()
+    }
+    
+    await users_db.clearLastReportTime(+id)
+
   }
     
   } catch (e) {

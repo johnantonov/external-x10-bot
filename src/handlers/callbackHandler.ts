@@ -34,19 +34,19 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     return console.error('message_id not found')
   }
 
+  const { chat_id, userCallbackData, message_id, username } = userCallback;
+  const [type, last_report_call] = await users_db.processUserRequest(chat_id, username)
+  const returnBtn = returnMenu(true);
+  const mainBtn = mainOptions(false, type ?? 'new')
+  const action = new CallbackProcessor(userCallbackData).getAction();
+  const [state, currentArticle] = getStateAndArticleFromCallback(userCallbackData);
+  const callbackObj = parseArticleData(userCallbackData)
+
   let articleMenu;
   let data: any;
   let newButtonCallback: string;
   let editData: { text: string; options: Options['reply_markup']; image?: string } | null = null;
   
-  const { chat_id, userCallbackData, message_id, username } = userCallback;
-  const [type, last_report_call] = await users_db.processUserRequest(chat_id, username)
-  const returnBtn = returnMenu(true);
-  const mainBtn = mainOptions(false, type ?? 'new')
-  const processor = new CallbackProcessor(userCallbackData);
-  const action = processor.getAction();
-  const [state, currentArticle] = getStateAndArticleFromCallback(userCallbackData);
-  const callbackObj = parseArticleData(userCallbackData)
   
   switch (action) {
     case 'menu':
@@ -72,7 +72,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'change key': 
       await RS.setUserState(chat_id, rStates.waitNewKey, ttls.usual)
-      editData = createEditData('❗️ Если вы подключите ключ от другого личного кабинета, то перестанете получать отчеты по текущим артикулам', returnBtn);
+      editData = createEditData(`❗️ Если вы подключите ключ от другого личного кабинета, то перестанете получать отчеты по текущим артикулам.
+        \nДля продолжения отправьте в чат обновленный ключ или ключ от другого кабинета`, returnBtn);
       break;
 
     case 'articles': 
@@ -169,7 +170,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       if (accessAllReports) {
         await users_db.updateLastReportCall(chat_id);
         MS.deleteAllMessages(chat_id)
-        await bot.sendMessage(chat_id, 'Подготавливаем отчеты ⌛️')
+        const loadingMsg = await bot.sendMessage(chat_id, 'Подготавливаем отчеты ⌛️')
         runPersonReport(chat_id, 'all')
       } else {
         editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);

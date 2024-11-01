@@ -122,7 +122,15 @@ export function isKey(text: string, state: string): Boolean {
     return /^\d{6,}$/.test(text);
   }
 
-  if ([rStates.waitSelfCost, rStates.waitMark, rStates.waitTax].includes(state.split('?')[0])) {
+  if (state.startsWith(rStates.waitTax)) {
+    return /^(\d+([.,]\d+)?|[.,]?\d+)$/.test(text);
+  }
+
+  if (state.startsWith(rStates.waitAcquiring)) {
+    return /^(\d+([.,]\d+)?|[.,]?\d+)$/.test(text);
+  }
+
+  if ([rStates.waitSelfCost, rStates.waitMark].includes(state.split('?')[0])) {
     return /^\d+$/.test(text);
   }
 

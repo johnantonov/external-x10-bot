@@ -10,8 +10,8 @@ export interface Article {
   marketing_cost: Record<any, any>;
   other_cost: number;
   mark: number;
-  tax: number;
-  acquiring: number;
+  tax: string;
+  acquiring: number | string;
   percent_buys: number;
   percent_mp: number;
   price_before_spp: number;

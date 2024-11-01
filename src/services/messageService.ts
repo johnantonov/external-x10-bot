@@ -70,7 +70,7 @@ export class MessageService {
   /**
    * delete all current msgs and new msgs without saving
    */ 
-  async deleteAllNewMessages(msgs: MessageMS[], chat_id: number, exclude?: string) {
+  async deleteAllNewMessages(msgs: MessageMS[], chat_id: number) {
     const deletePromises = msgs.map(async (msg) => {
       try {
         await this.bot.deleteMessage(chat_id, msg.message_id);
@@ -151,12 +151,14 @@ async deleteAllMessages(chat_id: number, exclude?: string): Promise<void> {
     media?: string,
   ) {
     
+    console.log(chat_id, message_id, newText, JSON.stringify(newReplyMarkup), media)
+
     try {
       if (media) {
         const imagePath = getPath(media);
         return editMessageMedia(chat_id, message_id, imagePath, process.env.TELEGRAM_TOKEN!, newText, newReplyMarkup);
       }
-
+      
       if (newText) {
         await this.bot.editMessageCaption(newText, {
           chat_id,
@@ -164,13 +166,14 @@ async deleteAllMessages(chat_id: number, exclude?: string): Promise<void> {
           parse_mode: 'HTML',
         } as EditMessageTextOptions);
       }
-  
+
       if (newReplyMarkup) {
         await this.bot.editMessageReplyMarkup(newReplyMarkup, {
           chat_id,
           message_id,
         });
       }
+  
     } catch (error) {
       if (!newText || newText === " ") {
         newText = undefined

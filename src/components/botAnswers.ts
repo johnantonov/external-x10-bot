@@ -47,7 +47,8 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
           await sendNewMenu(chat_id, img, text, user.type)
           return console.error('handleStartMenu: error to get menu id:', msg, command, isNewMsg, menuId)
         }
-        return MS.editMessage(chat_id, menuId, text, mainOptions(false, user.type))
+        const editedBtn = mainOptions(false, user.type);
+        return MS.editMessage(chat_id, menuId, text, editedBtn)
       } else {
         await sendNewMenu(chat_id, img, text, user.type)
       }
@@ -100,6 +101,7 @@ export async function sendNewMenu(chat_id: number, img: string, caption: string,
   const keyboard = mainOptions(false, userType).inline_keyboard
   const newMenu = await sendImageWithText(bot, chat_id, img, caption, keyboard);
   if (newMenu) {
+    await MS.deleteAllMessages(chat_id)
     await MS.saveMessage({ chat_id, message_id: newMenu.message_id, special: 'menu' });
   }
 }

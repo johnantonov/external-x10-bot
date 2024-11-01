@@ -12,7 +12,7 @@ class ConversionsModel extends BaseModel<Conversion> {
 
   async getConversion(name: string): Promise<Conversion> {
     const query = `
-      SELECT * FROM ${this.tableName} WHERE subject_name = $1 LIMIT 1
+      SELECT * FROM ${this.tableName} WHERE category = $1 LIMIT 1
     `;
 
     const result = await this.pool.query(query, [name]);
