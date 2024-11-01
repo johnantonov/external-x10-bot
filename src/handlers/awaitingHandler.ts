@@ -71,11 +71,8 @@ export async function awaitingHandler(data: UserMsg, state: string) {
       }
     } else if (state.startsWith(rStates.waitSelfCost)) {
       try {
-        console.log(state)
         const article = state.split('?')[1]
-        console.log(article)
         await articles_db.updateSelfCost(chat_id, article, +text)
-        console.log(+text)
         return new AwaitingAnswer({ result: true, text: "✅ Себестоимость товара сохранена" });
       } catch (e) {
         console.error('Ошибка в процессе обновления себестоимости: ', e)

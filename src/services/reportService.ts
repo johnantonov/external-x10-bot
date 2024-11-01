@@ -145,7 +145,6 @@ export class ReportService {
       }
 
     } catch (e) {
-      console.error(e)
       formatError(e, 'Error to prerape report service: ')
     }
   }
@@ -173,7 +172,6 @@ export class ReportService {
 
       return result;
     } catch (error) {
-      console.log(error)
       formatError(error, 'Ошибка получения данных о маркировке.')
       return {};
     }
@@ -265,7 +263,6 @@ export class ReportService {
         }
       });
     } catch (error) {
-      console.log(error)
       formatError(error, 'Error fetching yesterday report statistics: ')
     }
 
@@ -305,7 +302,6 @@ export class ReportService {
       }
 
     } catch (error) {
-      console.log(error)
       formatError(error, 'Error fetching period report statistics: ')
     }
 

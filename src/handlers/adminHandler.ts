@@ -29,12 +29,12 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     const adminChatIds = process.env.ADMIN_CHAT ? process.env.ADMIN_CHAT.split(',').map(Number) : [];
 
     if (!process.env.ADMIN_CHAT) {
-      return console.log(`Error to getting admins from the env`)
+      return console.error(`Error to getting admins from the env`)
     }
 
     if (!adminChatIds.includes(chat_id)) {
       await bot.sendMessage(chat_id, 'У вас нет доступа. Запросите права администратора.')
-      return console.log(`Chat id ${chat_id} does not have access.`);
+      return console.error(`Chat id ${chat_id} does not have access.`);
     }
 
     const action = command.split('__')[1]

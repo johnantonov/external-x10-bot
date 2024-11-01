@@ -151,8 +151,6 @@ async deleteAllMessages(chat_id: number, exclude?: string): Promise<void> {
     media?: string,
   ) {
     
-    console.log(chat_id, message_id, newText, JSON.stringify(newReplyMarkup), media)
-
     try {
       if (media) {
         const imagePath = getPath(media);
