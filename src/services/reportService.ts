@@ -459,7 +459,7 @@ export class ReportService {
       let articles;
 
       if (!article || article === 'all') {
-        articles = (await articles_db.getAllArticlesForUser(chat_id)).rows 
+        articles = (await articles_db.getAllArticlesForUser(chat_id, 'on')).rows 
       } else {
         const res = (await articles_db.getArticle(chat_id, article))
         articles = [res]

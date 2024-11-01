@@ -74,4 +74,19 @@ export const migrations = [
         PRIMARY KEY ("parentName", "subjectName")
         );`
     ],
+    [
+        `CREATE OR REPLACE FUNCTION set_wb_api_key()
+        RETURNS TRIGGER AS $$
+        BEGIN
+        NEW.wb_api_key := (SELECT u.wb_api_key FROM users u WHERE u.chat_id = NEW.chat_id);
+        NEW.notification_time := (SELECT u.notification_time FROM users u WHERE u.chat_id = NEW.chat_id);
+        RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;`,
+
+        `CREATE OR REPLACE TRIGGER before_insert_articles
+        BEFORE INSERT ON articles
+        FOR EACH ROW
+        EXECUTE FUNCTION set_wb_api_key();`,
+    ]
 ];

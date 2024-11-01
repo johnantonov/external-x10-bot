@@ -73,12 +73,17 @@ class ArticlesModel extends BaseModel<Article> {
     return (await this.pool.query<Article>(query, [status, limit, offset])).rows;
   }
 
-  async getAllArticlesForUser(chat_id: number): Promise<QueryResult<Article>> {
-    const query = `
+  async getAllArticlesForUser(chat_id: number, status?: ArticleStatus): Promise<QueryResult<Article>> {
+    let query = `
       SELECT * FROM ${this.tableName}
       WHERE chat_id = $1
     `;
-    return await this.pool.query<Article>(query, [chat_id]);
+    const values: Array<string|number> = [chat_id]
+    if (status) {
+      query += `AND status = $2`
+      values.push(status)
+    }
+    return await this.pool.query<Article>(query, values);
   }
 
   async addArticle(article: Partial<Article>): Promise<void> {
@@ -127,7 +132,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [title, chat_id, article]);
   }
 
-  async updateIs_active(chat_id: number, article: article, is_active: boolean): Promise<void> {
+  async updateIsActive(chat_id: number, article: article, is_active: boolean): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET is_active = $1
@@ -136,7 +141,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [is_active, chat_id, article]);
   }
 
-  async updateSelf_cost(chat_id: number, article: article, self_cost: number): Promise<void> {
+  async updateSelfCost(chat_id: number, article: article, self_cost: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET self_cost = $1
@@ -145,7 +150,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [self_cost, chat_id, article]);
   }
 
-  async updateMarketing_cost(chat_id: number, article: article, marketing_cost: JSON): Promise<void> {
+  async updateMarketingCost(chat_id: number, article: article, marketing_cost: JSON): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET marketing_cost = $1
@@ -154,7 +159,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [marketing_cost, chat_id, article]);
   }
 
-  async updateOther_cost(chat_id: number, article: article, other_cost: number): Promise<void> {
+  async updateOtherCost(chat_id: number, article: article, other_cost: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET other_cost = $1
@@ -190,7 +195,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [acquiring, chat_id, article]);
   }
 
-  async updatePercent_buysitle(chat_id: number, article: article, percent_buys: number): Promise<void> {
+  async updatePercentBuysitle(chat_id: number, article: article, percent_buys: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET percent_buys = $1
@@ -199,7 +204,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [percent_buys, chat_id, article]);
   }
 
-  async updatePercent_mp(chat_id: number, article: article, percent_mp: number): Promise<void> {
+  async updatePercentMp(chat_id: number, article: article, percent_mp: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET percent_mp = $1
@@ -208,7 +213,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [percent_mp, chat_id, article]);
   }
 
-  async updatePrice_before_spp(chat_id: number, article: article, price_before_spp: number): Promise<void> {
+  async updatePriceBeforeSpp(chat_id: number, article: article, price_before_spp: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET price_before_spp = $1
@@ -217,7 +222,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [price_before_spp, chat_id, article]);
   }
 
-  async updateLogistics_by_buys(chat_id: number, article: article, logistics_by_buys: number): Promise<void> {
+  async updateLogisticsByBuys(chat_id: number, article: article, logistics_by_buys: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET logistics_by_buys = $1
@@ -235,7 +240,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [size, chat_id, article]);
   }
 
-  async updateOrder_info(chat_id: number, article: article, order_info: string): Promise<void> {
+  async updateOrderInfo(chat_id: number, article: article, order_info: string): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET order_info = $1

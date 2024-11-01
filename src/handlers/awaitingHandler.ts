@@ -53,7 +53,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     } else if (state === rStates.waitNewKey) {
       try {
         const type = (await users_db.getUserById(chat_id))?.type
-        await users_db.updateWb_api_key(chat_id, text)
+        await users_db.updateWbApiKey(chat_id, text)
         return new AwaitingAnswer({ result: true, text: "✅ Вы обновили WB ключ", type });
       } catch (e) {
         console.error('Ошибка в процессе добавления ключа вб: ', e)
@@ -74,7 +74,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.log(state)
         const article = state.split('?')[1]
         console.log(article)
-        await articles_db.updateSelf_cost(chat_id, article, +text)
+        await articles_db.updateSelfCost(chat_id, article, +text)
         console.log(+text)
         return new AwaitingAnswer({ result: true, text: "✅ Себестоимость товара сохранена" });
       } catch (e) {

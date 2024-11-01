@@ -92,7 +92,7 @@ class UsersModel extends BaseModel<User> {
     }
   }
 
-  async updateWb_api_key(chat_id: number, wb_api_key: string): Promise<void> {
+  async updateWbApiKey(chat_id: number, wb_api_key: string): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET wb_api_key = $1
@@ -105,7 +105,7 @@ class UsersModel extends BaseModel<User> {
     const oldArticle = (await this.getUserById(chat_id))?.article
 
     if (oldArticle) {
-      await articles_db.updateIs_active(chat_id, oldArticle, false)
+      await articles_db.updateIsActive(chat_id, oldArticle, false)
     }
 
     const query = `
