@@ -124,7 +124,7 @@ export class ReportService {
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
     
         for (const nm of nms) {
-          if (advRes[nm]) {
+          if (advRes && advRes.hasOwnProperty(nm)) {
             await articles_db.processMarketingCost(id, +nm, advRes[nm]);
           }
         
@@ -145,6 +145,7 @@ export class ReportService {
       }
 
     } catch (e) {
+      console.log(e)
       formatError(e, 'Error to prerape report service: ')
     }
   }
@@ -163,7 +164,6 @@ export class ReportService {
   
       const cards = response.data.cards;
       const filteredData = cards.filter((card: any) => nmIDs.includes(card.nmID))
-      // console.log(JSON.stringify("cards - " + cards))      
       const result: Record<string, any> = {};
 
       filteredData.forEach((el: any) => {
@@ -197,9 +197,6 @@ export class ReportService {
           'Content-Type': 'application/json'
         }
       })
-      
-      const logdata = response.data
-      // console.log("BuyPercent - " + JSON.stringify(logdata))      
 
       return extractBuyoutsFromCards(response)
     } catch (e) {
@@ -243,9 +240,6 @@ export class ReportService {
         headers: headers
       });
 
-      const logdata = yesterdayResponse.data
-      // console.log("yesterdayResponse - ", JSON.stringify(logdata))      
-
       yesterdayResponse.data.data.forEach((el: any) => {
         if (articles.includes(el.nmID)) {
           const data = el.history[0]
@@ -270,9 +264,6 @@ export class ReportService {
       const periodResponse = await axios.post(periodUrl, periodRequestData, {
         headers: headers
       });
-      
-      const logdata = periodResponse.data
-      // console.log("periodResponse - " + (JSON.stringify(logdata)))
 
       if (!periodResponse.data.data.cards) {
         console.log(`no data for ${JSON.stringify(articles)}`)
@@ -322,7 +313,6 @@ export class ReportService {
       });
 
       const data = advertDetailsResponse.data
-      // console.log("getAdvertDetails - ", JSON.stringify(data))
       return data
 
     } catch (e) {
