@@ -84,13 +84,17 @@ export class ReportService {
         return null
       }
   
+      console.log( userIds)
       for (const chat_id of userIds) {
         const id = chat_id.chat_id
+
+        console.log(id)
 
         const articles = (await articles_db.getAllArticlesForUser(id)).rows
 
         if (articles.length === 0) {
-          return console.log('No articles with status ON to fetch advertisement data: ' + id);
+          console.log('No articles with status ON to fetch advertisement data: ' + id);
+          continue;
         }
         
         const { wb_api_key } = articles[0] ?? null
