@@ -15,7 +15,7 @@ const helpInfo = `
 /admin__prepare_report_service - запуск подготовки данных для отчета
 /admin__clean_db_{tableName} - очистить таблицу в базе данных
 /admin__delete_user_{id} - удалить пользователя из таблицы users
-/admin__help_my_id - получить свой tg id
+/admin__my_id - получить свой tg id
 /admin__help - команды
 /admin__send_all_data - отправить всю базу данных в Google Sheets
 /admin__get_mp_conversions - обновить базу конверсий
