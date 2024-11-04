@@ -127,6 +127,11 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     await updateCommissions()
   }
 
+  if (action.startsWith('my_id')) {
+    await bot.sendMessage(chat_id, `${chat_id}`)
+  }
+
+
   // get mp commissions data 
   if (action.startsWith('clear_last_report_time')) {
     console.log('start to clearing')
