@@ -84,13 +84,15 @@ export class ReportService {
         return null
       }
   
-      console.log( userIds)
+      console.log('list of users waiting report:', userIds)
       for (const chat_id of userIds) {
         const id = chat_id.chat_id
 
-        console.log(id)
+        console.log('processing: ', id)
 
         const articles = (await articles_db.getAllArticlesForUser(id)).rows
+
+        console.log(`articles for ${id}: ${articles}`)
 
         if (articles.length === 0) {
           console.log('No articles with status ON to fetch advertisement data: ' + id);
@@ -105,27 +107,41 @@ export class ReportService {
         }
     
         const advertIds = await this.getCampaigns(wb_api_key, id)
+
+        console.log(`advertIds for ${id}: ${advertIds}`)
+
         const nms = articles.map(a => +a.article)
     
         let advertDetailsResponse;
         if (advertIds) {
           advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
         }
+
+        console.log(`adverts details for ${id}: ${advertDetailsResponse}`)
+
     
         let advRes: any;
         if (advertDetailsResponse) {
           advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
         }
+
+        console.log(`advert result for ${id}: ${advRes}`)
     
         const [monthAgoDate, yesterday] = getXDaysPeriod(30);
        
         const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday));
+
+        console.log(`statistic report for ${id}: ${report}`)
         
         const yesterdayTime = yesterday + " 23:59:59"
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
 
+        console.log(`persent buy for ${id}: ${percent_buys}`)
+
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
+
+        console.log(`size ${id}: ${percent_buys}`)
     
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
