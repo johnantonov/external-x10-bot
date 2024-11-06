@@ -110,14 +110,14 @@ export class ReportService {
         const nms = articles.map(a => +a.article)
         
         console.log(`articles for ${id}: ${JSON.stringify(nms)}`)
-        console.log(`advertIds for ${id}: ${JSON.stringify(advertIds)}`)
+        // console.log(`advertIds for ${id}: ${JSON.stringify(advertIds)}`)
         
         let advertDetailsResponse;
         if (advertIds) {
           advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
         }
 
-        console.log(`adverts details for ${id}: ${JSON.stringify(advertDetailsResponse)}`)
+        // console.log(`adverts details for ${id}: ${JSON.stringify(advertDetailsResponse)}`)
 
     
         let advRes: any;
@@ -455,6 +455,7 @@ export class ReportService {
 
       if (articles.length > 0 ) {
         const date = getYesterdayDate();
+        console.log(`preparing reports for ${date} date`)
         for (const item of articles) {
           if (item.wb_api_key && item.article) {
             const { article, chat_id, marketing_cost } = item;
