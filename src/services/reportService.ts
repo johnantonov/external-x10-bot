@@ -92,8 +92,7 @@ export class ReportService {
 
         const articles = (await articles_db.getAllArticlesForUser(id)).rows
 
-        console.log(`articles for ${id}: ${JSON.stringify(articles)}`)
-
+        
         if (articles.length === 0) {
           console.log('No articles with status ON to fetch advertisement data: ' + id);
           continue;
@@ -101,18 +100,18 @@ export class ReportService {
         
         const { wb_api_key } = articles[0] ?? null
         console.log('wb api key:', wb_api_key)
-    
+        
         if (!wb_api_key) {
           console.log(`No recent campaigns found for article with chat ID: ${id}`);
           continue;
         }
-    
+        
         const advertIds = await this.getCampaigns(wb_api_key, id)
-
-        console.log(`advertIds for ${id}: ${JSON.stringify(advertIds)}`)
-
         const nms = articles.map(a => +a.article)
-    
+        
+        console.log(`articles for ${id}: ${JSON.stringify(nms)}`)
+        console.log(`advertIds for ${id}: ${JSON.stringify(advertIds)}`)
+        
         let advertDetailsResponse;
         if (advertIds) {
           advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
@@ -261,10 +260,12 @@ export class ReportService {
         headers: headers
       });
 
+      const logData = yesterdayResponse.data
+      console.log(`yesterday data:`, JSON.stringify(logData))
+
       if (!yesterdayResponse.data.data) {
-        const logData = yesterdayResponse.data
-        console.log(JSON.stringify(logData))
         console.log(`no yesterday data for ${JSON.stringify(articles)}`)
+        console.log(`yesterday data:`, JSON.stringify(logData))
         return result;
       }
 
@@ -288,15 +289,21 @@ export class ReportService {
       formatError(error, 'Error fetching yesterday report statistics: ')
     }
 
+    console.log('report result after processing yesterday data: ', result)
+
+
     try {
       const periodResponse = await axios.post(periodUrl, periodRequestData, {
         headers: headers
       });
+      const logData = periodResponse.data
+      console.log(`period data:`, JSON.stringify(logData))
+      
+      console.log()
 
       if (!periodResponse.data.data.cards) {
-        const logData = periodResponse.data
-        console.log(JSON.stringify(logData))
         console.log(`no period data for ${JSON.stringify(articles)}`)
+        console.log(`period data:`, JSON.stringify(logData))
         return result;
       }
 
