@@ -137,11 +137,11 @@ export class ReportService {
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
 
-        console.log(`persent buy for ${id}: ${percent_buys}`)
+        console.log(`persent buy for ${id}: ${JSON.stringify(percent_buys)}`)
 
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
 
-        console.log(`size ${id}: ${size}`)
+        console.log(`size ${id}: ${JSON.stringify(size)}`)
     
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
