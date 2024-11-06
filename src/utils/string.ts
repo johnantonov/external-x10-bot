@@ -3,6 +3,8 @@ import { Article } from "../dto/articles";
 import { parsePercent } from "./report";
 
 export function formatReportArticleMessage(articleData: Article, date: string) {
+  console.log(JSON.stringify(articleData))
+
   const name = articleData?.title || articleData?.article || 'Неизвестный товар';
   const stats = articleData.order_info || {};
   const marketing = articleData?.marketing_cost || {};

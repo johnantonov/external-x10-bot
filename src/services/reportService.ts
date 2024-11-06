@@ -446,7 +446,7 @@ export class ReportService {
     try {
       const currentHour = new Date().getHours() + 3;
 
-      if (currentHour === 0) {
+      if (currentHour === 0) { 
         console.log('start preparing report')
         return this.prepareReportData()
       }
@@ -455,7 +455,7 @@ export class ReportService {
 
       if (articles.length > 0 ) {
         const date = getYesterdayDate();
-        console.log(`preparing reports for ${date} date`)
+        console.log(`preparing text of reports for ${date} date`)
         for (const item of articles) {
           if (item.wb_api_key && item.article) {
             const { article, chat_id, marketing_cost } = item;
