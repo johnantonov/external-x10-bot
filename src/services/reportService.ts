@@ -92,7 +92,7 @@ export class ReportService {
 
         const articles = (await articles_db.getAllArticlesForUser(id)).rows
 
-        console.log(`articles for ${id}: ${articles}`)
+        console.log(`articles for ${id}: ${JSON.stringify(articles)}`)
 
         if (articles.length === 0) {
           console.log('No articles with status ON to fetch advertisement data: ' + id);
@@ -100,6 +100,7 @@ export class ReportService {
         }
         
         const { wb_api_key } = articles[0] ?? null
+        console.log('wb api key:', wb_api_key)
     
         if (!wb_api_key) {
           console.log(`No recent campaigns found for article with chat ID: ${id}`);
@@ -108,7 +109,7 @@ export class ReportService {
     
         const advertIds = await this.getCampaigns(wb_api_key, id)
 
-        console.log(`advertIds for ${id}: ${advertIds}`)
+        console.log(`advertIds for ${id}: ${JSON.stringify(advertIds)}`)
 
         const nms = articles.map(a => +a.article)
     
@@ -117,7 +118,7 @@ export class ReportService {
           advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
         }
 
-        console.log(`adverts details for ${id}: ${advertDetailsResponse}`)
+        console.log(`adverts details for ${id}: ${JSON.stringify(advertDetailsResponse)}`)
 
     
         let advRes: any;
@@ -125,13 +126,13 @@ export class ReportService {
           advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
         }
 
-        console.log(`advert result for ${id}: ${advRes}`)
+        console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
     
         const [monthAgoDate, yesterday] = getXDaysPeriod(30);
        
         const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday));
 
-        console.log(`statistic report for ${id}: ${report}`)
+        console.log(`statistic report for ${id}: ${JSON.stringify(report)}`)
         
         const yesterdayTime = yesterday + " 23:59:59"
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
@@ -141,7 +142,7 @@ export class ReportService {
 
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
 
-        console.log(`size ${id}: ${percent_buys}`)
+        console.log(`size ${id}: ${size}`)
     
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
@@ -165,7 +166,7 @@ export class ReportService {
       }
 
     } catch (e) {
-      console.log(e)
+      // console.log(e)
       formatError(e, 'Error to prerape report service: ')
     }
   }
@@ -220,7 +221,7 @@ export class ReportService {
 
       return extractBuyoutsFromCards(response)
     } catch (e) {
-      console.error(e)
+      // console.error(e)
       formatError(e, 'Error fetching buy percent: ');
       return {};
     }
@@ -260,6 +261,13 @@ export class ReportService {
         headers: headers
       });
 
+      if (!yesterdayResponse.data.data) {
+        const logData = yesterdayResponse.data
+        console.log(JSON.stringify(logData))
+        console.log(`no yesterday data for ${JSON.stringify(articles)}`)
+        return result;
+      }
+
       yesterdayResponse.data.data.forEach((el: any) => {
         if (articles.includes(el.nmID)) {
           const data = el.history[0]
@@ -286,7 +294,9 @@ export class ReportService {
       });
 
       if (!periodResponse.data.data.cards) {
-        console.log(`no data for ${JSON.stringify(articles)}`)
+        const logData = periodResponse.data
+        console.log(JSON.stringify(logData))
+        console.log(`no period data for ${JSON.stringify(articles)}`)
         return result;
       }
 
@@ -336,7 +346,7 @@ export class ReportService {
       return data
 
     } catch (e) {
-      console.error(e)
+      // console.error(e)
       formatError(e, 'error fetching adv data: ')
       return [];
     }
@@ -387,7 +397,7 @@ export class ReportService {
       }   
       return advertIds
     } catch (e) {
-      console.error(e)
+      // console.error(e)
       formatError(e, 'error fetching campaigns data')
       return {};
     }
