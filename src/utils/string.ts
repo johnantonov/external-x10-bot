@@ -49,23 +49,23 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   - marketingCost;
 
   let message = `
-\nЗаказы ${formatNumber(stats.ordersCount || 0)}
-Корзины ${formatNumber(stats.addToCartCount || 0)}
+\nЗаказы: ${formatNumber(stats.ordersCount || 0)}
+Корзины: ${formatNumber(stats.addToCartCount || 0)}
 % корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
 % зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order ?? 0}%
 % карт./рын: ${formatNumber((stats.addToCartPercent || 0) * (stats.cartToOrderPercent || 0) / 100)}% / ${stats.fullConversion ?? 0}
-Выкупы ${formatNumber(stats.buysCount || 0)}
-% вык 30Д ${formatNumber(stats.buyoutsPercent || 0)}%
-Клики АРК ${formatNumber(ark.clicks || 0)}
-Клики ПРК ${formatNumber(prk.clicks || 0)}
-CTR ${formatNumber(ctr)}
-Расход РК ${formatNumber(marketingCost)}
-ДРР ${formatNumber(drr)}%
-КРРР ${isNaN(Number(krrr)) ? 0 : formatNumber(Number(krrr))}%
-Остатки ${formatNumber(stocksMp + stocksWb)}
+Выкупы: ${formatNumber(stats.buysCount || 0)}
+% вык 30Д: ${formatNumber(stats.buyoutsPercent || 0)}%
+Клики АРК: ${formatNumber(ark.clicks || 0)}
+Клики ПРК: ${formatNumber(prk.clicks || 0)}
+CTR: ${formatNumber(ctr)}
+Расход РК: ${formatNumber(marketingCost)}
+ДРР: ${formatNumber(drr)}%
+КРРР: ${isNaN(Number(krrr)) ? 0 : formatNumber(Number(krrr))}%
+Остатки: ${formatNumber(stocksMp + stocksWb)}
 Хватит на: ${formatNumber((stocksMp + stocksWb) / ((stats.ordersCount30 || 1) / 30))}
-Маржа ${formatNumber((rev / (stats.buysSum || 1)) * 100)}%
-Прибыль ${formatNumber(rev)}`;
+Маржа: ${formatNumber((rev / (stats.buysSum || 1)) * 100)}%
+Прибыль: ${formatNumber(rev)}`;
 
   return `📃Отчет за ${date}\n\n#${name}${message}`;
 }
