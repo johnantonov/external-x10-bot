@@ -232,8 +232,13 @@ export class ReportService {
     // const periodUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     // const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
+    
+    let moscowTime = new Date().toLocaleString("en-CA", { 
+      timeZone: "Europe/Moscow",
+      hour12: false 
+    }).replace(",", "");
     let monthStartDateTime = startDate + ' 00:00:00'
-    let monthEndDateTime = today
+    let monthEndDateTime = `${today} ${moscowTime.split(" ")[1]}`
     
     const periodRequestData = {
       nmIDs: articles,
