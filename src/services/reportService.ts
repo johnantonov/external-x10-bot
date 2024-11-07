@@ -127,9 +127,9 @@ export class ReportService {
 
         console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
     
-        const [monthAgoDate, yesterday] = getXDaysPeriod(30);
+        const [monthAgoDate, yesterday, today] = getXDaysPeriod(30);
        
-        const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday));
+        const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday, today));
 
         console.log(`statistic report for ${id}: ${JSON.stringify(report)}`)
         
@@ -226,18 +226,18 @@ export class ReportService {
     }
   }
 
-  async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, endDate: string) {
-    const periodUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
+  async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, yesterday: string, today: string) {
+    // const periodUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     // const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
-    let startDateTime = startDate + ' 00:00:00'
-    let endDateTime = endDate + ' 23:59:59'
+    let monthStartDateTime = startDate + ' 00:00:00'
+    let monthEndDateTime = today + ' 23:59:59'
     
     const periodRequestData = {
       nmIDs: articles,
       period: {
-        begin: startDateTime,
-        end: endDateTime,
+        begin: monthStartDateTime,
+        end: monthEndDateTime,
       },
       page: 1
     };
@@ -245,8 +245,8 @@ export class ReportService {
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
-        begin: endDate + ' 00:00:00',
-        end: endDateTime
+        begin: yesterday + ' 00:00:00',
+        end: yesterday + ' 23:59:59'
       },
       page: 1
     };
