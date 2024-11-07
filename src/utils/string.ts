@@ -15,6 +15,9 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   const tax = parsePercent(articleData.tax)
   const acquiring = parsePercent(articleData.acquiring)
 
+  // test
+  stats.buysCount = (stats.ordersCount || 0) * (stats.buyoutsPercent || 0) / 30
+
   let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
   const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
   const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
@@ -36,7 +39,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
 % корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
 % зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order ?? 0}%
 % карт./рын: ${formatNumber((stats.addToCartPercent || 0) * (stats.cartToOrderPercent || 0))}% / ${stats.fullConversion ?? 0}
-Выкупы ${formatNumber((stats.ordersCount || 0) * (stats.buyoutsPercent || 0))} 
+Выкупы ${formatNumber(stats.buysCount || 0)}
 % вык 30Д ${formatNumber(stats.buyoutsPercent || 0)}%
 Клики АРК ${formatNumber(ark.clicks || 0)}
 Клики ПРК ${formatNumber(prk.clicks || 0)}
