@@ -9,7 +9,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   const name = articleData?.title || articleData?.article || 'Неизвестный товар';
   const stats = articleData.order_info || {};
   const marketing = articleData?.marketing_cost || {};
-  const marketingCost = parseFloat(marketing?.cost?.[date]) || 0; 
+  const marketingCost = parseFloat(marketing?.[date]) || 0; 
   const prk = marketing.prk || { clicks: 0, views: 0 };
   const ark = marketing.ark || { clicks: 0, views: 0 };
   const tax = parsePercent(articleData.tax)
