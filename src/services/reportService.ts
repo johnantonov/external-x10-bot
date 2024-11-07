@@ -245,8 +245,8 @@ export class ReportService {
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
-        begin: startDateTime,
-        end: startDate + ' 23:59:59',
+        begin: endDate + ' 00:00:00',
+        end: endDateTime
       },
       page: 1
     };
