@@ -265,7 +265,7 @@ export class ReportService {
 
       if (!yesterdayResponse.data.data) {
         console.log(`no yesterday data for ${JSON.stringify(articles)}`)
-        console.log(`yesterday data:`, JSON.stringify(logData))
+        // console.log(`yesterday data:`, JSON.stringify(logData))
         return result;
       }
 
@@ -296,14 +296,13 @@ export class ReportService {
       const periodResponse = await axios.post(periodUrl, periodRequestData, {
         headers: headers
       });
-      const logData = periodResponse.data
-      console.log(`period data:`, JSON.stringify(logData))
       
-      console.log()
+      // const logData = periodResponse.data
+      // console.log(`period data:`, JSON.stringify(logData))
 
       if (!periodResponse.data.data.cards) {
         console.log(`no period data for ${JSON.stringify(articles)}`)
-        console.log(`period data:`, JSON.stringify(logData))
+        // console.log(`period data:`, JSON.stringify(logData))
         return result;
       }
 

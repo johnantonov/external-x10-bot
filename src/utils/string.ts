@@ -18,6 +18,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
   const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
   const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
+  // console.log(stats.buysSum)
   const krrr = ((stats.buysSum - ((selfCost ?? 0) * stats.buysCount) - articleData.mark - tax - marketingCost) / ((stats.buysSum - selfCost - articleData.mark - tax) || 1)) * 100; 
   const stocksMp = stats.stocksMp || 0;
   const stocksWb = stats.stocksWb || 0;
@@ -30,7 +31,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   - marketingCost;
 
   let message = `
-\n\nЗаказы ${formatNumber(stats.ordersCount || 0)}
+\nЗаказы ${formatNumber(stats.ordersCount || 0)}
 Корзины ${formatNumber(stats.addToCartCount || 0)}
 % корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
 % зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order ?? 0}%
