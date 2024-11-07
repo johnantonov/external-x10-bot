@@ -246,7 +246,7 @@ export class ReportService {
       nmIDs: articles,
       period: {
         begin: startDateTime,
-        end: endDateTime,
+        end: startDate + ' 23:59:59',
       },
       page: 1
     };
