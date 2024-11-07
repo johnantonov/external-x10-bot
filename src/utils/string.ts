@@ -17,6 +17,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
 
   // test
   stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
+  stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
 
   let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
   const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
