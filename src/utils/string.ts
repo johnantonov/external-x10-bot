@@ -14,6 +14,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   const ark = marketing.ark || { clicks: 0, views: 0 };
   const tax = parsePercent(articleData.tax)
   const acquiring = parsePercent(articleData.acquiring)
+  const commission = parsePercent(stats.commission)
 
   // WIP -------
   stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
@@ -24,11 +25,11 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   let markCost = (stats?.buysCount ?? 0) * (articleData?.mark ?? 0);
   let taxCost = (stats?.buysSum ?? 0) * tax;
   let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-  let commissionCost = (stats?.buysSum ?? 0) * (stats.commission ?? 0);
+  let commissionCost = (stats?.buysSum ?? 0) * commission;
 
   console.log('taxCost: ', taxCost, ' tax: ', tax)
   console.log('acquiringCost: ', acquiringCost, ' acquiring: ', acquiring)
-  console.log('commissionCost: ', commissionCost, ' commission: ', (stats.commission ?? 0))
+  console.log('commissionCost: ', commissionCost, ' commission: ', commission)
 
   const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
   const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
