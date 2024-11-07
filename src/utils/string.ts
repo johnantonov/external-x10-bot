@@ -36,7 +36,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
 % корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
 % зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order ?? 0}%
 % карт./рын: ${formatNumber((stats.addToCartPercent || 0) * (stats.cartToOrderPercent || 0))}% / ${stats.fullConversion ?? 0}
-Выкупы ${formatNumber(stats.buysCount || 0)}
+Выкупы ${formatNumber((stats.ordersCount || 0) * (stats.buyoutsPercent || 0))} 
 % вык 30Д ${formatNumber(stats.buyoutsPercent || 0)}%
 Клики АРК ${formatNumber(ark.clicks || 0)}
 Клики ПРК ${formatNumber(prk.clicks || 0)}
