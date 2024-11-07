@@ -34,9 +34,12 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
   const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
   // console.log(stats.buysSum)
-  const krrr = ((stats.buysSum - ((selfCost ?? 0) * stats.buysCount) - articleData.mark - tax - marketingCost) / ((stats.buysSum - selfCost - articleData.mark - tax) || 1)) * 100; 
+  const krrr = 
+  ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100; 
+  
   const stocksMp = stats.stocksMp || 0;
   const stocksWb = stats.stocksWb || 0;
+
   const rev = (stats.buysSum ?? 0) 
   - selfCost
   - markCost
