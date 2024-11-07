@@ -253,7 +253,8 @@ export class ReportService {
       nmIDs: articles,
       period: {
         begin: yesterday + ' 00:00:00',
-        end: yesterday + ' 23:59:59'
+        // end: yesterday + ' 23:59:59'
+        end: monthEndDateTime
       },
       page: 1
     };
