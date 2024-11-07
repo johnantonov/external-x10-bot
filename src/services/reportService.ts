@@ -127,7 +127,7 @@ export class ReportService {
 
         console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
     
-        const [monthAgoDate, yesterday, today] = getXDaysPeriod(29);
+        const [monthAgoDate, yesterday, today] = getXDaysPeriod(30);
 
         console.log("DATES ", monthAgoDate, yesterday, today)
        
@@ -233,7 +233,7 @@ export class ReportService {
     // const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     let monthStartDateTime = startDate + ' 00:00:00'
-    let monthEndDateTime = today + ' 23:59:59'
+    let monthEndDateTime = today
     
     const periodRequestData = {
       nmIDs: articles,
