@@ -230,11 +230,14 @@ export class ReportService {
     const periodUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     // const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
+    let startDateTime = startDate + ' 00:00:00'
+    let endDateTime = endDate + ' 23:59:59'
+    
     const periodRequestData = {
       nmIDs: articles,
       period: {
-        begin: startDate + ' 00:00:00',
-        end: endDate + ' 23:59:59',
+        begin: startDateTime,
+        end: endDateTime,
       },
       page: 1
     };
@@ -242,11 +245,10 @@ export class ReportService {
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
-        begin: endDate,
-        end: endDate,
+        begin: startDateTime,
+        end: endDateTime,
       },
-      timezone: 'Europe/Moscow',
-      aggregationLevel: 'day',
+      page: 1
     };
 
     const headers = {
@@ -263,15 +265,17 @@ export class ReportService {
       const logData = yesterdayResponse.data
       console.log(`yesterday data:`, JSON.stringify(logData))
 
-      if (!yesterdayResponse.data.data) {
+      if (!yesterdayResponse.data.data.cards) {
         console.log(`no yesterday data for ${JSON.stringify(articles)}`)
         // console.log(`yesterday data:`, JSON.stringify(logData))
         return result;
       }
 
-      yesterdayResponse.data.data.forEach((el: any) => {
+      yesterdayResponse.data.data.cards.forEach((el: any) => {
         if (articles.includes(el.nmID)) {
-          const data = el.history[0]
+          // const data = el.history[0]
+          const data = el.statistics.selectedPeriod;
+          const stocks = el.stocks;
   
           result[el.nmID] = { 
             order_info: {
@@ -280,6 +284,8 @@ export class ReportService {
               buysCount: data.buyoutsCount,
               buysSum: data.buyoutsSumRub,
               addToCartCount: data.addToCartCount,
+              stocksMp: stocks.stocksMp,
+              stocksWb: stocks.stocksWb
             },
             price_before_spp: (data.ordersSumRub / data.ordersCount) || null,
           }
@@ -314,12 +320,12 @@ export class ReportService {
           const categoryName = el.object.name;
           const conversions = await conversions_db.getConversion(categoryName)
           const commission = await commissions_db.getCommission(categoryName)
-          const stock = el.stocks;
+          // const stock = el.stocks;
           result[el.nmID].order_info.addToCartPercent = conversData.addToCartPercent;
           result[el.nmID].order_info.cartToOrderPercent = conversData.cartToOrderPercent;
           result[el.nmID].order_info.buyoutsPercent = conversData.buyoutsPercent;
-          result[el.nmID].order_info.stocksMp = stock.stocksMp;
-          result[el.nmID].order_info.stocksWb = stock.stocksWb;
+          // result[el.nmID].order_info.stocksMp = stock.stocksMp;
+          // result[el.nmID].order_info.stocksWb = stock.stocksWb;
           result[el.nmID].order_info.ordersCount30 = ordersCount;
           result[el.nmID].order_info.commission = isNaN(Number(commission?.kgvpMarketplace)) ? 0 : Number(commission?.kgvpMarketplace);
           result[el.nmID].order_info.click_to_cart = isNaN(Number(conversions?.click_to_cart)) ? 0 : Number(conversions?.click_to_cart).toFixed(2);
