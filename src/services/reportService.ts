@@ -325,9 +325,7 @@ export class ReportService {
           result[el.nmID].order_info.commission = isNaN(Number(commission?.kgvpMarketplace)) ? 0 : Number(commission?.kgvpMarketplace);
           result[el.nmID].order_info.click_to_cart = isNaN(Number(conversions?.click_to_cart)) ? 0 : Number(conversions?.click_to_cart).toFixed(2);
           result[el.nmID].order_info.cart_to_order = isNaN(Number(conversions?.cart_to_order)) ? 0 : Number(conversions?.cart_to_order).toFixed(2);
-          console.log("conversions?.click_to_cart", conversions?.click_to_cart)
-          console.log("conversions?.cart_to_order", conversions?.cart_to_order)
-          result[el.nmID].order_info.fullConversion = ((conversions?.click_to_cart ?? 0) * (conversions?.cart_to_order ?? 0)).toFixed(2) ?? 0;
+          result[el.nmID].order_info.fullConversion = `${((conversions?.click_to_cart ?? 0) / 100 * (conversions?.cart_to_order ?? 0) / 100 * 100).toFixed(2)}%`
         }
       }
 
