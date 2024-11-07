@@ -27,7 +27,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   let commissionCost = (stats?.buysSum ?? 0) * (stats.commission ?? 0);
 
   console.log('taxCost: ', taxCost, ' tax: ', tax)
-  console.log('taxCost: ', acquiringCost, ' tax: ', acquiring)
+  console.log('acquiringCost: ', acquiringCost, ' acquiring: ', acquiring)
   console.log('commissionCost: ', commissionCost, ' commission: ', (stats.commission ?? 0))
 
   const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
