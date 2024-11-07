@@ -127,7 +127,9 @@ export class ReportService {
 
         console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
     
-        const [monthAgoDate, yesterday, today] = getXDaysPeriod(30);
+        const [monthAgoDate, yesterday, today] = getXDaysPeriod(29);
+
+        console.log("DATES ", monthAgoDate, yesterday, today)
        
         const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday, today));
 
@@ -250,6 +252,8 @@ export class ReportService {
       },
       page: 1
     };
+
+    console.log("DATES FORMATTED ",monthStartDateTime, monthEndDateTime)
 
     const headers = {
       'Authorization': wb_api_key, 
