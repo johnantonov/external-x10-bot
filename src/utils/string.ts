@@ -15,11 +15,21 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   const tax = parsePercent(articleData.tax)
   const acquiring = parsePercent(articleData.acquiring)
 
-  // test
+  // WIP -------
   stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
   stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
+  // -----------
 
   let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
+  let markCost = (stats?.buysCount ?? 0) * (articleData?.mark ?? 0);
+  let taxCost = (stats?.buysSum ?? 0) * tax;
+  let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
+  let commissionCost = (stats?.buysSum ?? 0) * (stats.commission ?? 0);
+
+  console.log('taxCost: ', taxCost, ' tax: ', tax)
+  console.log('taxCost: ', acquiringCost, ' tax: ', acquiring)
+  console.log('commissionCost: ', commissionCost, ' commission: ', (stats.commission ?? 0))
+
   const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
   const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
   // console.log(stats.buysSum)
@@ -28,10 +38,10 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   const stocksWb = stats.stocksWb || 0;
   const rev = (stats.buysSum ?? 0) 
   - selfCost
-  - ((articleData.mark ?? 0) * (stats.buysCount ?? 0)) 
-  - (tax * (stats.buysSum ?? 0)) 
-  - ((acquiring ?? 0) * (stats.buysCount ?? 0)) 
-  - ((stats.commission ?? 0) * (stats.buysCount ?? 0))
+  - markCost
+  - taxCost
+  - acquiringCost 
+  - commissionCost
   - marketingCost;
 
   let message = `
