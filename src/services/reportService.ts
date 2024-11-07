@@ -228,8 +228,8 @@ export class ReportService {
 
   async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, endDate: string) {
     const periodUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
-    const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
-
+    // const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
+    const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     const periodRequestData = {
       nmIDs: articles,
       period: {
@@ -256,7 +256,7 @@ export class ReportService {
 
     const result: Record<string, any> = {};
     try {
-      const yesterdayResponse = await axios.post(yesterdayUrl, yesterdayRequestData, {
+      const yesterdayResponse = await axios.post(url, yesterdayRequestData, {
         headers: headers
       });
 
@@ -293,7 +293,7 @@ export class ReportService {
 
 
     try {
-      const periodResponse = await axios.post(periodUrl, periodRequestData, {
+      const periodResponse = await axios.post(url, periodRequestData, {
         headers: headers
       });
       
