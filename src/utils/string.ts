@@ -53,7 +53,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
 Корзины ${formatNumber(stats.addToCartCount || 0)}
 % корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
 % зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order ?? 0}%
-% карт./рын: ${formatNumber((stats.addToCartPercent || 0) * (stats.cartToOrderPercent || 0))}% / ${stats.fullConversion ?? 0}
+% карт./рын: ${formatNumber(((stats.addToCartPercent || 0) / 100) * ((stats.cartToOrderPercent || 0) / 100))}% / ${stats.fullConversion ?? 0}
 Выкупы ${formatNumber(stats.buysCount || 0)}
 % вык 30Д ${formatNumber(stats.buyoutsPercent || 0)}%
 Клики АРК ${formatNumber(ark.clicks || 0)}
