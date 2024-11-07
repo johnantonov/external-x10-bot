@@ -3,10 +3,10 @@ import { Article } from "../dto/articles";
 import { parsePercent } from "./report";
 
 export function formatReportArticleMessage(articleData: Article, date: string) {
-  console.log(JSON.stringify(articleData))
-
+  
   const name = articleData?.title || articleData?.article || 'Неизвестный товар';
   const stats = articleData.order_info || {};
+  console.log(JSON.stringify(stats))
   const marketing = articleData?.marketing_cost || {};
   const marketingCost = parseFloat(marketing?.cost?.[date]) || 0; 
   const prk = marketing.prk || { clicks: 0, views: 0 };
@@ -28,9 +28,10 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   - ((stats.commission ?? 0) * (stats.buysCount ?? 0))
   - marketingCost;
 
-  let message = `\n\nКорзины ${formatNumber(stats.addToCartCount || 0)}
-% корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
+  let message = `
 Заказы ${formatNumber(stats.statsCount || 0)}
+\n\nКорзины ${formatNumber(stats.addToCartCount || 0)}
+% корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
 % зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order ?? 0}%
 % карт./рын: ${formatNumber((stats.addToCartPercent || 0) * (stats.cartToOrderPercent || 0))}% / ${stats.fullConversion ?? 0}%
 Выкупы ${formatNumber(stats.buysCount || 0)}
