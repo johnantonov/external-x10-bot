@@ -28,10 +28,11 @@ export function getXDaysPeriod(X: number) {
 
   const startDate = subDays(moscowTime, X);  
   const endDate = subDays(moscowTime, 1);    
+  const todayDate = subDays(moscowTime, 0);
 
   const formattedStartDate = format(startDate, 'yyyy-MM-dd');
   const formattedEndDate = format(endDate, 'yyyy-MM-dd');
-  const formattedToday = format(moscowTime, 'yyyy-MM-dd');
+  const formattedToday = format(todayDate, 'yyyy-MM-dd');
 
   return [formattedStartDate, formattedEndDate, formattedToday]
 }

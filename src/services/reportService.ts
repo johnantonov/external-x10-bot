@@ -303,8 +303,8 @@ export class ReportService {
         headers: headers
       });
       
-      // const logData = periodResponse.data
-      // console.log(`period data:`, JSON.stringify(logData))
+      const logData = periodResponse.data
+      console.log(`period data:`, JSON.stringify(logData))
 
       if (!periodResponse.data.data.cards) {
         console.log(`no period data for ${JSON.stringify(articles)}`)
