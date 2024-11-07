@@ -17,6 +17,7 @@ const helpInfo = `
 /admin__clean_db_{tableName} - очистить таблицу в базе данных
 /admin__delete_user_{id} - удалить пользователя из таблицы users
 /admin__my_id - получить свой tg id
+/admin__get_article_{id}_{article} - получить свой tg id
 /admin__help - команды
 /admin__send_all_data - отправить всю базу данных в Google Sheets
 /admin__get_mp_conversions - обновить базу конверсий
@@ -150,9 +151,9 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     const id = action.split('_')[2]
     const article = action.split('_')[3]
 
-    const msg = articles_db.getArticle(+id, article)
+    const msg = await articles_db.getArticle(+id, article)
 
-    await bot.sendMessage(chat_id, `${msg}`)
+    await bot.sendMessage(chat_id, `${JSON.stringify(msg)}`)
   }
     
   } catch (e) {
