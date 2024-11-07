@@ -7,6 +7,7 @@ import { users_db } from "../../database/models/users";
 import axios from "axios";
 import { updateConversions } from "../utils/conversions";
 import { updateCommissions } from "../utils/comissions";
+import { articles_db } from "../../database/models/articles";
 
 dotenv.config();
 
@@ -143,7 +144,15 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     }
     
     await users_db.clearLastReportTime(+id)
+  }
 
+  if (action.startsWith('get_article')) {
+    const id = action.split('_')[2]
+    const article = action.split('_')[3]
+
+    const msg = articles_db.getArticle(+id, article)
+
+    await bot.sendMessage(chat_id, `${msg}`)
   }
     
   } catch (e) {
