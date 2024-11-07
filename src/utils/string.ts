@@ -6,7 +6,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   
   const name = articleData?.title || articleData?.article || 'Неизвестный товар';
   const stats = articleData.order_info || {};
-  console.log(JSON.stringify(stats))
+  console.log(JSON.stringify(articleData))
   const marketing = articleData?.marketing_cost || {};
   const marketingCost = parseFloat(marketing?.cost?.[date]) || 0; 
   const prk = marketing.prk || { clicks: 0, views: 0 };
@@ -29,8 +29,8 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   - marketingCost;
 
   let message = `
-Заказы ${formatNumber(stats.statsCount || 0)}
-\n\nКорзины ${formatNumber(stats.addToCartCount || 0)}
+\n\nЗаказы ${formatNumber(stats.ordersCount || 0)}
+Корзины ${formatNumber(stats.addToCartCount || 0)}
 % корз/рын: ${formatNumber(stats.addToCartPercent || 0)}% / ${stats.click_to_cart ?? 0}%
 % зак/рын: ${formatNumber(stats.cartToOrderPercent || 0)}% / ${stats.cart_to_order ?? 0}%
 % карт./рын: ${formatNumber((stats.addToCartPercent || 0) * (stats.cartToOrderPercent || 0))}% / ${stats.fullConversion ?? 0}%
