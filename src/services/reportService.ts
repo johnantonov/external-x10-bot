@@ -229,8 +229,6 @@ export class ReportService {
   }
 
   async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, yesterday: string, today: string) {
-    // const periodUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
-    // const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history';
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
 
     let moscowTime = new Date().toLocaleString("en-CA", { 
@@ -544,5 +542,5 @@ export class ReportService {
   }
 }
 
-export const reportService = new ReportService(pool);
+const reportService = new ReportService(pool);
 reportService.startCronJob();

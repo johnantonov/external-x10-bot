@@ -22,8 +22,6 @@ services:
     depends_on:
       - external-x10Bot-redis
       - external-x10Bot-postgres
-    ports:
-      - "3201:3200"
     restart: always
 
   external-x10Bot-postgres:
