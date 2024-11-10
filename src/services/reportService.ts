@@ -542,5 +542,6 @@ export class ReportService {
   }
 }
 
-const reportService = new ReportService(pool);
+export const reportService = new ReportService(pool);
+console.log('Report Service started!')
 reportService.startCronJob();
