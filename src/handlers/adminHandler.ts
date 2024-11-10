@@ -1,5 +1,5 @@
 import TelegramBot from "node-telegram-bot-api"
-import { reportService } from "../services/reportService"
+// import { reportService } from "../services/reportService"
 import * as dotenv from 'dotenv';
 import pool from "../../database/db"
 import { migrations } from "../helpers/wip-quick-fix-migration";
@@ -45,16 +45,17 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
 
     if (action === 'run_report_service') {
       console.log('admin started report serivce')
-      if (reportService) {
-        reportService.run()
-      }
+      // if (reportService) {
+      //   reportService.run()
+      // }
     }
     
     if (action === 'prepare_report_service') {
       console.log('admin started preparing report serivce')
-      if (reportService) {
-        reportService.prepareReportData()
-      }
+
+      // if (reportService) {
+        // reportService.prepareReportData()
+      // }
     }
 
     if (action.startsWith('clean_db')) {
