@@ -444,20 +444,22 @@ export class ReportService {
     }
   }
 
-  async sendFile(chat_id: number, pdfBuffer: Buffer): Promise<void> {
+  async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
   
+    const formData = new FormData();
+    formData.append('chat_id', chat_id);
+    formData.append('document', pdfBuffer, 'report.pdf');
+  
     try {
-      await axios.post(telegramApiUrl, {
-        chat_id: chat_id,
-        document: pdfBuffer.toString('base64'),
-        caption: 'Ваш отчет в формате PDF',
-      }, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      await axios.post(telegramApiUrl, formData, {
+        headers: {
+          ...formData.getHeaders(),
+        },
       });
-      console.log(`PDF sent to chat_id: ${chat_id}`);
+      console.log(`Report Service: PDF sent to chat_id: ${chat_id}`);
     } catch (error) {
-      console.error(`Failed to send PDF to chat_id: ${chat_id}`, error);
+      console.error(`Report Service: Failed to send PDF to chat_id: ${chat_id}`, error);
     }
   }
 
@@ -493,9 +495,9 @@ export class ReportService {
           if (item.wb_api_key && item.article) {
             const { article, chat_id, marketing_cost } = item;
 
-            const table = getReportHtml(item, date)
-            const pdf = await generatePdfFromHtml(table)
-            await this.sendFile(chat_id, pdf);
+            const htmlTable = getReportHtml(item, date); 
+            const pdfBuffer = await generatePdfFromHtml(htmlTable); 
+            await this.sendPdfToTelegram(chat_id, pdfBuffer); 
     
               // const message = formatReportArticleMessage(item, date)
               // const marketingChart = createChart(marketing_cost)
@@ -532,9 +534,9 @@ export class ReportService {
           if (item.wb_api_key && item.article) {
               // const message = formatReportArticleMessage(item, date)
               // const marketingChart = createChart(marketing_cost)
-              const table = getReportHtml(item, date)
-              const pdf = await generatePdfFromHtml(table)
-              await this.sendFile(chat_id, pdf);
+              const htmlTable = getReportHtml(item, date); 
+              const pdfBuffer = await generatePdfFromHtml(htmlTable); 
+              await this.sendPdfToTelegram(chat_id, pdfBuffer); ;
               // this.sendMessage(chat_id, pdf)
               // if (marketingChart) {
               //   return this.sendPhoto(chat_id, marketingChart)

@@ -131,9 +131,10 @@ export function getReportHtml(articleData: Article, date: string) {
   `
 }
 
-export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
+
+export function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    pdf.create(htmlContent, { format: 'A4' }).toBuffer((err: any, buffer: any) => {
+    pdf.create(htmlContent, { format: "A4" }).toBuffer((err, buffer) => {
       if (err) {
         return reject(err);
       }
