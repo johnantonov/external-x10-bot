@@ -1,10 +1,8 @@
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
-import * as htmlPdf from 'html-pdf-node';
 const html_to_pdf = require('html-pdf-node')
 import { Buffer } from 'buffer';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import jsPDF from "jspdf";
+
 
 export function parsePercent(input: string | number): number {
   if (!input) {
