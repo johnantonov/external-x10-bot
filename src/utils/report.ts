@@ -1,6 +1,6 @@
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
-const puppeteer = require('puppeteer');
+import pdf from 'html-pdf';
 
 export function parsePercent(input: string | number): number {
   if (!input) {
@@ -131,15 +131,15 @@ export function getReportHtml(articleData: Article, date: string) {
   `
 }
 
-export async function generatePdfFromHtml(htmlContent: string) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-
-  await page.setContent(htmlContent);
-  const pdf = await page.pdf({ format: 'A4' });
-  await browser.close();
-
-  return pdf;
+export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    pdf.create(htmlContent, { format: 'A4' }).toBuffer((err: any, buffer: any) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(buffer);
+    });
+  });
 }
 
 const CSS = `
