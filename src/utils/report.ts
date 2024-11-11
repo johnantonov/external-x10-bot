@@ -1,6 +1,7 @@
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
-import pdf from 'html-pdf';
+import PDFDocument from 'pdfkit';
+import { Buffer } from 'buffer';
 
 export function parsePercent(input: string | number): number {
   if (!input) {
@@ -134,12 +135,24 @@ export function getReportHtml(articleData: Article, date: string) {
 
 export function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    pdf.create(htmlContent, { format: "A4" }).toBuffer((err, buffer) => {
-      if (err) {
-        return reject(err);
-      }
+    const doc = new PDFDocument();
+    let buffer = Buffer.alloc(0);
+
+    doc.on('data', (chunk) => {
+      buffer = Buffer.concat([buffer, chunk]);
+    });
+
+    doc.on('end', () => {
+      console.log('PDF создан.');
       resolve(buffer);
     });
+
+    doc.on('error', (err) => {
+      reject(err);
+    });
+
+    doc.text(htmlContent);  
+    doc.end();             
   });
 }
 

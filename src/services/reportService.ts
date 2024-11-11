@@ -454,7 +454,7 @@ export class ReportService {
     try {
       await axios.post(telegramApiUrl, formData, {
         headers: {
-          ...formData.getHeaders(),
+          ...formData.getHeaders(),  // Для установки заголовков multipart/form-data
         },
       });
       console.log(`Report Service: PDF sent to chat_id: ${chat_id}`);
