@@ -2,6 +2,7 @@ import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import * as htmlPdf from 'html-pdf-node';
 import { Buffer } from 'buffer';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 export function parsePercent(input: string | number): number {
   if (!input) {
@@ -132,21 +133,23 @@ export function getReportHtml(articleData: Article, date: string) {
   `
 }
 
+export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([600, 800]);
+  
+  const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+  const { width, height } = page.getSize();
 
-
-
-export function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-  const options = { format: 'A4' }; 
-  const file = { content: htmlContent };
-
-  return new Promise((resolve, reject) => {
-    htmlPdf.generatePdf(file, options, (err, buffer) => {
-      if (err) {
-        return reject(err); 
-      }
-      resolve(buffer); 
-    });
+  page.drawText(htmlContent, {
+    x: 50,
+    y: height - 100,
+    size: 12,
+    font: timesRomanFont,
+    color: rgb(0, 0, 0),
   });
+
+  const pdfBytes = await pdfDoc.save();
+  return Buffer.from(pdfBytes);
 }
 
 const CSS = `
