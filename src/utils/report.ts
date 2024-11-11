@@ -1,6 +1,7 @@
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import * as htmlPdf from 'html-pdf-node';
+const html2pdf = require('html2pdf.js');
 import { Buffer } from 'buffer';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import jsPDF from "jspdf";
@@ -135,10 +136,30 @@ export function getReportHtml(articleData: Article, date: string) {
 }
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-  const doc = new jsPDF();
-  doc.text(htmlContent, 10, 10); 
-  const pdfBuffer = doc.output('arraybuffer');
-  return Buffer.from(pdfBuffer);
+  // Создаем временный контейнер для HTML
+  const container = document.createElement('div');
+  container.innerHTML = htmlContent;
+
+  const options = {
+    margin: 1,
+    filename: 'report.pdf',
+    html2canvas: { scale: 2 },
+    jsPDF: { format: 'a4' },
+  };
+
+  return new Promise((resolve, reject) => {
+    html2pdf()
+      .from(container)
+      .set(options)
+      .outputPdf('datauristring') // Или можно использовать 'dataurlnewwindow' для отладки
+      .then((pdfBase64: any) => {
+        // Преобразуем base64 в Buffer
+        const base64Data = pdfBase64.split(',')[1];
+        const buffer = Buffer.from(base64Data, 'base64');
+        resolve(buffer);
+      })
+      .catch((error: any) => reject(error));
+  });
 }
 
 const CSS = `
