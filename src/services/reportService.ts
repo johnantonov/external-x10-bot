@@ -446,20 +446,18 @@ export class ReportService {
 
   async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
-  
+
     const formData = new FormData();
     formData.append('chat_id', chat_id);
-    formData.append('document', pdfBuffer, 'report.pdf'); // PDF отправляется как файл
-  
+    formData.append('document', pdfBuffer, { filename: 'report.pdf', contentType: 'application/pdf' });
+
     try {
-      await axios.post(telegramApiUrl, formData, {
-        headers: {
-          ...formData.getHeaders(), // Установка заголовков multipart/form-data
-        },
-      });
-      console.log(`Report Service: PDF sent to chat_id: ${chat_id}`);
+        await axios.post(telegramApiUrl, formData, {
+            headers: formData.getHeaders(),
+        });
+        console.log(`PDF отправлен в чат ${chat_id}`);
     } catch (error) {
-      console.error(`Report Service: Failed to send PDF to chat_id: ${chat_id}`, error);
+        console.error(`Ошибка отправки PDF в чат ${chat_id}:`, error);
     }
   }
 

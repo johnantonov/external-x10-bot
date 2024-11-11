@@ -3,6 +3,7 @@ import { formatNumber } from "./string";
 import * as htmlPdf from 'html-pdf-node';
 import { Buffer } from 'buffer';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import jsPDF from "jspdf";
 
 export function parsePercent(input: string | number): number {
   if (!input) {
@@ -134,17 +135,10 @@ export function getReportHtml(articleData: Article, date: string) {
 }
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-  const options = { format: 'A4' }; // Настройка формата PDF
-  const file = { content: htmlContent }; // Передача HTML строки как контент
-
-  return new Promise((resolve, reject) => {
-    htmlPdf.generatePdf(file, options, (err, buffer) => {
-      if (err) {
-        return reject(err); // В случае ошибки возвращаем reject
-      }
-      resolve(buffer); // Возвращаем буфер, если всё успешно
-    });
-  });
+  const doc = new jsPDF();
+  doc.text(htmlContent, 10, 10); 
+  const pdfBuffer = doc.output('arraybuffer');
+  return Buffer.from(pdfBuffer);
 }
 
 const CSS = `
