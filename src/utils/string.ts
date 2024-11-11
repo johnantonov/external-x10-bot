@@ -48,6 +48,8 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   - commissionCost
   - marketingCost;
 
+
+
   let message = `
 \nЗаказы: ${formatNumber(stats.ordersCount || 0)}
 Корзины: ${formatNumber(stats.addToCartCount || 0)}
