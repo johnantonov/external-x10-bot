@@ -449,12 +449,12 @@ export class ReportService {
   
     const formData = new FormData();
     formData.append('chat_id', chat_id);
-    formData.append('document', pdfBuffer, 'report.pdf');
+    formData.append('document', pdfBuffer, 'report.pdf'); // PDF отправляется как файл
   
     try {
       await axios.post(telegramApiUrl, formData, {
         headers: {
-          ...formData.getHeaders(),
+          ...formData.getHeaders(), // Установка заголовков multipart/form-data
         },
       });
       console.log(`Report Service: PDF sent to chat_id: ${chat_id}`);

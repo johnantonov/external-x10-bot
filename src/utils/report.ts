@@ -134,22 +134,17 @@ export function getReportHtml(articleData: Article, date: string) {
 }
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([600, 800]);
-  
-  const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-  const { width, height } = page.getSize();
+  const options = { format: 'A4' }; // Настройка формата PDF
+  const file = { content: htmlContent }; // Передача HTML строки как контент
 
-  page.drawText(htmlContent, {
-    x: 50,
-    y: height - 100,
-    size: 12,
-    font: timesRomanFont,
-    color: rgb(0, 0, 0),
+  return new Promise((resolve, reject) => {
+    htmlPdf.generatePdf(file, options, (err, buffer) => {
+      if (err) {
+        return reject(err); // В случае ошибки возвращаем reject
+      }
+      resolve(buffer); // Возвращаем буфер, если всё успешно
+    });
   });
-
-  const pdfBytes = await pdfDoc.save();
-  return Buffer.from(pdfBytes);
 }
 
 const CSS = `
