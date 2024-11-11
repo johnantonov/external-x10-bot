@@ -70,16 +70,16 @@ export function getReportHtml(articleData: Article, date: string) {
   - marketingCost;
 
   const margin = formatNumber(rev / (stats.buysSum || 1) * 100)
+  // <!DOCTYPE html>
+  //   <html lang="ru">
+  //   <head>
+  //     <meta charset="UTF-8">
+  //     ${CSS}
+  //   </head>
+  //   <body>
+  //     <h1></h1>
   
   return `
-<!DOCTYPE html>
-  <html lang="ru">
-  <head>
-    <meta charset="UTF-8">
-    ${CSS}
-  </head>
-  <body>
-    <h1></h1>
     <table class="rb">
       <thead>
         <tr class="header rb">
@@ -130,9 +130,9 @@ export function getReportHtml(articleData: Article, date: string) {
         
       </tbody> 
     </table>
-  </body>
-</html>
-  `
+    `
+  //   </body>
+  // </html>
 }
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
