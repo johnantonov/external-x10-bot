@@ -1,22 +1,25 @@
-FROM node:18-bullseye
+FROM node:18-bullseye 
+
 WORKDIR /usr/src/app
 
-# Устанавливаем wkhtmltopdf и его зависимости
 RUN apt-get update && \
     apt-get install -y \
     wkhtmltopdf \
     xfonts-75dpi \
-    xfonts-base && \
+    xfonts-base \
+    libxrender1 \
+    libjpeg62-turbo && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Установка зависимостей проекта
 COPY package*.json ./
 RUN npm install
 
-# Копируем исходный код и собираем проект
 COPY . .
 RUN chmod +x ./node_modules/.bin/tsc
 RUN npm run build
+
+ENV XDG_RUNTIME_DIR=/tmp/runtime
+RUN mkdir -p /tmp/runtime && chmod 700 /tmp/runtime
 
 # Запуск бота
 CMD ["node", "dist/src/bot.js"]
