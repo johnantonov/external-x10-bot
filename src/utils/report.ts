@@ -1,36 +1,46 @@
-import jsPDF from "jspdf";
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import { Buffer } from 'buffer';
-import { JSDOM } from 'jsdom'
-import puppeteer from "puppeteer";
-import { Cheerio } from "cheerio";
+import wkhtmltopdf from 'node-wkhtmltopdf';
+import { Readable } from 'stream';
 
-
-export async function generatePdfFromHtml(htmlContent: string) {
-  try {
-    console.log('start');
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-    const page = await browser.newPage();
-    console.log(htmlContent);
-
-    await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-    });
-    await browser.close();
-    console.log('PDF generation completed');
-
-    return Buffer.from(pdfBuffer);
-  } catch (error) {
-    console.error('Error during PDF generation:', error);
-    return null;
-  }
+export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const buffers: Uint8Array[] = [];
+    
+    // Преобразуем HTML в PDF
+    wkhtmltopdf(htmlContent, { pageSize: 'A4' })
+      .on('data', (chunk: Uint8Array) => buffers.push(chunk))
+      .on('end', () => resolve(Buffer.concat(buffers)))
+      .on('error', reject);
+  });
 }
+
+
+// export async function generatePdfFromHtml(htmlContent: string) {
+//   try {
+//     console.log('start');
+//     const browser = await puppeteer.launch({
+//       headless: true,
+//       args: ['--no-sandbox', '--disable-setuid-sandbox'],
+//     });
+//     const page = await browser.newPage();
+//     console.log(htmlContent);
+
+//     await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+//     const pdfBuffer = await page.pdf({
+//       format: 'A4',
+//       printBackground: true,
+//     });
+//     await browser.close();
+//     console.log('PDF generation completed');
+
+//     return Buffer.from(pdfBuffer);
+//   } catch (error) {
+//     console.error('Error during PDF generation:', error);
+//     return null;
+//   }
+// }
 
 // export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
 //   const $ = Cheerio.load(htmlContent); // Загружаем HTML в cheerio
