@@ -89,5 +89,9 @@ export const migrations = [
         BEFORE INSERT ON articles
         FOR EACH ROW
         EXECUTE FUNCTION set_wb_api_key();`,
+    ],
+    // -------- 3
+    [
+        `ALTER TABLE articles ADD COLUMN vendor_code TEXT`
     ]
 ];

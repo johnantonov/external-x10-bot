@@ -19,7 +19,7 @@ export interface Article {
   logistics_by_buys: number;
   size: number;
   order_info: Record<any, any>;
-  vendorCode: string | number;
+  vendor_code: string | number;
 }
 
 export type article = number | string;

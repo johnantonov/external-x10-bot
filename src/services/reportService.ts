@@ -153,7 +153,7 @@ export class ReportService {
             percent_buys: percentBuys,
             size: sizes,
             price_before_spp: spp,
-            vendorCode: vendor,
+            vendor_code: vendor,
           });
         }
     

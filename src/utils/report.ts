@@ -19,7 +19,7 @@ export function getReportHtml(articleData: Article[]) {
     tables += `<table class="b">
       <thead>
         <tr class="header rb">
-          <th rowspan="2" colspan="3" class="article_col">${data?.article}<br>${data?.title}</th>
+          <th rowspan="2" colspan="3" class="article_col">${data?.article}<br>${data?.vendor_code}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
