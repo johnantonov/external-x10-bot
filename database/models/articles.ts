@@ -15,9 +15,7 @@ class ArticlesModel extends BaseModel<Article> {
     try {
       const query = `SELECT marketing_cost FROM ${this.tableName} WHERE chat_id = $1 AND article = $2`;
       const result = await this.pool.query(query, [chat_id, article]);
-
-      console.log(marketingCost)
-
+      
       let currentMarketingCost = result.rows[0]?.marketing_cost || {};
       for (const [date, values] of Object.entries(marketingCost)) {
         if (values || !(date in currentMarketingCost)) {

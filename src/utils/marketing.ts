@@ -3,7 +3,6 @@ import { create30DaysObject, getYesterdayDate } from "./time";
 
 export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[], advertTypes: Record<string, any>) {
   const data: Record<string, any> = {}
-  const yesterday = getYesterdayDate();
   const days = create30DaysObject();
 
   userNmIds.forEach(nm => {

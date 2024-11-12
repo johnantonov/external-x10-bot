@@ -62,7 +62,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
   for (let i = daysCount; i > 0; i--) {
     const day = days[i]
-    const formatDate = day.slice(5).replace('-', '/')
+    const formatDay = day.slice(5).replace('-', '/')
     const prk = marketing[day].prk || { clicks: 0, views: 0 };
     const ark = marketing[day].ark || { clicks: 0, views: 0 };
     const marketingCost = parseFloat(marketing?.[day].cost) || 0;
@@ -83,7 +83,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     }
 
     dayRows += `
-      <td rowspan="1" colspan="2" class="day_cell">${day}</td>
+      <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
       <td class="bl">${ark.clicks.toFixed(0)}</td>
       <td>${(ctrArk * 100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
@@ -142,7 +142,8 @@ const CSS = `
       /* width: 10%; */
     }
     .article_col {
-      width: 30%; 
+      // width: 30%; 
+      width 400px !important
     }
     .photo_cell {
       width: 250px !important
