@@ -135,12 +135,11 @@ export class ReportService {
         
         const yesterdayTime = yesterday + " 23:59:59"
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
-        const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
 
+        const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
         console.log(`persent buy for ${id}: ${JSON.stringify(percent_buys)}`)
 
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
-
         console.log(`size ${id}: ${JSON.stringify(size)}`)
     
         for (const nm of nms) {
@@ -167,7 +166,6 @@ export class ReportService {
       }
 
     } catch (e) {
-      // console.log(e)
       formatError(e, 'Error to prerape report service: ')
     }
   }
@@ -302,7 +300,7 @@ export class ReportService {
           })
 
           result[el.nmID].price_before_spp = (alwaysInfo.ordersSumRub / alwaysInfo.ordersCount) || null
-          result[el.nmID].vendor = alwaysInfo.vendorCode
+          result[el.nmID].vendor = el.vendorCode
         }
       });
     } catch (error) {
