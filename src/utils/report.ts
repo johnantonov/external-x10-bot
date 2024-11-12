@@ -1,35 +1,41 @@
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import { Buffer } from 'buffer';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { writeFile, readFile, unlink } from 'fs/promises';
 import wkhtmltopdf from 'wkhtmltopdf';
-import { Writable } from 'stream';
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    const buffers: Uint8Array[] = [];
-    const writableStream = new Writable({
-      write(chunk, encoding, callback) {
-        buffers.push(chunk);
-        callback();
-      }
-    });
+    // Путь к временным файлам
+    const tempFilePath = join(tmpdir(), 'tempfile.pdf');
 
     const options = {
       pageSize: 'A4' as 'A4',
+      output: tempFilePath  // Указываем путь, куда сохранять файл
     };
 
-    const pdfStream = wkhtmltopdf(htmlContent, options);
+    // Генерируем PDF и сохраняем его во временный файл
+    wkhtmltopdf(htmlContent, options, async (err) => {
+      if (err) {
+        reject(new Error('Ошибка генерации PDF: ' + err.message));
+        return;
+      }
 
-    if (pdfStream && pdfStream.pipe) {
-      console.log('true')
-      // Поток обрабатывается корректно
-      pdfStream.pipe(writableStream);
+      try {
+        // Читаем файл в буфер
+        const pdfBuffer = await readFile(tempFilePath);
 
-      console.log(JSON.stringify(writableStream))
+        // Удаляем временный файл после чтения
+        await unlink(tempFilePath);
 
-    } else {
-      reject(new Error('wkhtmltopdf не вернул поток.'));
-    }
+        // Возвращаем буфер
+        resolve(pdfBuffer);
+      } catch (readError: any) {
+        reject(new Error('Ошибка чтения PDF из временного файла: ' + readError.message));
+      }
+    });
   });
 }
 
