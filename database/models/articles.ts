@@ -69,7 +69,7 @@ class ArticlesModel extends BaseModel<Article> {
         res[row.chat_id] = []
       }
 
-      res[row.chat_id].push({ [row.article]: row })
+      res[row.chat_id].push(row)
     })
 
     return res;
