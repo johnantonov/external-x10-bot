@@ -2,22 +2,30 @@ import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import { Buffer } from 'buffer';
 import wkhtmltopdf from 'wkhtmltopdf';
+import { Writable } from 'stream';
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const buffers: Uint8Array[] = [];
+    const writableStream = new Writable({
+      write(chunk, encoding, callback) {
+        buffers.push(chunk);
+        callback();
+      }
+    });
 
     const options = {
-      pageSize: 'A4' as 'A4', 
+      pageSize: 'A4' as 'A4',
     };
 
-    wkhtmltopdf(htmlContent, options)
-      .on('data', (chunk: Uint8Array) => buffers.push(chunk))  
-      .on('end', () => resolve(Buffer.concat(buffers)))  
-      .on('error', (error) => {
-        console.error('Ошибка генерации PDF:', error);
-        reject(error);  
-      });
+    try {
+      wkhtmltopdf(htmlContent, options).pipe(writableStream);
+
+      writableStream.on('finish', () => resolve(Buffer.concat(buffers)));
+    } catch (error) {
+      console.error('Ошибка генерации PDF:', error);
+      reject(error);
+    }
   });
 }
 
