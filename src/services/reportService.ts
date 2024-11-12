@@ -497,7 +497,9 @@ export class ReportService {
 
             const htmlTable = getReportHtml(item, date); 
             const pdfBuffer = await generatePdfFromHtml(htmlTable); 
-            await this.sendPdfToTelegram(chat_id, pdfBuffer);
+            if (pdfBuffer) {
+              await this.sendPdfToTelegram(chat_id, pdfBuffer);
+            }
     
               // const message = formatReportArticleMessage(item, date)
               // const marketingChart = createChart(marketing_cost)
