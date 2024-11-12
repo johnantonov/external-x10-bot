@@ -3,33 +3,14 @@ import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import { load } from "cheerio";
 
-// export async function generatePdfFromHtml(htmlContent: string) {
-//   try {
-//     console.log('start');
-//     const browser = await puppeteer.launch({
-//       headless: true,
-//       args: ['--no-sandbox', '--disable-setuid-sandbox'],
-//     });
-//     const page = await browser.newPage();
-//     console.log(htmlContent);
-
-//     await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
-//     const pdfBuffer = await page.pdf({
-//       format: 'A4',
-//       printBackground: true,
-//     });
-//     await browser.close();
-//     console.log('PDF generation completed');
-
-//     return Buffer.from(pdfBuffer);
-//   } catch (error) {
-//     console.error('Error during PDF generation:', error);
-//     return null;
-//   }
-// }
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   const $ = load(htmlContent); 
+
+  //   const dom = new JSDOM(htmlContent);
+  //   const document = dom.window.document;
+  //   const element = document.getElementsByTagName('body')[0]
+
   const pdf = new jsPDF();
 
   const bodyContent = $('body').text();
@@ -40,30 +21,6 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
   return Buffer.from(pdfBuffer);
 }
 
-
-// export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-//   const pdf = new jsPDF();
-//   const dom = new JSDOM(htmlContent);
-//   const document = dom.window.document;
-//   const element = document.getElementsByTagName('body')[0]
-
-//   return new Promise((resolve, reject) => {
-//     pdf.html(element, {
-//       callback: function (pdf) {
-//         const pdfBlob = pdf.output('blob'); 
-//         const reader = new FileReader();
-//         reader.onloadend = () => {
-//           const buffer = Buffer.from(reader.result as ArrayBuffer); 
-//           resolve(buffer);
-//         };
-//         reader.onerror = reject;
-//         reader.readAsArrayBuffer(pdfBlob); 
-//       },
-//       x: 10,
-//       y: 10,
-//     });
-//   });
-// }
 
 export function parsePercent(input: string | number): number {
   if (!input) {
@@ -236,3 +193,28 @@ const CSS = `
   }
 </style>
 `
+
+// export async function generatePdfFromHtml(htmlContent: string) {
+//   try {
+//     console.log('start');
+//     const browser = await puppeteer.launch({
+//       headless: true,
+//       args: ['--no-sandbox', '--disable-setuid-sandbox'],
+//     });
+//     const page = await browser.newPage();
+//     console.log(htmlContent);
+
+//     await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+//     const pdfBuffer = await page.pdf({
+//       format: 'A4',
+//       printBackground: true,
+//     });
+//     await browser.close();
+//     console.log('PDF generation completed');
+
+//     return Buffer.from(pdfBuffer);
+//   } catch (error) {
+//     console.error('Error during PDF generation:', error);
+//     return null;
+//   }
+// }
