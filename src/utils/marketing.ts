@@ -4,15 +4,15 @@ import { create30DaysObject, getYesterdayDate } from "./time";
 export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[], advertTypes: Record<string, any>) {
   const data: Record<string, any> = {}
   const yesterday = getYesterdayDate();
-
-  console.log('advertisements', JSON.stringify(advertisements))
+  const days = create30DaysObject();
 
   userNmIds.forEach(nm => {
-    const result = {
-      cost: create30DaysObject(),
-      ark: { views: 0, clicks: 0 },
-      prk: { views: 0, clicks: 0 }
-    }
+    const result = days
+    // {
+    //   cost: create30DaysObject(),
+    //   ark: { views: 0, clicks: 0 },
+    //   prk: { views: 0, clicks: 0 }
+    // }
 
     advertisements.forEach((campaign: any) => {
       const firstDay = campaign.days[0];
@@ -27,7 +27,7 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
       if (isTargetCampaign) {
           campaign.days.forEach((day: any) => {
             const dayDate = new Date(day.date).toISOString().split('T')[0];
-            if (result.cost.hasOwnProperty(dayDate)) {
+            if (result.hasOwnProperty(dayDate)) {
               let sum = 0;
               let clicks = 0;
               let views = 0;
@@ -40,15 +40,13 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
                   };
                 })
               })
-              result.cost[dayDate] += sum;
-              if (yesterday === dayDate) {
-                const object = advertTypes.find((advert: any) => advert.id === campaign.advertId);
-                if (object) {
-                  const type = object.type === 8 ? 'ark' : 'prk';
+              result[dayDate].cost += sum
+              const object = advertTypes.find((advert: any) => advert.id === campaign.advertId);
+              if (object) {
+                const type = object.type === 8 ? 'ark' : 'prk';
 
-                  result[type].clicks += clicks;
-                  result[type].views += views;
-                }
+                result[dayDate][type].clicks += clicks;
+                result[dayDate][type].views += views;
               }
             }
           });

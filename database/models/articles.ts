@@ -16,10 +16,10 @@ class ArticlesModel extends BaseModel<Article> {
       const query = `SELECT marketing_cost FROM ${this.tableName} WHERE chat_id = $1 AND article = $2`;
       const result = await this.pool.query(query, [chat_id, article]);
 
-      let currentMarketingCost = result.rows[0]?.marketing_cost?.cost || {};
-      for (const [date, cost] of Object.entries(marketingCost.cost)) {
-        if (cost !== 0 || !(date in currentMarketingCost)) {
-          currentMarketingCost[date] = cost;
+      let currentMarketingCost = result.rows[0]?.marketing_cost || {};
+      for (const [date, values] of Object.entries(marketingCost)) {
+        if (values || !(date in currentMarketingCost)) {
+          currentMarketingCost[date] = values;
         }
       }
       
@@ -30,9 +30,6 @@ class ArticlesModel extends BaseModel<Article> {
         obj[date] = currentMarketingCost[date];
         return obj;
       }, {} as Record<string, number>);
-
-      updatedMarketingCost.ark = marketingCost.ark
-      updatedMarketingCost.prk = marketingCost.prk
   
       const updateQuery = `
         UPDATE ${this.tableName} 

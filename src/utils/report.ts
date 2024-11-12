@@ -84,7 +84,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     } 
 
     dayRows += `
-      <td rowspan="1" colspan="2">${day}</td>
+      <td rowspan="1" colspan="2" class="day_cell">${day}</td>
       <td class="bl">${ark.clicks.toFixed(0)}</td>
       <td>${(ctrArk*100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
@@ -147,6 +147,9 @@ const CSS = `
     }
     .photo_cell {
       width: 250px !important
+    }
+    .day_cell {
+      width: 150px !important
     }
     .header {
       background-color: #f2f2f2;
