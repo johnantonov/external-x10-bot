@@ -448,8 +448,8 @@ export class ReportService {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
   
     const formData = new FormData();
-    formData.append('chat_id', chat_id);
-    formData.append('document', pdfBuffer, 'report.pdf');
+    formData.append('chat_id', chat_id.toString());
+    formData.append('document', new Blob([pdfBuffer], { type: 'application/pdf' }), 'report.pdf');
   
     try {
       await axios.post(telegramApiUrl, formData, {

@@ -1,8 +1,31 @@
+import jsPDF from "jspdf";
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
-const html_to_pdf = require('html-pdf-node')
 import { Buffer } from 'buffer';
 
+
+export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
+  const pdf = new jsPDF();
+  const element = document.createElement('div');
+  element.innerHTML = htmlContent;
+
+  return new Promise((resolve, reject) => {
+    pdf.html(element, {
+      callback: function (pdf) {
+        const pdfBlob = pdf.output('blob'); 
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const buffer = Buffer.from(reader.result as ArrayBuffer); 
+          resolve(buffer);
+        };
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(pdfBlob); 
+      },
+      x: 10,
+      y: 10,
+    });
+  });
+}
 
 export function parsePercent(input: string | number): number {
   if (!input) {
@@ -136,14 +159,7 @@ export function getReportHtml(articleData: Article, date: string) {
 
 
 
-export async function generatePdfFromHtml(htmlContent: string) {
-  let options = { format: 'A4' };
-  let file = { content: htmlContent };
-  
-  return html_to_pdf.generatePdfs(file, options).then((output: any) => {
-    return output; // PDF Buffer:- [{url: "https://example.com", name: "example.pdf", buffer: <PDF buffer>}]
-  });
-}
+
 
 const CSS = `
 <style>
