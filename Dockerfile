@@ -1,11 +1,13 @@
-FROM node:18-alpine
+FROM node:18-bullseye
 WORKDIR /usr/src/app
 
-# Установим зависимости для wkhtmltopdf
-RUN apk --no-cache add \
+# Устанавливаем wkhtmltopdf и его зависимости
+RUN apt-get update && \
+    apt-get install -y \
     wkhtmltopdf \
-    ttf-freefont \
-    fontconfig
+    xfonts-75dpi \
+    xfonts-base && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Установка зависимостей проекта
 COPY package*.json ./
