@@ -56,24 +56,22 @@ export function getReportHtml(articleData: Article[]) {
 
 
 function getDaysRows(daysCount: number, data: Record<string, any>, index: number) {
-  const marketing = data?.marketing_cost || {};
-  const prk = marketing.prk || { clicks: 0, views: 0 };
-  const ark = marketing.ark || { clicks: 0, views: 0 };
-  
+  const marketing = data?.marketing_cost || {};  
   let days = Object.keys(create30DaysObject())
-  
   let dayRows = ``
   
   for (let i = daysCount; i > 0; i--) {
     const day = days[i]
-    const marketingCost = parseFloat(marketing?.[day]) || 0;
+    const prk = marketing[day].prk || { clicks: 0, views: 0 };
+    const ark = marketing[day].ark || { clicks: 0, views: 0 };
+    const marketingCost = parseFloat(marketing?.[day].cost) || 0;
     const stats = data.order_info[day] || {};
     const otherCosts = getCosts(data, day)
 
     const ctrArk = (ark.clicks / ark.views) || 0; 
     const ctrPrk = (prk.clicks / prk.views) || 0; 
     const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
-    const rev = (stats.buysSum ?? 0) - otherCosts
+    const rev = (stats.buysSum ?? 0) - otherCosts - marketingCost
     const margin = formatNumber(rev / (stats.buysSum || 1) * 100)+"%"
     
     dayRows += `<tr class="row">`
