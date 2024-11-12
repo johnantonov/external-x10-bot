@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { Article } from "../dto/articles";
 import { getWbArticlePhoto } from "./parse";
 import { formatNumber, parsePercent } from "./string";
@@ -77,10 +78,13 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     dayRows += `<tr class="row">`
 
-    const imgUrl = getWbArticlePhoto(data.article)
+    // const imgUrl = getWbArticlePhoto(data.article)
+
+    // let img = resolve(__dirname, `../../../public/messageImages/test.jpg`)
+    const img = `file://${resolve(__dirname, '../../../public/messageImages/test.jpg')}`;
 
     if (i === daysCount) {
-      const value = index === 0 ? "ИТОГО" : `<img src="https://basket-16.wbbasket.ru/vol2546/part254643/254643004/images/big/1.webp" alt="${data.vendor_code}" >`
+      const value = index === 0 ? "ИТОГО" : `<img src="${img}" alt="${data.vendor_code}" >`
       dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
     }
 
