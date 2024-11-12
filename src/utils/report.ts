@@ -160,7 +160,7 @@ const CSS = `
       width 400px !important
     }
     .photo_cell {
-      width: 660px !important;
+      width: 700px !important;
       height: 150px !important
     }
     .day_cell {
