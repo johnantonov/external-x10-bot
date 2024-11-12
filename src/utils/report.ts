@@ -125,43 +125,47 @@ function getCosts(data: Record<string, any>) {
 const CSS = `
   <style>
     body {
-        font-family: Arial, sans-serif;
-        font-size: 12px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
     }
     table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 40px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
     }
     table, th, td {
-        border: 0.2px solid #AFEEEE;
+      border: 0.2px solid #AFEEEE;
     }
     th, td {
-        padding: 8px;
-        text-align: center;
+      padding: 8px;
+      text-align: center;
+      width: 10%;
+    }
+    .article_col {
+      width: 20%; 
     }
     .img-column {
         width: 80px;
     }
     .header {
-        background-color: #f2f2f2;
-        font-weight: bold;
+      background-color: #f2f2f2;
+      font-weight: bold;
     }
     .title-row {
-        text-align: left;
-        font-weight: bold;
+      text-align: left;
+      font-weight: bold;
     }
     .bl {
-        border-left: 2px solid black
+      border-left: 2px solid black
     }
     .br {
-        border-right: 2px solid black;
+      border-right: 2px solid black;
     }
     .b {
-        border-top: 2px solid black;
-        border-rigth: 2px solid black;
-        border-left: 2px solid black;
-        border-bottom: 2px solid black;
+      border-top: 2px solid black;
+      border-rigth: 2px solid black;
+      border-left: 2px solid black;
+      border-bottom: 2px solid black;
     }
   </style>
 `
