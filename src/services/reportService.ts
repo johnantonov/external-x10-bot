@@ -450,15 +450,21 @@ export class ReportService {
     console.log(pdfBuffer.toString('hex'));
   
     const formData = new FormData();
+    console.log(1)
+    
     formData.append('chat_id', chat_id.toString());
-    formData.append('document', new Blob([pdfBuffer], { type: 'application/pdf' }), 'report.pdf');
-  
+    console.log(2)
+    
+    formData.append('document', pdfBuffer, { filename: 'report.pdf', contentType: 'application/pdf' });
+    console.log(3)
+    
     try {
       const response = await axios.post(telegramApiUrl, formData, {
         headers: {
           ...formData.getHeaders(),
         },
       });
+      console.log(4)
       console.log(`PDF sent to chat_id: ${chat_id}`, response.data);
     } catch (error) {
       console.error(`Failed to send PDF to chat_id: ${chat_id}`, error);
