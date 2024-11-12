@@ -251,8 +251,8 @@ export class ReportService {
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
-        begin: startDate,
-        end: yesterday
+        begin: "2024-11-11",
+        end: "2024-11-07"
       },
       timezone: "Europe/Moscow",
       aggregationLevel: "day"
@@ -263,7 +263,8 @@ export class ReportService {
       'Content-Type': 'application/json',
     }
 
-    const result: Record<string, any> = {};
+    const result: Record<string, any> = { };
+
     try {
       const yesterdayResponse = await axios.post(yesterdayUrl, yesterdayRequestData, {
         headers: headers
@@ -278,25 +279,28 @@ export class ReportService {
         return result;
       }
 
-      yesterdayResponse.data.data.cards.forEach((el: any) => {
+      yesterdayResponse.data.data.forEach((el: any) => {
         if (articles.includes(el.nmID)) {
-          // const data = el.history[0]
-          const data = el.statistics.selectedPeriod;
-          const stocks = el.stocks;
-  
-          result[el.nmID] = { 
-            order_info: {
-              ordersCount: data.ordersCount,
-              ordersSum: data.ordersSumRub,
-              buysCount: data.buyoutsCount,
-              buysSum: data.buyoutsSumRub,
-              addToCartCount: data.addToCartCount,
-              stocksMp: stocks.stocksMp,
-              stocksWb: stocks.stocksWb
-            },
-            price_before_spp: (data.ordersSumRub / data.ordersCount) || null,
-            vendor: el.vendorCode || null,
-          }
+          const alwaysInfo = el.history[0]
+          result[el.nmID].order_info = {};
+
+          // const data = el.statistics.selectedPeriod;
+          // const stocks = el.stocks;
+
+          el.history.forEach((day: Record<string, any>) => {
+            result[el.nmID].order_info[day.dt] = { 
+                ordersCount: day.ordersCount,
+                ordersSum: day.ordersSumRub,
+                buysCount: day.buyoutsCount,
+                buysSum: day.buyoutsSumRub,
+                addToCartCount: day.addToCartCount,
+                // stocksMp: stocks.stocksMp,
+                // stocksWb: stocks.stocksWb
+            }
+          })
+
+          result[el.nmID].price_before_spp = (alwaysInfo.ordersSumRub / alwaysInfo.ordersCount) || null
+          result[el.nmID].vendor = alwaysInfo.vendorCode
         }
       });
     } catch (error) {
