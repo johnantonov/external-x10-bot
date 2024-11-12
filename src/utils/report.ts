@@ -88,7 +88,7 @@ export function getReportHtml(articleData: Article[]) {
     </head>
     <body>
       <h1></h1>
-
+     ${tables}
     </body>
   </html>
     `
