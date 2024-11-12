@@ -20,16 +20,27 @@ const advertIds = `[{"id":18361701,"dates":["2024-11-06","2024-11-05","2024-11-0
 // }
 
 async function test() {    
-  const campaignResponse = await axios.get('https://advert-api.wildberries.ru/adv/v1/promotion/count', {
-    headers: {
-      'Authorization': wb_api_key,
-      'Content-Type': 'application/json'
-    }
+  const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
+
+  const headers = {
+    'Authorization': wb_api_key, 
+    'Content-Type': 'application/json',
+  }
+
+  const yesterdayRequestData = {
+    nmIDs: [254642549],
+    period: {
+      begin: "2024-11-05",
+      end: "2024-11-11"
+    },
+  };
+
+  const yesterdayResponse = await axios.post(yesterdayUrl, yesterdayRequestData, {
+    headers: headers
   });
 
-  const campaigns = campaignResponse.data.adverts
-
-  console.log(campaigns)
+  const logData = yesterdayResponse.data
+  console.log(`yesterday data:`, JSON.stringify(logData))
 }
 
-// test()
+test()

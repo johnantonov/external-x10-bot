@@ -249,10 +249,10 @@ export class ReportService {
     };
 
     const yesterdayRequestData = {
-      nmIDs: [254642549],
+      nmIDs: articles,
       period: {
-        begin: "2024-11-11",
-        end: "2024-11-07"
+        begin: "2024-11-05",
+        end: "2024-11-11"
       },
     };
 
