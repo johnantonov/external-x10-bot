@@ -269,7 +269,7 @@ export class ReportService {
       });
 
       const logData = yesterdayResponse.data
-      console.log(`yesterday data:`, JSON.stringify(logData))
+      // console.log(`yesterday data:`, JSON.stringify(logData))
 
       if (!yesterdayResponse.data.data && !yesterdayResponse.data.data.length) {
         console.log(`no yesterday data for ${JSON.stringify(articles)}`)
@@ -284,6 +284,7 @@ export class ReportService {
           // const stocks = el.stocks;
 
           el.history.forEach((day: Record<string, any>) => {
+            console.log(day)
             result[el.nmID].order_info[day.dt] = { 
                 ordersCount: day.ordersCount,
                 ordersSum: day.ordersSumRub,
@@ -312,7 +313,7 @@ export class ReportService {
       });
       
       const logData = periodResponse.data
-      console.log(`period data:`, JSON.stringify(logData))
+      // console.log(`period data:`, JSON.stringify(logData))
 
       if (!periodResponse.data.data.cards) {
         console.log(`no period data for ${JSON.stringify(articles)}`)
