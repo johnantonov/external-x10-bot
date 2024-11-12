@@ -17,8 +17,10 @@ export async function generatePdfFromHtml(htmlContent: string) {
   });
   
   await browser.close();
-  return pdfBuffer;
+  
+  return Buffer.from(pdfBuffer);
 }
+
 
 // export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
 //   const pdf = new jsPDF();
