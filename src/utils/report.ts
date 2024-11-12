@@ -17,7 +17,7 @@ export function getReportHtml(articleData: Article[]) {
     let dayRows = getDaysRows(config.days, data, i)
 
     tables += `<table class="b">
-      <thead  class="br">
+      <thead class="br">
         <tr class="header br">
           <th rowspan="2" colspan="5" class="article_col">${data?.article}<br>${data?.vendor_code}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
@@ -30,7 +30,7 @@ export function getReportHtml(articleData: Article[]) {
           <th rowspan="2" colspan="1">Заказы</th>
           <th rowspan="2" colspan="1">Выкупы</th>
           <th rowspan="2" colspan="1">Маржа</th>
-          <th rowspan="2" colspan="1">Прибыль</th>
+          <th class="br" rowspan="2" colspan="1">Прибыль</th>
         </tr>
       </thead>
       <tbody  class="br">
@@ -73,7 +73,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     const ctrPrk = (prk.clicks / prk.views) || 0; 
     const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
     const rev = (stats.buysSum ?? 0) - costs
-    const margin = formatNumber(rev / (stats.buysSum || 1) * 100)
+    const margin = formatNumber(rev / (stats.buysSum || 1) * 100)+"%"
     
     dayRows += `<tr class="row">`
 
@@ -85,16 +85,16 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     dayRows += `
       <td rowspan="1" colspan="2">${day}</td>
       <td class="bl">${ark.clicks.toFixed(0)}</td>
-      <td>${ctrArk.toFixed(2)}</td>
+      <td>${(ctrArk*100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
-      <td>${ctrPrk.toFixed(2)}</td>
+      <td>${(ctrPrk*100).toFixed(2)}%</td>
       <td class="bl">${marketingCost.toFixed(0)}</td>
       <td>${drr.toFixed(2)}</td>
       <td>${stats.addToCartCount}</td>
       <td>${stats.ordersCount}</td>
       <td>${stats.buysCount}</td>
       <td>${margin}</td>
-      <td>${rev.toFixed(2)}</td>
+      <td class="br">${rev.toFixed(2)}</td>
     `
   }
 
