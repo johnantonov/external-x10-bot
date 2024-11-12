@@ -80,9 +80,11 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     // const imgUrl = getWbArticlePhoto(data.article)
 
-    // let img = resolve(__dirname, `../../../public/messageImages/test.jpg`)
-    const img = `file://${resolve(__dirname, '../../../public/messageImages/test.jpg')}`;
+    let img = resolve(__dirname, `../../../public/messageImages/test.jpg`)
+    // const img = `file://${resolve(__dirname, '../../../public/messageImages/test.jpg')}`;
 
+
+    console.log(img)
     if (i === daysCount) {
       const value = index === 0 ? "ИТОГО" : `<img src="${img}" alt="${data.vendor_code}" >`
       dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
