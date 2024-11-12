@@ -11,23 +11,22 @@ const config = {
 }
 
 export async function getReportHtml(articleData: Article[]) {
-  const date = getYesterdayDate();
   let tables = ``;
 
-  for (const [i, data] of articleData.entries()) {
+  articleData.forEach(async (data, i) => {
     let imgSrc: any;
+
     try {
       const imgUrl = getWbArticlePhoto(+data.article);
       const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
       let imgBuffer = Buffer.from(response.data, 'binary');
-      imgBuffer = await sharp(imgBuffer).resize({ width: 180, height: 300 }).toBuffer();
+      imgBuffer = await sharp(imgBuffer).resize({ width: 80, height: 250 }).toBuffer();
       const imgBase64 = imgBuffer.toString('base64');
       imgSrc = `data:image/jpeg;base64,${imgBase64}`;
     } catch (error) {
       console.error(`Error while generating table html: ${error}`);
     }
 
-    articleData.forEach((data, i) => {
     let dayRows = getDaysRows(config.days, data, i, imgSrc)
 
     tables += `<table class="b">
@@ -50,9 +49,8 @@ export async function getReportHtml(articleData: Article[]) {
       <tbody  class="br">
         ${dayRows}
       </tbody> 
-      </table>`
-    })
-  }
+    </table>`
+  })
 
   return `
   <!DOCTYPE html>
