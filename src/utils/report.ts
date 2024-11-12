@@ -1,140 +1,55 @@
-import jsPDF from "jspdf";
 import { Article } from "../dto/articles";
-import { formatNumber } from "./string";
-import { load } from "cheerio";
+import { formatNumber, parsePercent } from "./string";
 
-import { Writable } from 'stream';
-import wkhtmltopdf from 'wkhtmltopdf';
 
-export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    const buffers: Uint8Array[] = [];
-
-    // Создаем WritableStream для сбора данных
-    const writableStream = new Writable({
-      write(chunk, encoding, callback) {
-        buffers.push(chunk);  
-        callback();  
-      }
-    });
-
-    const options = {
-      pageSize: 'A4' as 'A4',
-      // Возможно, вам нужно настроить дополнительные опции для корректного рендеринга
-      marginTop: '10mm',
-      marginBottom: '10mm',
-      marginLeft: '10mm',
-      marginRight: '10mm',
-      disableJavascript: false, // Включаем JS, если это необходимо
-      noOutline: true,
-    };
-
-    // Запуск wkhtmltopdf
-    try {
-      const pdfStream = wkhtmltopdf(htmlContent, options);
-
-      if (pdfStream && pdfStream.pipe) {
-        pdfStream.pipe(writableStream);
-
-        writableStream.on('finish', () => {
-          // Возвращаем PDF как Buffer после завершения
-          resolve(Buffer.concat(buffers));
-        });
-
-        writableStream.on('error', (err) => {
-          reject(new Error(`Ошибка при записи в поток: ${err.message}`));
-        });
-      } else {
-        reject(new Error('wkhtmltopdf не вернул поток.'));
-      }
-    } catch (err: any) {
-      reject(new Error(`Ошибка при запуске wkhtmltopdf: ${err.message}`));
-    }
-  });
+const config = {
+  days: 5
 }
-
-// export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-//   const $ = load(htmlContent); 
-
-//   //   const dom = new JSDOM(htmlContent);
-//   //   const document = dom.window.document;
-//   //   const element = document.getElementsByTagName('body')[0]
-
-//   const pdf = new jsPDF();
-
-//   const bodyContent = $('body').text();
-
-//   pdf.text(bodyContent, 10, 10);
-
-//   const pdfBuffer = pdf.output('arraybuffer');
-//   return Buffer.from(pdfBuffer);
-// }
-
-
-export function parsePercent(input: string | number): number {
-  if (!input) {
-    return 0;
-  }
-
-  let str = input.toString().replace(',', '.');
-  let num = Number(str);
-
-  if (isNaN(num)) {
-    return 0;
-  }
-
-  if (num > 1) {
-    return num / 100;
-  }
-
-  return num;
-}
-
 
 export function getReportHtml(articleData: Article, date: string) {
   console.log(JSON.stringify(articleData))
   console.log(date)
 
-  const name = articleData?.title || articleData?.article || 'Неизвестный товар';
-  const stats = articleData.order_info || {};
-  const marketing = articleData?.marketing_cost || {};
-  const marketingCost = parseFloat(marketing?.[date]) || 0; 
-  const prk = marketing.prk || { clicks: 0, views: 0 };
-  const ark = marketing.ark || { clicks: 0, views: 0 };
-  const tax = parsePercent(articleData.tax)
-  const acquiring = parsePercent(articleData.acquiring)
-  const commission = parsePercent(stats.commission)
+  // const stats = articleData.order_info || {};
+  // const marketing = articleData?.marketing_cost || {};
+  // const marketingCost = parseFloat(marketing?.[date]) || 0; 
+  // const prk = marketing.prk || { clicks: 0, views: 0 };
+  // const ark = marketing.ark || { clicks: 0, views: 0 };
+  // const tax = parsePercent(articleData.tax)
+  // const acquiring = parsePercent(articleData.acquiring)
+  // const commission = parsePercent(stats.commission)
 
-  // WIP -------
-  stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
-  stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
-  // -----------
+  // // WIP -------
+  // stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
+  // stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
+  // // -----------
 
-  let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
-  let markCost = (stats?.buysCount ?? 0) * (articleData?.mark ?? 0);
-  let taxCost = (stats?.buysSum ?? 0) * tax;
-  let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-  let commissionCost = (stats?.buysSum ?? 0) * commission;
+  // let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
+  // let markCost = (stats?.buysCount ?? 0) * (articleData?.mark ?? 0);
+  // let taxCost = (stats?.buysSum ?? 0) * tax;
+  // let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
+  // let commissionCost = (stats?.buysSum ?? 0) * commission;
 
-  const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
-  const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
-  // console.log(stats.buysSum)
-  const krrr = 
-  ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100; 
+  // const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
+  // const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
+  // const krrr = 
+  // ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100; 
   
-  const stocksMp = stats.stocksMp || 0;
-  const stocksWb = stats.stocksWb || 0;
-
+  // const stocksMp = stats.stocksMp || 0;
+  // const stocksWb = stats.stocksWb || 0;
   
-  const rev = (stats.buysSum ?? 0) 
-  - selfCost
-  - markCost
-  - taxCost
-  - acquiringCost 
-  - commissionCost
-  - marketingCost;
+  // const rev = (stats.buysSum ?? 0) 
+  // - selfCost
+  // - markCost
+  // - taxCost
+  // - acquiringCost 
+  // - commissionCost
+  // - marketingCost;
 
-  const margin = formatNumber(rev / (stats.buysSum || 1) * 100)
+  // const margin = formatNumber(rev / (stats.buysSum || 1) * 100)
+
+
+  let dayRows = getDaysRows(config.days, articleData, date)
   
   return `
   <!DOCTYPE html>
@@ -145,7 +60,7 @@ export function getReportHtml(articleData: Article, date: string) {
     </head>
     <body>
       <h1></h1>
-    <table class="rb">
+    <table class="bb">
       <thead>
         <tr class="header rb">
           <th rowspan="2" colspan="3" class="article_col">${articleData?.article}<br>${articleData?.title}</th>
@@ -163,36 +78,7 @@ export function getReportHtml(articleData: Article, date: string) {
         </tr>
       </thead>
       <tbody>
-        <tr class="row">
-          <td rowspan="5" colspan="2">ИТОГО</td>
-          <td rowspan="1" colspan="1">Дата 1</td>
-          <td class="bl">${ark.clicks}</td>
-          <td>${ark.ctr}</td>
-          <td class="bl">${prk.clicks}</td>
-          <td>${prk.ctr}</td>
-          <td class="bl">${articleData.marketing_cost}</td>
-          <td>${drr}</td>
-          <td>${stats.addToCartCount}</td>
-          <td>${stats.ordersCount}</td>
-          <td>${stats.buysCount}</td>
-          <td>${margin}</td>
-          <td>${rev}</td>
-        </tr>
-        <tr class="row">
-          <td rowspan="1" colspan="1">Дата 2</td>
-          <td class="bl">${ark.clicks}</td>
-          <td>${ark.ctr}</td>
-          <td class="bl">${prk.clicks}</td>
-          <td>${prk.ctr}</td>
-          <td class="bl">${articleData.marketing_cost}</td>
-          <td>${drr}</td>
-          <td>${stats.addToCartCount}</td>
-          <td>${stats.ordersCount}</td>
-          <td>${stats.buysCount}</td>
-          <td>${margin}</td>
-          <td>${rev}</td>
-        </tr>
-        
+        ${dayRows}
       </tbody> 
     </table>
     </body>
@@ -201,69 +87,107 @@ export function getReportHtml(articleData: Article, date: string) {
 }
 
 
+function getDaysRows(daysCount: number, data: Record<string, any>, date: string) {
+  let dayRows = ``
+  const marketing = data?.marketing_cost || {};
+  const prk = marketing.prk || { clicks: 0, views: 0 };
+  const ark = marketing.ark || { clicks: 0, views: 0 };
+  const stats = data.order_info || {};
+  const costs = getCosts(data);
+  
+  for (let i = 0; i < daysCount; i++) {
+    let day = new Date(date).getUTCDate() - i
+    console.log(day)
+    const marketingCost = parseFloat(marketing?.[day]) || 0;
+    const ctrArk = (ark.clicks / ark.views) || 0; 
+    const ctrPrk = (prk.clicks / prk.views) || 0; 
+    const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
+    const rev = (stats.buysSum ?? 0) - costs
+    const margin = formatNumber(rev / (stats.buysSum || 1) * 100)
+    
+    dayRows += `<tr class="row">`
 
+    if (i === 0) {
+      dayRows += `<td rowspan="5" colspan="2">ИТОГО</td>`
+    }
 
+    dayRows += `
+      <td rowspan="1" colspan="1">${day}</td>
+      <td class="bl">${ark.clicks}</td>
+      <td>${ctrArk}</td>
+      <td class="bl">${prk.clicks}</td>
+      <td>${ctrPrk}</td>
+      <td class="bl">${marketingCost}</td>
+      <td>${drr}</td>
+      <td>${stats.addToCartCount}</td>
+      <td>${stats.ordersCount}</td>
+      <td>${stats.buysCount}</td>
+      <td>${margin}</td>
+      <td>${rev}</td>
+    `
+  }
 
+  return dayRows
+}
+
+function getCosts(data: Record<string, any>) {
+  const stats = data.order_info || {};
+
+  const tax = parsePercent(data.tax)
+  const acquiring = parsePercent(data.acquiring)
+  const commission = parsePercent(stats.commission)
+
+  // WIP -------
+  stats.buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
+  stats.buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
+  // -----------
+
+  let selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
+  let markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
+  let taxCost = (stats?.buysSum ?? 0) * tax;
+  let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
+  let commissionCost = (stats?.buysSum ?? 0) * commission;
+
+  return selfCost + markCost + taxCost + acquiringCost + commissionCost
+}
 
 const CSS = `
-<style>
-  body {
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-  }
-  table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-  }
-  table, th, td {
-      border: 0.2px solid #AFEEEE;
-  }
-  th, td {
-      padding: 8px;
-      text-align: center;
-  }
-  .img-column {
-      width: 80px;
-  }
-  .header {
-      background-color: #f2f2f2;
-      font-weight: bold;
-  }
-  .title-row {
-      text-align: left;
-      font-weight: bold;
-  }
-  .bl {
-      border-left: 2px solid black
-  }
-  .rb {
-      border: 2px solid black
-  }
-</style>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    table, th, td {
+        border: 0.2px solid #AFEEEE;
+    }
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+    .img-column {
+        width: 80px;
+    }
+    .header {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .title-row {
+        text-align: left;
+        font-weight: bold;
+    }
+    .bl {
+        border-left: 2px solid black
+    }
+    .rb {
+        border: 2px solid black
+    }
+    .bb {
+        border-bottom: 2px solid black
+    }
+  </style>
 `
-
-// export async function generatePdfFromHtml(htmlContent: string) {
-//   try {
-//     console.log('start');
-//     const browser = await puppeteer.launch({
-//       headless: true,
-//       args: ['--no-sandbox', '--disable-setuid-sandbox'],
-//     });
-//     const page = await browser.newPage();
-//     console.log(htmlContent);
-
-//     await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
-//     const pdfBuffer = await page.pdf({
-//       format: 'A4',
-//       printBackground: true,
-//     });
-//     await browser.close();
-//     console.log('PDF generation completed');
-
-//     return Buffer.from(pdfBuffer);
-//   } catch (error) {
-//     console.error('Error during PDF generation:', error);
-//     return null;
-//   }
-// }

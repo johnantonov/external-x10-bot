@@ -17,8 +17,9 @@ import { conversions_db } from '../../database/models/conversions';
 import { updateCommissions } from '../utils/comissions';
 import { commissions_db } from '../../database/models/commissions';
 import { User } from '../dto/user';
-import { generatePdfFromHtml, getReportHtml } from '../utils/report';
+import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
+import { getReportHtml } from '../utils/report';
 
 
 const app = express();

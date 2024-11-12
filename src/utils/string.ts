@@ -1,6 +1,5 @@
 
 import { Article } from "../dto/articles";
-import { parsePercent } from "./report";
 
 export function formatReportArticleMessage(articleData: Article, date: string) {
   console.log(JSON.stringify(articleData))
@@ -79,4 +78,24 @@ export const formatNumber = (num: number): string => {
 export function formatError(error: any, contextMessage: string) {
   const errorMessage = error?.response?.body?.description || (error as Error).message || 'Unknown error';
   console.error(`Error: ${contextMessage} - ${errorMessage.substring(0, 200)}`);
+}
+
+
+export function parsePercent(input: string | number): number {
+  if (!input) {
+    return 0;
+  }
+
+  let str = input.toString().replace(',', '.');
+  let num = Number(str);
+
+  if (isNaN(num)) {
+    return 0;
+  }
+
+  if (num > 1) {
+    return num / 100;
+  }
+
+  return num;
 }
