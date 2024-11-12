@@ -6,13 +6,13 @@ import { User } from '../dto/user';
  * get yesterday date
  */
 export function getYesterdayDate() {
-  const timeZone = 'Europe/Moscow'; 
+  const timeZone = 'Europe/Moscow';
 
   const now = new Date();
-  const moscowTime = toZonedTime(now, timeZone); 
+  const moscowTime = toZonedTime(now, timeZone);
   const yesterday = subDays(moscowTime, 1);
 
-  const formattedDate = format(yesterday, 'yyyy-MM-dd'); 
+  const formattedDate = format(yesterday, 'yyyy-MM-dd');
 
   return formattedDate;
 }
@@ -26,8 +26,8 @@ export function getXDaysPeriod(X: number) {
   const now = new Date();
   const moscowTime = toZonedTime(now, timeZone);
 
-  const startDate = subDays(moscowTime, X);  
-  const endDate = subDays(moscowTime, 1);    
+  const startDate = subDays(moscowTime, X);
+  const endDate = subDays(moscowTime, 1);
   const todayDate = subDays(moscowTime, 0);
 
   const formattedStartDate = format(startDate, 'yyyy-MM-dd');
@@ -43,14 +43,14 @@ export function getXDaysPeriod(X: number) {
 export function create30DaysObject() {
   const daysObj: Record<string, any> = {};
   const today = new Date();
-  
+
   for (let i = 0; i < 30; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
     const dateString = date.toISOString().split('T')[0];
-    daysObj[dateString] = 0; 
+    daysObj[dateString] = 0;
   }
-  
+
   return daysObj;
 }
 
@@ -85,7 +85,7 @@ export function sortObjDatesKeys(obj: Record<string, any>) {
 export function sortObjDatesEntries(obj: Record<string, any>) {
   return Object.fromEntries(
     Object.entries(obj)
-      .sort(([dateA], [dateB]) => new Date(dateB).getTime() - new Date(dateA).getTime()) 
+      .sort(([dateA], [dateB]) => new Date(dateB).getTime() - new Date(dateA).getTime())
   );
 }
 
@@ -93,11 +93,11 @@ export function isReportAvailable(lastTime: User['last_report_call']) {
   if (!lastTime) {
     return true
   }
-  
+
   const now = new Date();
   const lastReportTime = new Date(lastTime);
 
   const timeDiffMinutes = (now.getTime() - lastReportTime.getTime()) / (1000 * 60);
   return true
-  return timeDiffMinutes >= 30; 
+  return timeDiffMinutes >= 30;
 }

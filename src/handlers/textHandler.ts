@@ -21,7 +21,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
   if (userState && waitingStates.some(state => userState.startsWith(state as string))) {
     const response = await bot.sendMessage(chat_id, "Проверяем...⌛️");
     const answer: AwaitingAnswer = await awaitingHandler(userTextMessage, userState);
-    
+
     msgs.push({ chat_id, message_id: response.message_id, special: 'menu' });
 
     if (!answer.result) {
@@ -35,7 +35,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
         const article = await articles_db.getArticle(chat_id, userState?.split('?')[1])
         const articleBtns = await articleOptions(chat_id, article.article, article.status)
         if (articleBtns) newBtns = articleBtns.inline_keyboard
-      } 
+      }
       const successResponse = await sendImageWithText(bot, chat_id, 'menu.jpg', answer.text, newBtns);
       if (successResponse) {
         await MS.saveMessage({ chat_id, message_id: successResponse.message_id, special: "menu" });

@@ -10,7 +10,7 @@ export const getStateAndArticleFromCallback = (data: string): [ArticleStatus, st
   return [splitData[0] as ArticleStatus, splitData[1]]
 }
 
- // use short keys because btn callback limit is 64 bytes
+// use short keys because btn callback limit is 64 bytes
 export const parseArticleData = (data: string): ArticleCallbackData => {
   const newData = data.split('?')
   return {

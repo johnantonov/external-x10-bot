@@ -7,8 +7,8 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
 
     const writableStream = new Writable({
       write(chunk, encoding, callback) {
-        buffers.push(chunk);  
-        callback();  
+        buffers.push(chunk);
+        callback();
       }
     });
 
@@ -18,7 +18,7 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
       marginBottom: '10mm',
       marginLeft: '10mm',
       marginRight: '10mm',
-      disableJavascript: false, 
+      disableJavascript: false,
       noOutline: true,
     };
 

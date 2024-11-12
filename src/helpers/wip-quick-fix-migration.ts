@@ -12,7 +12,7 @@ export const migrations = [
         notification_time NUMERIC,
         added_at TIMESTAMP DEFAULT NOW(),
         last_report_call TIMESTAMP -- Убрана лишняя запятая
-        );`, 
+        );`,
 
         `CREATE TABLE IF NOT EXISTS articles (
         article VARCHAR NOT NULL,

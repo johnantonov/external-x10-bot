@@ -31,7 +31,7 @@ class CommissionsModel extends BaseModel<Commission> {
           "kgvpSupplierExpress" = EXCLUDED."kgvpSupplierExpress",
           "paidStorageKgvp" = EXCLUDED."paidStorageKgvp"
       `;
-    
+
       for (const commission of dataArray) {
         await this.pool.query(query, [
           commission.parentName,

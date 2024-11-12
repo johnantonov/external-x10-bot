@@ -69,7 +69,7 @@ export class MessageService {
 
   /**
    * delete all current msgs and new msgs without saving
-   */ 
+   */
   async deleteAllNewMessages(msgs: MessageMS[], chat_id: number) {
     const deletePromises = msgs.map(async (msg) => {
       try {
@@ -81,9 +81,9 @@ export class MessageService {
     await Promise.all(deletePromises);
   }
 
-    /**
-   * get one special msg
-   */ 
+  /**
+ * get one special msg
+ */
   async getSpecialMsg(chat_id: number, special: string) {
     const msgs = await this.getMessages(chat_id);
     return msgs.filter(msg => msg.special === special)[0]
@@ -106,31 +106,31 @@ export class MessageService {
     await this.deleteAllNewMessages(msgs, chat_id)
   }
 
-/**
- * delete all msgs from chat
- */
-async deleteAllMessages(chat_id: number, exclude?: string): Promise<void> {
-  try {
-    const messages = (await this.getMessages(chat_id)).reverse();
-    let specialFound = false;
-    
-    const deletePromises = messages.map(async (message) => {
-      try {
-        if (exclude && message.special === exclude && !specialFound) {
-          specialFound = true;
-          return; 
+  /**
+   * delete all msgs from chat
+   */
+  async deleteAllMessages(chat_id: number, exclude?: string): Promise<void> {
+    try {
+      const messages = (await this.getMessages(chat_id)).reverse();
+      let specialFound = false;
+
+      const deletePromises = messages.map(async (message) => {
+        try {
+          if (exclude && message.special === exclude && !specialFound) {
+            specialFound = true;
+            return;
+          }
+          await this.bot.deleteMessage(chat_id, message.message_id);
+        } catch (error) {
+          console.error(`Error during delete message ${message.message_id}:`, error);
         }
-        await this.bot.deleteMessage(chat_id, message.message_id);
-      } catch (error) {
-        console.error(`Error during delete message ${message.message_id}:`, error);
-      }
-    });
-    await Promise.all(deletePromises);
-    this.clearMessages(chat_id);
-  } catch (error) {
-    console.error(`Error during delete all msgs from chat, user: ${chat_id} -`, error);
+      });
+      await Promise.all(deletePromises);
+      this.clearMessages(chat_id);
+    } catch (error) {
+      console.error(`Error during delete all msgs from chat, user: ${chat_id} -`, error);
+    }
   }
-}
 
   /**
    * delete all msgs from storage
@@ -144,19 +144,19 @@ async deleteAllMessages(chat_id: number, exclude?: string): Promise<void> {
    * universal message editor
    */
   async editMessage(
-    chat_id: ChatId, 
-    message_id: number, 
-    newText?: string, 
-    newReplyMarkup?: Options['reply_markup'], 
+    chat_id: ChatId,
+    message_id: number,
+    newText?: string,
+    newReplyMarkup?: Options['reply_markup'],
     media?: string,
   ) {
-    
+
     try {
       if (media) {
         const imagePath = getPath(media);
         return editMessageMedia(chat_id, message_id, imagePath, process.env.TELEGRAM_TOKEN!, newText, newReplyMarkup);
       }
-      
+
       if (newText) {
         await this.bot.editMessageCaption(newText, {
           chat_id,
@@ -171,7 +171,7 @@ async deleteAllMessages(chat_id: number, exclude?: string): Promise<void> {
           message_id,
         });
       }
-  
+
     } catch (error) {
       if (!newText || newText === " ") {
         newText = undefined
@@ -182,7 +182,7 @@ async deleteAllMessages(chat_id: number, exclude?: string): Promise<void> {
 
       if (user) {
         this.clearMessages(user.chat_id)
-        const message = await this.bot.sendPhoto(user.chat_id, imagePath, { caption: newText, reply_markup: mainOptions(false, user.type ?? 'new')})
+        const message = await this.bot.sendPhoto(user.chat_id, imagePath, { caption: newText, reply_markup: mainOptions(false, user.type ?? 'new') })
         await this.saveMessage({ chat_id: user.chat_id, message_id: message.message_id, special: 'menu' })
       }
 
@@ -208,13 +208,13 @@ import { users_db } from '../../database/models/users';
  * @param {string} caption - new text of message
  * @param {InlineKeyboardMarkup} replyMarkup - new buttons
  */
-async function editMessageMedia(  
-  chat_id: number | string, 
-  message_id: number, 
-  mediaPath: string, 
+async function editMessageMedia(
+  chat_id: number | string,
+  message_id: number,
+  mediaPath: string,
   botToken: string,
-  caption?: string, 
-  replyMarkup?: InlineKeyboardMarkup, 
+  caption?: string,
+  replyMarkup?: InlineKeyboardMarkup,
 ) {
   try {
     const form = new FormData();
@@ -222,8 +222,8 @@ async function editMessageMedia(
     form.append('media', JSON.stringify({
       type: 'photo',
       media: 'attach://photo',
-      caption: caption || "", 
-      parse_mode: 'HTML' 
+      caption: caption || "",
+      parse_mode: 'HTML'
     }));
 
     form.append('photo', fs.createReadStream(mediaPath));

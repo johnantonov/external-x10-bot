@@ -2,8 +2,8 @@ export interface Article {
   article: article;
   chat_id: number;
   wb_api_key: string;
-  status: ArticleStatus; 
-  is_active: boolean; 
+  status: ArticleStatus;
+  is_active: boolean;
   notification_time?: number;
   title?: string;
   self_cost: number;

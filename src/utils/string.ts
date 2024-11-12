@@ -32,7 +32,7 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   const name = articleData?.title || articleData?.article || 'Неизвестный товар';
   const stats = articleData.order_info || {};
   const marketing = articleData?.marketing_cost || {};
-  const marketingCost = parseFloat(marketing?.[date]) || 0; 
+  const marketingCost = parseFloat(marketing?.[date]) || 0;
   const prk = marketing.prk || { clicks: 0, views: 0 };
   const ark = marketing.ark || { clicks: 0, views: 0 };
   const tax = parsePercent(articleData.tax)
@@ -54,22 +54,22 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   console.log('acquiringCost: ', acquiringCost, ' acquiring: ', acquiring)
   console.log('commissionCost: ', commissionCost, ' commission: ', commission)
 
-  const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
-  const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
+  const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1);
+  const drr = (marketingCost / (stats.ordersSum || 1)) * 100;
   // console.log(stats.buysSum)
-  const krrr = 
-  ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100; 
-  
+  const krrr =
+    ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100;
+
   const stocksMp = stats.stocksMp || 0;
   const stocksWb = stats.stocksWb || 0;
 
-  const rev = (stats.buysSum ?? 0) 
-  - selfCost
-  - markCost
-  - taxCost
-  - acquiringCost 
-  - commissionCost
-  - marketingCost;
+  const rev = (stats.buysSum ?? 0)
+    - selfCost
+    - markCost
+    - taxCost
+    - acquiringCost
+    - commissionCost
+    - marketingCost;
 
 
 

@@ -18,12 +18,12 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
       if (firstDay) {
         const isTargetCampaign = firstDay.apps.some((app: any) => {
           return app.nm.some((article: any) => {
-            return Number(article.nmId) === Number(nm) }
-          )
+            return Number(article.nmId) === Number(nm)
+          })
         }
-      );
-       
-      if (isTargetCampaign) {
+        );
+
+        if (isTargetCampaign) {
           campaign.days.forEach((day: any) => {
             const dayDate = new Date(day.date).toISOString().split('T')[0];
             if (result.hasOwnProperty(dayDate)) {
@@ -54,7 +54,7 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
         }
       }
     });
-  
+
 
     data[nm] = result
   })
@@ -65,15 +65,15 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
 export function extractBuyoutsFromCards(responseData: any) {
   try {
     if (responseData.data && responseData.data.data.cards && responseData.data.data.cards.length > 0) {
-      const result: any = {};  
+      const result: any = {};
       responseData.data.data.cards.forEach((card: any) => {
-        const nmID = card.nmID;  
-        const buyoutsPercent = card.statistics.selectedPeriod.conversions.buyoutsPercent;  
+        const nmID = card.nmID;
+        const buyoutsPercent = card.statistics.selectedPeriod.conversions.buyoutsPercent;
 
         result[nmID] = buyoutsPercent;
       });
 
-      return result;  
+      return result;
     } else {
       console.log('No data available');
       return null;

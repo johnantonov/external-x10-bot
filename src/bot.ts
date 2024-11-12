@@ -26,7 +26,7 @@ bot.on('callback_query', async (query: TelegramBot.CallbackQuery) => {
   return callbackHandler(query, bot, RediceService, MS);
 });
 
-bot.on('message', async (msg: TelegramBot.Message) => { 
+bot.on('message', async (msg: TelegramBot.Message) => {
   const UserTextMessage = new UserMsg(msg);
   const { chat_id, text, message_id } = UserTextMessage;
 
@@ -35,11 +35,11 @@ bot.on('message', async (msg: TelegramBot.Message) => {
   };
 
   const msgs: MessageMS[] = [new MessageMS({ chat_id, message_id, content: text })];
-  
+
   if (text.startsWith('/admin__')) {
     return handleAdminCommand(chat_id, text, bot)
   }
-  
+
   if (['/start', '/menu'].includes(text)) {
     await handleMenuCommand(UserTextMessage, chat_id, text, msgs);
     return;

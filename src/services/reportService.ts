@@ -52,14 +52,14 @@ app.listen(port, () => {
 
 export function runPersonReport(chat_id: number, article?: article) {
   axios.post(`http://localhost:${process.env.BASE_PORT}/runReportForUser`, { chat_id: chat_id, article: article })
-  .then(response => {
-    console.log('Report initiated: ', response.data)
-    return true
-  })
-  .catch(error => {
-    console.error('Failed to initiate report: ', error)
-    return null
-  });
+    .then(response => {
+      console.log('Report initiated: ', response.data)
+      return true
+    })
+    .catch(error => {
+      console.error('Failed to initiate report: ', error)
+      return null
+    });
 }
 
 export class ReportService {
@@ -83,7 +83,7 @@ export class ReportService {
         console.log('No users who are waiting for report');
         return null
       }
-  
+
       console.log('list of users waiting report:', userIds)
       for (const chat_id of userIds) {
         const id = chat_id.chat_id
@@ -92,25 +92,25 @@ export class ReportService {
 
         const articles = (await articles_db.getAllArticlesForUser(id)).rows
 
-        
+
         if (articles.length === 0) {
           console.log('No articles with status ON to fetch advertisement data: ' + id);
           continue;
         }
-        
+
         const { wb_api_key } = articles[0] ?? null
         console.log('wb api key:', wb_api_key)
-        
+
         if (!wb_api_key) {
           console.log(`No recent campaigns found for article with chat ID: ${id}`);
           continue;
         }
-        
+
         const advertIds = await this.getCampaigns(wb_api_key, id)
         const nms = articles.map(a => +a.article)
-        
+
         console.log(`articles for ${id}: ${JSON.stringify(nms)}`)
-        
+
         let advertDetailsResponse;
         if (advertIds) {
           advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
@@ -122,13 +122,13 @@ export class ReportService {
         }
 
         // console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
-    
+
         const [monthAgoDate, yesterday, today] = getXDaysPeriod(31)
-       
+
         const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday, today));
 
         // console.log(`statistic report for ${id}: ${JSON.stringify(report)}`)
-        
+
         const yesterdayTime = yesterday + " 23:59:59"
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
 
@@ -137,18 +137,18 @@ export class ReportService {
 
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
         // console.log(`size ${id}: ${JSON.stringify(size)}`)
-    
+
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
             await articles_db.processMarketingCost(id, +nm, advRes[nm]);
           }
-        
+
           let sizes = size[nm] || {};
-          let info = report[nm]?.order_info || {};        
+          let info = report[nm]?.order_info || {};
           let percentBuys = percent_buys?.[nm] ?? null;
           let spp = report[nm]?.price_before_spp ?? null;
           let vendor = report[nm]?.vendor ?? null;
-        
+
           await articles_db.updateFields(id, +nm, {
             order_info: info,
             percent_buys: percentBuys,
@@ -157,7 +157,7 @@ export class ReportService {
             vendor_code: vendor,
           });
         }
-    
+
         console.log(`Report details for articles with chat ID ${id}`);
       }
 
@@ -169,15 +169,15 @@ export class ReportService {
   async getNmSizeInfo(nmIDs: article[], wb_api_key: string) {
     try {
       const requestData = {
-        settings: {cursor: { limit: 100 }},
+        settings: { cursor: { limit: 100 } },
       };
-  
+
       const response = await axios.post(
         'https://content-api.wildberries.ru/content/v2/get/cards/list',
         requestData,
         { headers: { 'Content-Type': 'application/json', 'Authorization': wb_api_key } }
       );
-  
+
       const cards = response.data.cards;
       const filteredData = cards.filter((card: any) => nmIDs.includes(card.nmID))
       const result: Record<string, any> = {};
@@ -192,21 +192,21 @@ export class ReportService {
       return {};
     }
   }
-  
+
 
   async getBuyPercent(nms: article[], wb_api_key: string, startDate: string, endDate: string) {
     try {
       const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
-      
-      const requestData = {           
-        nmIDs: nms,                
-        period: {                    
+
+      const requestData = {
+        nmIDs: nms,
+        period: {
           begin: startDate,
           end: endDate
         },
-        page: 1                
+        page: 1
       };
-      
+
       const response = await axios.post(url, requestData, {
         headers: {
           'Authorization': wb_api_key,
@@ -225,13 +225,13 @@ export class ReportService {
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
 
-    let moscowTime = new Date().toLocaleString("en-CA", { 
+    let moscowTime = new Date().toLocaleString("en-CA", {
       timeZone: "Europe/Moscow",
-      hour12: false 
+      hour12: false
     }).replace(",", "");
     let monthStartDateTime = startDate + ' 00:00:00'
     let monthEndDateTime = `${today} ${moscowTime.split(" ")[1]}`
-    
+
     const periodRequestData = {
       nmIDs: articles,
       period: {
@@ -250,11 +250,11 @@ export class ReportService {
     };
 
     const headers = {
-      'Authorization': wb_api_key, 
+      'Authorization': wb_api_key,
       'Content-Type': 'application/json',
     }
 
-    const result: Record<string, any> = { };
+    const result: Record<string, any> = {};
 
     try {
       const yesterdayResponse = await axios.post(yesterdayUrl, yesterdayRequestData, {
@@ -270,7 +270,7 @@ export class ReportService {
           const alwaysInfo = el.history[0]
 
           if (!result[el.nmID]) {
-            result[el.nmID] = {}; 
+            result[el.nmID] = {};
           }
 
           // const data = el.statistics.selectedPeriod;
@@ -280,14 +280,14 @@ export class ReportService {
             if (!result[el.nmID].order_info) {
               result[el.nmID].order_info = {};
             }
-            result[el.nmID].order_info[day.dt] = { 
-                ordersCount: day.ordersCount,
-                ordersSum: day.ordersSumRub,
-                buysCount: day.buyoutsCount,
-                buysSum: day.buyoutsSumRub,
-                addToCartCount: day.addToCartCount,
-                // stocksMp: stocks.stocksMp,
-                // stocksWb: stocks.stocksWb
+            result[el.nmID].order_info[day.dt] = {
+              ordersCount: day.ordersCount,
+              ordersSum: day.ordersSumRub,
+              buysCount: day.buyoutsCount,
+              buysSum: day.buyoutsSumRub,
+              addToCartCount: day.addToCartCount,
+              // stocksMp: stocks.stocksMp,
+              // stocksWb: stocks.stocksWb
             }
           })
 
@@ -303,7 +303,7 @@ export class ReportService {
       const periodResponse = await axios.post(url, periodRequestData, {
         headers: headers
       });
-    
+
       if (!periodResponse.data.data.cards) {
         console.log(`no period data for ${JSON.stringify(articles)}`)
         return result;
@@ -368,41 +368,41 @@ export class ReportService {
           'Content-Type': 'application/json'
         }
       });
-  
+
       const campaigns = campaignResponse.data.adverts || [];
-  
+
       if (campaigns.length === 0) {
         console.log(`No recent campaigns found for article with chat ID: ${chat_id}`);
         return null
       }
-  
+
       const now = new Date();
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(now.getDate() - 30);
-  
-      const recentCampaigns = campaigns.flatMap((campaign: any) => 
+
+      const recentCampaigns = campaigns.flatMap((campaign: any) =>
         campaign.advert_list
           .filter((advert: any) => {
             const changeTime = new Date(advert.changeTime);
             return changeTime >= thirtyDaysAgo && changeTime <= now;
           })
-          .map((advert: any) => ({ 
-            ...advert, 
+          .map((advert: any) => ({
+            ...advert,
             type: campaign.type
           }))
       )
-  
+
       const last30DaysDates = getXdaysAgoArr(10);
       const advertIds = recentCampaigns.map((advert: any) => ({
         id: advert.advertId,
         dates: last30DaysDates,
-        type: advert.type 
+        type: advert.type
       }));
-      
+
       if (advertIds.length === 0) {
         console.error(`No recent campaigns found for article with chat ID: ${chat_id}`);
         return null;
-      }   
+      }
       return advertIds
     } catch (e) {
       formatError(e, 'error fetching campaigns data')
@@ -420,7 +420,7 @@ export class ReportService {
         chat_id: chat_id,
         text: message,
         reply_markup: options,
-        parse_mode: 'HTML', 
+        parse_mode: 'HTML',
       });
       console.log(`Report Service: Message sent to chat_id: ${chat_id}`);
     } catch (error) {
@@ -434,7 +434,7 @@ export class ReportService {
     const formData = new FormData();
     formData.append('chat_id', chat_id.toString());
     formData.append('document', pdfBuffer, { filename: 'report.pdf', contentType: 'application/pdf' });
-    
+
     try {
       const response = await axios.post(telegramApiUrl, formData, {
         headers: {
@@ -447,9 +447,9 @@ export class ReportService {
     }
   }
 
-  async sendPhoto(chat_id: number, image: any): Promise<void> {    
+  async sendPhoto(chat_id: number, image: any): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`;
-  
+
     try {
       await axios.post(telegramApiUrl, {
         chat_id: chat_id,
@@ -465,32 +465,32 @@ export class ReportService {
     try {
       const currentHour = new Date().getHours() + 3;
 
-      if (currentHour === 0) { 
+      if (currentHour === 0) {
         console.log('start preparing report')
         return this.prepareReportData()
       }
-      
+
       const usersData = await articles_db.getArticlesByTime(currentHour)
       const ids = Object.keys(usersData)
 
-      if (ids.length > 0 ) {
+      if (ids.length > 0) {
         for (const chat_id of ids) {
           if (usersData[chat_id][0] && usersData[chat_id][0].wb_api_key) {
-            const htmlTable = getReportHtml(usersData[chat_id]); 
-            const pdfBuffer = await generatePdfFromHtml(htmlTable); 
+            const htmlTable = getReportHtml(usersData[chat_id]);
+            const pdfBuffer = await generatePdfFromHtml(htmlTable);
             if (pdfBuffer) {
               await this.sendPdfToTelegram(+chat_id, pdfBuffer);
             }
           } else {
-            console.log('There are no articles for '+ chat_id)
+            console.log('There are no articles for ' + chat_id)
           }
         }
       } else {
-        console.log('No new articles to report for this hour: '+currentHour);
+        console.log('No new articles to report for this hour: ' + currentHour);
       }
     } catch (error) {
       console.error('Error in report service:', error);
-    } 
+    }
   }
 
   async runForUser(user: User, article?: article): Promise<void> {
@@ -499,11 +499,11 @@ export class ReportService {
       await this.prepareReportData(chat_id)
       let articles;
 
-      articles = (await articles_db.getAllArticlesForUser(chat_id, 'on')).rows 
-      if (articles.length > 0 ) {
+      articles = (await articles_db.getAllArticlesForUser(chat_id, 'on')).rows
+      if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
-          const htmlTable = getReportHtml(articles); 
-          const pdfBuffer = await generatePdfFromHtml(htmlTable); 
+          const htmlTable = getReportHtml(articles);
+          const pdfBuffer = await generatePdfFromHtml(htmlTable);
           if (pdfBuffer) {
             await this.sendPdfToTelegram(+chat_id, pdfBuffer);
           }

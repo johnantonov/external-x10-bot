@@ -15,7 +15,7 @@ import { images } from "../dto/images";
  * @returns {Promise<Message>} - resolves with the message sent
  */
 export function getHelp(bot: TelegramBot, id: ChatId) {
-  return bot.sendMessage(id, `/menu - Открыть меню бота` );
+  return bot.sendMessage(id, `/menu - Открыть меню бота`);
 };
 
 /**
@@ -40,8 +40,8 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
 
     const text = command === '/menu' ? ' ' : `Это телеграм бот для получения ежедневных отчетов по вашему артикулу.\n\nДля начала работы привяжите свой WB API KEY:`;
     const img = command === '/menu' ? images.menu : images.hello;
-    
-    if (isUser) { 
+
+    if (isUser) {
       if (!isNewMsg) {
         if (!menuId) {
           await sendNewMenu(chat_id, img, text, user.type)
@@ -82,7 +82,7 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
         inline_keyboard: keyboard || []
       }
     };
-    
+
     return bot.sendPhoto(chat_id, imagePath, { caption, ...options, parse_mode: 'HTML' });
   } catch (e) {
     return console.error('error in sendImageWithText: ', e, chat_id, imageName, caption, keyboard)

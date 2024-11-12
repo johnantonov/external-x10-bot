@@ -14,7 +14,7 @@ export class User {
 
   [key: string]: any;
 
-  constructor (data: any) {
+  constructor(data: any) {
     this.chat_id = data.chat.id;
     this.username = data.from?.username
     this.wb_api_key = data.message_id

@@ -38,7 +38,7 @@ export function getReportHtml(articleData: Article[]) {
       </tbody> 
     </table>`
   })
-  
+
   return `
   <!DOCTYPE html>
     <html lang="ru">
@@ -56,10 +56,10 @@ export function getReportHtml(articleData: Article[]) {
 
 
 function getDaysRows(daysCount: number, data: Record<string, any>, index: number) {
-  const marketing = data?.marketing_cost || {};  
+  const marketing = data?.marketing_cost || {};
   let days = Object.keys(create30DaysObject())
   let dayRows = ``
-  
+
   for (let i = daysCount; i > 0; i--) {
     const day = days[i]
     const formatDate = day.slice(5).replace('-', '/')
@@ -69,25 +69,25 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     const stats = data.order_info[day] || {};
     const otherCosts = getCosts(data, day)
 
-    const ctrArk = (ark.clicks / ark.views) || 0; 
-    const ctrPrk = (prk.clicks / prk.views) || 0; 
-    const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
+    const ctrArk = (ark.clicks / ark.views) || 0;
+    const ctrPrk = (prk.clicks / prk.views) || 0;
+    const drr = (marketingCost / (stats.ordersSum || 1)) * 100;
     const rev = (stats.buysSum ?? 0) - otherCosts - marketingCost
-    const margin = formatNumber(rev / (stats.buysSum || 1) * 100)+"%"
-    
+    const margin = formatNumber(rev / (stats.buysSum || 1) * 100) + "%"
+
     dayRows += `<tr class="row">`
 
     if (i === daysCount) {
-      const value = index === 0 ? "ИТОГО" : 'ФОТО' 
+      const value = index === 0 ? "ИТОГО" : 'ФОТО'
       dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
-    } 
+    }
 
     dayRows += `
       <td rowspan="1" colspan="2" class="day_cell">${day}</td>
       <td class="bl">${ark.clicks.toFixed(0)}</td>
-      <td>${(ctrArk*100).toFixed(2)}%</td>
+      <td>${(ctrArk * 100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
-      <td>${(ctrPrk*100).toFixed(2)}%</td>
+      <td>${(ctrPrk * 100).toFixed(2)}%</td>
       <td class="bl">${marketingCost.toFixed(0)}</td>
       <td>${drr.toFixed(2)}%</td>
       <td>${stats.addToCartCount}</td>

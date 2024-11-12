@@ -31,7 +31,7 @@ class ConversionsModel extends BaseModel<Conversion> {
           cart_to_order = EXCLUDED.cart_to_order,
           buyout_percent = EXCLUDED.buyout_percent
       `;
-    
+
       for (const conversion of dataArray) {
         await this.pool.query(query, [
           conversion.date,

@@ -6,7 +6,7 @@ export class redis {
   constructor() {
     this.client = new Redis({
       host: process.env.REDIS_HOST || 'localhost',
-      port: 6379, 
+      port: 6379,
     });
   }
 
@@ -32,14 +32,14 @@ export class redis {
 }
 
 export const waitingStates = [
-  'ecn', 
-  'awaiting_wb_api_key', 
-  'esc', 
-  'em', 
-  'et', 
-  'awaiting_article', 
-  'awaiting_new_key', 
-  'acq', 
+  'ecn',
+  'awaiting_wb_api_key',
+  'esc',
+  'em',
+  'et',
+  'awaiting_article',
+  'awaiting_new_key',
+  'acq',
 ]
 
 export const rStates = {

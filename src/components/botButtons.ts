@@ -29,7 +29,7 @@ export class Options {
     };
   }
 
-  generateInlineKeyboard(buttons: InlineKeyboardButton[][]): InlineKeyboardButton[][]  {
+  generateInlineKeyboard(buttons: InlineKeyboardButton[][]): InlineKeyboardButton[][] {
     try {
       return buttons.map((row: InlineKeyboardButton[]) =>
         row.map((button: InlineKeyboardButton) => ({
@@ -84,24 +84,24 @@ export const mainButtons: Record<string, InlineKeyboardButton> = {
   menu: { text: '↩️ Меню', callback_data: CallbackData.menu },
   menuAndEdit: { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit },
   changeTime: { text: '🕘 Настроить расписание отчетов', callback_data: CallbackData.changeTime },
-  changeWbApiKey: { text: '🔑 Обновить WB API KEY', callback_data: CallbackData.changeWbApiKey } ,
+  changeWbApiKey: { text: '🔑 Обновить WB API KEY', callback_data: CallbackData.changeWbApiKey },
   loading: { text: '⏳ Загрузка...', callback_data: CallbackData.loading },
   registrateUser: { text: '🔑 Подключить WB API KEY', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
-} 
+}
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
   getReportNow: (article: string) => { return { text: '📂 Сформировать отчет сейчас', callback_data: CallbackData.getReportNow + article } },
-  editReportName: (article: string) => { return  { text: '✍️ Переименовать товар', callback_data: CallbackData.editArticleTitle + article } },
-  editSelfCost: (article: article) => { return  { text: '💰 Себестоимость', callback_data: CallbackData.editSelfCost! + article } },
-  editMark: (article: article) => { return  { text: '🗂 Указать маркировку', callback_data: CallbackData.editMark! + article } },
-  editTax: (article: article) => { return  { text: '💸 Указать налог', callback_data: CallbackData.editTax! + article } },
-  editAcquiring: (article: article) => { return  { text: '🏧 Указать эквайринг', callback_data: CallbackData.editAcquiring! + article } },
-  offArticle: (article: article) => { return  { text: '❌  Отключить телеграм отчет', callback_data: CallbackData.offTable! + article } },
-  returnArticle: (article: string) => { return  { text: '↩️ Вернуться к настройкам', callback_data: CallbackData.returnArticle + article } },
-  deleteArticle: (article: string) => { return  { text: '🗑 Удалить артикул', callback_data: CallbackData.deleteArticle + article } },
-  offReport: (article: string) => { return  { text: '❌ Отключить отчет', callback_data: CallbackData.offReport + article } },
-  onReport: (article: string) => { return  { text: '✅ Включить отчет', callback_data: CallbackData.onReport + article } },
+  editReportName: (article: string) => { return { text: '✍️ Переименовать товар', callback_data: CallbackData.editArticleTitle + article } },
+  editSelfCost: (article: article) => { return { text: '💰 Себестоимость', callback_data: CallbackData.editSelfCost! + article } },
+  editMark: (article: article) => { return { text: '🗂 Указать маркировку', callback_data: CallbackData.editMark! + article } },
+  editTax: (article: article) => { return { text: '💸 Указать налог', callback_data: CallbackData.editTax! + article } },
+  editAcquiring: (article: article) => { return { text: '🏧 Указать эквайринг', callback_data: CallbackData.editAcquiring! + article } },
+  offArticle: (article: article) => { return { text: '❌  Отключить телеграм отчет', callback_data: CallbackData.offTable! + article } },
+  returnArticle: (article: string) => { return { text: '↩️ Вернуться к настройкам', callback_data: CallbackData.returnArticle + article } },
+  deleteArticle: (article: string) => { return { text: '🗑 Удалить артикул', callback_data: CallbackData.deleteArticle + article } },
+  offReport: (article: string) => { return { text: '❌ Отключить отчет', callback_data: CallbackData.offReport + article } },
+  onReport: (article: string) => { return { text: '✅ Включить отчет', callback_data: CallbackData.onReport + article } },
 }
 
 /**
@@ -124,8 +124,8 @@ export const returnNewMenu = () => {
 export const mainOptions = (waitReport?: boolean, type?: user_type) => {
   if (type === 'new') {
     return new Options([[mainButtons.registrateUser]]).reply_markup
-  } 
-  
+  }
+
   const menu = [
     [mainButtons.getAllReportNow],
     [mainButtons.articlesMenu],
@@ -138,7 +138,7 @@ export const mainOptions = (waitReport?: boolean, type?: user_type) => {
   }
 
   return new Options(menu).reply_markup;
-} 
+}
 
 /**
  * returns article menu
@@ -195,13 +195,13 @@ export const yesNo = (cbPart: string) => {
 export async function generateArticlesButtons(chat_id: number, page: number = 1): Promise<TelegramBot.InlineKeyboardButton[][]> {
   const articles = (await articles_db.getAllArticlesForUser(chat_id)).rows;
   const articleButtons: TelegramBot.InlineKeyboardButton[][] = [];
-  const articlesPerPage = 12; 
-  const pages = Math.ceil(articles.length / articlesPerPage); 
+  const articlesPerPage = 12;
+  const pages = Math.ceil(articles.length / articlesPerPage);
 
   // use little keys because btn callback limit is 64 bytes and we have a large string ss id
   articles.forEach((article: Article, i) => {
     const data: ArticleCallbackData = {
-      mn: CallbackData.goArticle, 
+      mn: CallbackData.goArticle,
       art: article.article,
       sts: article.status,
       an: "",
@@ -235,7 +235,7 @@ export function generateReportTimeButtons(callback: string, page: number = 0): T
   const times: TelegramBot.InlineKeyboardButton[][] = [];
 
   for (let i = page * timesPerPage + startTime; i < Math.min((page + 1) * timesPerPage + startTime, endTime); i++) {
-    const row = Math.floor((i - page * timesPerPage - startTime) / 4); 
+    const row = Math.floor((i - page * timesPerPage - startTime) / 4);
     if (!times[row]) {
       times[row] = [];
     }

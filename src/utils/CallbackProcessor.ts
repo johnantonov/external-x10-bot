@@ -14,7 +14,7 @@ export class CallbackProcessor {
     if (this.isMenuAction()) {
       return "menu";
     }
-    
+
     if (this.isNewUserAction()) {
       return "new user";
     }
@@ -36,7 +36,7 @@ export class CallbackProcessor {
     }
 
     if (this.isInputState()) {
-      return  "input states";
+      return "input states";
     }
 
     if (this.isArticlesMenu()) {
@@ -50,7 +50,7 @@ export class CallbackProcessor {
     if (this.deleteArticle()) {
       return "delete article";
     }
-    
+
     if (this.isReturnArticleMenu()) {
       return "return article menu";
     }
@@ -58,7 +58,7 @@ export class CallbackProcessor {
     if (this.isOffReport()) {
       return "off report";
     }
-    
+
     if (this.isOnReport()) {
       return "on report";
     }
@@ -85,7 +85,7 @@ export class CallbackProcessor {
   private isNewUserAction(): boolean {
     return this.userCallbackData === CallbackData.registrateUser
   }
-  
+
   private isChangeWbKey(): boolean {
     return this.userCallbackData === CallbackData.changeWbApiKey
   }
@@ -93,7 +93,7 @@ export class CallbackProcessor {
   private isAddArticle(): boolean {
     return this.userCallbackData.startsWith(CallbackData.newArticle as string)
   }
-  
+
   private isEdits(): boolean {
     return this.userCallbackData === CallbackData.editArticle
   }

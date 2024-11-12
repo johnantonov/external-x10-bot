@@ -49,7 +49,7 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
         reportService.run()
       }
     }
-    
+
     if (action === 'prepare_report_service') {
       console.log('admin started preparing report serivce')
       if (reportService) {
@@ -58,7 +58,7 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     }
 
     if (action.startsWith('clean_db')) {
-      const db = action.split('db_')[1]; 
+      const db = action.split('db_')[1];
       if (db) {
         pool.query(`DELETE FROM ${db}`, (err, result) => {
           if (err) {
@@ -73,7 +73,7 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     }
 
     if (action.startsWith('delete_user')) {
-      const user = action.split('delete_user_')[1]; 
+      const user = action.split('delete_user_')[1];
       if (user) {
         pool.query(`DELETE FROM users WHERE chat_id = ${user}`, (err, result) => {
           if (err) {
@@ -86,7 +86,7 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
         console.error('No table specified for deletion.');
       }
     }
-    
+
     if (action.startsWith('help')) {
       await bot.sendMessage(chat_id, helpInfo)
     }
@@ -96,7 +96,7 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
       const step = +action.split('migrate_')[1];
       try {
         for (const m of migrations[step]) {
-          await pool.query(m);  
+          await pool.query(m);
         }
         console.log(`Migration step ${step} completed successfully.`);
       } catch (e) {
@@ -104,59 +104,59 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
       }
     }
 
-  // send all data to spreadsheet db
-  if (action.startsWith('send_all_data')) {
-    const data = await users_db.getAllData();
+    // send all data to spreadsheet db
+    if (action.startsWith('send_all_data')) {
+      const data = await users_db.getAllData();
 
-    // Отправка запроса без обработки
-    axios.post(process.env.SS_ALL_DATA_URL!, data, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).catch(error => {
-      console.error('Error sending all data: ', error);
-    });
-  }
-
-  // get mp conversions data 
-  if (action.startsWith('get_mp_conversions')) {
-    console.log('start to updating')
-    await updateConversions()
-  }
-
-  // get mp commissions data 
-  if (action.startsWith('get_mp_commissions')) {
-    console.log('start to updating')
-    await updateCommissions()
-  }
-
-  if (action.startsWith('my_id')) {
-    await bot.sendMessage(chat_id, `${chat_id}`)
-  }
-
-
-  // get mp commissions data 
-  if (action.startsWith('clear_last_report_time')) {
-    console.log('start to clearing')
-    const id = action.split('time_')[1];
-
-    if (id === 'all') {
-      await users_db.clearLastReportTime()
+      // Отправка запроса без обработки
+      axios.post(process.env.SS_ALL_DATA_URL!, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).catch(error => {
+        console.error('Error sending all data: ', error);
+      });
     }
-    
-    await users_db.clearLastReportTime(+id)
-  }
 
-  if (action.startsWith('get_article')) {
-    const id = action.split('_')[2]
-    const article = action.split('_')[3]
+    // get mp conversions data 
+    if (action.startsWith('get_mp_conversions')) {
+      console.log('start to updating')
+      await updateConversions()
+    }
 
-    const msg = await articles_db.getArticle(+id, article)
+    // get mp commissions data 
+    if (action.startsWith('get_mp_commissions')) {
+      console.log('start to updating')
+      await updateCommissions()
+    }
 
-    await bot.sendMessage(chat_id, `${JSON.stringify(msg)}`)
-  }
-    
+    if (action.startsWith('my_id')) {
+      await bot.sendMessage(chat_id, `${chat_id}`)
+    }
+
+
+    // get mp commissions data 
+    if (action.startsWith('clear_last_report_time')) {
+      console.log('start to clearing')
+      const id = action.split('time_')[1];
+
+      if (id === 'all') {
+        await users_db.clearLastReportTime()
+      }
+
+      await users_db.clearLastReportTime(+id)
+    }
+
+    if (action.startsWith('get_article')) {
+      const id = action.split('_')[2]
+      const article = action.split('_')[3]
+
+      const msg = await articles_db.getArticle(+id, article)
+
+      await bot.sendMessage(chat_id, `${JSON.stringify(msg)}`)
+    }
+
   } catch (e) {
-    console.error('error in admin handler: '+e)
+    console.error('error in admin handler: ' + e)
   }
 }

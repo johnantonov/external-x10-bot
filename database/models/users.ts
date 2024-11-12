@@ -15,21 +15,21 @@ class UsersModel extends BaseModel<User> {
   async processUserRequest(chat_id: number, newUsername: string | undefined): Promise<[user_type | null, number | null]> {
     try {
       const userResult = await this.select({ chat_id });
-      
+
       if (userResult.rows.length === 0) {
         console.error(`Пользователь с chat_id ${chat_id} не найден`);
         return [null, null];
       }
-  
-      const user = userResult.rows[0]; 
-      
+
+      const user = userResult.rows[0];
+
       if (newUsername) {
         const query = `
           UPDATE ${this.tableName}
           SET username = $1
           WHERE chat_id = $2
         `;
-  
+
         await this.pool.query(query, [newUsername, chat_id]);
       }
 
@@ -68,9 +68,9 @@ class UsersModel extends BaseModel<User> {
 
   async findOrCreateUser(chat_id: number, username: string | undefined): Promise<User | null> {
     const existingUser = await this.select({ chat_id });
-    
+
     if (existingUser.rows.length > 0) {
-      return existingUser.rows[0];  
+      return existingUser.rows[0];
     } else {
       const newUser: Partial<User> = { chat_id, username };
       await this.insert(newUser);
@@ -81,14 +81,14 @@ class UsersModel extends BaseModel<User> {
   async checkWbApiKey(chat_id: number) {
     try {
       const user = await this.select({ chat_id });
-  
+
       if (user.rows.length > 0 && user.rows[0].wb_api_key) {
         return user.rows[0].wb_api_key
       } else {
-        return false; 
+        return false;
       }
     } catch (e) {
-      console.error('postgres: error to check key - '+e)
+      console.error('postgres: error to check key - ' + e)
     }
   }
 
@@ -129,7 +129,7 @@ class UsersModel extends BaseModel<User> {
         type: type,
         wb_api_key: wb_api_key,
       };
-  
+
       await this.update('chat_id', chat_id, updateData, ['chat_id']);
     } else {
       console.error(`Ошибка ВБ ключа или артикула: ${chat_id}\nартикул: ${article}\n\nключ: ${wb_api_key}`)
@@ -138,18 +138,18 @@ class UsersModel extends BaseModel<User> {
 
   async getUserById(chat_id: number) {
     const existingUser = await this.select({ chat_id });
-      if (existingUser.rows.length > 0) {
-        return existingUser.rows[0];  
-      } else {
-        return null
-      }
+    if (existingUser.rows.length > 0) {
+      return existingUser.rows[0];
+    } else {
+      return null
+    }
   }
 
   async getReportUsers() {
     const query = `
       SELECT chat_id FROM ${this.tableName}
       `;
-      // WHERE notification_time > 0
+    // WHERE notification_time > 0
 
     const res = await this.pool.query(query);
     return res.rows

@@ -11,7 +11,7 @@ class ArticlesModel extends BaseModel<Article> {
     super('articles', pool);
   }
 
-  async processMarketingCost(chat_id: number, article: article , marketingCost: Record<string, number>): Promise<void> {
+  async processMarketingCost(chat_id: number, article: article, marketingCost: Record<string, number>): Promise<void> {
     try {
       const query = `SELECT marketing_cost FROM ${this.tableName} WHERE chat_id = $1 AND article = $2`;
       const result = await this.pool.query(query, [chat_id, article]);
@@ -26,15 +26,15 @@ class ArticlesModel extends BaseModel<Article> {
       }
 
       console.log(currentMarketingCost)
-      
+
       const sortedDates = sortObjDatesKeys(currentMarketingCost);
       const latest30Days = sortedDates.slice(0, 30);
-      
+
       const updatedMarketingCost = latest30Days.reduce((obj, date) => {
         obj[date] = currentMarketingCost[date];
         return obj;
       }, {} as Record<string, number>);
-  
+
       const updateQuery = `
         UPDATE ${this.tableName} 
         SET marketing_cost = $1 
@@ -82,7 +82,7 @@ class ArticlesModel extends BaseModel<Article> {
       WHERE status = $1
       LIMIT $2 OFFSET $3
     `;
-    
+
     return (await this.pool.query<Article>(query, [status, limit, offset])).rows;
   }
 
@@ -91,7 +91,7 @@ class ArticlesModel extends BaseModel<Article> {
       SELECT * FROM ${this.tableName}
       WHERE chat_id = $1
     `;
-    const values: Array<string|number> = [chat_id]
+    const values: Array<string | number> = [chat_id]
     if (status) {
       query += `AND status = $2`
       values.push(status)
@@ -189,7 +189,7 @@ class ArticlesModel extends BaseModel<Article> {
     `;
     await this.pool.query(query, [mark, chat_id, article]);
   }
-  
+
   async updateTax(chat_id: number, article: article, tax: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}

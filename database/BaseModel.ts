@@ -17,7 +17,7 @@ export abstract class BaseModel<T> {
     try {
       const usersResult = await this.pool.query('SELECT * FROM users');
       const connectionsResult = await this.pool.query('SELECT * FROM connections');
-  
+
       return {
         users: usersResult.rows,
         connections: connectionsResult.rows,
@@ -54,25 +54,25 @@ export abstract class BaseModel<T> {
 
   async update(key: keyof T, keyValue: any, data: Partial<T>, uniqueColumns: (keyof T)[]): Promise<void> {
     const columns = Object.keys(data);
-    
+
     const columnNames = columns.map((col) => `"${col}"`).join(', ');
     const valuePlaceholders = columns.map((_, index) => `$${index + 1}`).join(', ');
-  
+
     const conflictColumns = uniqueColumns.map((col) => `"${String(col)}"`).join(', ');
     const conflictAction = columns
-      .filter((col) => !uniqueColumns.includes(col as keyof T)) 
+      .filter((col) => !uniqueColumns.includes(col as keyof T))
       .map((col) => `"${col}" = EXCLUDED."${col}"`)
       .join(', ');
-  
+
     const values = [...Object.values(data), keyValue];
-  
+
     const query = `
       INSERT INTO ${this.tableName} (${columnNames}, "${String(key)}")
       VALUES (${valuePlaceholders}, $${values.length})
       ON CONFLICT (${conflictColumns})  -- Учитываем все уникальные столбцы
       DO UPDATE SET ${conflictAction};
     `;
-  
+
     await this.pool.query(query, values);
   }
 }

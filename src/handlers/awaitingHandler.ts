@@ -15,7 +15,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
   if (!data.text) {
     return new AwaitingAnswer({ result: false, text: "Текст отсутствует" });
   }
-  
+
   if (!isKey(data.text, state)) {
     return new AwaitingAnswer({ result: false, text: "Введенные данные не соответствуют ожидаемому формату" });
   }
@@ -24,11 +24,11 @@ export async function awaitingHandler(data: UserMsg, state: string) {
 
   try {
     const handleError = (message: string) => new AwaitingAnswer({ result: false, text: message });
-    
+
     if (state === rStates.waitWbApiKey) {
       try {
         await users_db.updateType(chat_id, text);
-        return new AwaitingAnswer({ result: true, text: "✅ Вы добавили WB ключ", type: 'registered'});
+        return new AwaitingAnswer({ result: true, text: "✅ Вы добавили WB ключ", type: 'registered' });
       } catch (e) {
         console.error('Ошибка в процессе добавления ключа вб: ', e)
         return handleError("Возникла ошибка, попробуйте еще раз.");
@@ -100,7 +100,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
 
     return handleError("Возникла ошибка, попробуйте еще раз.");
   } catch (e) {
-    console.error('Error in awaiting handler: '+e)
+    console.error('Error in awaiting handler: ' + e)
     return new AwaitingAnswer({ result: false, text: "Возникла ошибка, попробуйте еще раз." })
   }
 }
