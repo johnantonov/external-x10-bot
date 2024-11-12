@@ -11,7 +11,6 @@ export async function generatePdfFromHtml(htmlContent: string) {
   try {
     console.log('start');
     const browser = await puppeteer.launch({
-      headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
@@ -28,6 +27,7 @@ export async function generatePdfFromHtml(htmlContent: string) {
     return Buffer.from(pdfBuffer);
   } catch (error) {
     console.error('Error during PDF generation:', error);
+    return [];
   }
 }
 
