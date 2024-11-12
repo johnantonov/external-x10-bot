@@ -110,37 +110,33 @@ export class ReportService {
         const nms = articles.map(a => +a.article)
         
         console.log(`articles for ${id}: ${JSON.stringify(nms)}`)
-        // console.log(`advertIds for ${id}: ${JSON.stringify(advertIds)}`)
         
         let advertDetailsResponse;
         if (advertIds) {
           advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
         }
 
-        // console.log(`adverts details for ${id}: ${JSON.stringify(advertDetailsResponse)}`)
-
-    
         let advRes: any;
         if (advertDetailsResponse) {
           advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
         }
 
-        console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
+        // console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
     
         const [monthAgoDate, yesterday, today] = getXDaysPeriod(31)
        
         const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday, today));
 
-        console.log(`statistic report for ${id}: ${JSON.stringify(report)}`)
+        // console.log(`statistic report for ${id}: ${JSON.stringify(report)}`)
         
         const yesterdayTime = yesterday + " 23:59:59"
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
 
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
-        console.log(`persent buy for ${id}: ${JSON.stringify(percent_buys)}`)
+        // console.log(`persent buy for ${id}: ${JSON.stringify(percent_buys)}`)
 
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
-        console.log(`size ${id}: ${JSON.stringify(size)}`)
+        // console.log(`size ${id}: ${JSON.stringify(size)}`)
     
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
@@ -265,9 +261,6 @@ export class ReportService {
         headers: headers
       });
 
-      const logData = yesterdayResponse.data
-      // console.log(`yesterday data:`, JSON.stringify(logData))
-
       if (!yesterdayResponse.data.data && !yesterdayResponse.data.data.length) {
         console.log(`no yesterday data for ${JSON.stringify(articles)}`)
       }
@@ -305,9 +298,6 @@ export class ReportService {
     } catch (error) {
       formatError(error, 'Error fetching yesterday report statistics: ')
     }
-
-    console.log('report result after processing yesterday data: ', result)
-
 
     try {
       const periodResponse = await axios.post(url, periodRequestData, {
