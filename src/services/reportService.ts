@@ -478,13 +478,16 @@ export class ReportService {
         return this.prepareReportData()
       }
 
+      console.log(1)
+      
       const usersData = await articles_db.getArticlesByTime(currentHour)
       const ids = Object.keys(usersData)
+      console.log(JSON.stringify(usersData))
+      console.log(ids)
 
       if (ids.length > 0 ) {
         for (const chat_id of ids) {
           if (usersData[chat_id][0] && usersData[chat_id][0].wb_api_key) {
-
             const htmlTable = getReportHtml(usersData[chat_id]); 
             const pdfBuffer = await generatePdfFromHtml(htmlTable); 
             if (pdfBuffer) {
@@ -496,7 +499,9 @@ export class ReportService {
               // if (marketingChart) {
               //   return this.sendPhoto(chat_id, marketingChart)
               // }
-            } 
+            } else {
+              console.log('There are no articles for '+ chat_id)
+            }
           }
       } else {
         console.log('No new articles to report for this hour: '+currentHour);
