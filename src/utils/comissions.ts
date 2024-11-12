@@ -11,7 +11,6 @@ export async function updateCommissions() {
     });
 
     const data = commissionResponse.data.report;
-    // console.log(data)
     await commissions_db.upsertCommissions(data);
 
     console.log('Commissions updated successfully');
