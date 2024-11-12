@@ -1,22 +1,34 @@
-import { resolve } from "path";
 import { Article } from "../dto/articles";
 import { getWbArticlePhoto } from "./parse";
 import { formatNumber, parsePercent } from "./string";
 import { create30DaysObject, getYesterdayDate } from "./time";
-import { readFileSync } from "fs";
+import axios from 'axios';
+import sharp from 'sharp';
 
 
 const config = {
   days: 5
 }
 
-export function getReportHtml(articleData: Article[]) {
-  // console.log(JSON.stringify(articleData))
+export async function getReportHtml(articleData: Article[]) {
   const date = getYesterdayDate();
-  let tables = ``
+  let tables = ``;
 
-  articleData.forEach((data, i) => {
-    let dayRows = getDaysRows(config.days, data, i)
+  for (const [i, data] of articleData.entries()) {
+    let imgSrc: any;
+    try {
+      const imgUrl = getWbArticlePhoto(+data.article);
+      const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
+      let imgBuffer = Buffer.from(response.data, 'binary');
+      imgBuffer = await sharp(imgBuffer).resize({ width: 180, height: 300 }).toBuffer();
+      const imgBase64 = imgBuffer.toString('base64');
+      imgSrc = `data:image/jpeg;base64,${imgBase64}`;
+    } catch (error) {
+      console.error(`Error while generating table html: ${error}`);
+    }
+
+    articleData.forEach((data, i) => {
+    let dayRows = getDaysRows(config.days, data, i, imgSrc)
 
     tables += `<table class="b">
       <thead class="br">
@@ -38,8 +50,9 @@ export function getReportHtml(articleData: Article[]) {
       <tbody  class="br">
         ${dayRows}
       </tbody> 
-    </table>`
-  })
+      </table>`
+    })
+  }
 
   return `
   <!DOCTYPE html>
@@ -57,7 +70,7 @@ export function getReportHtml(articleData: Article[]) {
 }
 
 
-function getDaysRows(daysCount: number, data: Record<string, any>, index: number) {
+function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any) {
   const marketing = data?.marketing_cost || {};
   let days = Object.keys(create30DaysObject())
   let dayRows = ``
@@ -79,16 +92,8 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     dayRows += `<tr class="row">`
 
-    // const imgUrl = getWbArticlePhoto(data.article)
-
-
-    const imgPath = resolve(__dirname, '../../../public/messageImages/test.jpg');
-    const imgBase64 = readFileSync(imgPath).toString('base64');
-
-    const imgSrc = `data:image/jpeg;base64,${imgBase64}`;
-
     if (i === daysCount) {
-      const value = index === 0 ? "ИТОГО" : `<img src="${imgSrc}" alt="${data.vendor_code}" >`
+      const value = index === 0 ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
       dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
     }
 
