@@ -446,7 +446,7 @@ export class ReportService {
           ...formData.getHeaders(),
         },
       });
-      console.log(`PDF sent to chat_id: ${chat_id}`, response.data);
+      console.log(`PDF sent to chat_id: ${chat_id}`);
     } catch (error) {
       console.error(`Failed to send PDF to chat_id: ${chat_id}`, error);
     }

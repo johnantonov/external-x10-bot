@@ -1,6 +1,6 @@
 import { Article } from "../dto/articles";
 import { formatNumber, parsePercent } from "./string";
-import { getYesterdayDate } from "./time";
+import { create30DaysObject, getYesterdayDate } from "./time";
 
 
 const config = {
@@ -14,7 +14,7 @@ export function getReportHtml(articleData: Article[]) {
   let tables = ``
 
   articleData.forEach((data, i) => {
-    let dayRows = getDaysRows(config.days, data, date, i)
+    let dayRows = getDaysRows(config.days, data, i)
 
     tables += `<table class="b">
       <thead>
@@ -55,19 +55,20 @@ export function getReportHtml(articleData: Article[]) {
 }
 
 
-function getDaysRows(daysCount: number, data: Record<string, any>, date: string, index: number) {
-  let dayRows = ``
+function getDaysRows(daysCount: number, data: Record<string, any>, index: number) {
   const marketing = data?.marketing_cost || {};
   const prk = marketing.prk || { clicks: 0, views: 0 };
   const ark = marketing.ark || { clicks: 0, views: 0 };
   const stats = data.order_info || {};
-  const costs = getCosts(data);
+  const costs = getCosts(data)
+
+  let days = Object.keys(create30DaysObject())
+
+  let dayRows = ``
   
   for (let i = daysCount; i > 0; i--) {
-    let day = new Date(date)
-    console.log(day)
-    console.log(date)
-    const marketingCost = parseFloat(marketing?.[i]) || 0;
+    const day = days[i]
+    const marketingCost = parseFloat(marketing?.[day]) || 0;
     const ctrArk = (ark.clicks / ark.views) || 0; 
     const ctrPrk = (prk.clicks / prk.views) || 0; 
     const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
