@@ -220,7 +220,6 @@ export class ReportService {
 
       return extractBuyoutsFromCards(response)
     } catch (e) {
-      // console.error(e)
       formatError(e, 'Error fetching buy percent: ');
       return {};
     }
@@ -250,7 +249,7 @@ export class ReportService {
       nmIDs: articles,
       period: {
         begin: "2024-11-05",
-        end: "2024-11-11"
+        end: yesterday
       },
     };
 
@@ -314,10 +313,7 @@ export class ReportService {
       const periodResponse = await axios.post(url, periodRequestData, {
         headers: headers
       });
-      
-      const logData = periodResponse.data
-      // console.log(`period data:`, JSON.stringify(logData))
-
+    
       if (!periodResponse.data.data.cards) {
         console.log(`no period data for ${JSON.stringify(articles)}`)
         return result;
@@ -369,7 +365,6 @@ export class ReportService {
       return data
 
     } catch (e) {
-      // console.error(e)
       formatError(e, 'error fetching adv data: ')
       return [];
     }
@@ -420,7 +415,6 @@ export class ReportService {
       }   
       return advertIds
     } catch (e) {
-      // console.error(e)
       formatError(e, 'error fetching campaigns data')
       return {};
     }
