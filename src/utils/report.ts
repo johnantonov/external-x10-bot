@@ -1,14 +1,15 @@
 import { Article } from "../dto/articles";
 import { formatNumber, parsePercent } from "./string";
+import { getYesterdayDate } from "./time";
 
 
 const config = {
   days: 5
 }
 
-export function getReportHtml(articleData: Article, date: string) {
+export function getReportHtml(articleData: Article[]) {
   console.log(JSON.stringify(articleData))
-  console.log(date)
+  const date = getYesterdayDate();
 
   // const stats = articleData.order_info || {};
   // const marketing = articleData?.marketing_cost || {};
@@ -48,22 +49,15 @@ export function getReportHtml(articleData: Article, date: string) {
 
   // const margin = formatNumber(rev / (stats.buysSum || 1) * 100)
 
+  let tables = ``
 
-  let dayRows = getDaysRows(config.days, articleData, date)
-  
-  return `
-  <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-      <meta charset="UTF-8">
-      ${CSS}
-    </head>
-    <body>
-      <h1></h1>
-    <table class="bb">
+  articleData.forEach(data => {
+    let dayRows = getDaysRows(config.days, data, date)
+
+    tables += `<table class="bb">
       <thead>
         <tr class="header rb">
-          <th rowspan="2" colspan="3" class="article_col">${articleData?.article}<br>${articleData?.title}</th>
+          <th rowspan="2" colspan="3" class="article_col">${data?.article}<br>${data?.title}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
@@ -80,7 +74,21 @@ export function getReportHtml(articleData: Article, date: string) {
       <tbody>
         ${dayRows}
       </tbody> 
-    </table>
+    </table>`
+  })
+
+
+  
+  return `
+  <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+      <meta charset="UTF-8">
+      ${CSS}
+    </head>
+    <body>
+      <h1></h1>
+
     </body>
   </html>
     `

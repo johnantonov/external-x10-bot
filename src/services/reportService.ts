@@ -63,17 +63,6 @@ export class ReportService {
     this.pool = pool;
   }
 
-  // Fetch articles with type and matching notification_time
-  async getArticlesForReport(hour: number): Promise<Article[]> {
-    try {
-      const articles = await articles_db.getArticlesByTime(hour)
-      return articles
-    } catch(e) {
-      formatError(e, 'Ошибка получения артикулов: ')
-      return []
-    }
-  }
-
   async prepareReportData(id?: number) {
     try {
       let userIds;
@@ -489,21 +478,18 @@ export class ReportService {
         return this.prepareReportData()
       }
 
-      const articles = await this.getArticlesForReport(currentHour);
+      const usersData = await articles_db.getArticlesByTime(currentHour)
+      const ids = Object.keys(usersData)
 
-      if (articles.length > 0 ) {
-        const date = getYesterdayDate();
-        console.log(`preparing text of reports for ${date} date`)
-        for (const item of articles) {
-          if (item.wb_api_key && item.article) {
-            const { article, chat_id, marketing_cost } = item;
+      if (ids.length > 0 ) {
+        for (const chat_id of ids) {
+          if (usersData[chat_id][0] && usersData[chat_id][0].wb_api_key) {
 
-            const htmlTable = getReportHtml(item, date); 
+            const htmlTable = getReportHtml(usersData[chat_id]); 
             const pdfBuffer = await generatePdfFromHtml(htmlTable); 
             if (pdfBuffer) {
-              await this.sendPdfToTelegram(chat_id, pdfBuffer);
+              await this.sendPdfToTelegram(+chat_id, pdfBuffer);
             }
-    
               // const message = formatReportArticleMessage(item, date)
               // const marketingChart = createChart(marketing_cost)
               // this.sendMessage(chat_id, message)
@@ -526,30 +512,15 @@ export class ReportService {
       await this.prepareReportData(chat_id)
       let articles;
 
-      if (!article || article === 'all') {
-        articles = (await articles_db.getAllArticlesForUser(chat_id, 'on')).rows 
-      } else {
-        const res = (await articles_db.getArticle(chat_id, article))
-        articles = [res]
-      }
-      
+      articles = (await articles_db.getAllArticlesForUser(chat_id, 'on')).rows 
       if (articles.length > 0 ) {
-        const date = getYesterdayDate();
-        for (const item of articles) {
-          if (item.wb_api_key && item.article) {
-              // const message = formatReportArticleMessage(item, date)
-              // const marketingChart = createChart(marketing_cost)
-              const htmlTable = getReportHtml(item, date); 
-              const pdfBuffer = await generatePdfFromHtml(htmlTable); 
-              if (pdfBuffer) {
-                await this.sendPdfToTelegram(chat_id, pdfBuffer);
-              }
-              // this.sendMessage(chat_id, pdf)
-              // if (marketingChart) {
-              //   return this.sendPhoto(chat_id, marketingChart)
-              // }
-            } 
+        if (articles[0] && articles[0].wb_api_key) {
+          const htmlTable = getReportHtml(articles); 
+          const pdfBuffer = await generatePdfFromHtml(htmlTable); 
+          if (pdfBuffer) {
+            await this.sendPdfToTelegram(+chat_id, pdfBuffer);
           }
+        }
       } else {
         this.sendMessage(chat_id, "Возникла ошибка при получении данных о товарах")
       }

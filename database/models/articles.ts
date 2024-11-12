@@ -55,12 +55,24 @@ class ArticlesModel extends BaseModel<Article> {
     return result.rows[0];
   }
 
-  async getArticlesByTime(notification_time: number, status: ArticleStatus = 'on') {
+  async getArticlesByTime(notification_time: number, status: ArticleStatus = 'on'): Promise<Record<string, any>> {
     const query = `
       SELECT * FROM ${this.tableName}
       WHERE notification_time = $1 AND status = $2
     `;
-    return (await this.pool.query<Article>(query, [notification_time, status])).rows;
+
+    const data = (await this.pool.query<Article>(query, [notification_time, status])).rows
+    const res: Record<string, any> = {};
+
+    data.forEach(row => {
+      if (!res[row.chat_id]) {
+        res[row.chat_id] = []
+      }
+
+      res[row.chat_id].push({ [row.article]: row })
+    })
+
+    return res;
   }
 
   async getAllArticles(status: ArticleStatus = 'on', limit: number = 100, offset: number = 0): Promise<Article[]> {

@@ -149,7 +149,7 @@ export const articleOptions = async (chat_id: number, article: article, state: A
   }
 
   const articleBtns = [
-    [articleButtons.getReportNow(article)],
+    // [articleButtons.getReportNow(article)],
     [articleButtons.editSelfCost(article), articleButtons.editMark(article)],
     [articleButtons.editTax(article), articleButtons.editReportName(article)],
     [articleButtons.editAcquiring(article)],
