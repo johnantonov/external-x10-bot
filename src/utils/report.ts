@@ -12,15 +12,23 @@ export async function generatePdfFromHtml(htmlContent: string) {
     args: ['--no-sandbox', '--disable-setuid-sandbox'], 
   });
   const page = await browser.newPage();
+
+  console.log(htmlContent)
+
+  console.log(0)
   
   await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+  console.log(0)
   const pdfBuffer = await page.pdf({
     format: 'A4',
     printBackground: true,
   });
+
+  console.log('1')
   
   await browser.close();
   
+  console.log('2')
   return Buffer.from(pdfBuffer);
 }
 
