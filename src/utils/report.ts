@@ -2,12 +2,14 @@ import jsPDF from "jspdf";
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import { Buffer } from 'buffer';
+import { JSDOM } from 'jsdom'
 
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   const pdf = new jsPDF();
-  const element = document.createElement('div');
-  element.innerHTML = htmlContent;
+  const dom = new JSDOM(htmlContent);
+  const document = dom.window.document;
+  const element = document.getElementsByTagName('body')[0]
 
   return new Promise((resolve, reject) => {
     pdf.html(element, {
