@@ -4,6 +4,9 @@ import { create30DaysObject, getYesterdayDate } from "./time";
 export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[], advertTypes: Record<string, any>) {
   const data: Record<string, any> = {}
   const yesterday = getYesterdayDate();
+
+  console.log('advertisements', advertisements)
+
   userNmIds.forEach(nm => {
     const result = {
       cost: create30DaysObject(),
@@ -42,6 +45,7 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
                 const object = advertTypes.find((advert: any) => advert.id === campaign.advertId);
                 if (object) {
                   const type = object.type === 8 ? 'ark' : 'prk';
+
                   result[type].clicks += clicks;
                   result[type].views += views;
                 }

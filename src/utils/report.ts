@@ -8,7 +8,7 @@ const config = {
 }
 
 export function getReportHtml(articleData: Article[]) {
-  console.log(JSON.stringify(articleData))
+  // console.log(JSON.stringify(articleData))
   const date = getYesterdayDate();
 
   let tables = ``
@@ -19,7 +19,7 @@ export function getReportHtml(articleData: Article[]) {
     tables += `<table class="b">
       <thead class="br">
         <tr class="header br">
-          <th rowspan="2" colspan="6" class="article_col">${data?.article}<br>${data?.vendor_code}</th>
+          <th rowspan="2" colspan="5" class="article_col">${data?.article}<br>${data?.vendor_code}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
@@ -80,11 +80,11 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     if (i === daysCount) {
       const value = index === 0 ? "ИТОГО" : 'ФОТО' 
-      dayRows += `<td rowspan="5" colspan="3">${value}</td>`
+      dayRows += `<td rowspan="${config.days}" colspan="3">${value}</td>`
     } 
 
     dayRows += `
-      <td rowspan="1" colspan="3">${day}</td>
+      <td rowspan="1" colspan="2">${day}</td>
       <td class="bl">${ark.clicks.toFixed(0)}</td>
       <td>${(ctrArk*100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
@@ -140,10 +140,10 @@ const CSS = `
     th, td {
       padding: 8px;
       text-align: center;
-      width: 10%;
+      /* width: 10%; */
     }
     .article_col {
-      width: 200px; 
+      width: 30%; 
     }
     .header {
       background-color: #f2f2f2;
@@ -154,16 +154,17 @@ const CSS = `
       font-weight: bold;
     }
     .bl {
-      border-left: 2px solid black
+      border-left: 2px solid black;
     }
     .br {
       border-right: 2px solid black;
     }
     .b {
       border-top: 2px solid black;
-      border-rigth: 2px solid black;
+      border-right: 2px solid black;
       border-left: 2px solid black;
       border-bottom: 2px solid black;
     }
   </style>
 `
+
