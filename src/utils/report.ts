@@ -19,7 +19,7 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
     };
 
     try {
-      wkhtmltopdf(htmlContent, options).pipe(writableStream);
+      wkhtmltopdf('<h1>Test</h1><p>Hello world</p>').pipe(writableStream);
 
       writableStream.on('finish', () => resolve(Buffer.concat(buffers)));
     } catch (error) {
