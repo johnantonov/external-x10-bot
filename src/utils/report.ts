@@ -19,7 +19,7 @@ export function getReportHtml(articleData: Article[]) {
     tables += `<table class="b">
       <thead class="br">
         <tr class="header br">
-          <th rowspan="2" colspan="5" class="article_col">${data?.article}<br>${data?.vendor_code}</th>
+          <th rowspan="2" colspan="6" class="article_col">${data?.article}<br>${data?.vendor_code}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
@@ -83,7 +83,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     } 
 
     dayRows += `
-      <td rowspan="1" colspan="2">${day}</td>
+      <td rowspan="1" colspan="3">${day}</td>
       <td class="bl">${ark.clicks.toFixed(0)}</td>
       <td>${(ctrArk*100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
@@ -142,7 +142,7 @@ const CSS = `
       width: 10%;
     }
     .article_col {
-      width: 20%; 
+      width: 30%; 
     }
     .header {
       background-color: #f2f2f2;
