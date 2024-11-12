@@ -475,7 +475,7 @@ export class ReportService {
       if (ids.length > 0) {
         for (const chat_id of ids) {
           if (usersData[chat_id][0] && usersData[chat_id][0].wb_api_key) {
-            const htmlTable = getReportHtml(usersData[chat_id]);
+            const htmlTable = await getReportHtml(usersData[chat_id]);
             const pdfBuffer = await generatePdfFromHtml(htmlTable);
             if (pdfBuffer) {
               await this.sendPdfToTelegram(+chat_id, pdfBuffer);
@@ -501,7 +501,7 @@ export class ReportService {
       articles = (await articles_db.getAllArticlesForUser(chat_id, 'on')).rows
       if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
-          const htmlTable = getReportHtml(articles);
+          const htmlTable = await getReportHtml(articles);
           const pdfBuffer = await generatePdfFromHtml(htmlTable);
           if (pdfBuffer) {
             await this.sendPdfToTelegram(+chat_id, pdfBuffer);
