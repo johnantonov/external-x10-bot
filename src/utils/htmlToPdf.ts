@@ -5,7 +5,6 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
   return new Promise((resolve, reject) => {
     const buffers: Uint8Array[] = [];
 
-    // Создаем WritableStream для сбора данных
     const writableStream = new Writable({
       write(chunk, encoding, callback) {
         buffers.push(chunk);  
@@ -14,17 +13,15 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
     });
 
     const options = {
-      pageSize: 'A4' as 'A4',
-      // Возможно, вам нужно настроить дополнительные опции для корректного рендеринга
+      pageSize: 'A3' as 'A3',
       marginTop: '10mm',
       marginBottom: '10mm',
       marginLeft: '10mm',
       marginRight: '10mm',
-      disableJavascript: false, // Включаем JS, если это необходимо
+      disableJavascript: false, 
       noOutline: true,
     };
 
-    // Запуск wkhtmltopdf
     try {
       const pdfStream = wkhtmltopdf(htmlContent, options);
 
@@ -32,7 +29,6 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
         pdfStream.pipe(writableStream);
 
         writableStream.on('finish', () => {
-          // Возвращаем PDF как Buffer после завершения
           resolve(Buffer.concat(buffers));
         });
 

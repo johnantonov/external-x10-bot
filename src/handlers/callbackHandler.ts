@@ -171,7 +171,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
         await users_db.updateLastReportCall(chat_id);
         MS.deleteAllMessages(chat_id)
         const loadingMsg = await bot.sendMessage(chat_id, 'Подготавливаем отчеты ⌛️')
-        runPersonReport(chat_id, 'all')
+        let reportResponse = await runPersonReport(chat_id, 'all')
+        await MS.deleteMessage(chat_id, loadingMsg.message_id)
       } else {
         editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
       }

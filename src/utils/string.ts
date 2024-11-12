@@ -6,7 +6,6 @@ export function formatError(error: any, contextMessage: string) {
   console.error(`Error: ${contextMessage} - ${errorMessage.substring(0, 200)}`);
 }
 
-
 export function parsePercent(input: string | number): number {
   if (!input) {
     return 0;

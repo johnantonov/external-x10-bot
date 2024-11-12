@@ -36,7 +36,7 @@ app.post('/runReportForUser', async (req, res) => {
     const user = await users_db.getUserById(chat_id);
     if (user) {
       // await RS.runForUser(user);
-      reportService.runForUser(user, article);
+      await reportService.runForUser(user, article);
       res.status(200).send('Report run successfully for user.');
     } else {
       res.status(404).send('User not found.');
@@ -52,8 +52,14 @@ app.listen(port, () => {
 
 export function runPersonReport(chat_id: number, article?: article) {
   axios.post(`http://localhost:${process.env.BASE_PORT}/runReportForUser`, { chat_id: chat_id, article: article })
-  .then(response => console.log('Report initiated: ', response.data))
-  .catch(error => console.error('Failed to initiate report: ', error));
+  .then(response => {
+    console.log('Report initiated: ', response.data)
+    return true
+  })
+  .catch(error => {
+    console.error('Failed to initiate report: ', error)
+    return null
+  });
 }
 
 export class ReportService {
