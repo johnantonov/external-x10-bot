@@ -13,7 +13,8 @@ const config = {
 export async function getReportHtml(articleData: Article[]) {
   let tables = ``;
 
-  articleData.forEach(async (data, i) => {
+
+  for (const [i, data] of articleData.entries()) {
     let imgSrc: any;
 
     try {
@@ -50,7 +51,7 @@ export async function getReportHtml(articleData: Article[]) {
         ${dayRows}
       </tbody> 
     </table>`
-  })
+  }
 
   return `
   <!DOCTYPE html>
