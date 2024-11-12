@@ -19,6 +19,8 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
       marginLeft: '10mm',
       marginRight: '10mm',
       disableJavascript: false,
+      images: true,
+      printMediaType: true,
       // noOutline: true,
     };
 
