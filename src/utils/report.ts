@@ -7,11 +7,22 @@ import { Readable } from 'stream';
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const buffers: Uint8Array[] = [];
-    
-    wkhtmltopdf(htmlContent, { 
-      pageSize: 'A4', 
-      debug: true 
-    })
+
+    // Создаем объект с параметрами, с явным типом
+    const options: any = {
+      pageSize: 'A4',
+      debugJavascript: true,
+      join: function() {
+        // Конвертируем объект опций в строку команд
+        return Object.keys(this)
+          .filter(key => key !== 'join')  // Исключаем метод join из опций
+          .map(key => `--${key}=${this[key as keyof any]}`)  // Правильная индексация
+          .join(' '); // Объединяем строки с пробелами
+      }
+    };
+
+    // Передаем HTML и строку параметров
+    wkhtmltopdf(htmlContent, options)
       .on('data', (chunk: Uint8Array) => buffers.push(chunk))
       .on('end', () => resolve(Buffer.concat(buffers)))
       .on('error', (error) => {
