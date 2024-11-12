@@ -271,10 +271,8 @@ export class ReportService {
       const logData = yesterdayResponse.data
       console.log(`yesterday data:`, JSON.stringify(logData))
 
-      if (!yesterdayResponse.data.data.cards) {
+      if (!yesterdayResponse.data.data && !yesterdayResponse.data.data.length) {
         console.log(`no yesterday data for ${JSON.stringify(articles)}`)
-        // console.log(`yesterday data:`, JSON.stringify(logData))
-        return result;
       }
 
       yesterdayResponse.data.data.forEach((el: any) => {
@@ -318,7 +316,6 @@ export class ReportService {
 
       if (!periodResponse.data.data.cards) {
         console.log(`no period data for ${JSON.stringify(articles)}`)
-        // console.log(`period data:`, JSON.stringify(logData))
         return result;
       }
 
