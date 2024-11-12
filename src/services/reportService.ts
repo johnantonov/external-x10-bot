@@ -4,15 +4,14 @@ import * as dotenv from 'dotenv';
 import cron from 'node-cron';
 import express from 'express';
 import pool from '../../database/db';
-import { getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } from '../utils/time';
+import { getXdaysAgoArr, getXDaysPeriod } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
-import { article, Article } from '../dto/articles';
+import { article} from '../dto/articles';
 import { extractBuyoutsFromCards, processCampaigns } from '../utils/marketing';
-import { formatError, formatReportArticleMessage } from '../utils/string';
-import { createChart } from '../utils/charts';
+import { formatError } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
-import { mainOptions, returnMenu, returnNewMenu } from '../components/botButtons';
+import { returnNewMenu } from '../components/botButtons';
 import { conversions_db } from '../../database/models/conversions';
 import { updateCommissions } from '../utils/comissions';
 import { commissions_db } from '../../database/models/commissions';
@@ -32,10 +31,8 @@ app.post('/runReportForUser', async (req, res) => {
   const { chat_id, article } = req.body;
 
   try {
-    // const RS = new ReportService(pool);
     const user = await users_db.getUserById(chat_id);
     if (user) {
-      // await RS.runForUser(user);
       await reportService.runForUser(user, article);
       res.status(200).send('Report run successfully for user.');
     } else {
@@ -472,6 +469,8 @@ export class ReportService {
 
       const usersData = await articles_db.getArticlesByTime(currentHour)
       const ids = Object.keys(usersData)
+
+      console.log(JSON.stringify(usersData))
 
       if (ids.length > 0) {
         for (const chat_id of ids) {

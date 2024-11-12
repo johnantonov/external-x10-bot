@@ -1,4 +1,5 @@
 import { Article } from "../dto/articles";
+import { getWbArticlePhoto } from "./parse";
 import { formatNumber, parsePercent } from "./string";
 import { create30DaysObject, getYesterdayDate } from "./time";
 
@@ -10,7 +11,6 @@ const config = {
 export function getReportHtml(articleData: Article[]) {
   // console.log(JSON.stringify(articleData))
   const date = getYesterdayDate();
-
   let tables = ``
 
   articleData.forEach((data, i) => {
@@ -77,8 +77,10 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     dayRows += `<tr class="row">`
 
+    const imgUrl = getWbArticlePhoto(data.article)
+
     if (i === daysCount) {
-      const value = index === 0 ? "ИТОГО" : 'ФОТО'
+      const value = index === 0 ? "ИТОГО" : `<img src="${imgUrl}" alt="${data.vendor_code}" >`
       dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
     }
 

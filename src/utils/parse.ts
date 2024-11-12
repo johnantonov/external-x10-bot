@@ -24,3 +24,46 @@ export const parseArticleData = (data: string): ArticleCallbackData => {
 export const newArticleData = (data: ArticleCallbackData): string => {
   return data.art + "?" + data.sts
 }
+
+export function getWbArticlePhoto(article = 220197677) {
+  let s_id = Math.floor(article / 100000);
+  let basket;
+  if (s_id <= 143) {
+    basket = "01";
+  } else if (s_id <= 287) {
+    basket = "02";
+  } else if (s_id <= 431) {
+    basket = "03";
+  } else if (s_id <= 719) {
+    basket = "04";
+  } else if (s_id <= 1007) {
+    basket = "05";
+  } else if (s_id <= 1061) {
+    basket = "06";
+  } else if (s_id <= 1115) {
+    basket = "07";
+  } else if (s_id <= 1169) {
+    basket = "08";
+  } else if (s_id <= 1313) {
+    basket = "09";
+  } else if (s_id <= 1601) {
+    basket = "10";
+  } else if (s_id <= 1655) {
+    basket = "11";
+  } else if (s_id <= 1919) {
+    basket = "12";
+  } else if (s_id <= 2045) {
+    basket = "13";
+  } else if (s_id <= 2189) {
+    basket = "14";
+  } else if (s_id <= 2405) {
+    basket = "15";
+  } else {
+    basket = "16"
+  }
+
+  // формируем URL
+  let imageUrl = "https://basket-" + basket + ".wbbasket.ru/vol" + s_id + "/part" + Math.floor(article / 1000) + "/" + article + "/images/big/1.webp";
+  console.log('imageUrl', imageUrl)
+  return imageUrl;
+}
