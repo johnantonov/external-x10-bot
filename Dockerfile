@@ -7,7 +7,6 @@ RUN apt-get update && \
     wkhtmltopdf \
     xfonts-75dpi \
     xfonts-base && \
-    libxrender1 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Установка зависимостей проекта
