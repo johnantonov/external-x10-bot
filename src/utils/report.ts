@@ -27,7 +27,7 @@ export async function generatePdfFromHtml(htmlContent: string) {
     return Buffer.from(pdfBuffer);
   } catch (error) {
     console.error('Error during PDF generation:', error);
-    return [];
+    return null;
   }
 }
 
