@@ -8,10 +8,16 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
   return new Promise((resolve, reject) => {
     const buffers: Uint8Array[] = [];
     
-    wkhtmltopdf(htmlContent, {output: 'out.pdf'})
+    wkhtmltopdf(htmlContent, { 
+      pageSize: 'A4', 
+      debug: true 
+    })
       .on('data', (chunk: Uint8Array) => buffers.push(chunk))
       .on('end', () => resolve(Buffer.concat(buffers)))
-      .on('error', reject);
+      .on('error', (error) => {
+        console.error('Error in wkhtmltopdf:', error);
+        reject(error);
+      });
   });
 }
 
