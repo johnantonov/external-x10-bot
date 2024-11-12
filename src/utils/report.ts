@@ -8,7 +8,7 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
   return new Promise((resolve, reject) => {
     const buffers: Uint8Array[] = [];
 
-    // Определяем параметры без метода join в объекте
+    // Определяем параметры
     const options = {
       pageSize: 'A4',
       debugJavascript: true,
@@ -19,19 +19,19 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
       return Object.keys(options)
         .map(key => {
           const value = options[key];
-          // Если значение булевое, мы добавляем его как флаг (без =)
+          // Если значение булевое, добавляем как флаг (без '=')
           return typeof value === 'boolean' 
             ? (value ? `--${key}` : '') 
             : `--${key}=${value}`;
         })
         .filter(option => option)  // Фильтруем пустые строки (если значение false для флага)
-        .join(' ');
+        .join(' ');  // Объединяем параметры через пробел
     }
 
     // Создаем строку с параметрами
     const commandOptions = createCommandOptions(options);
 
-    // Передаем HTML и строку параметров
+    // Передаем HTML и строку с параметрами
     wkhtmltopdf(htmlContent, commandOptions)
       .on('data', (chunk: Uint8Array) => buffers.push(chunk))
       .on('end', () => resolve(Buffer.concat(buffers)))
