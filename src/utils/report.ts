@@ -4,20 +4,36 @@ import { formatNumber } from "./string";
 import { Buffer } from 'buffer';
 import { JSDOM } from 'jsdom'
 import puppeteer from "puppeteer";
+import { Cheerio } from "cheerio";
 
 
-export async function generatePdfFromHtml(htmlContent: string) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+// export async function generatePdfFromHtml(htmlContent: string) {
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
   
-  await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
-  const pdfBuffer = await page.pdf({
-    format: 'A4',
-    printBackground: true,
-  });
+//   await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+//   const pdfBuffer = await page.pdf({
+//     format: 'A4',
+//     printBackground: true,
+//   });
   
-  await browser.close();
+//   await browser.close();
   
+//   return Buffer.from(pdfBuffer);
+// }
+
+export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
+  const $ = Cheerio.load(htmlContent); // Загружаем HTML в cheerio
+  const pdf = new jsPDF();
+
+  // Извлекаем текстовое содержимое из HTML
+  const bodyContent = $('body').text();
+
+  // Добавляем текст в PDF
+  pdf.text(bodyContent, 10, 10);
+
+  // Получаем PDF в виде Buffer
+  const pdfBuffer = pdf.output('arraybuffer');
   return Buffer.from(pdfBuffer);
 }
 
