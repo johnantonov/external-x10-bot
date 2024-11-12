@@ -3,6 +3,7 @@ import { Article } from "../dto/articles";
 import { getWbArticlePhoto } from "./parse";
 import { formatNumber, parsePercent } from "./string";
 import { create30DaysObject, getYesterdayDate } from "./time";
+import { readFileSync } from "fs";
 
 
 const config = {
@@ -80,13 +81,14 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     // const imgUrl = getWbArticlePhoto(data.article)
 
-    let img = resolve(__dirname, `../../../public/messageImages/test.jpg`)
-    // const img = `file://${resolve(__dirname, '../../../public/messageImages/test.jpg')}`;
 
+    const imgPath = resolve(__dirname, '../../../public/messageImages/test.jpg');
+    const imgBase64 = readFileSync(imgPath).toString('base64');
 
-    console.log(img)
+    const imgSrc = `data:image/jpeg;base64,${imgBase64}`;
+
     if (i === daysCount) {
-      const value = index === 0 ? "ИТОГО" : `<img src="${img}" alt="${data.vendor_code}" >`
+      const value = index === 0 ? "ИТОГО" : `<img src="${imgSrc}" alt="${data.vendor_code}" >`
       dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
     }
 
