@@ -249,13 +249,11 @@ export class ReportService {
     };
 
     const yesterdayRequestData = {
-      nmIDs: articles,
+      nmIDs: [254642549],
       period: {
         begin: "2024-11-11",
         end: "2024-11-07"
       },
-      timezone: "Europe/Moscow",
-      aggregationLevel: "day"
     };
 
     const headers = {
