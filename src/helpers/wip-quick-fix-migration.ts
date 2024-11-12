@@ -74,6 +74,7 @@ export const migrations = [
         PRIMARY KEY ("parentName", "subjectName")
         );`
     ],
+    // -------- 2
     [
         `CREATE OR REPLACE FUNCTION set_wb_api_key()
         RETURNS TRIGGER AS $$

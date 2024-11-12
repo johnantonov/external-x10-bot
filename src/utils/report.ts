@@ -3,31 +3,46 @@ import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import { Buffer } from 'buffer';
 import { JSDOM } from 'jsdom'
+import puppeteer from "puppeteer";
 
 
-export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-  const pdf = new jsPDF();
-  const dom = new JSDOM(htmlContent);
-  const document = dom.window.document;
-  const element = document.getElementsByTagName('body')[0]
-
-  return new Promise((resolve, reject) => {
-    pdf.html(element, {
-      callback: function (pdf) {
-        const pdfBlob = pdf.output('blob'); 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const buffer = Buffer.from(reader.result as ArrayBuffer); 
-          resolve(buffer);
-        };
-        reader.onerror = reject;
-        reader.readAsArrayBuffer(pdfBlob); 
-      },
-      x: 10,
-      y: 10,
-    });
+export async function generatePdfFromHtml(htmlContent: string) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+  const pdfBuffer = await page.pdf({
+    format: 'A4',
+    printBackground: true,
   });
+  
+  await browser.close();
+  return pdfBuffer;
 }
+
+// export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
+//   const pdf = new jsPDF();
+//   const dom = new JSDOM(htmlContent);
+//   const document = dom.window.document;
+//   const element = document.getElementsByTagName('body')[0]
+
+//   return new Promise((resolve, reject) => {
+//     pdf.html(element, {
+//       callback: function (pdf) {
+//         const pdfBlob = pdf.output('blob'); 
+//         const reader = new FileReader();
+//         reader.onloadend = () => {
+//           const buffer = Buffer.from(reader.result as ArrayBuffer); 
+//           resolve(buffer);
+//         };
+//         reader.onerror = reject;
+//         reader.readAsArrayBuffer(pdfBlob); 
+//       },
+//       x: 10,
+//       y: 10,
+//     });
+//   });
+// }
 
 export function parsePercent(input: string | number): number {
   if (!input) {
