@@ -8,21 +8,31 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
   return new Promise((resolve, reject) => {
     const buffers: Uint8Array[] = [];
 
-    // Создаем объект с параметрами, с явным типом
-    const options: any = {
+    // Определяем параметры без метода join в объекте
+    const options = {
       pageSize: 'A4',
       debugJavascript: true,
-      join: function() {
-        // Конвертируем объект опций в строку команд
-        return Object.keys(this)
-          .filter(key => key !== 'join')  // Исключаем метод join из опций
-          .map(key => `--${key}=${this[key as keyof any]}`)  // Правильная индексация
-          .join(' '); // Объединяем строки с пробелами
-      }
     };
 
+    // Функция для создания строки с параметрами командной строки
+    function createCommandOptions(options: Record<string, string | boolean | number>): string {
+      return Object.keys(options)
+        .map(key => {
+          const value = options[key];
+          // Если значение булевое, мы добавляем его как флаг (без =)
+          return typeof value === 'boolean' 
+            ? (value ? `--${key}` : '') 
+            : `--${key}=${value}`;
+        })
+        .filter(option => option)  // Фильтруем пустые строки (если значение false для флага)
+        .join(' ');
+    }
+
+    // Создаем строку с параметрами
+    const commandOptions = createCommandOptions(options);
+
     // Передаем HTML и строку параметров
-    wkhtmltopdf(htmlContent, options)
+    wkhtmltopdf(htmlContent, commandOptions)
       .on('data', (chunk: Uint8Array) => buffers.push(chunk))
       .on('end', () => resolve(Buffer.concat(buffers)))
       .on('error', (error) => {
