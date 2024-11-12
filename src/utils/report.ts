@@ -63,7 +63,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, date: string,
   const stats = data.order_info || {};
   const costs = getCosts(data);
   
-  for (let i = daysCount; i > 0; i++) {
+  for (let i = daysCount; i > 0; i--) {
     let day = new Date(date)
     console.log(day)
     console.log(date)

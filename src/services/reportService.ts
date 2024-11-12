@@ -474,13 +474,9 @@ export class ReportService {
         console.log('start preparing report')
         return this.prepareReportData()
       }
-
-      console.log(1)
       
       const usersData = await articles_db.getArticlesByTime(currentHour)
       const ids = Object.keys(usersData)
-      console.log(JSON.stringify(usersData))
-      console.log(ids)
 
       if (ids.length > 0 ) {
         for (const chat_id of ids) {
