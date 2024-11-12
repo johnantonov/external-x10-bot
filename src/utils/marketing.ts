@@ -5,7 +5,7 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
   const data: Record<string, any> = {}
   const yesterday = getYesterdayDate();
 
-  console.log('advertisements', advertisements)
+  console.log('advertisements', JSON.stringify(advertisements))
 
   userNmIds.forEach(nm => {
     const result = {

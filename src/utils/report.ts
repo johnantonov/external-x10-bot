@@ -80,7 +80,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     if (i === daysCount) {
       const value = index === 0 ? "ИТОГО" : 'ФОТО' 
-      dayRows += `<td rowspan="${config.days}" colspan="3">${value}</td>`
+      dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
     } 
 
     dayRows += `
@@ -144,6 +144,9 @@ const CSS = `
     }
     .article_col {
       width: 30%; 
+    }
+    .photo_cell {
+      width: 250px !important
     }
     .header {
       background-color: #f2f2f2;
