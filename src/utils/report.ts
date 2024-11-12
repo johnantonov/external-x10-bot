@@ -18,13 +18,16 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
       pageSize: 'A4' as 'A4',
     };
 
-    try {
-      wkhtmltopdf('<h1>Test</h1><p>Hello world</p>').pipe(writableStream);
+    const pdfStream = wkhtmltopdf(htmlContent, options);
+
+    if (pdfStream && pdfStream.pipe) {
+      // Поток обрабатывается корректно
+      pdfStream.pipe(writableStream);
 
       writableStream.on('finish', () => resolve(Buffer.concat(buffers)));
-    } catch (error) {
-      console.error('Ошибка генерации PDF:', error);
-      reject(error);
+      writableStream.on('error', reject);
+    } else {
+      reject(new Error('wkhtmltopdf не вернул поток.'));
     }
   });
 }
