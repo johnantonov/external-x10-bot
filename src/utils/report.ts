@@ -9,9 +9,8 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
     const buffers: Uint8Array[] = [];
 
     // Определяем параметры
-    const options: any[] = [
-    ]
-
+    const options: any[] = [`--pageSize='A4'`]
+    // const options: string = '--pageSize=A4';
 
     // Передаем HTML и строку с параметрами
     wkhtmltopdf(htmlContent, options)
