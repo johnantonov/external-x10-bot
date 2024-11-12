@@ -1,24 +1,22 @@
 import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import { Buffer } from 'buffer';
-import wkhtmltopdf from 'node-wkhtmltopdf';
-import { Readable } from 'stream';
+import wkhtmltopdf from 'wkhtmltopdf';
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const buffers: Uint8Array[] = [];
 
-    // Определяем параметры
-    const options: any[] = [`--pageSize='A4'`]
-    // const options: string = '--pageSize=A4';
+    const options = {
+      pageSize: 'A4' as 'A4', 
+    };
 
-    // Передаем HTML и строку с параметрами
     wkhtmltopdf(htmlContent, options)
-      .on('data', (chunk: Uint8Array) => buffers.push(chunk))
-      .on('end', () => resolve(Buffer.concat(buffers)))
+      .on('data', (chunk: Uint8Array) => buffers.push(chunk))  
+      .on('end', () => resolve(Buffer.concat(buffers)))  
       .on('error', (error) => {
-        console.error('Error in wkhtmltopdf:', error);
-        reject(error);
+        console.error('Ошибка генерации PDF:', error);
+        reject(error);  
       });
   });
 }
