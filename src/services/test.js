@@ -32,4 +32,4 @@ async function test() {
   console.log(campaigns)
 }
 
-test()
+// test()

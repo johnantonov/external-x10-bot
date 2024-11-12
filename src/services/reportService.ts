@@ -536,7 +536,9 @@ export class ReportService {
               // const marketingChart = createChart(marketing_cost)
               const htmlTable = getReportHtml(item, date); 
               const pdfBuffer = await generatePdfFromHtml(htmlTable); 
-              await this.sendPdfToTelegram(chat_id, pdfBuffer);
+              if (pdfBuffer) {
+                await this.sendPdfToTelegram(chat_id, pdfBuffer);
+              }
               // this.sendMessage(chat_id, pdf)
               // if (marketingChart) {
               //   return this.sendPhoto(chat_id, marketingChart)
