@@ -3,23 +3,72 @@ import { Article } from "../dto/articles";
 import { formatNumber } from "./string";
 import { load } from "cheerio";
 
+import { Writable } from 'stream';
+import wkhtmltopdf from 'wkhtmltopdf';
 
 export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
-  const $ = load(htmlContent); 
+  return new Promise((resolve, reject) => {
+    const buffers: Uint8Array[] = [];
 
-  //   const dom = new JSDOM(htmlContent);
-  //   const document = dom.window.document;
-  //   const element = document.getElementsByTagName('body')[0]
+    // Создаем WritableStream для сбора данных
+    const writableStream = new Writable({
+      write(chunk, encoding, callback) {
+        buffers.push(chunk);  
+        callback();  
+      }
+    });
 
-  const pdf = new jsPDF();
+    const options = {
+      pageSize: 'A4' as 'A4',
+      // Возможно, вам нужно настроить дополнительные опции для корректного рендеринга
+      marginTop: '10mm',
+      marginBottom: '10mm',
+      marginLeft: '10mm',
+      marginRight: '10mm',
+      disableJavascript: false, // Включаем JS, если это необходимо
+      noOutline: true,
+    };
 
-  const bodyContent = $('body').text();
+    // Запуск wkhtmltopdf
+    try {
+      const pdfStream = wkhtmltopdf(htmlContent, options);
 
-  pdf.text(bodyContent, 10, 10);
+      if (pdfStream && pdfStream.pipe) {
+        pdfStream.pipe(writableStream);
 
-  const pdfBuffer = pdf.output('arraybuffer');
-  return Buffer.from(pdfBuffer);
+        writableStream.on('finish', () => {
+          // Возвращаем PDF как Buffer после завершения
+          resolve(Buffer.concat(buffers));
+        });
+
+        writableStream.on('error', (err) => {
+          reject(new Error(`Ошибка при записи в поток: ${err.message}`));
+        });
+      } else {
+        reject(new Error('wkhtmltopdf не вернул поток.'));
+      }
+    } catch (err: any) {
+      reject(new Error(`Ошибка при запуске wkhtmltopdf: ${err.message}`));
+    }
+  });
 }
+
+// export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
+//   const $ = load(htmlContent); 
+
+//   //   const dom = new JSDOM(htmlContent);
+//   //   const document = dom.window.document;
+//   //   const element = document.getElementsByTagName('body')[0]
+
+//   const pdf = new jsPDF();
+
+//   const bodyContent = $('body').text();
+
+//   pdf.text(bodyContent, 10, 10);
+
+//   const pdfBuffer = pdf.output('arraybuffer');
+//   return Buffer.from(pdfBuffer);
+// }
 
 
 export function parsePercent(input: string | number): number {
