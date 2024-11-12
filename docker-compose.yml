@@ -19,6 +19,7 @@ services:
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
       - PGPORT=5432
+      - XDG_RUNTIME_DIR=/tmp/runtime-root
     depends_on:
       - external-x10Bot-redis
       - external-x10Bot-postgres
