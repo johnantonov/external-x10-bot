@@ -11,50 +11,12 @@ export function getReportHtml(articleData: Article[]) {
   console.log(JSON.stringify(articleData))
   const date = getYesterdayDate();
 
-  // const stats = articleData.order_info || {};
-  // const marketing = articleData?.marketing_cost || {};
-  // const marketingCost = parseFloat(marketing?.[date]) || 0; 
-  // const prk = marketing.prk || { clicks: 0, views: 0 };
-  // const ark = marketing.ark || { clicks: 0, views: 0 };
-  // const tax = parsePercent(articleData.tax)
-  // const acquiring = parsePercent(articleData.acquiring)
-  // const commission = parsePercent(stats.commission)
-
-  // // WIP -------
-  // stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
-  // stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
-  // // -----------
-
-  // let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
-  // let markCost = (stats?.buysCount ?? 0) * (articleData?.mark ?? 0);
-  // let taxCost = (stats?.buysSum ?? 0) * tax;
-  // let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-  // let commissionCost = (stats?.buysSum ?? 0) * commission;
-
-  // const ctr = (ark.clicks + prk.clicks) / ((ark.views + prk.views) || 1); 
-  // const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
-  // const krrr = 
-  // ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100; 
-  
-  // const stocksMp = stats.stocksMp || 0;
-  // const stocksWb = stats.stocksWb || 0;
-  
-  // const rev = (stats.buysSum ?? 0) 
-  // - selfCost
-  // - markCost
-  // - taxCost
-  // - acquiringCost 
-  // - commissionCost
-  // - marketingCost;
-
-  // const margin = formatNumber(rev / (stats.buysSum || 1) * 100)
-
   let tables = ``
 
-  articleData.forEach(data => {
-    let dayRows = getDaysRows(config.days, data, date)
+  articleData.forEach((data, i) => {
+    let dayRows = getDaysRows(config.days, data, date, i)
 
-    tables += `<table class="bb">
+    tables += `<table class="b">
       <thead>
         <tr class="header rb">
           <th rowspan="2" colspan="3" class="article_col">${data?.article}<br>${data?.title}</th>
@@ -76,8 +38,6 @@ export function getReportHtml(articleData: Article[]) {
       </tbody> 
     </table>`
   })
-
-
   
   return `
   <!DOCTYPE html>
@@ -95,7 +55,7 @@ export function getReportHtml(articleData: Article[]) {
 }
 
 
-function getDaysRows(daysCount: number, data: Record<string, any>, date: string) {
+function getDaysRows(daysCount: number, data: Record<string, any>, date: string, index: number) {
   let dayRows = ``
   const marketing = data?.marketing_cost || {};
   const prk = marketing.prk || { clicks: 0, views: 0 };
@@ -116,22 +76,23 @@ function getDaysRows(daysCount: number, data: Record<string, any>, date: string)
     dayRows += `<tr class="row">`
 
     if (i === 0) {
-      dayRows += `<td rowspan="5" colspan="2">ИТОГО</td>`
-    }
+      const value = index === 0 ? 'ФОТО' : "ИТОГО"
+      dayRows += `<td rowspan="5" colspan="2">${value}</td>`
+    } 
 
     dayRows += `
       <td rowspan="1" colspan="1">${day}</td>
       <td class="bl">${ark.clicks}</td>
-      <td>${ctrArk}</td>
+      <td>${ctrArk.toFixed(2)}</td>
       <td class="bl">${prk.clicks}</td>
-      <td>${ctrPrk}</td>
+      <td>${ctrPrk.toFixed(2)}</td>
       <td class="bl">${marketingCost}</td>
       <td>${drr}</td>
       <td>${stats.addToCartCount}</td>
       <td>${stats.ordersCount}</td>
       <td>${stats.buysCount}</td>
       <td>${margin}</td>
-      <td>${rev}</td>
+      <td>${rev.toFixed(2)}</td>
     `
   }
 
@@ -168,7 +129,7 @@ const CSS = `
     table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 20px;
+        margin-bottom: 40px;
     }
     table, th, td {
         border: 0.2px solid #AFEEEE;
@@ -191,11 +152,10 @@ const CSS = `
     .bl {
         border-left: 2px solid black
     }
-    .rb {
-        border: 2px solid black
-    }
-    .bb {
-        border-bottom: 2px solid black
+    .b {
+        border-rigth: 2px solid black;
+        border-left: 2px solid black;
+        border-bottom: 2px solid black;
     }
   </style>
 `

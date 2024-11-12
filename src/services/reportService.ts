@@ -121,9 +121,7 @@ export class ReportService {
 
         console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
     
-        const [monthAgoDate, yesterday, today] = getXDaysPeriod(31);
-
-        console.log("DATES ", monthAgoDate, yesterday, today)
+        const [monthAgoDate, yesterday, today] = getXDaysPeriod(31)
        
         const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday, today));
 
@@ -148,12 +146,14 @@ export class ReportService {
           let info = report[nm]?.order_info || {};        
           let percentBuys = percent_buys?.[nm] ?? null;
           let spp = report[nm]?.price_before_spp ?? null;
+          let vendor = report[nm]?.vendor ?? null;
         
           await articles_db.updateFields(id, +nm, {
             order_info: info,
             percent_buys: percentBuys,
             size: sizes,
-            price_before_spp: spp
+            price_before_spp: spp,
+            vendorCode: vendor,
           });
         }
     
@@ -250,8 +250,6 @@ export class ReportService {
       page: 1
     };
 
-    console.log("DATES FORMATTED ",monthStartDateTime, monthEndDateTime)
-
     const headers = {
       'Authorization': wb_api_key, 
       'Content-Type': 'application/json',
@@ -289,6 +287,7 @@ export class ReportService {
               stocksWb: stocks.stocksWb
             },
             price_before_spp: (data.ordersSumRub / data.ordersCount) || null,
+            vendor: el.vendorCode || null,
           }
         }
       });
@@ -436,9 +435,7 @@ export class ReportService {
 
   async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
-  
-    console.log(pdfBuffer.toString('hex'));
-  
+
     const formData = new FormData();
     formData.append('chat_id', chat_id.toString());
     formData.append('document', pdfBuffer, { filename: 'report.pdf', contentType: 'application/pdf' });
