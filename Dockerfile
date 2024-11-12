@@ -1,13 +1,25 @@
-
 FROM node:18-alpine
 
+# установка необходимых зависимостей для Puppeteer
 RUN apk add --no-cache \
     chromium \
     nss \
     freetype \
     harfbuzz \
     ca-certificates \
-    ttf-freefont
+    ttf-freefont \
+    font-noto-cjk \
+    libx11 \
+    libxcomposite \
+    libxdamage \
+    libxtst \
+    libc6-compat \
+    libxrandr \
+    libxrender \
+    mesa-gles \
+    udev \
+    dbus \
+    ttf-dejavu
 
 WORKDIR /usr/src/app
 
