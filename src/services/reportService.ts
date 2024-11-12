@@ -278,13 +278,18 @@ export class ReportService {
       yesterdayResponse.data.data.forEach((el: any) => {
         if (articles.includes(el.nmID)) {
           const alwaysInfo = el.history[0]
-          result[el.nmID].order_info = {};
+
+          if (!result[el.nmID]) {
+            result[el.nmID] = {}; 
+          }
 
           // const data = el.statistics.selectedPeriod;
           // const stocks = el.stocks;
 
           el.history.forEach((day: Record<string, any>) => {
-            console.log(day)
+            if (!result[el.nmID].order_info) {
+              result[el.nmID].order_info = {};
+            }
             result[el.nmID].order_info[day.dt] = { 
                 ordersCount: day.ordersCount,
                 ordersSum: day.ordersSumRub,
