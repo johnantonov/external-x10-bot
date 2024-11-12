@@ -9,30 +9,12 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
     const buffers: Uint8Array[] = [];
 
     // Определяем параметры
-    const options = {
-      pageSize: 'A4',
-      debugJavascript: true,
-    };
+    const options: any[] = [
+    ]
 
-    // Функция для создания строки с параметрами командной строки
-    function createCommandOptions(options: Record<string, string | boolean | number>): string {
-      return Object.keys(options)
-        .map(key => {
-          const value = options[key];
-          // Если значение булевое, добавляем как флаг (без '=')
-          return typeof value === 'boolean' 
-            ? (value ? `--${key}` : '') 
-            : `--${key}=${value}`;
-        })
-        .filter(option => option)  // Фильтруем пустые строки (если значение false для флага)
-        .join(' ');  // Объединяем параметры через пробел
-    }
-
-    // Создаем строку с параметрами
-    const commandOptions = createCommandOptions(options);
 
     // Передаем HTML и строку с параметрами
-    wkhtmltopdf(htmlContent, commandOptions)
+    wkhtmltopdf(htmlContent, options)
       .on('data', (chunk: Uint8Array) => buffers.push(chunk))
       .on('end', () => resolve(Buffer.concat(buffers)))
       .on('error', (error) => {

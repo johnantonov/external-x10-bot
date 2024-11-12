@@ -3,7 +3,7 @@ declare module 'node-wkhtmltopdf' {
 
   function wkhtmltopdf(
     html: string,
-    options?: string | Record<string, unknown>  
+    options?: string | Record<string, unknown> | any[]
   ): Readable;
   
   export = wkhtmltopdf;
