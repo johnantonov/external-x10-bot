@@ -18,7 +18,7 @@ export function getReportHtml(articleData: Article[]) {
 
     tables += `<table class="b">
       <thead>
-        <tr class="header rb">
+        <tr class="header br">
           <th rowspan="2" colspan="3" class="article_col">${data?.article}<br>${data?.vendor_code}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
           <th rowspan="2" colspan="1">CTR</th>
@@ -63,10 +63,11 @@ function getDaysRows(daysCount: number, data: Record<string, any>, date: string,
   const stats = data.order_info || {};
   const costs = getCosts(data);
   
-  for (let i = 0; i < daysCount; i++) {
-    let day = new Date(date).getUTCDate() - i
+  for (let i = daysCount; i > 0; i++) {
+    let day = new Date(date)
     console.log(day)
-    const marketingCost = parseFloat(marketing?.[day]) || 0;
+    console.log(date)
+    const marketingCost = parseFloat(marketing?.[i]) || 0;
     const ctrArk = (ark.clicks / ark.views) || 0; 
     const ctrPrk = (prk.clicks / prk.views) || 0; 
     const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
@@ -76,7 +77,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, date: string,
     dayRows += `<tr class="row">`
 
     if (i === 0) {
-      const value = index === 0 ? 'ФОТО' : "ИТОГО"
+      const value = index === 0 ? "ИТОГО" : 'ФОТО' 
       dayRows += `<td rowspan="5" colspan="2">${value}</td>`
     } 
 
@@ -152,7 +153,11 @@ const CSS = `
     .bl {
         border-left: 2px solid black
     }
+    .br {
+        border-rigth: 2px solid black;
+    }
     .b {
+        border-top: 2px solid black;
         border-rigth: 2px solid black;
         border-left: 2px solid black;
         border-bottom: 2px solid black;
