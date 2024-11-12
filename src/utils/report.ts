@@ -62,6 +62,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
   
   for (let i = daysCount; i > 0; i--) {
     const day = days[i]
+    const formatDate = day.slice(5).replace('-', '/')
     const prk = marketing[day].prk || { clicks: 0, views: 0 };
     const ark = marketing[day].ark || { clicks: 0, views: 0 };
     const marketingCost = parseFloat(marketing?.[day].cost) || 0;
