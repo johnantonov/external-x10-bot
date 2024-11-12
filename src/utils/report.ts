@@ -59,20 +59,21 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
   const marketing = data?.marketing_cost || {};
   const prk = marketing.prk || { clicks: 0, views: 0 };
   const ark = marketing.ark || { clicks: 0, views: 0 };
-  const stats = data.order_info || {};
-  const costs = getCosts(data)
-
+  
   let days = Object.keys(create30DaysObject())
-
+  
   let dayRows = ``
   
   for (let i = daysCount; i > 0; i--) {
     const day = days[i]
     const marketingCost = parseFloat(marketing?.[day]) || 0;
+    const stats = data.order_info[day] || {};
+    const otherCosts = getCosts(data, day)
+
     const ctrArk = (ark.clicks / ark.views) || 0; 
     const ctrPrk = (prk.clicks / prk.views) || 0; 
     const drr = (marketingCost / (stats.ordersSum || 1)) * 100; 
-    const rev = (stats.buysSum ?? 0) - costs
+    const rev = (stats.buysSum ?? 0) - otherCosts
     const margin = formatNumber(rev / (stats.buysSum || 1) * 100)+"%"
     
     dayRows += `<tr class="row">`
@@ -101,8 +102,8 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
   return dayRows
 }
 
-function getCosts(data: Record<string, any>) {
-  const stats = data.order_info || {};
+function getCosts(data: Record<string, any>, date: string) {
+  const stats = data.order_info[date] || {};
 
   const tax = parsePercent(data.tax)
   const acquiring = parsePercent(data.acquiring)
@@ -142,7 +143,7 @@ const CSS = `
       width: 10%;
     }
     .article_col {
-      width: 30%; 
+      width: 200px; 
     }
     .header {
       background-color: #f2f2f2;

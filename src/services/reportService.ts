@@ -230,6 +230,7 @@ export class ReportService {
 
   async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, yesterday: string, today: string) {
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
+    const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
 
     let moscowTime = new Date().toLocaleString("en-CA", { 
       timeZone: "Europe/Moscow",
@@ -250,10 +251,11 @@ export class ReportService {
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
-        begin: yesterday + ' 00:00:00',
-        end: yesterday + ' 23:59:59'
+        begin: startDate,
+        end: yesterday
       },
-      page: 1
+      timezone: "Europe/Moscow",
+      aggregationLevel: "day"
     };
 
     const headers = {
@@ -263,7 +265,7 @@ export class ReportService {
 
     const result: Record<string, any> = {};
     try {
-      const yesterdayResponse = await axios.post(url, yesterdayRequestData, {
+      const yesterdayResponse = await axios.post(yesterdayUrl, yesterdayRequestData, {
         headers: headers
       });
 
@@ -321,17 +323,17 @@ export class ReportService {
       for (const el of periodResponse.data.data.cards) {
         if (articles.includes(el.nmID)) {
           if (!result[el.nmID].order_info) result[el.nmID].order_info = {};
+
           const conversData = el.statistics.selectedPeriod.conversions;
           const ordersCount = el.statistics.selectedPeriod.ordersCount;
           const categoryName = el.object.name;
+
           const conversions = await conversions_db.getConversion(categoryName)
           const commission = await commissions_db.getCommission(categoryName)
-          // const stock = el.stocks;
+
           result[el.nmID].order_info.addToCartPercent = conversData.addToCartPercent;
           result[el.nmID].order_info.cartToOrderPercent = conversData.cartToOrderPercent;
           result[el.nmID].order_info.buyoutsPercent = conversData.buyoutsPercent;
-          // result[el.nmID].order_info.stocksMp = stock.stocksMp;
-          // result[el.nmID].order_info.stocksWb = stock.stocksWb;
           result[el.nmID].order_info.ordersCount30 = ordersCount;
           result[el.nmID].order_info.commission = isNaN(Number(commission?.kgvpMarketplace)) ? 0 : Number(commission?.kgvpMarketplace);
           result[el.nmID].order_info.click_to_cart = isNaN(Number(conversions?.click_to_cart)) ? 0 : Number(conversions?.click_to_cart).toFixed(2);
@@ -492,16 +494,10 @@ export class ReportService {
             if (pdfBuffer) {
               await this.sendPdfToTelegram(+chat_id, pdfBuffer);
             }
-              // const message = formatReportArticleMessage(item, date)
-              // const marketingChart = createChart(marketing_cost)
-              // this.sendMessage(chat_id, message)
-              // if (marketingChart) {
-              //   return this.sendPhoto(chat_id, marketingChart)
-              // }
-            } else {
-              console.log('There are no articles for '+ chat_id)
-            }
+          } else {
+            console.log('There are no articles for '+ chat_id)
           }
+        }
       } else {
         console.log('No new articles to report for this hour: '+currentHour);
       }
