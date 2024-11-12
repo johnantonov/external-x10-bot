@@ -89,12 +89,12 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td class="bl">${prk.clicks.toFixed(0)}</td>
       <td>${(ctrPrk*100).toFixed(2)}%</td>
       <td class="bl">${marketingCost.toFixed(0)}</td>
-      <td>${drr.toFixed(2)}</td>
+      <td>${drr.toFixed(2)}%</td>
       <td>${stats.addToCartCount}</td>
       <td>${stats.ordersCount}</td>
       <td>${stats.buysCount}</td>
       <td>${margin}</td>
-      <td class="br">${rev.toFixed(2)}</td>
+      <td>${rev.toFixed(2)}</td>
     `
   }
 
@@ -155,7 +155,7 @@ const CSS = `
         border-left: 2px solid black
     }
     .br {
-        border-rigth: 2px solid black;
+        border-right: 2px solid black;
     }
     .b {
         border-top: 2px solid black;
