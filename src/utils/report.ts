@@ -77,18 +77,18 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     
     dayRows += `<tr class="row">`
 
-    if (i === 0) {
+    if (i === daysCount) {
       const value = index === 0 ? "ИТОГО" : 'ФОТО' 
       dayRows += `<td rowspan="5" colspan="2">${value}</td>`
     } 
 
     dayRows += `
       <td rowspan="1" colspan="1">${day}</td>
-      <td class="bl">${ark.clicks}</td>
+      <td class="bl">${ark.clicks.toFixed(0)}</td>
       <td>${ctrArk.toFixed(2)}</td>
-      <td class="bl">${prk.clicks}</td>
+      <td class="bl">${prk.clicks.toFixed(0)}</td>
       <td>${ctrPrk.toFixed(2)}</td>
-      <td class="bl">${marketingCost}</td>
+      <td class="bl">${marketingCost.toFixed(0)}</td>
       <td>${drr}</td>
       <td>${stats.addToCartCount}</td>
       <td>${stats.ordersCount}</td>
