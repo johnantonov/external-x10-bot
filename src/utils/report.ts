@@ -80,7 +80,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     const imgUrl = getWbArticlePhoto(data.article)
 
     if (i === daysCount) {
-      const value = index === 0 ? "ИТОГО" : `<img src="../../public/test.jpg" alt="${data.vendor_code}" >`
+      const value = index === 0 ? "ИТОГО" : `<img src="https://basket-16.wbbasket.ru/vol2546/part254643/254643004/images/big/1.webp" alt="${data.vendor_code}" >`
       dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
     }
 
