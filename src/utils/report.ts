@@ -21,11 +21,12 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
     const pdfStream = wkhtmltopdf(htmlContent, options);
 
     if (pdfStream && pdfStream.pipe) {
+      console.log('true')
       // Поток обрабатывается корректно
       pdfStream.pipe(writableStream);
 
-      writableStream.on('finish', () => resolve(Buffer.concat(buffers)));
-      writableStream.on('error', reject);
+      console.log(JSON.stringify(writableStream))
+
     } else {
       reject(new Error('wkhtmltopdf не вернул поток.'));
     }
