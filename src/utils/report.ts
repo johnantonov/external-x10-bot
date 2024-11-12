@@ -144,9 +144,6 @@ const CSS = `
     .article_col {
       width: 20%; 
     }
-    .img-column {
-        width: 80px;
-    }
     .header {
       background-color: #f2f2f2;
       font-weight: bold;
