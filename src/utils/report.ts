@@ -40,13 +40,13 @@ export async function getReportHtml(articleData: Article[]) {
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
           <th rowspan="2" colspan="1">CTR</th>
-          <th rowspan="2" colspan="1" class="bl">Реклама</th>
+          <th rowspan="2" colspan="1" class="bl">Расходы реклама</th>
           <th rowspan="2" colspan="1">ДРР</th>
           <th rowspan="2" colspan="1">Корзины</th>
           <th rowspan="2" colspan="1">Заказы</th>
           <th rowspan="2" colspan="1">Выкупы</th>
           <th rowspan="2" colspan="1">Маржа</th>
-          <th class="br" rowspan="2" colspan="1">Прибыль</th>
+          <th class="br" rowspan="2" colspan="1">Прогноз прибыли до дрр</th>
         </tr>
       </thead>
       <tbody  class="br">
@@ -166,13 +166,13 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td>${(ctrArk * 100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
       <td>${(ctrPrk * 100).toFixed(2)}%</td>
-      <td class="bl">${marketingCost.toFixed(0)}</td>
+      <td class="bl">${marketingCost.toFixed(0)}₽</td>
       <td>${drr.toFixed(2)}%</td>
       <td>${addToCartCount}</td>
       <td>${ordersCount}</td>
       <td>${Math.round(buysCount)}</td>
       <td>${margin.toFixed(2)}%</td>
-      <td>${rev.toFixed(2)}</td>
+      <td>${rev.toFixed(0)}₽</td>
     `
   }
 
@@ -209,7 +209,7 @@ const CSS = `
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 40px;
+      margin-bottom: 0px;
     }
     table, th, td {
       border: 0.2px solid #AFEEEE;

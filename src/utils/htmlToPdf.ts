@@ -14,10 +14,10 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
 
     const options = {
       pageSize: 'A4' as 'A4',
-      marginTop: '10mm',
-      marginBottom: '10mm',
-      marginLeft: '10mm',
-      marginRight: '10mm',
+      marginTop: '1mm',
+      marginBottom: '1mm',
+      marginLeft: '1mm',
+      marginRight: '1mm',
       disableJavascript: false,
       images: true,
     };

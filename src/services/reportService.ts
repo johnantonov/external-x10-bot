@@ -138,6 +138,9 @@ export class ReportService {
       );
 
       const cards = response.data.cards;
+
+      console.log(JSON.stringify(cards))
+
       const filteredData = cards.filter((card: any) => nmIDs.includes(card.nmID))
       const result: Record<string, any> = {};
 
