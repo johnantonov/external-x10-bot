@@ -14,6 +14,7 @@ export async function updateBoxTariffs() {
     });
 
     const data = tariffsResponse.data.response.data.warehouseList;
+    console.log(JSON.stringify(data))
     await box_tariffs_db.upsertBoxTariffs(data)
 
     console.log('Commissions updated successfully');
