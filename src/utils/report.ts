@@ -106,7 +106,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     if (index === 0 && allData.length > 1) {
       allData.forEach((article: any, indexArticle: number) => {
         if (indexArticle > 0) {
-          stats = data.order_info?.[day] || {};
+          stats = article.order_info?.[day] || {};
           const marketing = article?.marketing_cost || {};
           prk.clicks += marketing?.[day]?.prk?.clicks || 0
           prk.views += marketing?.[day]?.prk?.views || 0 
@@ -118,8 +118,8 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           ordersSum += stats.ordersSum || 0;
 
           // WIP -------
-          buysCount = ordersCount * ((data.percent_buys || 0) / 100)
-          buysSum = ordersSum * ((data.percent_buys || 0) / 100)
+          buysCount = ordersCount * ((article.percent_buys || 0) / 100)
+          buysSum = ordersSum * ((article.percent_buys || 0) / 100)
           // -----------
 
           otherCosts += getCosts(article, day)
@@ -132,20 +132,6 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       drr += (marketingCost / (ordersSum || 1)) * 100;
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
-
-      
-      console.log(`
-        stats ${stats}
-otherCost ${otherCosts}
-addToCartCoun ${addToCartCount}
-ordersCoun ${ordersCount}
-buysCoun ${buysCount}
-ordersSu ${ordersSum}
-buysSu ${buysSum}
-dr ${drr}
-re ${rev}
-margi ${margin}
-    `)
     } else {
       
       const marketing = data?.marketing_cost || {};
