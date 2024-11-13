@@ -106,22 +106,22 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     if (index === 0 && allData.length > 1) {
       allData.forEach((article: any, indexArticle: number) => {
         if (indexArticle > 0) {
+          stats = data.order_info[day] || {};
           const marketing = article?.marketing_cost || {};
           prk.clicks += marketing?.[day]?.prk?.clicks || 0
           prk.views += marketing?.[day]?.prk?.views || 0 
           ark.clicks += marketing?.[day]?.ark?.clicks || 0
           ark.views += marketing?.[day]?.ark?.views || 0 
           marketingCost += parseFloat(marketing?.[day]?.cost) || 0;
-          addToCartCount += article.order_info?.[day]?.addToCartCount;
-          ordersCount += article.order_info?.[day]?.ordersCount;
-          console.log(article.order_info?.[day])
+          addToCartCount += stats.addToCartCount || 0;
+          ordersCount += stats.ordersCount || 0;
+          ordersSum += stats.ordersSum || 0;
 
           // WIP -------
-          buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
-          buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
+          buysCount = ordersCount * ((data.percent_buys || 0) / 100)
+          buysSum = ordersSum * ((data.percent_buys || 0) / 100)
           // -----------
 
-          ordersSum += article.order_info?.[day].ordersSum || 0;
           otherCosts += getCosts(article, day)
 
         }
