@@ -5,6 +5,13 @@ export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
 }
 
+export function parseNumericValue(value: string): number | null {
+  if (value === "-" || value === "" || value === null) {
+    return null;
+  }
+  return parseFloat(value.replace(",", "."));
+}
+
 export const getStateAndArticleFromCallback = (data: string): any[] => {
   const splitData = data.split('?')
   return [splitData[0], splitData[1]]
