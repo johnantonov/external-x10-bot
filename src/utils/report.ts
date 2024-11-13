@@ -115,8 +115,12 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           addToCartCount += article.order_info?.[day]?.addToCartCount;
           ordersCount += article.order_info?.[day]?.ordersCount;
           console.log(article.order_info?.[day])
-          buysCount += article.order_info?.[day].buysCount
-          buysSum += article.order_info?.[day].buysSum;
+
+          // WIP -------
+          buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
+          buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
+          // -----------
+
           ordersSum += article.order_info?.[day].ordersSum || 0;
           otherCosts += getCosts(article, day)
 
@@ -143,11 +147,18 @@ re ${rev}
 margi ${margin}
     `)
     } else {
+      
       const marketing = data?.marketing_cost || {};
       prk = marketing[day].prk || { clicks: 0, views: 0 };
       ark = marketing[day].ark || { clicks: 0, views: 0 };
       marketingCost = parseFloat(marketing?.[day].cost) || 0;
       stats = data.order_info[day] || {};
+      
+      // WIP -------
+      stats.buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
+      stats.buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
+      // -----------
+      
       otherCosts = getCosts(data, day)
 
       ctrArk = (ark.clicks / ark.views) || 0;
