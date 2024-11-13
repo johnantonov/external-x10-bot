@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import cron from 'node-cron';
 import express from 'express';
 import pool from '../../database/db';
-import { getXdaysAgoArr, getXDaysPeriod } from '../utils/time';
+import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { article} from '../dto/articles';
@@ -19,45 +19,45 @@ import { User } from '../dto/user';
 import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { getReportHtml } from '../utils/report';
+import { ChatId } from 'node-telegram-bot-api';
 
-
-const app = express();
-
-app.use(express.json());
 dotenv.config();
-const port = process.env.BASE_PORT;
 
-app.post('/runReportForUser', async (req, res) => {
-  const { chat_id, article } = req.body;
+// const app = express();
+// app.use(express.json());
 
-  try {
-    const user = await users_db.getUserById(chat_id);
-    if (user) {
-      await reportService.runForUser(user, article);
-      res.status(200).send('Report run successfully for user.');
-    } else {
-      res.status(404).send('User not found.');
-    }
-  } catch (error) {
-    res.status(500).send('Error running report for user.');
-  }
-});
+// const port = process.env.BASE_PORT;
+// app.post('/runReportForUser', async (req, res) => {
+//   const { chat_id, article } = req.body;
 
-app.listen(port, () => {
-  console.log(`API Server running on port ${port}`);
-});
+//   try {
+//     const user = await users_db.getUserById(chat_id);
+//     if (user) {
+//       await reportService.runForUser(user, article);
+//       res.status(200).send('Report run successfully for user.');
+//     } else {
+//       res.status(404).send('User not found.');
+//     }
+//   } catch (error) {
+//     res.status(500).send('Error running report for user.');
+//   }
+// });
 
-export function runPersonReport(chat_id: number, article?: article) {
-  axios.post(`http://localhost:${process.env.BASE_PORT}/runReportForUser`, { chat_id: chat_id, article: article })
-    .then(response => {
-      console.log('Report initiated: ', response.data)
-      return true
-    })
-    .catch(error => {
-      console.error('Failed to initiate report: ', error)
-      return null
-    });
-}
+// app.listen(port, () => {
+//   console.log(`API Server running on port ${port}`);
+// });
+
+// export function runPersonReport(chat_id: number, article?: article) {
+//   axios.post(`http://localhost:${process.env.BASE_PORT}/runReportForUser`, { chat_id: chat_id, article: article })
+//     .then(response => {
+//       console.log('Report initiated: ', response.data)
+//       return true
+//     })
+//     .catch(error => {
+//       console.error('Failed to initiate report: ', error)
+//       return null
+//     });
+// }
 
 export class ReportService {
   private pool: Pool;
@@ -218,16 +218,18 @@ export class ReportService {
     }
   }
 
-  async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, yesterday: string, today: string) {
+  async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, yesterday: string, today: string, startWeekDate: string) {
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
+
+    const dates = Object.keys(create30DaysObject())
 
     let moscowTime = new Date().toLocaleString("en-CA", {
       timeZone: "Europe/Moscow",
       hour12: false
     }).replace(",", "");
-    let monthStartDateTime = startDate + ' 00:00:00'
-    let monthEndDateTime = `${today} ${moscowTime.split(" ")[1]}`
+    let monthStartDateTime = dates[length-1] + ' 00:00:00'
+    let monthEndDateTime = `${dates[0]} ${moscowTime.split(" ")[1]}`
 
     const periodRequestData = {
       nmIDs: articles,
@@ -241,8 +243,8 @@ export class ReportService {
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
-        begin: "2024-11-05",
-        end: yesterday
+        begin: dates[6],
+        end: dates[0]
       },
     };
 
@@ -492,9 +494,9 @@ export class ReportService {
     }
   }
 
-  async runForUser(user: User, article?: article): Promise<void> {
+  async runForUser(chat_id: number, article?: article): Promise<void> {
     try {
-      const chat_id = user.chat_id
+      // const chat_id = user.chat_id
       await this.prepareReportData(chat_id)
       let articles;
 

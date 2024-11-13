@@ -10,8 +10,9 @@ import { articleOptions, CallbackData, generateArticlesButtons, generateReportTi
 import { users_db } from "../../database/models/users";
 import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
-import { runPersonReport } from "../services/reportService";
+// import { runPersonReport } from "../services/reportService";
 import { isReportAvailable } from "../utils/time";
+import { reportService } from "../services/reportService";
 dotenv.config();
 
 
@@ -171,24 +172,24 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
         await users_db.updateLastReportCall(chat_id);
         MS.deleteAllMessages(chat_id)
         const loadingMsg = await bot.sendMessage(chat_id, 'Подготавливаем отчеты ⌛️')
-        let reportResponse = await runPersonReport(chat_id, 'all')
+        let reportResponse = await reportService.runForUser(chat_id)
         await MS.deleteMessage(chat_id, loadingMsg.message_id)
       } else {
         editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
       }
       break;
 
-    case 'get report':
-      const accessReport = isReportAvailable(last_report_call)
-      if (accessReport) {
-        await users_db.updateLastReportCall(chat_id);
-        MS.deleteAllMessages(chat_id)
-        await bot.sendMessage(chat_id, 'Подготавливаем отчет ⌛️')
-        runPersonReport(chat_id, +currentArticle)
-      } else {
-        editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
-      }
-      break;
+    // case 'get report':
+    //   const accessReport = isReportAvailable(last_report_call)
+    //   if (accessReport) {
+    //     await users_db.updateLastReportCall(chat_id);
+    //     MS.deleteAllMessages(chat_id)
+    //     await bot.sendMessage(chat_id, 'Подготавливаем отчет ⌛️')
+    //     runPersonReport(chat_id, +currentArticle)
+    //   } else {
+    //     editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
+    //   }
+    //   break;
 
     case 'change time':
       const selectedTime = +userCallbackData.split('?')[1]
