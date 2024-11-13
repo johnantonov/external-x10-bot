@@ -228,7 +228,7 @@ export class ReportService {
       timeZone: "Europe/Moscow",
       hour12: false
     }).replace(",", "");
-    let monthStartDateTime = dates[length-1] + ' 00:00:00'
+    let monthStartDateTime = dates[dates.length-1] + ' 00:00:00'
     let monthEndDateTime = `${dates[0]} ${moscowTime.split(" ")[1]}`
 
     const periodRequestData = {
