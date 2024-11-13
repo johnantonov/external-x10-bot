@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 import cron from 'node-cron';
 import pool from '../../database/db';
-import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod } from '../utils/time';
+import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { article} from '../dto/articles';
@@ -389,14 +389,14 @@ export class ReportService {
     }
   }
 
-  async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer): Promise<void> {
+  async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer, yesterdayDate: string): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
     const options = returnNewMenu(); 
     const replyMarkup = JSON.stringify(options); 
 
     const formData = new FormData();
     formData.append('chat_id', chat_id.toString());
-    formData.append('document', pdfBuffer, { filename: 'Отчет.pdf', contentType: 'application/pdf' });
+    formData.append('document', pdfBuffer, { filename: yesterdayDate, contentType: 'application/pdf' });
     formData.append('reply_markup', replyMarkup); 
 
     try {
@@ -437,7 +437,8 @@ export class ReportService {
       const usersData = await articles_db.getArticlesByTime(currentHour)
       const ids = Object.keys(usersData)
 
-      console.log(JSON.stringify(usersData))
+      const yesterdayDate = getYesterdayDate('ru');
+      console.log(`Start report service: ${yesterdayDate} ${currentHour}`)
 
       if (ids.length > 0) {
         for (const chat_id of ids) {
@@ -445,7 +446,7 @@ export class ReportService {
             const htmlTable = await getReportHtml(usersData[chat_id]);
             const pdfBuffer = await generatePdfFromHtml(htmlTable);
             if (pdfBuffer) {
-              await this.sendPdfToTelegram(+chat_id, pdfBuffer);
+              await this.sendPdfToTelegram(+chat_id, pdfBuffer, yesterdayDate);
             }
           } else {
             console.log('There are no articles for ' + chat_id)
@@ -464,6 +465,7 @@ export class ReportService {
       // const chat_id = user.chat_id
       await this.prepareReportData(chat_id)
       let articles;
+      const yesterdayDate = getYesterdayDate('ru');
 
       articles = (await articles_db.getAllArticlesForUser(chat_id)).rows
       if (articles.length > 0) {
@@ -471,7 +473,7 @@ export class ReportService {
           const htmlTable = await getReportHtml(articles);
           const pdfBuffer = await generatePdfFromHtml(htmlTable);
           if (pdfBuffer) {
-            await this.sendPdfToTelegram(+chat_id, pdfBuffer);
+            await this.sendPdfToTelegram(+chat_id, pdfBuffer, yesterdayDate);
           }
         }
       } else {

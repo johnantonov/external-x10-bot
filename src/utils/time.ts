@@ -5,15 +5,16 @@ import { User } from '../dto/user';
 /**
  * get yesterday date
  */
-export function getYesterdayDate() {
+export function getYesterdayDate(local: 'en' | 'ru' = 'en') {
   const timeZone = 'Europe/Moscow';
 
   const now = new Date();
   const moscowTime = toZonedTime(now, timeZone);
   const yesterday = subDays(moscowTime, 1);
 
-  const formattedDate = format(yesterday, 'yyyy-MM-dd');
+  const formatStr = local === "en" ? 'yyyy-MM-dd' : 'dd.MM'
 
+  const formattedDate = format(yesterday, formatStr);
   return formattedDate;
 }
 

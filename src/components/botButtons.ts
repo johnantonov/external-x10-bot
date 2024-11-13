@@ -71,7 +71,7 @@ export const mainButtons: Record<string, InlineKeyboardButton> = {
   returnNewMenu: { text: '↩️ Меню', callback_data: CallbackData.returnNewMenu },
   getReportNow: { text: '📂 Сформировать отчет сейчас', callback_data: CallbackData.getReportNow },
   getAllReportNow: { text: '📂 Сформировать отчеты сейчас', callback_data: CallbackData.getAllReportNow },
-  newArticle: { text: '➕ Новый артикул', callback_data: CallbackData.newArticle },
+  newArticle: { text: '➕ Добавить артикулы', callback_data: CallbackData.newArticle },
   editArticle: { text: '⚙️ Настройки товара', callback_data: CallbackData.editArticle },
   menu: { text: '↩️ Меню', callback_data: CallbackData.menu },
   menuAndEdit: { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit },

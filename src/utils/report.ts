@@ -76,8 +76,10 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
   let dayRows = ``
 
   for (let i = daysCount; i > 0; i--) {
-    const day = days[i]
-    const formatDay = day.slice(5).replace('-', '/')
+    const day = days[i];
+
+    const dayParts = day.slice(5).split('-')
+    const formatDay = `${dayParts[1]}.${dayParts[0]}` 
 
     let prk = { clicks: 0, views: 0 };
     let ark = { clicks: 0, views: 0 };
