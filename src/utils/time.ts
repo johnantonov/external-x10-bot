@@ -17,6 +17,18 @@ export function getYesterdayDate() {
   return formattedDate;
 }
 
+export function getTodayDate() {
+  const timeZone = 'Europe/Moscow';
+
+  const now = new Date();
+  const moscowTime = toZonedTime(now, timeZone);
+  const yesterday = subDays(moscowTime, 0);
+
+  const formattedDate = format(yesterday, 'yyyy-MM-dd');
+
+  return formattedDate;
+}
+
 /**
  * Get start date (30 days ago) and end date (yesterday).
  */
