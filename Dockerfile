@@ -21,5 +21,4 @@ RUN npm run build
 ENV XDG_RUNTIME_DIR=/tmp/runtime
 RUN mkdir -p /tmp/runtime && chmod 700 /tmp/runtime
 
-# Запуск бота
 CMD ["node", "dist/src/bot.js"]

@@ -459,7 +459,7 @@ export class ReportService {
     }
   }
 
-  async runForUser(chat_id: number, article?: article): Promise<void> {
+  async runForUser(chat_id: number): Promise<void> {
     try {
       // const chat_id = user.chat_id
       await this.prepareReportData(chat_id)

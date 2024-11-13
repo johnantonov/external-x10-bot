@@ -12,6 +12,7 @@ import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
+import { texts } from "../components/texts";
 dotenv.config();
 
 /**
@@ -86,7 +87,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       const articlesCount = (await articles_db.getAllArticlesForUser(chat_id)).rows.length
       if (articlesCount <= maxCount) {
         await RS.setUserState(chat_id, rStates.waitArticle, ttls.usual)
-        editData = createEditData('🔢 Напишите номер артикула, который желаете отслеживать.', returnBtn);
+        editData = createEditData(texts.addArticles, returnBtn);
       } else {
         editData = createEditData(`❗️ Вы можете добавить максимум ${maxCount}.`, returnBtn);
       }
@@ -125,6 +126,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'delete article':
       newButtonCallback = newArticleData(callbackObj);
+      console.log(JSON.stringify(newButtonCallback))
+      console.log(JSON.stringify(callbackObj))
       const action = callbackObj.an;
 
       if (!action) {

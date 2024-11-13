@@ -94,6 +94,13 @@ class ArticlesModel extends BaseModel<Article> {
     await this.insert(article);
   }
 
+  async addArticles(chat_id: number, articles: article[]): Promise<void> {
+    
+    for (const article of articles) {
+      await this.insert({ chat_id, article: article });
+    }
+  }
+
   async removeArticle(chat_id: number, article?: article): Promise<void> {
     const values = [chat_id]
     let query = `
