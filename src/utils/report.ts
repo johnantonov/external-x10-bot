@@ -13,18 +13,22 @@ const config = {
 export async function getReportHtml(articleData: Article[]) {
   let tables = ``;
 
+  articleData.unshift([] as unknown as Article)
+
   for (const [i, data] of articleData.entries()) {
     let imgSrc: any;
 
-    try {
-      const imgUrl = getWbArticlePhoto(+data.article);
-      const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
-      let imgBuffer = Buffer.from(response.data, 'binary');
-      imgBuffer = await sharp(imgBuffer).resize({ width: 100, height: 140 }).toBuffer();
-      const imgBase64 = imgBuffer.toString('base64');
-      imgSrc = `data:image/jpeg;base64,${imgBase64}`;
-    } catch (error) {
-      console.error(`Error while generating table html: ${error}`);
+    if (i > 0) {
+      try {
+        const imgUrl = getWbArticlePhoto(+data.article);
+        const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
+        let imgBuffer = Buffer.from(response.data, 'binary');
+        imgBuffer = await sharp(imgBuffer).resize({ width: 100, height: 140 }).toBuffer();
+        const imgBase64 = imgBuffer.toString('base64');
+        imgSrc = `data:image/jpeg;base64,${imgBase64}`;
+      } catch (error) {
+        console.error(`Error while generating table html: ${error}`);
+      }
     }
 
     let dayRows = getDaysRows(config.days, data, i, imgSrc, articleData)
@@ -32,7 +36,7 @@ export async function getReportHtml(articleData: Article[]) {
     tables += `<table class="b">
       <thead class="br">
         <tr class="header br">
-          <th rowspan="2" colspan="5" class="article_col">${data?.article}<br>${data?.vendor_code}</th>
+          <th rowspan="2" colspan="5" class="article_col">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
@@ -138,7 +142,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td>${stats.addToCartCount}</td>
       <td>${stats.ordersCount}</td>
       <td>${stats.buysCount.toFixed(2)}</td>
-      <td>${margin}%</td>
+      <td>${margin.toFixed(2)}%</td>
       <td>${rev.toFixed(2)}</td>
     `
   }
