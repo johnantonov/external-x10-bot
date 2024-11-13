@@ -396,7 +396,7 @@ export class ReportService {
 
     const formData = new FormData();
     formData.append('chat_id', chat_id.toString());
-    formData.append('document', pdfBuffer, { filename: yesterdayDate, contentType: 'application/pdf' });
+    formData.append('document', pdfBuffer, { filename: `${yesterdayDate}.pdf`, contentType: 'application/pdf' });
     formData.append('reply_markup', replyMarkup); 
 
     try {
