@@ -2,7 +2,6 @@ export interface Article {
   article: article;
   chat_id: number;
   wb_api_key: string;
-  is_active: boolean;
   notification_time?: number;
   self_cost: number;
   marketing_cost: Record<any, any>;

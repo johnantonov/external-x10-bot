@@ -34,7 +34,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
       }
     }  else if (state.startsWith(rStates.waitArticle)) {
       try {
-        await articles_db.addArticle({ chat_id, article: text, is_active: true })
+        await articles_db.addArticle({ chat_id, article: text })
         return new AwaitingAnswer({ result: true, text: "✅ Вы добавили артикул", type: 'article' });
       } catch (e) {
         console.error('Ошибка в процессе добавления артикула: ', e)
