@@ -339,8 +339,8 @@ export class ReportService {
 
   async getAdvertDetails(wb_api_key: string, advertIds: []) {
     try {
-      const advertIdsNoType = advertIds.map((obj: any) => {
-        delete obj.type;
+      const advertIdsNoType = advertIds.map(({ type, ...rest }: any) => {
+        return rest;
       });
 
       const advertDetailsResponse = await axios.post('https://advert-api.wildberries.ru/adv/v2/fullstats', advertIdsNoType, {
@@ -433,24 +433,26 @@ export class ReportService {
   async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
     const options = returnNewMenu(); 
-    const replyMarkup = JSON.stringify(options); 
 
-    const formData = new FormData();
-    formData.append('chat_id', chat_id.toString());
-    formData.append('document', pdfBuffer, { filename: 'Отчет.pdf', contentType: 'application/pdf' });
-    formData.append('reply_markup', replyMarkup); 
+    const requestData = {
+        chat_id: chat_id.toString(),
+        document: pdfBuffer.toString('base64'), 
+        caption: 'Ваш отчет', 
+        parse_mode: 'HTML',
+        reply_markup: options
+    };
 
     try {
-      const response = await axios.post(telegramApiUrl, formData, {
+      const response = await axios.post(telegramApiUrl, requestData, {
         headers: {
-          ...formData.getHeaders(),
+          'Content-Type': 'application/json', // Указываем, что передаем JSON
         },
       });
       console.log(`PDF sent to chat_id: ${chat_id}`);
     } catch (error) {
       console.error(`Failed to send PDF to chat_id: ${chat_id}`, error);
     }
-}
+  }
 
   async sendPhoto(chat_id: number, image: any): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`;
