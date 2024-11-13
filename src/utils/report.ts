@@ -12,13 +12,12 @@ const config = {
 
 export async function getReportHtml(articleData: Article[]) {
   let tables = ``;
-
-  articleData.unshift([] as unknown as Article)
+  articleData.unshift({} as Article);  // для создания таблицы итого
 
   for (const [i, data] of articleData.entries()) {
     let imgSrc: any;
 
-    if (i > 0) {
+    if (i > 0 && data.article) {
       try {
         const imgUrl = getWbArticlePhoto(+data.article);
         const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
