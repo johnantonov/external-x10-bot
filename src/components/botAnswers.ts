@@ -1,4 +1,4 @@
-import TelegramBot, { ChatId, InlineKeyboardButton, InlineKeyboardMarkup, Message } from "node-telegram-bot-api";
+import TelegramBot, { ChatId, InlineKeyboardButton, Message } from "node-telegram-bot-api";
 import { SendMessageOptions } from 'node-telegram-bot-api';
 import { users_db } from "../../database/models/users";
 import { UserCallback, UserMsg } from "../dto/messages";

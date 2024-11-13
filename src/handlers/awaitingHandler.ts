@@ -1,6 +1,5 @@
-import axios from "axios";
 import { AwaitingAnswer, UserMsg } from "../dto/messages";
-import { redis, rStates } from "../redis";
+import { rStates } from "../redis";
 import { users_db } from "../../database/models/users";
 import dotenv from 'dotenv';
 import { articles_db } from "../../database/models/articles";
@@ -33,16 +32,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.error('Ошибка в процессе добавления ключа вб: ', e)
         return handleError("Возникла ошибка, попробуйте еще раз.");
       }
-    } else if (state.startsWith(rStates.waitArticleTitle)) {
-      try {
-        const article = state.split('?')[1]
-        await articles_db.updateTitle(chat_id, article, text)
-        return new AwaitingAnswer({ result: true, text: "✅ Артикул переименован" });
-      } catch (e) {
-        console.error('Ошибка в процессе переименования ключа: ', e)
-        return handleError("Возникла ошибка, попробуйте еще раз.");
-      }
-    } else if (state.startsWith(rStates.waitArticle)) {
+    }  else if (state.startsWith(rStates.waitArticle)) {
       try {
         await articles_db.addArticle({ chat_id, article: text, is_active: true })
         return new AwaitingAnswer({ result: true, text: "✅ Вы добавили артикул", type: 'article' });
@@ -87,15 +77,6 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.error('Ошибка в процессе сохранения налога: ', e)
         return handleError("Возникла ошибка, попробуйте позже.");
       }
-    } else if (state.startsWith(rStates.waitAcquiring)) {
-      try {
-        const article = state.split('?')[1]
-        await articles_db.updateAcquiring(chat_id, article, +text)
-        return new AwaitingAnswer({ result: true, text: "✅ Эквайринг сохранен" });
-      } catch (e) {
-        console.error('Ошибка в процессе сохранения эквайринга: ', e)
-        return handleError("Возникла ошибка, попробуйте позже.");
-      }
     }
 
     return handleError("Возникла ошибка, попробуйте еще раз.");
@@ -115,15 +96,7 @@ export function isKey(text: string, state: string): Boolean {
     return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{50,}$/.test(text);
   }
 
-  if (state === rStates.waitArticleTitle.split('?')[0]) {
-    return /^\d{6,}$/.test(text);
-  }
-
   if (state.startsWith(rStates.waitTax)) {
-    return /^(\d+([.,]\d+)?|[.,]?\d+)$/.test(text);
-  }
-
-  if (state.startsWith(rStates.waitAcquiring)) {
     return /^(\d+([.,]\d+)?|[.,]?\d+)$/.test(text);
   }
 

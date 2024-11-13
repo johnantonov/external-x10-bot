@@ -32,28 +32,24 @@ export class redis {
 }
 
 export const waitingStates = [
-  'ecn',
   'awaiting_wb_api_key',
   'esc',
   'em',
   'et',
   'awaiting_article',
   'awaiting_new_key',
-  'acq',
 ]
 
 export const rStates = {
-  waitArticleTitle: waitingStates[0],
-  waitWbApiKey: waitingStates[1],
-  waitSelfCost: waitingStates[2],
-  waitMark: waitingStates[3],
-  waitTax: waitingStates[4],
-  waitArticle: waitingStates[5],
-  waitNewKey: waitingStates[6],
-  waitAcquiring: waitingStates[7],
+  waitWbApiKey: waitingStates[0],
+  waitSelfCost: waitingStates[1],
+  waitMark: waitingStates[2],
+  waitTax: waitingStates[3],
+  waitArticle: waitingStates[4],
+  waitNewKey: waitingStates[5],
 }
 
-export const inputStates = [rStates.waitSelfCost, rStates.waitTax, rStates.waitMark, rStates.waitArticleTitle, rStates.waitAcquiring]
+export const inputStates = [rStates.waitSelfCost, rStates.waitTax, rStates.waitMark]
 
 export const getStateMessage = (state: string) => {
   const message = (text: string) => '📝 Укажите ' + text + ' в ответном сообщении.'
@@ -63,12 +59,8 @@ export const getStateMessage = (state: string) => {
       return message('стоимость маркировки')
     case rStates.waitTax:
       return message('размер налога')
-    case rStates.waitArticleTitle:
-      return message('имя товара')
     case rStates.waitSelfCost:
       return message('себестоимость товара')
-    case rStates.waitAcquiring:
-      return message('процент эквайринга')
     default:
       break;
   }

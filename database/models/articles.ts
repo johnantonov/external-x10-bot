@@ -52,13 +52,13 @@ class ArticlesModel extends BaseModel<Article> {
     return result.rows[0];
   }
 
-  async getArticlesByTime(notification_time: number, status: ArticleStatus = 'on'): Promise<Record<string, any>> {
+  async getArticlesByTime(notification_time: number): Promise<Record<string, any>> {
     const query = `
       SELECT * FROM ${this.tableName}
       WHERE notification_time = $1 AND status = $2
     `;
 
-    const data = (await this.pool.query<Article>(query, [notification_time, status])).rows
+    const data = (await this.pool.query<Article>(query, [notification_time])).rows
     const res: Record<string, any> = {};
 
     data.forEach(row => {
@@ -82,17 +82,12 @@ class ArticlesModel extends BaseModel<Article> {
     return (await this.pool.query<Article>(query, [status, limit, offset])).rows;
   }
 
-  async getAllArticlesForUser(chat_id: number, status?: ArticleStatus): Promise<QueryResult<Article>> {
+  async getAllArticlesForUser(chat_id: number): Promise<QueryResult<Article>> {
     let query = `
       SELECT * FROM ${this.tableName}
       WHERE chat_id = $1
     `;
-    const values: Array<string | number> = [chat_id]
-    if (status) {
-      query += `AND status = $2`
-      values.push(status)
-    }
-    return await this.pool.query<Article>(query, values);
+    return await this.pool.query<Article>(query, [chat_id]);
   }
 
   async addArticle(article: Partial<Article>): Promise<void> {
@@ -130,24 +125,6 @@ class ArticlesModel extends BaseModel<Article> {
     }
 
     await this.pool.query(query, values);
-  }
-
-  async updateTitle(chat_id: number, article: article, title: string): Promise<void> {
-    const query = `
-      UPDATE ${this.tableName}
-      SET title = $1
-      WHERE chat_id = $2 AND article = $3
-    `;
-    await this.pool.query(query, [title, chat_id, article]);
-  }
-
-  async updateIsActive(chat_id: number, article: article, is_active: boolean): Promise<void> {
-    const query = `
-      UPDATE ${this.tableName}
-      SET is_active = $1
-      WHERE chat_id = $2 AND article = $3
-    `;
-    await this.pool.query(query, [is_active, chat_id, article]);
   }
 
   async updateSelfCost(chat_id: number, article: article, self_cost: number): Promise<void> {
@@ -195,16 +172,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [tax, chat_id, article]);
   }
 
-  async updateAcquiring(chat_id: number, article: article, acquiring: number): Promise<void> {
-    const query = `
-      UPDATE ${this.tableName}
-      SET acquiring = $1
-      WHERE chat_id = $2 AND article = $3
-    `;
-    await this.pool.query(query, [acquiring, chat_id, article]);
-  }
-
-  async updatePercentBuysitle(chat_id: number, article: article, percent_buys: number): Promise<void> {
+  async updatePercentBuys(chat_id: number, article: article, percent_buys: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
       SET percent_buys = $1
@@ -256,15 +224,6 @@ class ArticlesModel extends BaseModel<Article> {
       WHERE chat_id = $2 AND article = $3
     `;
     await this.pool.query(query, [order_info, chat_id, article]);
-  }
-
-  async updateStatus(chat_id: number, article: article, status: ArticleStatus): Promise<void> {
-    const query = `
-      UPDATE ${this.tableName}
-      SET status = $1
-      WHERE chat_id = $2 AND article = $3
-    `;
-    await this.pool.query(query, [status, chat_id, article]);
   }
 
   async updateFields(chat_id: number, article: article, fields: Partial<Article>): Promise<void> {

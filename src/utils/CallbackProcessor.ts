@@ -55,24 +55,12 @@ export class CallbackProcessor {
       return "return article menu";
     }
 
-    if (this.isOffReport()) {
-      return "off report";
-    }
-
-    if (this.isOnReport()) {
-      return "on report";
-    }
-
     if (this.isNewMenu()) {
       return "new menu";
     }
 
     if (this.getAllReportNow()) {
       return "get all reports";
-    }
-
-    if (this.getReportNow()) {
-      return "get report";
     }
 
     return null; // error
@@ -122,23 +110,11 @@ export class CallbackProcessor {
     return this.userCallbackData.startsWith(CallbackData.deleteArticle as string)
   }
 
-  private isOffReport(): boolean {
-    return this.userCallbackData.startsWith(CallbackData.offReport as string)
-  }
-
-  private isOnReport(): boolean {
-    return this.userCallbackData.startsWith(CallbackData.onReport as string)
-  }
-
   private isNewMenu(): boolean {
     return this.userCallbackData.startsWith(CallbackData.returnNewMenu as string)
   }
 
   private getAllReportNow(): boolean {
     return this.userCallbackData === CallbackData.getAllReportNow
-  }
-
-  private getReportNow(): boolean {
-    return this.userCallbackData.startsWith(CallbackData.getReportNow as string)
   }
 }

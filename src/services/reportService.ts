@@ -2,7 +2,6 @@ import { Pool } from 'pg';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 import cron from 'node-cron';
-import express from 'express';
 import pool from '../../database/db';
 import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod } from '../utils/time';
 import { users_db } from '../../database/models/users';
@@ -15,49 +14,11 @@ import { returnNewMenu } from '../components/botButtons';
 import { conversions_db } from '../../database/models/conversions';
 import { updateCommissions } from '../utils/comissions';
 import { commissions_db } from '../../database/models/commissions';
-import { User } from '../dto/user';
 import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { getReportHtml } from '../utils/report';
-import { ChatId } from 'node-telegram-bot-api';
 
 dotenv.config();
-
-// const app = express();
-// app.use(express.json());
-
-// const port = process.env.BASE_PORT;
-// app.post('/runReportForUser', async (req, res) => {
-//   const { chat_id, article } = req.body;
-
-//   try {
-//     const user = await users_db.getUserById(chat_id);
-//     if (user) {
-//       await reportService.runForUser(user, article);
-//       res.status(200).send('Report run successfully for user.');
-//     } else {
-//       res.status(404).send('User not found.');
-//     }
-//   } catch (error) {
-//     res.status(500).send('Error running report for user.');
-//   }
-// });
-
-// app.listen(port, () => {
-//   console.log(`API Server running on port ${port}`);
-// });
-
-// export function runPersonReport(chat_id: number, article?: article) {
-//   axios.post(`http://localhost:${process.env.BASE_PORT}/runReportForUser`, { chat_id: chat_id, article: article })
-//     .then(response => {
-//       console.log('Report initiated: ', response.data)
-//       return true
-//     })
-//     .catch(error => {
-//       console.error('Failed to initiate report: ', error)
-//       return null
-//     });
-// }
 
 export class ReportService {
   private pool: Pool;
@@ -503,7 +464,7 @@ export class ReportService {
       await this.prepareReportData(chat_id)
       let articles;
 
-      articles = (await articles_db.getAllArticlesForUser(chat_id, 'on')).rows
+      articles = (await articles_db.getAllArticlesForUser(chat_id)).rows
       if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
           const htmlTable = await getReportHtml(articles);

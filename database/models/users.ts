@@ -102,12 +102,6 @@ class UsersModel extends BaseModel<User> {
   }
 
   async updateArticle(chat_id: number, article: article): Promise<void> {
-    const oldArticle = (await this.getUserById(chat_id))?.article
-
-    if (oldArticle) {
-      await articles_db.updateIsActive(chat_id, oldArticle, false)
-    }
-
     const query = `
       UPDATE ${this.tableName}
       SET article = $1, type = 'article'

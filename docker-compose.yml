@@ -37,23 +37,6 @@ services:
       - x10-external-bot_postgres_data:/var/lib/postgresql/data
     restart: always
 
-  # external-x10Bot-report-service:
-  #   build: .
-  #   image: x10-external-bot-report-service
-  #   working_dir: /usr/src/app
-  #   command: sh -c "node dist/src/services/reportService.js"
-  #   environment:
-  #     - PGHOST=external-x10Bot-postgres
-  #     - PGUSER=${PGUSER}
-  #     - PGNAME=${PGNAME}
-  #     - PGPASS=${PGPASS}
-  #     - PGPORT=5432
-  #     - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
-  #     - SERVICE_TYPE=report
-  #   depends_on:
-  #     - external-x10Bot-postgres
-  #   restart: always
-
 volumes:
   x10-external-bot_redis_data:
   x10-external-bot_postgres_data:

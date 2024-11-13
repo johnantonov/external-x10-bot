@@ -10,7 +10,6 @@ import { articleOptions, CallbackData, generateArticlesButtons, generateReportTi
 import { users_db } from "../../database/models/users";
 import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
-// import { runPersonReport } from "../services/reportService";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
 dotenv.config();
@@ -146,26 +145,6 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       }
       break;
 
-    case 'off report':
-      const newMenuWithOnBtn = await articleOptions(chat_id, +currentArticle, 'off')
-      if (newMenuWithOnBtn) {
-        await articles_db.updateStatus(chat_id, currentArticle, 'off')
-        editData = createEditData(`✅ Вы успешно отключили отчет по артикулу ${currentArticle}`, newMenuWithOnBtn);
-      } else {
-        editData = createEditData(`Возникла ошибка при получении данных об артикуле ${currentArticle}`, mainBtn);
-      }
-      break;
-
-    case 'on report':
-      const newMenuWithOffBtn = await articleOptions(chat_id, +currentArticle, 'on')
-      if (newMenuWithOffBtn) {
-        await articles_db.updateStatus(chat_id, currentArticle, 'on')
-        editData = createEditData(`✅ Отчет по товару ${currentArticle} включен и придет согласно расписанию`, newMenuWithOffBtn);
-      } else {
-        editData = createEditData(`Возникла ошибка при получении данных об артикуле ${currentArticle}`, mainBtn);
-      }
-      break;
-
     case 'get all reports':
       const accessAllReports = isReportAvailable(last_report_call)
       if (accessAllReports) {
@@ -178,18 +157,6 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
         editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
       }
       break;
-
-    // case 'get report':
-    //   const accessReport = isReportAvailable(last_report_call)
-    //   if (accessReport) {
-    //     await users_db.updateLastReportCall(chat_id);
-    //     MS.deleteAllMessages(chat_id)
-    //     await bot.sendMessage(chat_id, 'Подготавливаем отчет ⌛️')
-    //     runPersonReport(chat_id, +currentArticle)
-    //   } else {
-    //     editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
-    //   }
-    //   break;
 
     case 'change time':
       const selectedTime = +userCallbackData.split('?')[1]

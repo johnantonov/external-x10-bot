@@ -1,10 +1,8 @@
-import TelegramBot, { CallbackQuery, InlineKeyboardButton, ReplyKeyboardMarkup } from "node-telegram-bot-api";
+import TelegramBot, { CallbackQuery, InlineKeyboardButton } from "node-telegram-bot-api";
 import { user_type } from "../dto/user";
 import { Article, article, ArticleCallbackData, ArticleStatus } from "../dto/articles";
-import { users_db } from "../../database/models/users";
 import { articles_db } from "../../database/models/articles";
 import { newArticleData } from "../utils/parse";
-import { MS } from "../bot";
 
 /**
  * set bot commands (now using when bot starting)
@@ -49,7 +47,6 @@ export const CallbackData: Record<string, CallbackQuery['data']> = {
   returnNewMenu: 'return_new_menu',
   registrateUser: 'snu',
   newArticle: 'ton?',
-  offArticle: 'tof?',
   yes: '?yes',
   no: '?no',
   menu: 'menu',
@@ -57,21 +54,16 @@ export const CallbackData: Record<string, CallbackQuery['data']> = {
   loading: 'loading',
   connectionBtn: 'con?',
   changeWbApiKey: 'onc?',
-  getReportNow: 'grn?',
   changeTime: 'ct?',
-  editArticleTitle: 'ecn?',
   editSelfCost: 'esc?',
   editMark: 'em?',
   editTax: 'et?',
-  editAcquiring: 'acq?',
   returnArticle: 'rc?',
   editArticle: 'ea?',
   articlesMenu: 'artm?',
   getAllReportNow: 'arn?',
   goArticle: 'ar?',
-  deleteArticle: 'da?',
-  offReport: 'offr?',
-  onReport: 'onr?',
+  deleteArticle: 'da?'
 } as const
 
 export const mainButtons: Record<string, InlineKeyboardButton> = {
@@ -91,17 +83,11 @@ export const mainButtons: Record<string, InlineKeyboardButton> = {
 }
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
-  getReportNow: (article: string) => { return { text: '📂 Сформировать отчет сейчас', callback_data: CallbackData.getReportNow + article } },
-  editReportName: (article: string) => { return { text: '✍️ Переименовать товар', callback_data: CallbackData.editArticleTitle + article } },
   editSelfCost: (article: article) => { return { text: '💰 Себестоимость', callback_data: CallbackData.editSelfCost! + article } },
   editMark: (article: article) => { return { text: '🗂 Указать маркировку', callback_data: CallbackData.editMark! + article } },
   editTax: (article: article) => { return { text: '💸 Указать налог', callback_data: CallbackData.editTax! + article } },
-  editAcquiring: (article: article) => { return { text: '🏧 Указать эквайринг', callback_data: CallbackData.editAcquiring! + article } },
-  offArticle: (article: article) => { return { text: '❌  Отключить телеграм отчет', callback_data: CallbackData.offTable! + article } },
   returnArticle: (article: string) => { return { text: '↩️ Вернуться к настройкам', callback_data: CallbackData.returnArticle + article } },
   deleteArticle: (article: string) => { return { text: '🗑 Удалить артикул', callback_data: CallbackData.deleteArticle + article } },
-  offReport: (article: string) => { return { text: '❌ Отключить отчет', callback_data: CallbackData.offReport + article } },
-  onReport: (article: string) => { return { text: '✅ Включить отчет', callback_data: CallbackData.onReport + article } },
 }
 
 /**
@@ -152,16 +138,9 @@ export const articleOptions = async (chat_id: number, article: article, state: A
     // [articleButtons.getReportNow(article)],
     [articleButtons.editSelfCost(article), articleButtons.editMark(article)],
     [articleButtons.editTax(article), articleButtons.editReportName(article)],
-    [articleButtons.editAcquiring(article)],
-    [articleButtons.deleteArticle(article)]
-
+    [articleButtons.deleteArticle(article)],
+    [mainButtons.menuAndEdit]
   ]
-
-  if (state === 'on') {
-    articleBtns[3].push(articleButtons.offReport(article))
-  } else {
-    articleBtns[3].push(articleButtons.onReport(article))
-  }
 
   articleBtns.push([mainButtons.menuAndEdit])
 
@@ -214,7 +193,7 @@ export async function generateArticlesButtons(chat_id: number, page: number = 1)
     }
 
     articleButtons[rowIndex].push({
-      text: `${article.title ? article.title : article.article}`,
+      text: `${article.article}`,
       callback_data: data.mn + newArticleData(data),
     });
   });
