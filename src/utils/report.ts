@@ -106,7 +106,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td>${drr.toFixed(2)}%</td>
       <td>${stats.addToCartCount}</td>
       <td>${stats.ordersCount}</td>
-      <td>${stats.buysCount}</td>
+      <td>${stats.buysCount.toFixed(2)}</td>
       <td>${margin}</td>
       <td>${rev.toFixed(2)}</td>
     `
