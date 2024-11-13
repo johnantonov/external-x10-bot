@@ -123,23 +123,23 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
 
     // get mp conversions data 
     if (action.startsWith('get_mp_conversions')) {
-      console.log('start to updating')
-      await updateConversions()
+      console.log('start to updating');
+      await updateConversions();
     }
 
     // get mp commissions data 
     if (action.startsWith('get_mp_commissions')) {
-      console.log('start to updating')
-      await updateCommissions()
+      console.log('start to updating');
+      await updateCommissions();
     }
 
     if (action.startsWith('get_mp_tariffs')) {
       console.log('start to updating')
-      await updateBoxTariffs
+      await updateBoxTariffs();
     }
 
     if (action.startsWith('my_id')) {
-      await bot.sendMessage(chat_id, `${chat_id}`)
+      await bot.sendMessage(chat_id, `${chat_id}`);
     }
 
 
