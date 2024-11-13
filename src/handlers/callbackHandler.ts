@@ -127,6 +127,9 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     case 'delete article':
       newButtonCallback = newArticleData(callbackObj);
 
+      console.log(JSON.stringify(newButtonCallback))
+      console.log(JSON.stringify(callbackObj))
+
       if (!callbackObj.action) {
         editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.type + "?" + newButtonCallback));
       } else {
