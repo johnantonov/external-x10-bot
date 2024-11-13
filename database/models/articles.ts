@@ -55,7 +55,7 @@ class ArticlesModel extends BaseModel<Article> {
   async getArticlesByTime(notification_time: number): Promise<Record<string, any>> {
     const query = `
       SELECT * FROM ${this.tableName}
-      WHERE notification_time = $1 AND status = $2
+      WHERE notification_time = $1
     `;
 
     const data = (await this.pool.query<Article>(query, [notification_time])).rows
