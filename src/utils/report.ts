@@ -118,8 +118,8 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           ordersSum += stats.ordersSum || 0;
 
           // WIP -------
-          buysCount = ordersCount * ((article.percent_buys || 0) / 100)
-          buysSum = ordersSum * ((article.percent_buys || 0) / 100)
+          buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
+          buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
           // -----------
 
           otherCosts += getCosts(article, day)
@@ -141,8 +141,8 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       stats = data.order_info[day] || {};
       
       // WIP -------
-      stats.buysCount = Math.round((stats.ordersCount || 0) * ((data.percent_buys || 0) / 100))
-      stats.buysSum = Math.round((stats.ordersSum || 0) * ((data.percent_buys || 0) / 100))
+      stats.buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
+      stats.buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
       // -----------
       
       otherCosts = getCosts(data, day)
