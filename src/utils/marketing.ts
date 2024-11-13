@@ -26,7 +26,7 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
           campaign.days.forEach((day: any) => {
             const dayDate = new Date(day.date).toISOString().split('T')[0];
             if (result.hasOwnProperty(dayDate)) {
-
+              console.log(JSON.stringify(campaign))
               let sum = 0;
               let clicks = 0;
               let views = 0;
