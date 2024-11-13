@@ -99,19 +99,21 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     }
 
     if (index === 0 && allData.length > 1) {
-      allData.forEach((article: any) => {
-        const marketing = article?.marketing_cost || {};
-        prk.clicks += marketing[day]?.prk?.clicks || 0
-        prk.views += marketing[day]?.prk?.views || 0 
-        ark.clicks += marketing[day]?.ark?.clicks || 0
-        ark.views += marketing[day]?.ark?.views || 0 
-        marketingCost += parseFloat(marketing?.[day]?.cost) || 0;
-        stats = article.order_info[day] || {};
-        otherCosts += getCosts(article, day)
-  
-        drr += (marketingCost / (stats.ordersSum || 1)) * 100;
-        rev += (stats.buysSum ?? 0) - otherCosts - marketingCost
-        margin += +formatNumber(rev / (stats.buysSum || 1) * 100) 
+      allData.forEach((article: any, indexArticle: number) => {
+        if (indexArticle > 0) {
+          const marketing = article?.marketing_cost || {};
+          prk.clicks += marketing?.[day]?.prk?.clicks || 0
+          prk.views += marketing?.[day]?.prk?.views || 0 
+          ark.clicks += marketing?.[day]?.ark?.clicks || 0
+          ark.views += marketing?.[day]?.ark?.views || 0 
+          marketingCost += parseFloat(marketing?.[day]?.cost) || 0;
+          stats = article.order_info[day] || {};
+          otherCosts += getCosts(article, day)
+    
+          drr += (marketingCost / (stats.ordersSum || 1)) * 100;
+          rev += (stats.buysSum ?? 0) - otherCosts - marketingCost
+          margin += +formatNumber(rev / (stats.buysSum || 1) * 100) 
+        }
       })
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
