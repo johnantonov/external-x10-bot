@@ -2,7 +2,7 @@ import { Pool, QueryResult } from 'pg';
 import { BaseModel } from "../BaseModel";
 import * as dotenv from 'dotenv';
 import pool from "../db";
-import { article, Article, ArticleStatus } from '../../src/dto/articles';
+import { article, Article } from '../../src/dto/articles';
 import { sortObjDatesKeys } from '../../src/utils/time';
 dotenv.config();
 
@@ -72,7 +72,7 @@ class ArticlesModel extends BaseModel<Article> {
     return res;
   }
 
-  async getAllArticles(status: ArticleStatus = 'on', limit: number = 100, offset: number = 0): Promise<Article[]> {
+  async getAllArticles(limit: number = 100, offset: number = 0): Promise<Article[]> {
     const query = `
       SELECT * FROM ${this.tableName}
       WHERE status = $1
@@ -91,7 +91,6 @@ class ArticlesModel extends BaseModel<Article> {
   }
 
   async addArticle(article: Partial<Article>): Promise<void> {
-    article.status = 'on';
     await this.insert(article);
   }
 

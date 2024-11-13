@@ -14,7 +14,6 @@ import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
 dotenv.config();
 
-
 /**
  * handler that starting if user send button callback
  */
@@ -96,7 +95,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     case 'return article menu':
       if (currentArticle) {
         const articleToReturn = await articles_db.getArticle(chat_id, +currentArticle)
-        articleMenu = (await articleOptions(chat_id, +articleToReturn.article, articleToReturn.status))
+        articleMenu = (await articleOptions(chat_id, +articleToReturn.article))
         if (articleMenu) {
           editData = createEditData(' ', articleMenu);
         }
@@ -106,7 +105,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'go article':
-      articleMenu = (await articleOptions(chat_id, callbackObj.art, callbackObj.sts))
+      articleMenu = (await articleOptions(chat_id, callbackObj.art))
       if (articleMenu) {
         editData = createEditData(' ', articleMenu);
       } else {
@@ -132,7 +131,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
         editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.mn + "?" + newButtonCallback));
       } else {
         if (action === 'no') {
-          articleMenu = (await articleOptions(chat_id, +currentArticle, callbackObj.sts))
+          articleMenu = (await articleOptions(chat_id, +currentArticle))
           if (articleMenu) {
             editData = createEditData(' ', articleMenu);
           } else {

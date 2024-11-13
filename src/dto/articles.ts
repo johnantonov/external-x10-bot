@@ -2,7 +2,6 @@ export interface Article {
   article: article;
   chat_id: number;
   wb_api_key: string;
-  status: ArticleStatus;
   is_active: boolean;
   notification_time?: number;
   self_cost: number;
@@ -21,12 +20,10 @@ export interface Article {
 }
 
 export type article = number | string;
-export type ArticleStatus = 'on' | 'off';
 
 export interface ArticleCallbackData {
   mn?: string;
   art: article;
-  sts: ArticleStatus;
   an?: string;
 }
 

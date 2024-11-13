@@ -1,6 +1,6 @@
 import TelegramBot, { CallbackQuery, InlineKeyboardButton } from "node-telegram-bot-api";
 import { user_type } from "../dto/user";
-import { Article, article, ArticleCallbackData, ArticleStatus } from "../dto/articles";
+import { Article, article, ArticleCallbackData } from "../dto/articles";
 import { articles_db } from "../../database/models/articles";
 import { newArticleData } from "../utils/parse";
 
@@ -129,7 +129,7 @@ export const mainOptions = (waitReport?: boolean, type?: user_type) => {
 /**
  * returns article menu
  */
-export const articleOptions = async (chat_id: number, article: article, state: ArticleStatus) => {
+export const articleOptions = async (chat_id: number, article: article) => {
   if (!article) {
     return console.error('Возникла ошибка при получении пользователя или его артикула: ', chat_id)
   }
@@ -182,7 +182,6 @@ export async function generateArticlesButtons(chat_id: number, page: number = 1)
     const data: ArticleCallbackData = {
       mn: CallbackData.goArticle,
       art: article.article,
-      sts: article.status,
       an: "",
     };
 
