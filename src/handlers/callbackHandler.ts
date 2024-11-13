@@ -85,7 +85,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       newButtonCallback = newArticleData(data);
       const maxCount = +env.MAX_ARTICLES!
       const articlesCount = (await articles_db.getAllArticlesForUser(chat_id)).rows.length
-      if (articlesCount <= maxCount) {
+      if (articlesCount < maxCount) {
         await RS.setUserState(chat_id, rStates.waitArticle, ttls.usual)
         editData = createEditData(texts.addArticles, returnBtn);
       } else {
@@ -126,8 +126,6 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'delete article':
       newButtonCallback = newArticleData(callbackObj);
-      console.log(JSON.stringify(newButtonCallback))
-      console.log(JSON.stringify(callbackObj))
 
       if (!callbackObj.action) {
         editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.type + "?" + newButtonCallback));
