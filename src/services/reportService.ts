@@ -218,7 +218,7 @@ export class ReportService {
     }
   }
 
-  async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, yesterday: string, today: string, startWeekDate: string) {
+  async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, yesterday: string, today: string) {
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
 
