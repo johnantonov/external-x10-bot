@@ -9,16 +9,6 @@ import { user_type } from "../dto/user";
 import { images } from "../dto/images";
 
 /**
- * sends a help message to the user
- * @param {TelegramBot} bot - the telegram bot instance
- * @param {ChatId} id - chat id to send the help message
- * @returns {Promise<Message>} - resolves with the message sent
- */
-export function getHelp(bot: TelegramBot, id: ChatId) {
-  return bot.sendMessage(id, `/menu - Открыть меню бота`);
-};
-
-/**
  * handles the /start or /menu commands and manages menu rendering
  * @param {UserMsg | UserCallback} msg - the message or callback data
  * @param {'/menu' | '/start'} command - the command that triggered the menu

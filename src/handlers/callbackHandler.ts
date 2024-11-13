@@ -52,7 +52,9 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     case 'menu':
       await RediceService.deleteUserState(chat_id)
       const menu = await MS.getSpecialMsg(chat_id, 'menu');
-      if (userCallbackData === CallbackData.menuAndEdit) {
+
+
+      if (userCallbackData === CallbackData.menuAndEdit && menu?.message_id) {
         await handleStartMenu(userCallback, '/menu', false, menu.message_id)
       } else {
         await handleStartMenu(userCallback, '/menu', true)
