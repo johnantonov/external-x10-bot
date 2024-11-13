@@ -106,7 +106,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     if (index === 0 && allData.length > 1) {
       allData.forEach((article: any, indexArticle: number) => {
         if (indexArticle > 0) {
-          stats = data.order_info[day] || {};
+          stats = data.order_info?.[day] || {};
           const marketing = article?.marketing_cost || {};
           prk.clicks += marketing?.[day]?.prk?.clicks || 0
           prk.views += marketing?.[day]?.prk?.views || 0 
@@ -149,8 +149,8 @@ margi ${margin}
     } else {
       
       const marketing = data?.marketing_cost || {};
-      prk = marketing[day].prk || { clicks: 0, views: 0 };
-      ark = marketing[day].ark || { clicks: 0, views: 0 };
+      prk = marketing?.[day].prk || { clicks: 0, views: 0 };
+      ark = marketing?.[day].ark || { clicks: 0, views: 0 };
       marketingCost = parseFloat(marketing?.[day].cost) || 0;
       stats = data.order_info[day] || {};
       
