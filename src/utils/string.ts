@@ -29,14 +29,14 @@ export function formatReportArticleMessage(articleData: Article, date: string) {
   console.log(JSON.stringify(articleData))
   console.log(date)
 
-  const name = articleData?.title || articleData?.article || 'Неизвестный товар';
+  const name = articleData?.article || 'Неизвестный товар';
   const stats = articleData.order_info || {};
   const marketing = articleData?.marketing_cost || {};
   const marketingCost = parseFloat(marketing?.[date]) || 0;
   const prk = marketing.prk || { clicks: 0, views: 0 };
   const ark = marketing.ark || { clicks: 0, views: 0 };
   const tax = parsePercent(articleData.tax)
-  const acquiring = parsePercent(articleData.acquiring)
+  const acquiring = 0.015
   const commission = parsePercent(stats.commission)
 
   // WIP -------
