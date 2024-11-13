@@ -35,7 +35,7 @@ export async function getReportHtml(articleData: Article[]) {
     tables += `<table class="b">
       <thead class="br">
         <tr class="header br">
-          <th rowspan="2" colspan="5" class="article_col">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
+          <th rowspan="2" colspan="4" class="article_col">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
@@ -161,7 +161,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     }
 
     dayRows += `
-      <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
+      <td rowspan="1" colspan="1" class="day_cell">${formatDay}</td>
       <td class="bl">${ark.clicks.toFixed(0)}</td>
       <td>${(ctrArk * 100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
