@@ -102,7 +102,7 @@ class ArticlesModel extends BaseModel<Article> {
       if (articlesCount >= maxCount) {
         return
       }
-      await this.insert({ chat_id, article: article });
+      await this.insert({ chat_id, article: +article.toString().trim() });
       articlesCount++
     }
   }

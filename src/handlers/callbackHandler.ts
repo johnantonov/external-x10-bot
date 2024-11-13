@@ -131,7 +131,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       console.log(JSON.stringify(callbackObj))
 
       if (!callbackObj.action) {
-        editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.type + "?" + newButtonCallback));
+        editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.type + "?" + callbackObj.art));
       } else {
         if (callbackObj.action === 'no') {
           articleMenu = (await articleOptions(chat_id, +currentArticle))
