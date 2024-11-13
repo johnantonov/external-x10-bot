@@ -118,19 +118,6 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           ordersSum += article.order_info?.[day]?.ordersSum;
           buysSum += article.order_info?.[day]?.buysSum;
           otherCosts += getCosts(article, day)
-
-          console.log(`
-                stats ${stats}
-    otherCost ${otherCosts}
-    addToCartCoun ${addToCartCount}
-    ordersCoun ${ordersCount}
-    buysCoun ${buysCount}
-    ordersSu ${ordersSum}
-    buysSu ${buysSum}
-    dr ${drr}
-    re ${rev}
-    margi ${margin}
-            `)
         }
       })
       
@@ -140,6 +127,19 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
 
+      
+      console.log(`
+        stats ${stats}
+otherCost ${otherCosts}
+addToCartCoun ${addToCartCount}
+ordersCoun ${ordersCount}
+buysCoun ${buysCount}
+ordersSu ${ordersSum}
+buysSu ${buysSum}
+dr ${drr}
+re ${rev}
+margi ${margin}
+    `)
     } else {
       const marketing = data?.marketing_cost || {};
       prk = marketing[day].prk || { clicks: 0, views: 0 };
