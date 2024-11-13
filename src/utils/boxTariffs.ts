@@ -13,7 +13,7 @@ export async function updateBoxTariffs() {
       }
     });
 
-    const data = tariffsResponse.data.warehouseList;
+    const data = tariffsResponse.data.response.data.warehouseList;
     await box_tariffs_db.upsertBoxTariffs(data)
 
     console.log('Commissions updated successfully');
