@@ -95,9 +95,15 @@ class ArticlesModel extends BaseModel<Article> {
   }
 
   async addArticles(chat_id: number, articles: article[]): Promise<void> {
-    
+    const maxCount = +process.env.MAX_ARTICLES!
+    let articlesCount = (await articles_db.getAllArticlesForUser(chat_id)).rows.length
+
     for (const article of articles) {
+      if (articlesCount >= maxCount) {
+        return
+      }
       await this.insert({ chat_id, article: article });
+      articlesCount++
     }
   }
 

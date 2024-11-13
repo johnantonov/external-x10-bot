@@ -3,7 +3,6 @@ import { UserCallback } from "../dto/messages";
 import { getStateMessage, redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
-import dotenv from 'dotenv';
 import { createEditData, MessageService } from "../services/messageService";
 import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/botButtons";
 import { users_db } from "../../database/models/users";
@@ -13,6 +12,7 @@ import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
 import { texts } from "../components/texts";
+import dotenv from 'dotenv';
 dotenv.config();
 
 /**
