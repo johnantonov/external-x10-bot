@@ -82,8 +82,13 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     let prk = { clicks: 0, views: 0 };
     let ark = { clicks: 0, views: 0 };
     let marketingCost = 0;
-    let stats;
+    let stats: any;
     let otherCosts = 0;
+    let addToCartCount = 0;
+    let ordersCount = 0;
+    let buysCount = 0;
+    let ordersSum = 0;
+    let buysSum = 0;
   
     let ctrArk;
     let ctrPrk;
@@ -107,16 +112,21 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           ark.clicks += marketing?.[day]?.ark?.clicks || 0
           ark.views += marketing?.[day]?.ark?.views || 0 
           marketingCost += parseFloat(marketing?.[day]?.cost) || 0;
-          stats = article.order_info[day] || {};
+          addToCartCount += article.order_info?.[day]?.addToCartCount;
+          ordersCount += article.order_info?.[day]?.ordersCount;
+          buysCount += article.order_info?.[day]?.buysCount;
+          ordersSum += article.order_info?.[day]?.ordersSum;
+          buysSum += article.order_info?.[day]?.buysSum;
           otherCosts += getCosts(article, day)
-    
-          drr += (marketingCost / (stats.ordersSum || 1)) * 100;
-          rev += (stats.buysSum ?? 0) - otherCosts - marketingCost
-          margin += +formatNumber(rev / (stats.buysSum || 1) * 100) 
         }
       })
+      
+      rev += (buysSum ?? 0) - otherCosts - marketingCost
+      margin += formatNumber(rev / (buysSum || 1) * 100) 
+      drr += (marketingCost / (ordersSum || 1)) * 100;
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
+
     } else {
       const marketing = data?.marketing_cost || {};
       prk = marketing[day].prk || { clicks: 0, views: 0 };
@@ -140,9 +150,9 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td>${(ctrPrk * 100).toFixed(2)}%</td>
       <td class="bl">${marketingCost.toFixed(0)}</td>
       <td>${drr.toFixed(2)}%</td>
-      <td>${stats.addToCartCount}</td>
-      <td>${stats.ordersCount}</td>
-      <td>${stats.buysCount.toFixed(2)}</td>
+      <td>${addToCartCount}</td>
+      <td>${ordersCount}</td>
+      <td>${buysCount}</td>
       <td>${margin.toFixed(2)}%</td>
       <td>${rev.toFixed(2)}</td>
     `
