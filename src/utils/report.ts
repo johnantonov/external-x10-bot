@@ -118,6 +118,19 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           ordersSum += article.order_info?.[day]?.ordersSum;
           buysSum += article.order_info?.[day]?.buysSum;
           otherCosts += getCosts(article, day)
+
+          console.log(`
+                stats ${stats}
+    otherCost ${otherCosts}
+    addToCartCoun ${addToCartCount}
+    ordersCoun ${ordersCount}
+    buysCoun ${buysCount}
+    ordersSu ${ordersSum}
+    buysSu ${buysSum}
+    dr ${drr}
+    re ${rev}
+    margi ${margin}
+            `)
         }
       })
       
@@ -154,9 +167,9 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td>${(ctrPrk * 100).toFixed(2)}%</td>
       <td class="bl">${marketingCost.toFixed(0)}</td>
       <td>${drr.toFixed(2)}%</td>
-      <td>${addToCartCount.toFixed(2)}</td>
-      <td>${ordersCount.toFixed(2)}</td>
-      <td>${buysCount.toFixed(2)}</td>
+      <td>${addToCartCount}</td>
+      <td>${ordersCount}</td>
+      <td>${Math.round(buysCount)}</td>
       <td>${margin.toFixed(2)}%</td>
       <td>${rev.toFixed(2)}</td>
     `
