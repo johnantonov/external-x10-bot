@@ -114,9 +114,9 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           marketingCost += parseFloat(marketing?.[day]?.cost) || 0;
           addToCartCount += article.order_info?.[day]?.addToCartCount;
           ordersCount += article.order_info?.[day]?.ordersCount;
-          buysCount += article.order_info?.[day].buysCount || 0;
+          buysCount += Math.round(article.order_info?.[day].buysCount) || 0;
           ordersSum += article.order_info?.[day].ordersSum || 0;
-          buysSum += article.order_info?.[day].buysSum || 0;
+          buysSum += Math.round(article.order_info?.[day].buysSum) || 0;
           otherCosts += getCosts(article, day)
 
           console.log(article.order_info?.[day])
