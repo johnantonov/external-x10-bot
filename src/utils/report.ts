@@ -46,7 +46,7 @@ export async function getReportHtml(articleData: Article[]) {
           <th rowspan="2" colspan="1">Заказы</th>
           <th rowspan="2" colspan="1">Выкупы</th>
           <th rowspan="2" colspan="1">Маржа</th>
-          <th class="br" rowspan="2" colspan="1">Прогноз прибыли до дрр</th>
+          <th class="br" rowspan="2" colspan="1">Прогноз прибыли до ДРР</th>
         </tr>
       </thead>
       <tbody  class="br">
@@ -102,7 +102,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     if (i === daysCount) {
       const value = (index === 0 && allData.length > 1) ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
-      dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
+      dayRows += `<td rowspan="${config.days}" colspan="2" class="photo_cell">${value}</td>`
     }
 
     if (index === 0 && allData.length > 1) {
@@ -161,7 +161,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     }
 
     dayRows += `
-      <td rowspan="1" colspan="1" class="day_cell">${formatDay}</td>
+      <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
       <td class="bl">${ark.clicks.toFixed(0)}</td>
       <td>${(ctrArk * 100).toFixed(2)}%</td>
       <td class="bl">${prk.clicks.toFixed(0)}</td>
@@ -209,7 +209,7 @@ const CSS = `
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 0px;
+      // margin-bottom: 0px;
     }
     table, th, td {
       border: 0.2px solid #AFEEEE;

@@ -125,36 +125,58 @@ export class ReportService {
     }
   }
 
-  async getNmSizeInfo(nmIDs: article[], wb_api_key: string) {
+  async getNmSizeInfo(nmIDs: number[], wb_api_key: string) {
     try {
-      const requestData = {
-        settings: { cursor: { limit: 100 } },
-      };
-
-      const response = await axios.post(
-        'https://content-api.wildberries.ru/content/v2/get/cards/list',
-        requestData,
-        { headers: { 'Content-Type': 'application/json', 'Authorization': wb_api_key } }
-      );
-
-      const cards = response.data.cards;
-
-      console.log(JSON.stringify(cards))
-
-      const filteredData = cards.filter((card: any) => nmIDs.includes(card.nmID))
+      let hasMore = true;
+      let cursor = {};
       const result: Record<string, any> = {};
+      
+      while (hasMore) {
+        const requestData = {
+          settings: {
+            cursor: {
+              limit: 100,
+              ...cursor, 
+            },
+            filter: {
+              withPhoto: -1 
+            }
+          }
+        };
+  
+        const response = await axios.post(
+          'https://content-api.wildberries.ru/content/v2/get/cards/list',
+          requestData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': wb_api_key
+            }
+          }
+        );
+  
+        const cards = response.data.cards;
+        if (!cards || cards.length === 0) {
+          break;
+        }
+        const filteredData = cards.filter((card: any) => nmIDs.includes(card.nmID));
+        filteredData.forEach((el: any) => {
+          result[el.nmID] = el.dimensions;
+        });
+  
+        cursor = response.data.cursor || {};
 
-      filteredData.forEach((el: any) => {
-        result[el.nmID] = el.dimensions
-      })
-
+        if (cards.length < 100) {
+          hasMore = false;
+        }
+      }
+  
       return result;
     } catch (error) {
-      formatError(error, 'Ошибка получения данных о маркировке.')
+      formatError(error, 'Ошибка получения данных о маркировке.');
       return {};
     }
   }
-
 
   async getBuyPercent(nms: article[], wb_api_key: string, startDate: string, endDate: string) {
     try {
