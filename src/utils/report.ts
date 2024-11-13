@@ -154,9 +154,9 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td>${(ctrPrk * 100).toFixed(2)}%</td>
       <td class="bl">${marketingCost.toFixed(0)}</td>
       <td>${drr.toFixed(2)}%</td>
-      <td>${addToCartCount}</td>
-      <td>${ordersCount}</td>
-      <td>${buysCount}</td>
+      <td>${addToCartCount.toFixed(2)}</td>
+      <td>${ordersCount.toFixed(2)}</td>
+      <td>${buysCount.toFixed(2)}</td>
       <td>${margin.toFixed(2)}%</td>
       <td>${rev.toFixed(2)}</td>
     `
