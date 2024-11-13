@@ -95,7 +95,7 @@ CTR: ${formatNumber(ctr)}
   return `📃Отчет за ${date}\n\n#${name}${message}`;
 }
 
-export const formatNumber = (num: number): string => {
-  return num % 1 === 0 ? num.toString() : num.toFixed(2);
+export const formatNumber = (num: number): number => {
+  return num % 1 === 0 ? num : Number(num.toFixed(2));
 };
 

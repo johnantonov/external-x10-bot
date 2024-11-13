@@ -2,7 +2,7 @@ import { Article } from "../dto/articles";
 import { getWbArticlePhoto } from "./parse";
 import { formatNumber, parsePercent } from "./string";
 import { create30DaysObject, getYesterdayDate } from "./time";
-import axios from 'axios';
+import axios, { all } from 'axios';
 import sharp from 'sharp';
 
 
@@ -12,7 +12,6 @@ const config = {
 
 export async function getReportHtml(articleData: Article[]) {
   let tables = ``;
-
 
   for (const [i, data] of articleData.entries()) {
     let imgSrc: any;
@@ -28,7 +27,7 @@ export async function getReportHtml(articleData: Article[]) {
       console.error(`Error while generating table html: ${error}`);
     }
 
-    let dayRows = getDaysRows(config.days, data, i, imgSrc)
+    let dayRows = getDaysRows(config.days, data, i, imgSrc, articleData)
 
     tables += `<table class="b">
       <thead class="br">
@@ -69,31 +68,62 @@ export async function getReportHtml(articleData: Article[]) {
 }
 
 
-function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any) {
-  const marketing = data?.marketing_cost || {};
+function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject())
   let dayRows = ``
+  let prk = { clicks: 0, views: 0 };
+  let ark = { clicks: 0, views: 0 };
+  let marketingCost = 0;
+  let stats;
+  let otherCosts = 0;
+
+  let ctrArk;
+  let ctrPrk;
+  let drr = 0;
+  let rev = 0;
+  let margin = 0;
 
   for (let i = daysCount; i > 0; i--) {
     const day = days[i]
     const formatDay = day.slice(5).replace('-', '/')
-    const prk = marketing[day].prk || { clicks: 0, views: 0 };
-    const ark = marketing[day].ark || { clicks: 0, views: 0 };
-    const marketingCost = parseFloat(marketing?.[day].cost) || 0;
-    const stats = data.order_info[day] || {};
-    const otherCosts = getCosts(data, day)
-
-    const ctrArk = (ark.clicks / ark.views) || 0;
-    const ctrPrk = (prk.clicks / prk.views) || 0;
-    const drr = (marketingCost / (stats.ordersSum || 1)) * 100;
-    const rev = (stats.buysSum ?? 0) - otherCosts - marketingCost
-    const margin = formatNumber(rev / (stats.buysSum || 1) * 100) + "%"
 
     dayRows += `<tr class="row">`
 
     if (i === daysCount) {
-      const value = index === 0 ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
+      const value = (index === 0 && allData.length > 1) ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
       dayRows += `<td rowspan="${config.days}" colspan="3" class="photo_cell">${value}</td>`
+    }
+
+    if (index === 0 && allData.length > 1) {
+      allData.forEach((article: any) => {
+        const marketing = article?.marketing_cost || {};
+        prk.clicks += marketing[day].prk.clicks || 0
+        prk.views += marketing[day].prk.views || 0 
+        ark.clicks += marketing[day].ark.clicks || 0
+        ark.views += marketing[day].ark.views || 0 
+        marketingCost += parseFloat(marketing?.[day].cost) || 0;
+        stats = article.order_info[day] || {};
+        otherCosts += getCosts(article, day)
+  
+        drr += (marketingCost / (stats.ordersSum || 1)) * 100;
+        rev += (stats.buysSum ?? 0) - otherCosts - marketingCost
+        margin += +formatNumber(rev / (stats.buysSum || 1) * 100) 
+      })
+      ctrArk = (ark.clicks / ark.views) || 0;
+      ctrPrk = (prk.clicks / prk.views) || 0;
+    } else {
+      const marketing = data?.marketing_cost || {};
+      prk = marketing[day].prk || { clicks: 0, views: 0 };
+      ark = marketing[day].ark || { clicks: 0, views: 0 };
+      marketingCost = parseFloat(marketing?.[day].cost) || 0;
+      stats = data.order_info[day] || {};
+      otherCosts = getCosts(data, day)
+
+      ctrArk = (ark.clicks / ark.views) || 0;
+      ctrPrk = (prk.clicks / prk.views) || 0;
+      drr = (marketingCost / (stats.ordersSum || 1)) * 100;
+      rev = (stats.buysSum ?? 0) - otherCosts - marketingCost
+      margin = formatNumber(rev / (stats.buysSum || 1) * 100)
     }
 
     dayRows += `
@@ -107,7 +137,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td>${stats.addToCartCount}</td>
       <td>${stats.ordersCount}</td>
       <td>${stats.buysCount.toFixed(2)}</td>
-      <td>${margin}</td>
+      <td>${margin}%</td>
       <td>${rev.toFixed(2)}</td>
     `
   }
