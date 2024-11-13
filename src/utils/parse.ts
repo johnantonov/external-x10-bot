@@ -21,14 +21,14 @@ export const getStateAndArticleFromCallback = (data: string): any[] => {
 export const parseArticleData = (data: string): ArticleCallbackData => {
   const newData = data.split('?')
   return {
-    mn: newData[0],
+    type: newData[0],
     art: newData[1],
-    an: newData[2],
+    action: newData[2],
   }
 }
 
 export const newArticleData = (data: ArticleCallbackData): string => {
-  return data.art + "?"
+  return data.art + "?" + data.action
 }
 
 export function getWbArticlePhoto(article: number) {

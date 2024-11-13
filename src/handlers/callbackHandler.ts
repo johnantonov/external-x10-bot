@@ -128,12 +128,11 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       newButtonCallback = newArticleData(callbackObj);
       console.log(JSON.stringify(newButtonCallback))
       console.log(JSON.stringify(callbackObj))
-      const action = callbackObj.an;
 
-      if (!action) {
-        editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.mn + "?" + newButtonCallback));
+      if (!callbackObj.action) {
+        editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.type + "?" + newButtonCallback));
       } else {
-        if (action === 'no') {
+        if (callbackObj.action === 'no') {
           articleMenu = (await articleOptions(chat_id, +currentArticle))
           if (articleMenu) {
             editData = createEditData(' ', articleMenu);

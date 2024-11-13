@@ -21,9 +21,9 @@ export interface Article {
 export type article = number | string;
 
 export interface ArticleCallbackData {
-  mn?: string;
+  type?: string;
   art: article;
-  an?: string;
+  action?: string;
 }
 
 

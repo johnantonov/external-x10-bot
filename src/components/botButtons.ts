@@ -178,9 +178,9 @@ export async function generateArticlesButtons(chat_id: number, page: number = 1)
   // use little keys because btn callback limit is 64 bytes and we have a large string ss id
   articles.forEach((article: Article, i) => {
     const data: ArticleCallbackData = {
-      mn: CallbackData.goArticle,
+      type: CallbackData.goArticle,
       art: article.article,
-      an: "",
+      action: "",
     };
 
     const rowIndex = Math.floor(i / 3);
@@ -191,7 +191,7 @@ export async function generateArticlesButtons(chat_id: number, page: number = 1)
 
     articleButtons[rowIndex].push({
       text: `${article.article}`,
-      callback_data: data.mn + newArticleData(data),
+      callback_data: data.type + newArticleData(data),
     });
   });
 
@@ -217,20 +217,6 @@ export function generateReportTimeButtons(callback: string, page: number = 0): T
     }
     times[row].push({ text: `${i}:00`, callback_data: `${callback}${i}` });
   }
-
-  /*
-  const navigationButtons: TelegramBot.InlineKeyboardButton[] = [];
-  if (page > 0) {
-    navigationButtons.push({ text: '⬅️ Назад', callback_data: `${rep}_time_prev_page_${page - 1}` });
-  }
-  if ((page + 1) * timesPerPage + startTime < endTime) {
-    navigationButtons.push({ text: 'Вперед ➡️', callback_data: `${rep}_time_next_page_${page + 1}` });
-  }
-
-  if (navigationButtons.length > 0) {
-    times.push(navigationButtons);
-  }
-  */
 
   times.push([mainButtons.menuAndEdit])
   return times;
