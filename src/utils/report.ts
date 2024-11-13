@@ -105,7 +105,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
         prk.views += marketing[day]?.prk?.views || 0 
         ark.clicks += marketing[day]?.ark?.clicks || 0
         ark.views += marketing[day]?.ark?.views || 0 
-        marketingCost += parseFloat(marketing?.[day].cost) || 0;
+        marketingCost += parseFloat(marketing?.[day]?.cost) || 0;
         stats = article.order_info[day] || {};
         otherCosts += getCosts(article, day)
   
