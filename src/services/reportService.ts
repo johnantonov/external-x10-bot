@@ -339,11 +339,11 @@ export class ReportService {
 
   async getAdvertDetails(wb_api_key: string, advertIds: []) {
     try {
-      advertIds.forEach((obj: any) => {
+      const advertIdsNoType = advertIds.map((obj: any) => {
         delete obj.type;
       });
 
-      const advertDetailsResponse = await axios.post('https://advert-api.wildberries.ru/adv/v2/fullstats', advertIds, {
+      const advertDetailsResponse = await axios.post('https://advert-api.wildberries.ru/adv/v2/fullstats', advertIdsNoType, {
         headers: {
           'Authorization': wb_api_key,
           'Content-Type': 'application/json'
@@ -351,7 +351,9 @@ export class ReportService {
       });
 
       const data = advertDetailsResponse.data
+      console.log(JSON.stringify(advertIds))
       return data
+
 
     } catch (e) {
       formatError(e, 'error fetching adv data: ')
@@ -403,7 +405,6 @@ export class ReportService {
         return null;
       }
 
-      console.log(advertIds)
       return advertIds
     } catch (e) {
       formatError(e, 'error fetching campaigns data')
