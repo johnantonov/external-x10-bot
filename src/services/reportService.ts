@@ -402,6 +402,8 @@ export class ReportService {
         console.error(`No recent campaigns found for article with chat ID: ${chat_id}`);
         return null;
       }
+
+      console.log(advertIds)
       return advertIds
     } catch (e) {
       formatError(e, 'error fetching campaigns data')
