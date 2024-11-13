@@ -71,21 +71,22 @@ export async function getReportHtml(articleData: Article[]) {
 function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject())
   let dayRows = ``
-  let prk = { clicks: 0, views: 0 };
-  let ark = { clicks: 0, views: 0 };
-  let marketingCost = 0;
-  let stats;
-  let otherCosts = 0;
-
-  let ctrArk;
-  let ctrPrk;
-  let drr = 0;
-  let rev = 0;
-  let margin = 0;
 
   for (let i = daysCount; i > 0; i--) {
     const day = days[i]
     const formatDay = day.slice(5).replace('-', '/')
+
+    let prk = { clicks: 0, views: 0 };
+    let ark = { clicks: 0, views: 0 };
+    let marketingCost = 0;
+    let stats;
+    let otherCosts = 0;
+  
+    let ctrArk;
+    let ctrPrk;
+    let drr = 0;
+    let rev = 0;
+    let margin = 0;
 
     dayRows += `<tr class="row">`
 
