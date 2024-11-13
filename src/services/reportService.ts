@@ -351,10 +351,7 @@ export class ReportService {
       });
 
       const data = advertDetailsResponse.data
-      console.log(JSON.stringify(advertIds))
       return data
-
-
     } catch (e) {
       formatError(e, 'error fetching adv data: ')
       return [];
@@ -433,26 +430,24 @@ export class ReportService {
   async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
     const options = returnNewMenu(); 
+    const replyMarkup = JSON.stringify(options); 
 
-    const requestData = {
-        chat_id: chat_id.toString(),
-        document: pdfBuffer.toString('base64'), 
-        caption: 'Ваш отчет', 
-        parse_mode: 'HTML',
-        reply_markup: options
-    };
+    const formData = new FormData();
+    formData.append('chat_id', chat_id.toString());
+    formData.append('document', pdfBuffer, { filename: 'Отчет.pdf', contentType: 'application/pdf' });
+    formData.append('reply_markup', replyMarkup); 
 
     try {
-      const response = await axios.post(telegramApiUrl, requestData, {
+      const response = await axios.post(telegramApiUrl, formData, {
         headers: {
-          'Content-Type': 'application/json', // Указываем, что передаем JSON
+          ...formData.getHeaders(),
         },
       });
       console.log(`PDF sent to chat_id: ${chat_id}`);
     } catch (error) {
       console.error(`Failed to send PDF to chat_id: ${chat_id}`, error);
     }
-  }
+}
 
   async sendPhoto(chat_id: number, image: any): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`;
