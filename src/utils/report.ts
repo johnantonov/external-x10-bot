@@ -141,9 +141,9 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       rev = (stats.buysSum ?? 0) - otherCosts - marketingCost
       margin = formatNumber(rev / (stats.buysSum || 1) * 100)
 
-      addToCartCount += stats?.[day]?.addToCartCount;
-      ordersCount += stats?.[day]?.ordersCount;
-      buysCount +=stats?.[day]?.buysCount;
+      addToCartCount = stats?.addToCartCount;
+      ordersCount = stats?.ordersCount;
+      buysCount = stats?.buysCount;
     }
 
     dayRows += `
