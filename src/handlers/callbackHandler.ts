@@ -5,13 +5,13 @@ import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import dotenv from 'dotenv';
 import { createEditData, MessageService } from "../services/messageService";
-import { CallbackProcessor } from "../utils/CallbackProcessor";
 import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/botButtons";
 import { users_db } from "../../database/models/users";
 import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
+import { CallbackProcessor } from "../utils/CallbackProcessor";
 dotenv.config();
 
 /**

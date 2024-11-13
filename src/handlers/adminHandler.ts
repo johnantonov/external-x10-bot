@@ -8,6 +8,7 @@ import axios from "axios";
 import { updateConversions } from "../utils/conversions";
 import { updateCommissions } from "../utils/comissions";
 import { articles_db } from "../../database/models/articles";
+import { updateBoxTariffs } from "../utils/boxTariffs";
 
 dotenv.config();
 
@@ -22,6 +23,8 @@ const helpInfo = `
 /admin__send_all_data - отправить всю базу данных в Google Sheets
 /admin__get_mp_conversions - обновить базу конверсий
 /admin__get_mp_commissions - обновить базу комиссий
+/admin__get_mp_tariffs - обновить базу тарифов коробов
+/admin__db_migrate_{N} - запуск N-миграции БД
 /admin__clear_last_report_time_{id} - очистка времени последнего отчета
 /admin__clear_last_report_time_all - очистка времени последнего отчета у всех
 `
@@ -128,6 +131,11 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     if (action.startsWith('get_mp_commissions')) {
       console.log('start to updating')
       await updateCommissions()
+    }
+
+    if (action.startsWith('get_mp_tariffs')) {
+      console.log('start to updating')
+      await updateBoxTariffs
     }
 
     if (action.startsWith('my_id')) {

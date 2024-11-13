@@ -135,15 +135,12 @@ export const articleOptions = async (chat_id: number, article: article) => {
   }
 
   const articleBtns = [
-    // [articleButtons.getReportNow(article)],
     [articleButtons.editSelfCost(article)],
     [articleButtons.editMark(article)],
     [articleButtons.editTax(article)],
     [articleButtons.deleteArticle(article)],
     [mainButtons.menuAndEdit]
   ]
-
-  articleBtns.push([mainButtons.menuAndEdit])
 
   return new Options(articleBtns).reply_markup;
 }

@@ -17,6 +17,7 @@ import { commissions_db } from '../../database/models/commissions';
 import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { getReportHtml } from '../utils/report';
+import { updateBoxTariffs } from '../utils/boxTariffs';
 
 dotenv.config();
 
@@ -495,6 +496,7 @@ export class ReportService {
       console.log('Running data preparing at 00:00:', new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }));
       await updateConversions();
       await updateCommissions();
+      await updateBoxTariffs();
       await this.prepareReportData();
     }, {
       timezone: 'Europe/Moscow'
