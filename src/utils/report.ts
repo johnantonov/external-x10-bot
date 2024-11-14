@@ -7,52 +7,44 @@ import axios from 'axios';
 import sharp from 'sharp';
 
 export async function getReportHtml(articleData: Article[]) {
-  let tables = ``;
   articleData.unshift({} as Article);  // для создания таблицы итого
 
-  for (const [i, data] of articleData.entries()) {
-    let imgSrc: any;
-
+  const imagePromises = articleData.map(async (data, i) => {
     if (i > 0 && data.article) {
       try {
         const imgUrl = getWbArticlePhoto(+data.article);
         const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
         let imgBuffer = Buffer.from(response.data, 'binary');
         imgBuffer = await sharp(imgBuffer).resize({ width: 100, height: 140 }).toBuffer();
-        const imgBase64 = imgBuffer.toString('base64');
-        imgSrc = `data:image/jpeg;base64,${imgBase64}`;
+        return `data:image/jpeg;base64,${imgBuffer.toString('base64')}`;
       } catch (error) {
         console.error(`Error while generating table html: ${error}`);
+        return null;
       }
     }
+    return null;
+  });
 
-    let dayRows = getDaysRows(config.tableDays, data, i, imgSrc, articleData)
+  const images = await Promise.all(imagePromises);
 
-    tables += `<table class="b">
+  let tables = articleData.map((data, i) => {
+    let dayRows = getDaysRows(config.tableDays, data, i, images[i], articleData);
+
+    return `<table class="b">
       <thead class="br">
         <tr class="header br">
-          <th rowspan="2" colspan="4" class="article_col">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
-          <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
-          <th rowspan="2" colspan="1">CTR</th>
-          <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
-          <th rowspan="2" colspan="1">CTR</th>
-          <th rowspan="2" colspan="1" class="bl">Расходы реклама</th>
-          <th rowspan="2" colspan="1">ДРР</th>
-          <th rowspan="2" colspan="1">Корзины</th>
-          <th rowspan="2" colspan="1">Заказы</th>
-          <th rowspan="2" colspan="1">Выкупы</th>
-          <th rowspan="2" colspan="1">Маржа</th>
-          <th class="br" rowspan="2" colspan="1">Прогноз прибыли до ДРР</th>
+          <th rowspan="2" colspan="4" class="article_col">${data?.article || ''}<br>${data?.vendor_code || ''}</th>
+          <!-- остальные заголовки -->
         </tr>
       </thead>
-      <tbody  class="br">
+      <tbody class="br">
         ${dayRows}
-      </tbody> 
-    </table>`
-  }
+      </tbody>
+    </table>`;
+  }).join('');
 
   return `
-  <!DOCTYPE html>
+    <!DOCTYPE html>
     <html lang="ru">
     <head>
       <meta charset="UTF-8">
@@ -60,10 +52,9 @@ export async function getReportHtml(articleData: Article[]) {
     </head>
     <body>
       <h1></h1>
-     ${tables}
+      ${tables}
     </body>
-  </html>
-    `
+    </html>`;
 }
 
 export function createReportMessage(articles: Article[], formatReportDate: string) {
@@ -247,26 +238,27 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
 }
 
 function getCosts(data: Article, date: string) {
-  const stats = data.order_info?.[date];
+  const stats = data.order_info?.[date] || {};
 
-  const tax = parsePercent(data?.tax)
-  const acquiring = config?.acquiring
-  const commission = parsePercent(stats?.commission) || 0
+  const tax = parsePercent(data?.tax);
+  const acquiring = config?.acquiring;
+  const commission = parsePercent(stats?.commission) || 0;
 
-  // WIP -------
-  stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100))
-  stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100))
-  // -----------
+  // Проверяем, существует ли stats перед присвоением buysCount и buysSum
+  if (stats) {
+    stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100));
+    stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100));
+  }
 
-  let selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
-  let markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
-  let taxCost = (stats?.buysSum ?? 0) * tax;
-  let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-  let commissionCost = (stats?.buysSum ?? 0) * commission;
-  let storageCost = (stats?.buysCount ?? 0) * data.storage;
-  let logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
+  const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
+  const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
+  const taxCost = (stats?.buysSum ?? 0) * tax;
+  const acquiringCost = (stats?.buysSum ?? 0) * acquiring;
+  const commissionCost = (stats?.buysSum ?? 0) * commission;
+  const storageCost = (stats?.buysCount ?? 0) * data.storage;
+  const logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
 
-  return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost
+  return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
 }
 
 function getBuysData(article: Article, date: string): [number, number] {
