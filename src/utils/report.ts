@@ -79,6 +79,9 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   const date = getYesterdayDate();
 
   articles.forEach(articleData => {
+    console.log(date)
+    console.log(JSON.stringify(articleData))
+
     const stats = articleData.order_info || {};
     const marketing = articleData?.marketing_cost || {};
     const marketingCost = parseFloat(marketing?.[date]) || 0;
