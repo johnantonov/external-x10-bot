@@ -219,8 +219,8 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${addToCartCount || 0}</td>
       <td>${ordersCount || 0}</td>
       <td>${Math.round(buysCount) || 0}</td>
-      <td>${margin.toFixed(2) || 0}%</td>
-      <td>${rev.toFixed(0) || 0}₽</td>
+      <td>${isNaN(+margin.toFixed(2)) ? 0 : margin.toFixed(2)}%</td>
+      <td>${isNaN(+rev.toFixed(0)) ? 0 : rev.toFixed(0)}₽</td>
     `
   }
 
@@ -240,8 +240,8 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     <td>${total.carts || 0}</td>
     <td>${total.orders || 0}</td>
     <td>${Math.round(total.buys) || 0}</td>
-    <td>${total.margin.toFixed(2) || 0}%</td>
-    <td>${total.rev.toFixed(0) || 0}₽</td>
+    <td>${isNaN(total.margin.toFixed(2)) ? 0 : total.margin.toFixed(2)}%</td>
+    <td>${isNaN(total.rev.toFixed(0)) ? 0 : total.rev.toFixed(0)}₽</td>
   </tr>
   `
 
