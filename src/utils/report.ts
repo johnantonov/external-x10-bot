@@ -115,7 +115,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
 
-function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {
+function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject())
   let dayRows = ``
 
@@ -163,12 +163,9 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           ordersCount += stats.ordersCount || 0;
           ordersSum += stats.ordersSum || 0;
 
-          const buysData = getBuysData(article, day)
-          buysCount = buysData[0]
-          buysSum = buysData[1]
-
+          buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
+          buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
           otherCosts += getCosts(article, day)
-
         }
       })
       
@@ -185,22 +182,18 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       marketingCost = parseFloat(marketing?.[day].cost) || 0;
       stats = data.order_info[day] || {};
       
-      // WIP -------
-      stats.buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
-      stats.buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
-      // -----------
-      
+      const buysData = getBuysData(data, day)
       otherCosts = getCosts(data, day)
 
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
-      rev = (stats.buysSum ?? 0) - otherCosts
-      margin = formatNumber(rev / (stats.buysSum || 1) * 100)
+      rev = (buysData[1] ?? 0) - otherCosts
+      margin = formatNumber(rev / (buysData[1] || 1) * 100)
 
       addToCartCount = stats?.addToCartCount;
       ordersCount = stats?.ordersCount;
-      buysCount = stats?.buysCount;
+      buysCount = buysData[0];
     }
 
     dayRows += `
