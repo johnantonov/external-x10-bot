@@ -189,9 +189,9 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     } else {
       
       const marketing = data?.marketing_cost || {};
-      prk = marketing?.[day].prk || { clicks: 0, views: 0 };
-      ark = marketing?.[day].ark || { clicks: 0, views: 0 };
-      marketingCost = parseFloat(marketing?.[day].cost) || 0;
+      prk = marketing?.[day]?.prk || { clicks: 0, views: 0 };
+      ark = marketing?.[day]?.ark || { clicks: 0, views: 0 };
+      marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
       stats = data.order_info?.[day] || {};
       
       const buysData = getBuysData(data, day)
