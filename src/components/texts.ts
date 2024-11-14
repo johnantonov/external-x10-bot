@@ -33,7 +33,7 @@ export const getStateMessage = (state: string) => {
     case rStates.waitMark:
       return message('стоимость маркировки')
     case rStates.waitTax:
-      return message('размер налога') + " Для ответа подойдет любой из следующих форматов: \n\n<b>6%</b>\n<b>6</b>\n<b>0,06</b>\n<b>0.06</b>"
+      return message('размер налога') + " Для ответа подойдет любой из следующих форматов (примеры для налога 6%): \n\n<b>6</b>\n<b>0,06</b>\n<b>0.06</b>"
     case rStates.waitSelfCost:
       return message('себестоимость товара')
     default:

@@ -113,7 +113,7 @@ export function isKey(text: string, state: string): Boolean {
   }
 
   if (state.startsWith(rStates.waitTax)) {
-    return /^(\d+([.,]\d+)?|\d+([.,]\d+)?\s?(%|процент(а|ов)?))$/i.test(text);
+    return /^(\d+([.,]\d+)?|[.,]?\d+)$/.test(text);
   }
 
   if ([rStates.waitSelfCost, rStates.waitMark].includes(state.split('?')[0])) {
