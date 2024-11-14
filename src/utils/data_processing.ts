@@ -89,18 +89,19 @@ export async function calculateLogistics(sizesNms: Record<article, Record<string
   const tariffs = await box_tariffs_db.getBoxTariff(config.storagesForLogistics)
   const result: Record<string, any> = {};
 
-  console.log(JSON.stringify(tariffs))
-
   const nms = Object.keys(sizesNms)
 
   nms.forEach(nm => {
     let sum = 0
     const literSize = sizesNms[nm].literSize 
+    
+    console.log(sizesNms[nm].literSize )
 
     tariffs.forEach((t: BoxTariff) => {
       sum += t.boxDeliveryBase + (literSize - 1) * t.boxDeliveryLiter 
     })
 
+    console.log(sum)
 
     result[nm] = sum/config.storagesForLogistics.length
   })
