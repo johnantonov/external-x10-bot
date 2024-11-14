@@ -472,12 +472,6 @@ export class ReportService {
         for (const chat_id of ids) {
           if (usersData[chat_id][0] && usersData[chat_id][0].wb_api_key) {
             await this.processReport(usersData[chat_id], yesterdayDate, +chat_id)
-            // const htmlTable = await getReportHtml(usersData[chat_id]);
-            // const pdfBuffer = await generatePdfFromHtml(htmlTable);
-            // if (pdfBuffer) {
-            //   const messageText = await formatReportArticleMessage(usersData[chat_id], yesterdayDate)
-            //   await this.sendPdfToTelegram(+chat_id, pdfBuffer, yesterdayDate, messageText);
-            // }
           } else {
             console.log('There are no articles for ' + chat_id)
           }

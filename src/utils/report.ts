@@ -66,7 +66,7 @@ export async function getReportHtml(articleData: Article[]) {
     `
 }
 
-export function createReportMessage(articles: Article[], date: string) {
+export function createReportMessage(articles: Article[], formatReportDate: string) {
   let message = ``;
   let ordersSumTotal = 0;
   let ordersCountTotal = 0;
@@ -74,10 +74,9 @@ export function createReportMessage(articles: Article[], date: string) {
   let buysCountTotal = 0;
   let marketingCostTotal = 0;
   let revTotal = 0;
-  let krrrTotalArray: number[] = []
+  let krrrTotalArray: number[] = [];
 
-  console.log(JSON.stringify(articles))
-
+  const date = getYesterdayDate();
 
   articles.forEach(articleData => {
     const stats = articleData.order_info || {};
@@ -124,7 +123,7 @@ export function createReportMessage(articles: Article[], date: string) {
 КРРР: ${krrrTotal}%
 Прибыль с ДРР: ${revTotal}₽
   `
-  return `<b>10X Отчет ${date}</b>\n${message}`;
+  return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
 
 function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {
