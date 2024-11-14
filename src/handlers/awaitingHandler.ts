@@ -30,7 +30,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     if (state === rStates.waitWbApiKey || state === rStates.waitNewKey) {
       try {
         const user = await users_db.getUserById(chat_id);
-        const oldApiKey = user?.api_key;
+        const oldApiKey = user?.wb_api_key;
 
         if (oldApiKey) {
           const oldSid = extractSidFromToken(oldApiKey);
@@ -57,7 +57,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
       try {
         const newArticles = text.split(',')
         await articles_db.addArticles(chat_id, newArticles)
-        return new AwaitingAnswer({ result: true, text: "✅ Вы добавили артикул", type: 'article' });
+        return new AwaitingAnswer({ result: true, text: texts.addedArticle, type: 'article' });
       } catch (e) {
         console.error('Ошибка в процессе добавления артикула: ', e)
         return handleError("Возникла ошибка, попробуйте еще раз.");

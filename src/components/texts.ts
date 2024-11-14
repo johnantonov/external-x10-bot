@@ -3,4 +3,5 @@ export const texts = {
   addedNewKey: '✅ Вы добавили новый WB ключ',
   updatedWbKey: "✅ Вы обновили WB ключ",
   updatedWbKeyAndDeleted: "✅ Вы обновили ключ и удалили старые артикулы",
+  addedArticle: "✅ Вы добавили артикул",
 }
