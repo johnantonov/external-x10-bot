@@ -100,7 +100,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     revTotal += formatNumber((buysSum || 0) - otherCosts - marketingCost);
   })
 
-  const krrrTotal = krrrTotalArray.length > 0 ? ((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0)) : 0;
+  const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0));
 
   message = `
 Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
@@ -109,7 +109,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
 Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100).toFixed(0)}%
 Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100).toFixed(0)}%
-КРРР: ${krrrTotal}%
+КРРР: ${isNaN(krrrTotal) ? 0 : krrrTotal}%
 Прибыль с ДРР: ${revTotal.toFixed(0)}₽
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
