@@ -12,7 +12,7 @@ export interface Article {
   percent_mp: number;
   price_before_spp: number;
   logistics: number;
-  logistics_by_buys: number;
+  storage: number;
   size: number;
   order_info: Record<any, any>;
   vendor_code: string | number;

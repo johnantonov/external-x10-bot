@@ -211,13 +211,13 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [price_before_spp, chat_id, article]);
   }
 
-  async updateLogisticsByBuys(chat_id: number, article: article, logistics_by_buys: number): Promise<void> {
+  async updateStorage(chat_id: number, article: article, storage: number): Promise<void> {
     const query = `
       UPDATE ${this.tableName}
-      SET logistics_by_buys = $1
+      SET storage = $1
       WHERE chat_id = $2 AND article = $3
     `;
-    await this.pool.query(query, [logistics_by_buys, chat_id, article]);
+    await this.pool.query(query, [storage, chat_id, article]);
   }
 
   async updateSize(chat_id: number, article: article, size: number): Promise<void> {

@@ -28,7 +28,7 @@ export const migrations = [
             percent_mp DECIMAL,
             price_before_spp DECIMAL,
             logistics DECIMAL,
-            logistics_by_buys DECIMAL,
+            storage DECIMAL,
             size JSONB,
             vendor_code VARCHAR,
             PRIMARY KEY (article, chat_id),

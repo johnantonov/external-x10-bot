@@ -7,7 +7,7 @@ import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } 
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { Article, article} from '../dto/articles';
-import { calculateLogistics, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
+import { calculateLogisticsStorage, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
 import { formatError } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/botButtons';
@@ -88,7 +88,7 @@ export class ReportService {
 
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
-        const logisticsObj = await calculateLogistics(size)
+        const logisticsObj = await calculateLogisticsStorage(size)
 
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
@@ -96,7 +96,8 @@ export class ReportService {
           }
 
           let sizes = size[nm] || {};
-          let logistics: number = logisticsObj[nm] || 0;
+          let logistics: number = logisticsObj[nm].logistics || 0;
+          let storage: number = logisticsObj[nm].storage || 0;
           let info = report[nm]?.order_info || {};
           let percentBuys = percent_buys?.[nm] ?? null;
           let spp = report[nm]?.price_before_spp ?? null;
@@ -109,6 +110,7 @@ export class ReportService {
             price_before_spp: spp,
             vendor_code: vendor,
             logistics: logistics,
+            storage: storage,
           });
         }
 

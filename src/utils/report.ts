@@ -107,8 +107,8 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 Выкупы: ${buysSumTotal.toFixed(0)}₽, ${Math.round(buysCountTotal)}шт
 Реклама: ${marketingCostTotal.toFixed(0)}₽
 ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
-Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100)}%
-Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100)}%
+Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100).toFixed(0)}%
+Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100).toFixed(0)}%
 КРРР: ${krrrTotal}%
 Прибыль с ДРР: ${revTotal.toFixed(0)}₽
   `
@@ -215,16 +215,16 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
   return dayRows
 }
 
-function getCosts(data: Record<string, any>, date: string) {
-  const stats = data.order_info[date] || {};
+function getCosts(data: Article, date: string) {
+  const stats = data.order_info[date];
 
   const tax = parsePercent(data.tax)
   const acquiring = config.acquiring
   const commission = parsePercent(stats.commission)
 
   // WIP -------
-  stats.buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
-  stats.buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
+  stats.buysCount = Math.round((stats.ordersCount || 0) * ((data.percent_buys || 0) / 100))
+  stats.buysSum = Math.round((stats.ordersSum || 0) * ((data.percent_buys || 0) / 100))
   // -----------
 
   let selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
@@ -232,8 +232,10 @@ function getCosts(data: Record<string, any>, date: string) {
   let taxCost = (stats?.buysSum ?? 0) * tax;
   let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
   let commissionCost = (stats?.buysSum ?? 0) * commission;
+  let storageCost = (stats?.buysCount ?? 0) * data.storage;
+  let logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
 
-  return selfCost + markCost + taxCost + acquiringCost + commissionCost
+  return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost
 }
 
 function getBuysData(article: Article, date: string): [number, number] {

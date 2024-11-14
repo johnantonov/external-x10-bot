@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS articles (
     percent_mp DECIMAL,
     price_before_spp DECIMAL,
     logistics DECIMAL,
-    logistics_by_buys DECIMAL,
+    storage DECIMAL,
     size JSONB,
     vendor_code VARCHAR,
     PRIMARY KEY (article, chat_id),
@@ -64,6 +64,8 @@ CREATE TABLE IF NOT EXISTS commissions (
   "paidStorageKgvp" DECIMAL,
   PRIMARY KEY ("parentName", "subjectName")
 );
+
+ALTER TABLE articles RENAME COLUMN logisticsByBuys
 
 CREATE TABLE IF NOT EXISTS box_tariffs (
   "warehouseName" VARCHAR,
