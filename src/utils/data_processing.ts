@@ -1,5 +1,8 @@
+import { box_tariffs_db } from "../../database/models/box_tariffs";
+import { config } from "../config/configRecalc";
 import { article } from "../dto/articles";
-import { create30DaysObject, getYesterdayDate } from "./time";
+import { BoxTariff } from "../dto/boxTariffs";
+import { create30DaysObject  } from "./time";
 
 export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[], advertTypes: Record<string, any>) {
   const data: Record<string, any> = {}
@@ -80,4 +83,25 @@ export function extractBuyoutsFromCards(responseData: any) {
     console.error('Error extracting buyouts percent:', error);
     return null;
   }
+}
+
+export async function calculateLogistics(sizesNms: Record<article, Record<string, number>>) {
+  const tariffs = await box_tariffs_db.getBoxTariff(config.storagesForLogistics)
+  const result: Record<string, any> = {};
+
+  const nms = Object.keys(sizesNms)
+
+  nms.forEach(nm => {
+    let sum = 0
+    const literSize = sizesNms[nm].literSize 
+
+    tariffs.forEach((t: BoxTariff) => {
+      sum += t.boxDeliveryBase + (literSize - 1) * t.boxDeliveryLiter 
+    })
+
+
+    result[nm] = (sum/config.storagesForLogistics.length) || 0
+  })
+
+  return result
 }

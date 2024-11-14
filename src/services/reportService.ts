@@ -7,7 +7,7 @@ import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } 
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { article} from '../dto/articles';
-import { extractBuyoutsFromCards, processCampaigns } from '../utils/marketing';
+import { calculateLogistics, extractBuyoutsFromCards, processCampaigns } from '../utils/data_processing';
 import { formatError } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/botButtons';
@@ -58,7 +58,6 @@ export class ReportService {
         }
 
         const { wb_api_key } = articles[0] ?? null
-        console.log('wb api key:', wb_api_key)
 
         if (!wb_api_key) {
           console.log(`No recent campaigns found for article with chat ID: ${id}`);
@@ -80,22 +79,16 @@ export class ReportService {
           advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
         }
 
-        // console.log(`advert result for ${id}: ${JSON.stringify(advRes)}`)
-
         const [monthAgoDate, yesterday, today] = getXDaysPeriod(31)
 
-        const report = (await this.fetchWbStatistics(nms, wb_api_key, monthAgoDate, yesterday, today));
-
-        // console.log(`statistic report for ${id}: ${JSON.stringify(report)}`)
+        const report = (await this.fetchWbStatistics(nms, wb_api_key));
 
         const yesterdayTime = yesterday + " 23:59:59"
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
 
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
-        // console.log(`persent buy for ${id}: ${JSON.stringify(percent_buys)}`)
-
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
-        // console.log(`size ${id}: ${JSON.stringify(size)}`)
+        const logisticsObj = await calculateLogistics(size)
 
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
@@ -103,6 +96,7 @@ export class ReportService {
           }
 
           let sizes = size[nm] || {};
+          let logistics: number = logisticsObj[nm] || 0;
           let info = report[nm]?.order_info || {};
           let percentBuys = percent_buys?.[nm] ?? null;
           let spp = report[nm]?.price_before_spp ?? null;
@@ -114,6 +108,7 @@ export class ReportService {
             size: sizes,
             price_before_spp: spp,
             vendor_code: vendor,
+            logistics: logistics,
           });
         }
 
@@ -161,7 +156,9 @@ export class ReportService {
         }
         const filteredData = cards.filter((card: any) => nmIDs.includes(card.nmID));
         filteredData.forEach((el: any) => {
+          const literSize = (el.dimensions.width * el.dimensions.height * el.dimensions.length) / 1000
           result[el.nmID] = el.dimensions;
+          result[el.nmID].literSize = literSize
         });
   
         cursor = response.data.cursor || {};
@@ -205,7 +202,7 @@ export class ReportService {
     }
   }
 
-  async fetchWbStatistics(articles: article[], wb_api_key: string, startDate: string, yesterday: string, today: string) {
+  async fetchWbStatistics(articles: article[], wb_api_key: string) {
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
 

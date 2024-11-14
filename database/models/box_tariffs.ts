@@ -8,13 +8,30 @@ class BoxTariffsModel extends BaseModel<BoxTariff> {
     super('box_tariffs', pool);
   }
 
-  async getBoxTariff(name: string): Promise<BoxTariff> {
+  async getAllTariffs(): Promise<Array<BoxTariff>> {
     const query = `
-      SELECT * FROM ${this.tableName} WHERE "warehouseName" = $1 LIMIT 1
+      SELECT * FROM ${this.tableName}
     `;
 
     const result = await this.pool.query(query, [name]);
     return result.rows[0];
+  }
+
+  async getBoxTariff(name: string | string[]): Promise<Array<BoxTariff>> {
+    let query = `SELECT * FROM ${this.tableName} WHERE "warehouseName" `;
+    let params: any[] = [];
+  
+    if (Array.isArray(name)) {
+      const placeholders = name.map((_, index) => `$${index + 1}`).join(',');
+      query += `IN (${placeholders})`;
+      params = name; 
+    } else {
+      query += `= $1 LIMIT 1`;
+      params = [name]; 
+    }
+  
+    const result = await this.pool.query(query, params);
+    return result.rows;
   }
 
   async upsertBoxTariffs(dataArray: BoxTariff[]): Promise<void> {
