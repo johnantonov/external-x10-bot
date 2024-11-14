@@ -254,8 +254,8 @@ function getCosts(data: Article, date: string) {
   const commission = parsePercent(stats?.commission) || 0
 
   // WIP -------
-  stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data.percent_buys || 0) / 100)) || 0
-  stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data.percent_buys || 0) / 100))
+  stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100))
+  stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100))
   // -----------
 
   let selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
@@ -272,8 +272,8 @@ function getCosts(data: Article, date: string) {
 function getBuysData(article: Article, date: string): [number, number] {
   const stats = article.order_info?.[date] || {};
 
-  const buysCount = Math.round(stats?.ordersCount * ((article.percent_buys || 0) / 100))
-  const buysSum = Math.round(stats?.ordersSum * ((article.percent_buys || 0) / 100))
+  const buysCount = Math.round(stats?.ordersCount * ((article?.percent_buys || 0) / 100))
+  const buysSum = Math.round(stats?.ordersSum * ((article?.percent_buys || 0) / 100))
 
   return [buysCount, buysSum]
 }
