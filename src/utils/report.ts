@@ -150,7 +150,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
     }
 
     if (index === 0 && allData.length > 1) {
-      allData.forEach((article: any, indexArticle: number) => {
+      allData.forEach((article: Article, indexArticle: number) => {
         if (indexArticle > 0) {
           stats = article.order_info?.[day] || {};
           const marketing = article?.marketing_cost || {};
@@ -163,10 +163,9 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           ordersCount += stats.ordersCount || 0;
           ordersSum += stats.ordersSum || 0;
 
-          // WIP -------
-          buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
-          buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
-          // -----------
+          const buysData = getBuysData(article, day)
+          buysCount = buysData[0]
+          buysSum = buysData[1]
 
           otherCosts += getCosts(article, day)
 
