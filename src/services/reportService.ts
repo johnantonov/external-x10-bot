@@ -215,7 +215,13 @@ export class ReportService {
       hour12: false
     }).replace(",", "");
     let monthStartDateTime = dates[dates.length-1] + ' 00:00:00'
-    let monthEndDateTime = `${dates[0]} ${moscowTime.split(" ")[1]}`
+    // let monthEndDateTime = `${dates[0]} ${moscowTime.split(" ")[1]}`
+    let hours = moscowTime.split(" ")[1].split(":")[0];
+    let minutesAndSeconds = moscowTime.split(" ")[1].slice(2);
+    if (hours === "24") {
+      hours = "00";
+    }
+    let monthEndDateTime = `${dates[0]} ${hours.padStart(2, '0')}:${minutesAndSeconds}`;
 
     const periodRequestData = {
       nmIDs: articles,
