@@ -251,7 +251,7 @@ function getCosts(data: Article, date: string) {
 
   const tax = parsePercent(data.tax)
   const acquiring = config.acquiring
-  const commission = parsePercent(stats.commission)
+  const commission = parsePercent(stats?.commission) || 0
 
   // WIP -------
   stats.buysCount = Math.round((stats.ordersCount || 0) * ((data.percent_buys || 0) / 100))
