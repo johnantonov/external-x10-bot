@@ -1,14 +1,10 @@
+import { config } from "../config/configRecalc";
 import { Article } from "../dto/articles";
 import { getWbArticlePhoto } from "./parse";
 import { formatNumber, parsePercent } from "./string";
 import { create30DaysObject, getYesterdayDate } from "./time";
 import axios, { all } from 'axios';
 import sharp from 'sharp';
-
-
-const config = {
-  days: 5
-}
 
 export async function getReportHtml(articleData: Article[]) {
   let tables = ``;
@@ -30,7 +26,7 @@ export async function getReportHtml(articleData: Article[]) {
       }
     }
 
-    let dayRows = getDaysRows(config.days, data, i, imgSrc, articleData)
+    let dayRows = getDaysRows(config.tableDays, data, i, imgSrc, articleData)
 
     tables += `<table class="b">
       <thead class="br">
@@ -102,7 +98,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
 
     if (i === daysCount) {
       const value = (index === 0 && allData.length > 1) ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
-      dayRows += `<td rowspan="${config.days}" colspan="2" class="photo_cell">${value}</td>`
+      dayRows += `<td rowspan="${config.tableDays}" colspan="2" class="photo_cell">${value}</td>`
     }
 
     if (index === 0 && allData.length > 1) {

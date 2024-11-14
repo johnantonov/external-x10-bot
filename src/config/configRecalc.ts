@@ -1,3 +1,4 @@
 export const config = {
-  storagesForLogistics: ['Коледино', 'Казань', 'Тула']
+  storagesForLogistics: ['Коледино', 'Казань', 'Тула'],
+  tableDays: 5,
 }

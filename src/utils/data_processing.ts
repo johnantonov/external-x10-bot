@@ -100,7 +100,7 @@ export async function calculateLogistics(sizesNms: Record<article, Record<string
     })
 
 
-    result[nm] = (sum/config.storagesForLogistics.length) || 0
+    result[nm] = sum/config.storagesForLogistics.length
   })
 
   return result
