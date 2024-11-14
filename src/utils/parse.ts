@@ -18,7 +18,7 @@ export function parsePercent(input: string | number): number {
 
   let num = Number(str);
 
-  if (isNaN(num)) {
+  if (isNaN(num) || !isFinite(num)) {
     return 0;
   }
 

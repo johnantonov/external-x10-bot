@@ -79,7 +79,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   const date = getYesterdayDate();
 
   articles.forEach(articleData => {
-    const stats = articleData.order_info[date] || {};
+    const stats = articleData.order_info?.[date] || {};
     const marketing = articleData?.marketing_cost || {};
     const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
 
@@ -180,7 +180,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       prk = marketing?.[day].prk || { clicks: 0, views: 0 };
       ark = marketing?.[day].ark || { clicks: 0, views: 0 };
       marketingCost = parseFloat(marketing?.[day].cost) || 0;
-      stats = data.order_info[day] || {};
+      stats = data.order_info?.[day] || {};
       
       const buysData = getBuysData(data, day)
       otherCosts = getCosts(data, day)
@@ -216,7 +216,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
 }
 
 function getCosts(data: Article, date: string) {
-  const stats = data.order_info[date];
+  const stats = data.order_info?.[date];
 
   const tax = parsePercent(data.tax)
   const acquiring = config.acquiring
