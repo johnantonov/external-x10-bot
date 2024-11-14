@@ -450,10 +450,10 @@ export class ReportService {
   }
 
   async processReport(articles: Article[], yesterdayDate: string, chat_id: number) {
+    const messageText = createReportMessage(articles, yesterdayDate)
     const htmlTable = await getReportHtml(articles);
     const pdfBuffer = await generatePdfFromHtml(htmlTable);
-    if (pdfBuffer) {
-      const messageText = createReportMessage(articles, yesterdayDate)
+    if (pdfBuffer && messageText) {
       const formatYesterdayDate = yesterdayDate.slice(0, 5)
       await this.sendPdfToTelegram(chat_id, pdfBuffer, formatYesterdayDate, messageText);
     }
