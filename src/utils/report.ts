@@ -66,6 +66,21 @@ export async function getReportHtml(articleData: Article[]) {
     `
 }
 
+function calculateKrrr(buysSum: number, selfCost: number, markCost: number, taxCost: number, marketingCost: number): number {
+  const netProfit = buysSum - selfCost - markCost - taxCost;
+  return ((netProfit - marketingCost) / (netProfit || 1)) * 100;
+}
+
+function calculateRevenue(stats: any, selfCost: number, markCost: number, taxCost: number, acquiringCost: number, commissionCost: number, marketingCost: number): number {
+  return (stats.buysSum || 0)
+    - selfCost
+    - markCost
+    - taxCost
+    - acquiringCost
+    - commissionCost
+    - marketingCost;
+}
+
 export function createReportMessage(articles: Article[], date: string) {
   let message = ``;
   let ordersSumTotal = 0;
@@ -76,53 +91,52 @@ export function createReportMessage(articles: Article[], date: string) {
   let revTotal = 0;
   let krrrTotalArray: number[] = []
 
-
   articles.forEach(articleData => {
-    const stats = articleData.order_info || {};
-    const marketing = articleData?.marketing_cost || {};
+    const { order_info: stats = {}, marketing_cost: marketing = {}, percent_buys, tax: taxRate, self_cost, mark } = articleData;
     const marketingCost = parseFloat(marketing?.[date]) || 0;
-    const tax = parsePercent(articleData.tax)
-    const acquiring = 0.015
-    const commission = parsePercent(stats.commission)
+    const tax = parsePercent(taxRate);
+    const acquiring = 0.015;
+    const commission = parsePercent(stats.commission);
   
-    // WIP -------
-    stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
-    stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
-    // -----------
+    // WIP - Calculate buys
+    stats.buysCount = (stats.ordersCount || 0) * ((percent_buys || 0) / 100);
+    stats.buysSum = (stats.ordersSum || 0) * ((percent_buys || 0) / 100);
   
-    let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
-    let markCost = (stats?.buysCount ?? 0) * (articleData?.mark ?? 0);
-    let taxCost = (stats?.buysSum ?? 0) * tax;
-    let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-    let commissionCost = (stats?.buysSum ?? 0) * commission;
+    const selfCost = (stats.buysCount || 0) * (self_cost || 0);
+    const markCost = (stats.buysCount || 0) * (mark || 0);
+    const taxCost = (stats.buysSum || 0) * tax;
+    const acquiringCost = (stats.buysSum || 0) * acquiring;
+    const commissionCost = (stats.buysSum || 0) * commission;
   
-    const krrr = formatNumber(
-    ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100);
-
-    krrrTotalArray.push(krrr)
-
-    ordersSumTotal += (stats.ordersSum || 0)
-    ordersCountTotal += (stats.ordersCount || 0)
-    buysSumTotal += (stats.buysSum || 0)
-    buysCountTotal += (stats.buysCount || 0)
-    marketingCostTotal += marketingCost
+    // Calculate KRRR and Revenue
+    const krrr = formatNumber(calculateKrrr(stats.buysSum, selfCost, markCost, taxCost, marketingCost));
+    krrrTotalArray.push(krrr);
   
-    revTotal += formatNumber((stats.buysSum || 0) - selfCost - markCost - taxCost - acquiringCost - commissionCost- marketingCost);
-  })
-
+    ordersSumTotal += (stats.ordersSum || 0);
+    ordersCountTotal += (stats.ordersCount || 0);
+    buysSumTotal += (stats.buysSum || 0);
+    buysCountTotal += (stats.buysCount || 0);
+    marketingCostTotal += marketingCost;
+  
+    const rev = formatNumber(calculateRevenue(stats, selfCost, markCost, taxCost, acquiringCost, commissionCost, marketingCost));
+  });
+  
+  // Calculate average KRRR
   const krrrTotal = krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1);
-
+  
+  // Message formatting
   message = `
-Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
-Выкупы: ${buysSumTotal}₽, ${buysCountTotal}шт
-Реклама: ${marketingCostTotal}₽
-ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
-Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100)}%
-Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100)}%
-КРРР: ${krrrTotal}%
-Прибыль с ДРР: ${revTotal}₽
-  `
-  return `<b>10X Отчет ${date}\n${message}</b>`;
+  Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
+  Выкупы: ${buysSumTotal}₽, ${buysCountTotal}шт
+  Реклама: ${marketingCostTotal}₽
+  ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
+  Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100)}%
+  Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100)}%
+  КРРР: ${krrrTotal}%
+  Прибыль с ДРР: ${revTotal}₽
+  `;
+  
+  return `10X Отчет ${date}${message}`;
 }
 
 function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {

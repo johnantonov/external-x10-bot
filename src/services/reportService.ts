@@ -7,7 +7,7 @@ import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } 
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { Article, article} from '../dto/articles';
-import { calculateLogistics, extractBuyoutsFromCards, processCampaigns } from '../utils/data_processing';
+import { calculateLogistics, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
 import { formatError } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/botButtons';
