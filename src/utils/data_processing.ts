@@ -89,6 +89,8 @@ export async function calculateLogistics(sizesNms: Record<article, Record<string
   const tariffs = await box_tariffs_db.getBoxTariff(config.storagesForLogistics)
   const result: Record<string, any> = {};
 
+  console.log(JSON.stringify(tariffs))
+
   const nms = Object.keys(sizesNms)
 
   nms.forEach(nm => {

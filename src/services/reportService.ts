@@ -88,9 +88,7 @@ export class ReportService {
 
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
-        console.log(JSON.stringify(size))
         const logisticsObj = await calculateLogistics(size)
-        console.log(JSON.stringify(logisticsObj))
 
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
