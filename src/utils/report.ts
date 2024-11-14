@@ -104,17 +104,17 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     revTotal += formatNumber((stats.buysSum || 0) - otherCosts - marketingCost);
   })
 
-  const krrrTotal = krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1);
+  const krrrTotal = (krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0);
 
   message = `
 Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
-Выкупы: ${buysSumTotal}₽, ${buysCountTotal}шт
-Реклама: ${marketingCostTotal}₽
+Выкупы: ${buysSumTotal.toFixed(0)}₽, ${Math.round(buysCountTotal)}шт
+Реклама: ${marketingCostTotal.toFixed(0)}₽
 ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
 Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100)}%
 Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100)}%
 КРРР: ${krrrTotal}%
-Прибыль с ДРР: ${revTotal}₽
+Прибыль с ДРР: ${revTotal.toFixed(0)}₽
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
