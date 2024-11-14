@@ -226,6 +226,9 @@ export class ReportService {
       page: 1
     };
 
+    console.log(monthStartDateTime)
+    console.log(monthEndDateTime)
+
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
