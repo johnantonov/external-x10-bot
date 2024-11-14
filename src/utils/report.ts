@@ -3,7 +3,7 @@ import { Article } from "../dto/articles";
 import { getWbArticlePhoto } from "./parse";
 import { formatNumber, parsePercent } from "./string";
 import { create30DaysObject, getYesterdayDate } from "./time";
-import axios, { all } from 'axios';
+import axios from 'axios';
 import sharp from 'sharp';
 
 export async function getReportHtml(articleData: Article[]) {
@@ -82,7 +82,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     console.log(date)
     console.log(JSON.stringify(articleData))
 
-    const stats = articleData.order_info || {};
+    const stats = articleData.order_info[date] || {};
     const marketing = articleData?.marketing_cost || {};
     const marketingCost = parseFloat(marketing?.[date]) || 0;
     const tax = parsePercent(articleData.tax)
