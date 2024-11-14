@@ -210,17 +210,17 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
 
     dayRows += `
       <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
-      <td class="bl">${ark.clicks.toFixed(0)}</td>
-      <td>${(ctrArk * 100).toFixed(2)}%</td>
-      <td class="bl">${prk.clicks.toFixed(0)}</td>
-      <td>${(ctrPrk * 100).toFixed(2)}%</td>
-      <td class="bl">${marketingCost.toFixed(0)}₽</td>
-      <td>${drr.toFixed(2)}%</td>
-      <td>${addToCartCount}</td>
-      <td>${ordersCount}</td>
-      <td>${Math.round(buysCount)}</td>
-      <td>${margin.toFixed(2)}%</td>
-      <td>${rev.toFixed(0)}₽</td>
+      <td class="bl">${ark.clicks.toFixed(0) || 0}</td>
+      <td>${(ctrArk * 100).toFixed(2) || 0}%</td>
+      <td class="bl">${prk.clicks.toFixed(0) || 0}</td>
+      <td>${(ctrPrk * 100).toFixed(2) || 0}%</td>
+      <td class="bl">${marketingCost.toFixed(0) || 0}₽</td>
+      <td>${drr.toFixed(2) || 0}%</td>
+      <td>${addToCartCount || 0}</td>
+      <td>${ordersCount || 0}</td>
+      <td>${Math.round(buysCount) || 0}</td>
+      <td>${margin.toFixed(2) || 0}%</td>
+      <td>${rev.toFixed(0) || 0}₽</td>
     `
   }
 
@@ -231,17 +231,17 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
   dayRows += `
   <tr class="row">
     <td rowspan="1" colspan="2" class="day_cell">Итог</td>
-    <td class="bl">${total.ark.clicks.toFixed(0)}</td>
-    <td>${(total.ark.ctr * 100).toFixed(2)}%</td>
-    <td class="bl">${total.prk.clicks.toFixed(0)}</td>
-    <td>${(total.prk.ctr * 100).toFixed(2)}%</td>
-    <td class="bl">${total.marketingCost.toFixed(0)}₽</td>
-    <td>${totalDrr}%</td>
-    <td>${total.carts}</td>
-    <td>${total.orders}</td>
-    <td>${Math.round(total.buys)}</td>
-    <td>${total.margin.toFixed(2)}%</td>
-    <td>${total.rev.toFixed(0)}₽</td>
+    <td class="bl">${total.ark.clicks.toFixed(0) || 0}</td>
+    <td>${(total.ark.ctr * 100).toFixed(2) || 0}%</td>
+    <td class="bl">${total.prk.clicks.toFixed(0 || 0)}</td>
+    <td>${(total.prk.ctr * 100).toFixed(2) || 0}%</td>
+    <td class="bl">${total.marketingCost.toFixed(0) || 0}₽</td>
+    <td>${totalDrr || 0}%</td>
+    <td>${total.carts || 0}</td>
+    <td>${total.orders || 0}</td>
+    <td>${Math.round(total.buys) || 0}</td>
+    <td>${total.margin.toFixed(2) || 0}%</td>
+    <td>${total.rev.toFixed(0) || 0}₽</td>
   </tr>
   `
 
