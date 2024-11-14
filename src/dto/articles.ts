@@ -1,4 +1,5 @@
 export interface Article {
+  stats: any;
   article: article;
   chat_id: number;
   wb_api_key: string;

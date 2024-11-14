@@ -3,6 +3,9 @@ import { rStates } from "../redis";
 import { users_db } from "../../database/models/users";
 import dotenv from 'dotenv';
 import { articles_db } from "../../database/models/articles";
+import jwt from 'jsonwebtoken'; 
+import { texts } from "../components/texts";
+
 dotenv.config();
 
 /**
@@ -24,15 +27,33 @@ export async function awaitingHandler(data: UserMsg, state: string) {
   try {
     const handleError = (message: string) => new AwaitingAnswer({ result: false, text: message });
 
-    if (state === rStates.waitWbApiKey) {
+    if (state === rStates.waitWbApiKey || state === rStates.waitNewKey) {
       try {
-        await users_db.updateType(chat_id, text);
-        return new AwaitingAnswer({ result: true, text: "✅ Вы добавили WB ключ", type: 'registered' });
+        const user = await users_db.getUserById(chat_id);
+        const oldApiKey = user?.api_key;
+
+        if (oldApiKey) {
+          const oldSid = extractSidFromToken(oldApiKey);
+          const newSid = extractSidFromToken(text);
+
+          if (newSid === oldSid) {
+            await users_db.updateWbApiKey(chat_id, text);
+            return new AwaitingAnswer({ result: true, text: texts.updatedWbKey, type: user?.type });
+          } else {
+            await users_db.updateWbApiKey(chat_id, text);
+            await articles_db.removeArticle(chat_id);
+            return new AwaitingAnswer({ result: true, text: texts.updatedWbKeyAndDeleted, type: user?.type });
+          }
+        } else {
+          await users_db.updateTypeAndKey(chat_id, text);
+          return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'registered' });
+        }
       } catch (e) {
-        console.error('Ошибка в процессе добавления ключа вб: ', e)
-        return handleError("Возникла ошибка, попробуйте еще раз.");
+        console.error('Error processing add wb api key: ', e);
+        return handleError("Возникла ошибка, попробуйте позже.");
       }
-    }  else if (state.startsWith(rStates.waitArticle)) {
+
+    } else if (state.startsWith(rStates.waitArticle)) {
       try {
         const newArticles = text.split(',')
         await articles_db.addArticles(chat_id, newArticles)
@@ -41,15 +62,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.error('Ошибка в процессе добавления артикула: ', e)
         return handleError("Возникла ошибка, попробуйте еще раз.");
       }
-    } else if (state === rStates.waitNewKey) {
-      try {
-        const type = (await users_db.getUserById(chat_id))?.type
-        await users_db.updateWbApiKey(chat_id, text)
-        return new AwaitingAnswer({ result: true, text: "✅ Вы обновили WB ключ", type });
-      } catch (e) {
-        console.error('Ошибка в процессе добавления ключа вб: ', e)
-        return handleError("Возникла ошибка, попробуйте позже.");
-      }
+
     } else if (state.startsWith(rStates.waitMark)) {
       try {
         const article = state.split('?')[1]
@@ -60,6 +73,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.error('Ошибка в процессе сохранения маркировки: ', e)
         return handleError("Возникла ошибка, попробуйте позже.");
       }
+
     } else if (state.startsWith(rStates.waitSelfCost)) {
       try {
         const article = state.split('?')[1]
@@ -69,6 +83,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.error('Ошибка в процессе обновления себестоимости: ', e)
         return handleError("Возникла ошибка, попробуйте позже.");
       }
+
     } else if (state.startsWith(rStates.waitTax)) {
       try {
         const article = state.split('?')[1]
@@ -105,5 +120,21 @@ export function isKey(text: string, state: string): Boolean {
     return /^\d+$/.test(text);
   }
 
-  return true
+  return true;
+}
+
+/**
+ * Extract sid from the JWT token
+ * @param {string} token - JWT token
+ * @returns {string} - sid value
+ */
+export function extractSidFromToken(token: string): string {
+  try {
+    const decoded: any = jwt.decode(token);
+    console.log(JSON.stringify(decoded))
+    return decoded?.sid || '';
+  } catch (e) {
+    console.error('Ошибка декодирования JWT токена: ', e);
+    return '';
+  }
 }

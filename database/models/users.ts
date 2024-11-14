@@ -110,7 +110,7 @@ class UsersModel extends BaseModel<User> {
     await this.pool.query(query, [article, chat_id]);
   }
 
-  async updateType(chat_id: number, wb_api_key?: string | null, article?: article, decreaseTo?: user_type): Promise<void> {
+  async updateTypeAndKey(chat_id: number, wb_api_key?: string | null, article?: article, decreaseTo?: user_type): Promise<void> {
     if (decreaseTo) {
       await this.update('chat_id', chat_id, { type: decreaseTo }, ['chat_id'])
       return
