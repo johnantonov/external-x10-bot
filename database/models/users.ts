@@ -98,7 +98,13 @@ class UsersModel extends BaseModel<User> {
       SET wb_api_key = $1
       WHERE chat_id = $2
     `;
+    const query2 = `
+      UPDATE articles 
+      SET wb_api_key = $1
+      WHERE chat_id = $2
+    `
     await this.pool.query(query, [wb_api_key, chat_id]);
+    await this.pool.query(query2, [wb_api_key, chat_id]);
   }
 
   async updateArticle(chat_id: number, article: article): Promise<void> {

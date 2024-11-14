@@ -40,8 +40,8 @@ export async function awaitingHandler(data: UserMsg, state: string) {
             await users_db.updateWbApiKey(chat_id, text);
             return new AwaitingAnswer({ result: true, text: texts.updatedWbKey, type: user?.type });
           } else {
-            await users_db.updateWbApiKey(chat_id, text);
             await articles_db.removeArticle(chat_id);
+            await users_db.updateWbApiKey(chat_id, text);
             return new AwaitingAnswer({ result: true, text: texts.updatedWbKeyAndDeleted, type: user?.type });
           }
         } else {
