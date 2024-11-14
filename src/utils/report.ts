@@ -66,7 +66,7 @@ export async function getReportHtml(articleData: Article[]) {
     `
 }
 
-export function formatReportArticleMessage(articles: Article[], date: string) {
+export function createReportMessage(articles: Article[], date: string) {
   let message = ``;
   let ordersSumTotal = 0;
   let ordersCountTotal = 0;
@@ -122,7 +122,7 @@ export function formatReportArticleMessage(articles: Article[], date: string) {
 КРРР: ${krrrTotal}%
 Прибыль с ДРР: ${revTotal}₽
   `
-  return `10X Отчет ${date}${message}`;
+  return `<b>10X Отчет ${date}\n${message}</b>`;
 }
 
 function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {

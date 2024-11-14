@@ -16,7 +16,7 @@ import { updateCommissions } from '../utils/comissions';
 import { commissions_db } from '../../database/models/commissions';
 import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
-import { formatReportArticleMessage, getReportHtml } from '../utils/report';
+import { createReportMessage, getReportHtml } from '../utils/report';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 
 dotenv.config();
@@ -453,8 +453,9 @@ export class ReportService {
     const htmlTable = await getReportHtml(articles);
     const pdfBuffer = await generatePdfFromHtml(htmlTable);
     if (pdfBuffer) {
-      const messageText = formatReportArticleMessage(articles, yesterdayDate)
-      await this.sendPdfToTelegram(chat_id, pdfBuffer, yesterdayDate, messageText);
+      const messageText = createReportMessage(articles, yesterdayDate)
+      const formatYesterdayDate = yesterdayDate.slice(0, 5)
+      await this.sendPdfToTelegram(chat_id, pdfBuffer, formatYesterdayDate, messageText);
     }
   }
 

@@ -12,7 +12,7 @@ export function getYesterdayDate(local: 'en' | 'ru' = 'en') {
   const moscowTime = toZonedTime(now, timeZone);
   const yesterday = subDays(moscowTime, 1);
 
-  const formatStr = local === "en" ? 'yyyy-MM-dd' : 'dd.MM'
+  const formatStr = local === "en" ? 'yyyy-MM-dd' : 'dd.MM.yyyy'
 
   const formattedDate = format(yesterday, formatStr);
   return formattedDate;
