@@ -84,7 +84,10 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
 
     const otherCosts = getCosts(articleData, date)
+  
+    // WIP -------
     const [buysCount, buysSum] = getBuysData(articleData, date)
+    // -----------
   
     const krrr = formatNumber(
     ((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100);
@@ -115,7 +118,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
 
-function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
+function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject())
   let dayRows = ``
 
@@ -163,7 +166,11 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
           ordersCount += stats.ordersCount || 0;
           ordersSum += stats.ordersSum || 0;
 
-          [buysCount, buysSum] = getBuysData(article, day)
+          // WIP -------
+          buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
+          buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
+          // -----------
+
           otherCosts += getCosts(article, day)
 
         }
@@ -182,17 +189,22 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       marketingCost = parseFloat(marketing?.[day].cost) || 0;
       stats = data.order_info[day] || {};
       
-      [buysCount, buysSum] = getBuysData(data, day)
+      // WIP -------
+      stats.buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
+      stats.buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
+      // -----------
+      
       otherCosts = getCosts(data, day)
 
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
-      rev = (buysSum ?? 0) - otherCosts - marketingCost
-      margin = formatNumber(rev / (buysSum || 1) * 100)
+      rev = (stats.buysSum ?? 0) - otherCosts - marketingCost
+      margin = formatNumber(rev / (stats.buysSum || 1) * 100)
 
       addToCartCount = stats?.addToCartCount;
       ordersCount = stats?.ordersCount;
+      buysCount = stats?.buysCount;
     }
 
     dayRows += `
@@ -205,7 +217,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${drr.toFixed(2)}%</td>
       <td>${addToCartCount}</td>
       <td>${ordersCount}</td>
-      <td>${buysCount}</td>
+      <td>${Math.round(buysCount)}</td>
       <td>${margin.toFixed(2)}%</td>
       <td>${rev.toFixed(0)}₽</td>
     `
