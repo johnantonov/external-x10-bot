@@ -229,6 +229,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
   const totalDrr = (total.drr.reduce((sum: any, num: any) => sum + num, 0) / (total.drr.length || 1)).toFixed(0);
 
   dayRows += `
+  <tr class="row">
     <td rowspan="1" colspan="2" class="day_cell">Итог</td>
     <td class="bl">${total.ark.clicks.toFixed(0)}</td>
     <td>${(total.ark.ctr * 100).toFixed(2)}%</td>
@@ -241,6 +242,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     <td>${Math.round(total.buys)}</td>
     <td>${total.margin.toFixed(2)}%</td>
     <td>${total.rev.toFixed(0)}₽</td>
+  </tr>
   `
 
   return dayRows
