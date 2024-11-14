@@ -84,10 +84,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
 
     const otherCosts = getCosts(articleData, date)
-  
-    // WIP -------
     const [buysCount, buysSum] = getBuysData(articleData, date)
-    // -----------
   
     const krrr = formatNumber(
     ((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100);
@@ -176,7 +173,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
         }
       })
       
-      rev += (buysSum ?? 0) - otherCosts - marketingCost
+      rev += (buysSum ?? 0) - otherCosts
       margin += formatNumber(rev / (buysSum || 1) * 100) 
       drr += (marketingCost / (ordersSum || 1)) * 100;
       ctrArk = (ark.clicks / ark.views) || 0;
@@ -199,7 +196,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
-      rev = (stats.buysSum ?? 0) - otherCosts - marketingCost
+      rev = (stats.buysSum ?? 0) - otherCosts
       margin = formatNumber(rev / (stats.buysSum || 1) * 100)
 
       addToCartCount = stats?.addToCartCount;
