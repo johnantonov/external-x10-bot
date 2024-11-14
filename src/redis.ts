@@ -51,21 +51,6 @@ export const rStates = {
 
 export const inputStates = [rStates.waitSelfCost, rStates.waitTax, rStates.waitMark]
 
-export const getStateMessage = (state: string) => {
-  const message = (text: string) => '📝 Укажите ' + text + ' в ответном сообщении.'
-
-  switch (state) {
-    case rStates.waitMark:
-      return message('стоимость маркировки')
-    case rStates.waitTax:
-      return message('размер налога')
-    case rStates.waitSelfCost:
-      return message('себестоимость товара')
-    default:
-      break;
-  }
-}
-
 export const ttls = {
   usual: 600,
   hour: 3600,

@@ -1,7 +1,7 @@
-import { config } from "../config/reportConfig";
+import { config } from "../config/configRecalc";
 import { Article } from "../dto/articles";
-import { getWbArticlePhoto } from "./parse";
-import { formatNumber, parsePercent } from "./string";
+import { getWbArticlePhoto, parsePercent } from "./parse";
+import { formatNumber } from "./string";
 import { create30DaysObject, getYesterdayDate } from "./time";
 import axios from 'axios';
 import sharp from 'sharp';

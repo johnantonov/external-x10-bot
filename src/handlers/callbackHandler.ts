@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 import { UserCallback } from "../dto/messages";
-import { getStateMessage, redis, rStates, ttls } from "../redis";
+import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import { createEditData, MessageService } from "../services/messageService";
@@ -11,8 +11,9 @@ import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
-import { texts } from "../components/texts";
+import { getStateMessage, texts } from "../components/texts";
 import dotenv from 'dotenv';
+import { config } from "../config/configInterface";
 dotenv.config();
 
 /**
@@ -69,29 +70,28 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'new user':
       await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.usual)
-      editData = createEditData('🔑 Отправьте ваш ключ :)', returnBtn);
+      editData = createEditData(texts.sendKey, returnBtn);
       break;
 
     case 'change key':
       await RS.setUserState(chat_id, rStates.waitNewKey, ttls.usual)
-      editData = createEditData(`❗️ Если вы подключите ключ от другого личного кабинета, то перестанете получать отчеты по текущим артикулам.
-        \nДля продолжения отправьте в чат обновленный ключ или ключ от другого кабинета`, returnBtn);
+      editData = createEditData(texts.warningChangeKey, returnBtn);
       break;
 
     case 'articles':
-      editData = createEditData('🔢 Выберите артикул.', { inline_keyboard: await generateArticlesButtons(chat_id) });
+      editData = createEditData(texts.chooseArt, { inline_keyboard: await generateArticlesButtons(chat_id) });
       break;
 
     case 'add article':
       data = parseArticleData(userCallbackData);
       newButtonCallback = newArticleData(data);
-      const maxCount = +env.MAX_ARTICLES!
+      const maxCount = config.maxCount
       const articlesCount = (await articles_db.getAllArticlesForUser(chat_id)).rows.length
       if (articlesCount < maxCount) {
         await RS.setUserState(chat_id, rStates.waitArticle, ttls.usual)
         editData = createEditData(texts.addArticles, returnBtn);
       } else {
-        editData = createEditData(`❗️ Вы можете добавить максимум ${maxCount}.`, returnBtn);
+        editData = createEditData(texts.errorMaxArts, returnBtn);
       }
       break;
 
@@ -103,7 +103,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
           editData = createEditData(' ', articleMenu);
         }
       } else {
-        editData = createEditData('❗️Возникла ошибка при получении артикула. Попробуйте позже.', returnBtn);
+        editData = createEditData(texts.errorGetArt, returnBtn);
       }
       break;
 
@@ -112,7 +112,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       if (articleMenu) {
         editData = createEditData(' ', articleMenu);
       } else {
-        editData = createEditData('❗️Возникла ошибка при получении артикула. Попробуйте позже', returnBtn);
+        editData = createEditData(texts.errorGetArt, returnBtn);
       }
       break;
 
@@ -122,7 +122,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       if (message) {
         editData = createEditData(message, returnArticleMenu(currentArticle));
       } else {
-        editData = createEditData("❗️Возникла ошибка, попробуйте добавить информацию позже.", returnArticleMenu(currentArticle));
+        editData = createEditData(texts.errorAddLater, returnArticleMenu(currentArticle));
       }
       break;
 
@@ -154,27 +154,27 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       if (accessAllReports) {
         await users_db.updateLastReportCall(chat_id);
         MS.deleteAllMessages(chat_id)
-        const loadingMsg = await bot.sendMessage(chat_id, 'Подготавливаем отчеты ⌛️')
+        const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports)
         let reportResponse = await reportService.runForUser(chat_id)
         await MS.deleteMessage(chat_id, loadingMsg.message_id)
       } else {
-        editData = createEditData(`Вы получили отчет недавно, попробуйте позже`, mainBtn);
+        editData = createEditData(texts.errorGetArtAgain, mainBtn);
       }
       break;
 
     case 'change time':
       const selectedTime = +userCallbackData.split('?')[1]
       if (!selectedTime) {
-        editData = { text: 'Выберите время по МСК, когда вам будет удобно получать отчеты:', options: { inline_keyboard: generateReportTimeButtons(userCallbackData) } }
+        editData = { text: texts.chooseTime, options: { inline_keyboard: generateReportTimeButtons(userCallbackData) } }
       } else {
         await users_db.updateNotificationTime(chat_id, selectedTime);
         await articles_db.updateNotificationTime(chat_id, selectedTime)
-        editData = createEditData(`✅ Вы будете получать отчёт ежедневно в ${selectedTime}:00`, mainBtn)
+        editData = createEditData(`${texts.successNewTime} ${selectedTime}:00`, mainBtn)
       };
       break;
 
     default:
-      await bot.sendMessage(chat_id, 'Возникла ошибка при обработке ответа!', { reply_markup: mainBtn })
+      await bot.sendMessage(chat_id, texts.errorResponse, { reply_markup: mainBtn })
       console.error('Error processing callback')
       break;
   }

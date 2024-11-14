@@ -5,6 +5,31 @@ export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
 }
 
+export function parsePercent(input: string | number): number {
+  if (!input) {
+    return 0;
+  }
+
+  let str = input.toString().toLowerCase().replace(',', '.').trim();
+
+  if (str.includes('%') || str.includes('процент')) {
+    str = str.replace(/[%\sпроцентовпроцент]+/g, '').trim();
+  }
+
+  let num = Number(str);
+
+  if (isNaN(num)) {
+    return 0;
+  }
+
+  if (num > 1) {
+    return num / 100;
+  }
+
+  return num;
+}
+
+
 export function parseNumericValue(value: string): number | null {
   if (value === "-" || value === "" || value === null) {
     return null;

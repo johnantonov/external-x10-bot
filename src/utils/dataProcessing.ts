@@ -1,5 +1,5 @@
 import { box_tariffs_db } from "../../database/models/box_tariffs";
-import { config } from "../config/reportConfig";
+import { config } from "../config/configRecalc";
 import { article } from "../dto/articles";
 import { BoxTariff } from "../dto/boxTariffs";
 import { create30DaysObject  } from "./time";

@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import pool from "../db";
 import { article, Article } from '../../src/dto/articles';
 import { sortObjDatesKeys } from '../../src/utils/time';
+import { config } from '../../src/config/configInterface';
 dotenv.config();
 
 class ArticlesModel extends BaseModel<Article> {
@@ -95,7 +96,7 @@ class ArticlesModel extends BaseModel<Article> {
   }
 
   async addArticles(chat_id: number, articles: article[]): Promise<void> {
-    const maxCount = +process.env.MAX_ARTICLES!
+    const maxCount = config.maxCount
     let articlesCount = (await articles_db.getAllArticlesForUser(chat_id)).rows.length
 
     for (const article of articles) {
