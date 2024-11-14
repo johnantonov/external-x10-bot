@@ -116,8 +116,20 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 }
 
 function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
-  let days = Object.keys(create30DaysObject())
-  let dayRows = ``
+  let days = Object.keys(create30DaysObject());
+  let dayRows = ``;
+
+  const total: Record<string, any> = {
+    ark: { clicks: 0, ctr: 0 },
+    prk: { clicks: 0, ctr: 0 },
+    marketingCost: 0,
+    drr: [],
+    carts: 0,
+    orders: 0,
+    buys: 0,
+    margin: 0,
+    rev: 0
+  };
 
   for (let i = daysCount; i > 0; i--) {
     const day = days[i];
@@ -146,7 +158,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
 
     if (i === daysCount) {
       const value = (index === 0 && allData.length > 1) ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
-      dayRows += `<td rowspan="${config.tableDays}" colspan="2" class="photo_cell">${value}</td>`
+      dayRows += `<td rowspan="${config.tableDays+1}" colspan="2" class="photo_cell">${value}</td>`
     }
 
     if (index === 0 && allData.length > 1) {
@@ -211,6 +223,25 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${rev.toFixed(0)}₽</td>
     `
   }
+
+  // total
+
+  const totalDrr = (total.drr.reduce((sum: any, num: any) => sum + num, 0) / (total.drr.length || 1)).toFixed(0);
+
+  dayRows += `
+    <td rowspan="1" colspan="2" class="day_cell">Итог</td>
+    <td class="bl">${total.ark.clicks.toFixed(0)}</td>
+    <td>${(total.ark.ctr * 100).toFixed(2)}%</td>
+    <td class="bl">${total.prk.clicks.toFixed(0)}</td>
+    <td>${(total.prk.ctr * 100).toFixed(2)}%</td>
+    <td class="bl">${total.marketingCost.toFixed(0)}₽</td>
+    <td>${totalDrr}%</td>
+    <td>${total.carts}</td>
+    <td>${total.orders}</td>
+    <td>${Math.round(total.buys)}</td>
+    <td>${total.margin.toFixed(2)}%</td>
+    <td>${total.rev.toFixed(0)}₽</td>
+  `
 
   return dayRows
 }
