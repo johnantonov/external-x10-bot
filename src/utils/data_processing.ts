@@ -98,7 +98,7 @@ export async function calculateLogistics(sizesNms: Record<article, Record<string
     console.log(sizesNms[nm].literSize )
 
     tariffs.forEach((t: BoxTariff) => {
-      sum += t.boxDeliveryBase + (literSize - 1) * t.boxDeliveryLiter 
+      sum += +t.boxDeliveryBase + (literSize - 1) * +t.boxDeliveryLiter 
     })
 
     console.log(sum)
