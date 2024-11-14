@@ -221,7 +221,7 @@ export class ReportService {
     if (hours === "24") {
       hours = "00";
     }
-    let monthEndDateTime = `${dates[0]} ${hours.padStart(2, '0')}:${minutesAndSeconds}`;
+    let monthEndDateTime = `${dates[0]} ${hours.padStart(2, '0')}${minutesAndSeconds}`;
 
     const periodRequestData = {
       nmIDs: articles,
