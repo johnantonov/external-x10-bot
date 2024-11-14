@@ -6,7 +6,7 @@ import pool from '../../database/db';
 import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
-import { article} from '../dto/articles';
+import { Article, article} from '../dto/articles';
 import { calculateLogistics, extractBuyoutsFromCards, processCampaigns } from '../utils/data_processing';
 import { formatError } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
@@ -16,7 +16,7 @@ import { updateCommissions } from '../utils/comissions';
 import { commissions_db } from '../../database/models/commissions';
 import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
-import { getReportHtml } from '../utils/report';
+import { formatReportArticleMessage, getReportHtml } from '../utils/report';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 
 dotenv.config();
@@ -411,16 +411,18 @@ export class ReportService {
     }
   }
 
-  async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer, yesterdayDate: string): Promise<void> {
+  async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer, yesterdayDate: string, caption: string): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
-    const options = returnNewMenu(); 
+    const options = returnNewMenu();
     const replyMarkup = JSON.stringify(options); 
-
+  
     const formData = new FormData();
     formData.append('chat_id', chat_id.toString());
     formData.append('document', pdfBuffer, { filename: `${yesterdayDate}.pdf`, contentType: 'application/pdf' });
-    formData.append('reply_markup', replyMarkup); 
-
+    formData.append('reply_markup', replyMarkup);
+    formData.append('caption', caption);
+    formData.append('parse_mode', 'HTML'); 
+  
     try {
       const response = await axios.post(telegramApiUrl, formData, {
         headers: {
@@ -428,10 +430,10 @@ export class ReportService {
         },
       });
       console.log(`PDF sent to chat_id: ${chat_id}`);
-    } catch (error) {
-      console.error(`Failed to send PDF to chat_id: ${chat_id}`, error);
+    } catch (error: any) {
+      console.error(`Failed to send PDF to chat_id: ${chat_id}. Error:`, error.message || error);
     }
-}
+  }
 
   async sendPhoto(chat_id: number, image: any): Promise<void> {
     const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`;
@@ -447,15 +449,18 @@ export class ReportService {
     }
   }
 
+  async processReport(articles: Article[], yesterdayDate: string, chat_id: number) {
+    const htmlTable = await getReportHtml(articles);
+    const pdfBuffer = await generatePdfFromHtml(htmlTable);
+    if (pdfBuffer) {
+      const messageText = formatReportArticleMessage(articles, yesterdayDate)
+      await this.sendPdfToTelegram(chat_id, pdfBuffer, yesterdayDate, messageText);
+    }
+  }
+
   async run(): Promise<void | null> {
     try {
       const currentHour = new Date().getHours() + 3;
-
-      if (currentHour === 0) {
-        console.log('start preparing report')
-        return this.prepareReportData()
-      }
-
       const usersData = await articles_db.getArticlesByTime(currentHour)
       const ids = Object.keys(usersData)
 
@@ -465,11 +470,13 @@ export class ReportService {
       if (ids.length > 0) {
         for (const chat_id of ids) {
           if (usersData[chat_id][0] && usersData[chat_id][0].wb_api_key) {
-            const htmlTable = await getReportHtml(usersData[chat_id]);
-            const pdfBuffer = await generatePdfFromHtml(htmlTable);
-            if (pdfBuffer) {
-              await this.sendPdfToTelegram(+chat_id, pdfBuffer, yesterdayDate);
-            }
+            await this.processReport(usersData[chat_id], yesterdayDate, +chat_id)
+            // const htmlTable = await getReportHtml(usersData[chat_id]);
+            // const pdfBuffer = await generatePdfFromHtml(htmlTable);
+            // if (pdfBuffer) {
+            //   const messageText = await formatReportArticleMessage(usersData[chat_id], yesterdayDate)
+            //   await this.sendPdfToTelegram(+chat_id, pdfBuffer, yesterdayDate, messageText);
+            // }
           } else {
             console.log('There are no articles for ' + chat_id)
           }
@@ -484,7 +491,6 @@ export class ReportService {
 
   async runForUser(chat_id: number): Promise<void> {
     try {
-      // const chat_id = user.chat_id
       await this.prepareReportData(chat_id)
       let articles;
       const yesterdayDate = getYesterdayDate('ru');
@@ -492,11 +498,7 @@ export class ReportService {
       articles = (await articles_db.getAllArticlesForUser(chat_id)).rows
       if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
-          const htmlTable = await getReportHtml(articles);
-          const pdfBuffer = await generatePdfFromHtml(htmlTable);
-          if (pdfBuffer) {
-            await this.sendPdfToTelegram(+chat_id, pdfBuffer, yesterdayDate);
-          }
+          await this.processReport(articles, yesterdayDate, chat_id)
         }
       } else {
         this.sendMessage(chat_id, "Возникла ошибка при получении данных о товарах")

@@ -66,6 +66,64 @@ export async function getReportHtml(articleData: Article[]) {
     `
 }
 
+export function formatReportArticleMessage(articles: Article[], date: string) {
+  let message = ``;
+  let ordersSumTotal = 0;
+  let ordersCountTotal = 0;
+  let buysSumTotal = 0;
+  let buysCountTotal = 0;
+  let marketingCostTotal = 0;
+  let revTotal = 0;
+  let krrrTotalArray: number[] = []
+
+
+  articles.forEach(articleData => {
+    const stats = articleData.order_info || {};
+    const marketing = articleData?.marketing_cost || {};
+    const marketingCost = parseFloat(marketing?.[date]) || 0;
+    const tax = parsePercent(articleData.tax)
+    const acquiring = 0.015
+    const commission = parsePercent(stats.commission)
+  
+    // WIP -------
+    stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
+    stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
+    // -----------
+  
+    let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
+    let markCost = (stats?.buysCount ?? 0) * (articleData?.mark ?? 0);
+    let taxCost = (stats?.buysSum ?? 0) * tax;
+    let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
+    let commissionCost = (stats?.buysSum ?? 0) * commission;
+  
+    const krrr = formatNumber(
+    ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100);
+
+    krrrTotalArray.push(krrr)
+
+    ordersSumTotal += (stats.ordersSum || 0)
+    ordersCountTotal += (stats.ordersCount || 0)
+    buysSumTotal += (stats.buysSum || 0)
+    buysCountTotal += (stats.buysCount || 0)
+    marketingCostTotal += marketingCost
+  
+    revTotal += formatNumber((stats.buysSum || 0) - selfCost - markCost - taxCost - acquiringCost - commissionCost- marketingCost);
+  })
+
+  const krrrTotal = krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1);
+
+  message = `
+Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
+Выкупы: ${buysSumTotal}₽, ${buysCountTotal}шт
+Реклама: ${marketingCostTotal}₽
+ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
+Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100)}%
+Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100)}%
+КРРР: ${krrrTotal}%
+Прибыль с ДРР: ${revTotal}₽
+  `
+  return `10X Отчет ${date}${message}`;
+}
 
 function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject())

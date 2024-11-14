@@ -87,23 +87,20 @@ export function extractBuyoutsFromCards(responseData: any) {
 
 export async function calculateLogistics(sizesNms: Record<article, Record<string, number>>) {
   const tariffs = await box_tariffs_db.getBoxTariff(config.storagesForLogistics)
-  const result: Record<string, any> = {};
+  const result: Record<string, any> = {}
 
   const nms = Object.keys(sizesNms)
 
   nms.forEach(nm => {
     let sum = 0
     const literSize = sizesNms[nm].literSize 
-    
-    console.log(sizesNms[nm].literSize )
 
     tariffs.forEach((t: BoxTariff) => {
-      sum += +t.boxDeliveryBase + (literSize - 1) * +t.boxDeliveryLiter 
+      const adjustedLiters = (literSize - 1) < 0 ? 0 : (literSize - 1)
+      sum += +t.boxDeliveryBase + adjustedLiters * +t.boxDeliveryLiter
     })
 
-    console.log(sum)
-
-    result[nm] = sum/config.storagesForLogistics.length
+    result[nm] = sum / tariffs.length
   })
 
   return result
