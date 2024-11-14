@@ -79,29 +79,19 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   const date = getYesterdayDate();
 
   articles.forEach(articleData => {
-    console.log(date)
-    console.log(JSON.stringify(articleData))
-
     const stats = articleData.order_info[date] || {};
     const marketing = articleData?.marketing_cost || {};
-    const marketingCost = parseFloat(marketing?.[date]) || 0;
-    const tax = parsePercent(articleData.tax)
-    const acquiring = config.acquiring
-    const commission = parsePercent(stats.commission)
+    const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
+
+    const otherCosts = getCosts(articleData, date)
   
     // WIP -------
     stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
     stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
     // -----------
   
-    let selfCost = (stats?.buysCount ?? 0) * (articleData?.self_cost ?? 0);
-    let markCost = (stats?.buysCount ?? 0) * (articleData?.mark ?? 0);
-    let taxCost = (stats?.buysSum ?? 0) * tax;
-    let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-    let commissionCost = (stats?.buysSum ?? 0) * commission;
-  
     const krrr = formatNumber(
-    ((stats.buysSum - selfCost - markCost - taxCost - marketingCost) / ((stats.buysSum - selfCost - markCost - taxCost) || 1)) * 100);
+    ((stats.buysSum - otherCosts - marketingCost) / ((stats.buysSum - otherCosts) || 1)) * 100);
 
     krrrTotalArray.push(krrr)
 
@@ -111,7 +101,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     buysCountTotal += (stats.buysCount || 0)
     marketingCostTotal += marketingCost
   
-    revTotal += formatNumber((stats.buysSum || 0) - selfCost - markCost - taxCost - acquiringCost - commissionCost- marketingCost);
+    revTotal += formatNumber((stats.buysSum || 0) - otherCosts - marketingCost);
   })
 
   const krrrTotal = krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1);
@@ -241,7 +231,7 @@ function getCosts(data: Record<string, any>, date: string) {
   const stats = data.order_info[date] || {};
 
   const tax = parsePercent(data.tax)
-  const acquiring = parsePercent(data.acquiring)
+  const acquiring = config.acquiring
   const commission = parsePercent(stats.commission)
 
   // WIP -------
