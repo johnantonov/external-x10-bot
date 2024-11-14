@@ -100,7 +100,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     revTotal += formatNumber((buysSum || 0) - otherCosts - marketingCost);
   })
 
-  const krrrTotal = ((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0)) ?? 0;
+  const krrrTotal = ((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0)) || 0;
 
   message = `
 Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
