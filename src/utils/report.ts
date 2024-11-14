@@ -84,24 +84,20 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
 
     const otherCosts = getCosts(articleData, date)
-  
-    // WIP -------
-    stats.buysCount = (stats.ordersCount || 0) * ((articleData.percent_buys || 0) / 100)
-    stats.buysSum = (stats.ordersSum || 0) * ((articleData.percent_buys || 0) / 100)
-    // -----------
+    const [buysCount, buysSum] = getBuysData(articleData, date)
   
     const krrr = formatNumber(
-    ((stats.buysSum - otherCosts - marketingCost) / ((stats.buysSum - otherCosts) || 1)) * 100);
+    ((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100);
 
     krrrTotalArray.push(krrr)
 
     ordersSumTotal += (stats.ordersSum || 0)
     ordersCountTotal += (stats.ordersCount || 0)
-    buysSumTotal += (stats.buysSum || 0)
-    buysCountTotal += (stats.buysCount || 0)
+    buysSumTotal += (buysSum || 0)
+    buysCountTotal += (buysCount || 0)
     marketingCostTotal += marketingCost
   
-    revTotal += formatNumber((stats.buysSum || 0) - otherCosts - marketingCost);
+    revTotal += formatNumber((buysSum || 0) - otherCosts - marketingCost);
   })
 
   const krrrTotal = (krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0);
@@ -119,7 +115,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
 
-function getDaysRows(daysCount: number, data: Record<string, any>, index: number, imgBase64: any, allData: Article[]) {
+function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject())
   let dayRows = ``
 
@@ -167,11 +163,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
           ordersCount += stats.ordersCount || 0;
           ordersSum += stats.ordersSum || 0;
 
-          // WIP -------
-          buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
-          buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
-          // -----------
-
+          [buysCount, buysSum] = getBuysData(article, day)
           otherCosts += getCosts(article, day)
 
         }
@@ -190,22 +182,17 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       marketingCost = parseFloat(marketing?.[day].cost) || 0;
       stats = data.order_info[day] || {};
       
-      // WIP -------
-      stats.buysCount = (stats.ordersCount || 0) * ((data.percent_buys || 0) / 100)
-      stats.buysSum = (stats.ordersSum || 0) * ((data.percent_buys || 0) / 100)
-      // -----------
-      
+      [buysCount, buysSum] = getBuysData(data, day)
       otherCosts = getCosts(data, day)
 
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
-      rev = (stats.buysSum ?? 0) - otherCosts - marketingCost
-      margin = formatNumber(rev / (stats.buysSum || 1) * 100)
+      rev = (buysSum ?? 0) - otherCosts - marketingCost
+      margin = formatNumber(rev / (buysSum || 1) * 100)
 
       addToCartCount = stats?.addToCartCount;
       ordersCount = stats?.ordersCount;
-      buysCount = stats?.buysCount;
     }
 
     dayRows += `
@@ -218,7 +205,7 @@ function getDaysRows(daysCount: number, data: Record<string, any>, index: number
       <td>${drr.toFixed(2)}%</td>
       <td>${addToCartCount}</td>
       <td>${ordersCount}</td>
-      <td>${Math.round(buysCount)}</td>
+      <td>${buysCount}</td>
       <td>${margin.toFixed(2)}%</td>
       <td>${rev.toFixed(0)}₽</td>
     `
@@ -246,6 +233,15 @@ function getCosts(data: Record<string, any>, date: string) {
   let commissionCost = (stats?.buysSum ?? 0) * commission;
 
   return selfCost + markCost + taxCost + acquiringCost + commissionCost
+}
+
+function getBuysData(article: Article, date: string): [number, number] {
+  const stats = article.order_info?.[date] || {};
+
+  const buysCount = Math.round(stats.ordersCount * ((article.percent_buys || 0) / 100))
+  const buysSum = Math.round(stats.ordersSum * ((article.percent_buys || 0) / 100))
+
+  return [buysCount, buysSum]
 }
 
 const CSS = `
