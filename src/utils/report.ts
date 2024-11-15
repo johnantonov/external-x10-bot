@@ -332,8 +332,8 @@ const CSS = `
       // width 500px !important
     }
     .photo_cell {
-      width: 900px !important;
-      height: 150px !important
+      width: 200px !important;
+      height: 100px !important
     }
     .day_cell {
       width: 150px !important
