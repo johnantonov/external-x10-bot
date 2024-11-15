@@ -330,11 +330,11 @@ const CSS = `
     }
     .article_col {
       // width: 30%; 
-      width 400px !important
+      width 450px !important
     }
     .photo_cell {
-      width: 900px !important;
-      height: 200px !important
+      width: 800px !important;
+      height: 150px !important
     }
     .day_cell {
       width: 150px !important
