@@ -31,7 +31,7 @@ export async function getReportHtml(articleData: Article[]) {
     tables += `<table class="b">
       <thead class="br">
         <tr class="header br">
-          <th rowspan="2" colspan="4" class="article_col">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
+          <th rowspan="2" colspan="5" class="article_col">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
           <th rowspan="2" colspan="1" class="bl">Клики АРК</th>
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Клики ПРК</th>
@@ -162,8 +162,8 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     dayRows += `<tr class="row">`
 
     if (i === daysCount) {
-      const value = (index === 0 && allData.length > 1) ? "ИТОГО        " : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
-      dayRows += `<td rowspan="${config.tableDays+1}" colspan="2" class="photo_cell">${value}</td>`
+      const value = (index === 0 && allData.length > 1) ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
+      dayRows += `<td rowspan="${config.tableDays+1}" colspan="3" class="photo_cell">${value}</td>`
     }
 
     if (index === 0 && allData.length > 1) {
