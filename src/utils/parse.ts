@@ -1,5 +1,5 @@
 import { resolve } from "path"
-import { ArticleCallbackData } from "../dto/articles"
+import { article, ArticleCallbackData } from "../dto/articles"
 
 export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
@@ -56,8 +56,8 @@ export const newArticleData = (data: ArticleCallbackData): string => {
   return data.art + "?" + data.action
 }
 
-export function getWbArticlePhoto(article: number) {
-  let s_id = Math.floor(article / 100000);
+export function getWbArticlePhoto(article: article) {
+  let s_id = Math.floor(+article / 100000);
   let basket;
   if (s_id <= 143) {
     basket = "01";
@@ -93,7 +93,7 @@ export function getWbArticlePhoto(article: number) {
     basket = "16"
   }
 
-  let imageUrl = "https://basket-" + basket + ".wbbasket.ru/vol" + s_id + "/part" + Math.floor(article / 1000) + "/" + article + "/images/big/1.webp";
+  let imageUrl = "https://basket-" + basket + ".wbbasket.ru/vol" + s_id + "/part" + Math.floor(+article / 1000) + "/" + article + "/images/big/1.webp";
   console.log('imageUrl', imageUrl)
   return imageUrl;
 }
