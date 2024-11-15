@@ -162,7 +162,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     dayRows += `<tr class="row">`
 
     if (i === daysCount) {
-      const value = (index === 0 && allData.length > 1) ? "ИТОГО  " : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
+      const value = (index === 0 && allData.length > 1) ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
       dayRows += `<td rowspan="${config.tableDays+1}" colspan="2" class="photo_cell">${value}</td>`
     }
 
@@ -330,10 +330,10 @@ const CSS = `
     }
     .article_col {
       // width: 30%; 
-      width 450px !important
+      width 500px !important
     }
     .photo_cell {
-      width: 800px !important;
+      width: 900px !important;
       height: 150px !important
     }
     .day_cell {
