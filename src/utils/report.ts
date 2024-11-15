@@ -115,19 +115,23 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
 
+function increaseTotal(totalObj: Record<string, any>) {
+
+}
+
 function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject());
   let dayRows = ``;
 
   const total: Record<string, any> = {
-    ark: { clicks: 0, ctr: 0 },
-    prk: { clicks: 0, ctr: 0 },
+    ark: { clicks: 0, ctr: [] },
+    prk: { clicks: 0, ctr: [] },
     marketingCost: 0,
     drr: [],
     carts: 0,
     orders: 0,
     buys: 0,
-    margin: 0,
+    margin: [],
     rev: 0
   };
 
@@ -187,7 +191,6 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
     } else {
-      
       const marketing = data?.marketing_cost || {};
       prk = marketing?.[day]?.prk || { clicks: 0, views: 0 };
       ark = marketing?.[day]?.ark || { clicks: 0, views: 0 };
@@ -208,6 +211,18 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       buysCount = buysData[0];
     }
 
+    total.ark.clicks += ark.clicks
+    total.ark.ctr.push(ctrArk)
+    total.prk.clicks += prk.clicks
+    total.prk.ctr.push(ctrPrk)
+    total.buys += buysCount
+    total.carts += addToCartCount
+    total.drr.push(drr)
+    total.margin.push(margin)
+    total.marketingCost += marketingCost
+    total.orders += ordersCount
+    total.rev += rev
+
     dayRows += `
       <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
       <td class="bl">${ark.clicks.toFixed(0) || 0}</td>
@@ -225,22 +240,24 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
   }
 
   // total
-
   const totalDrr = (total.drr.reduce((sum: any, num: any) => sum + num, 0) / (total.drr.length || 1)).toFixed(0);
+  const totalArkCtr = (total.ark.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.ark.ctr.length || 1)).toFixed(2);
+  const totalPrlCtr = (total.prk.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.prk.ctr.length || 1)).toFixed(2);
+  const totalMargin = (total.margin.reduce((sum: any, num: any) => sum + num, 0) / (total.margin.length || 1)).toFixed(2);
 
   dayRows += `
   <tr class="row">
     <td rowspan="1" colspan="2" class="day_cell">Итог</td>
     <td class="bl">${total.ark.clicks.toFixed(0) || 0}</td>
-    <td>${(total.ark.ctr * 100).toFixed(2) || 0}%</td>
+    <td>${totalArkCtr || 0}%</td>
     <td class="bl">${total.prk.clicks.toFixed(0 || 0)}</td>
-    <td>${(total.prk.ctr * 100).toFixed(2) || 0}%</td>
+    <td>${totalPrlCtr || 0}%</td>
     <td class="bl">${total.marketingCost.toFixed(0) || 0}₽</td>
     <td>${totalDrr || 0}%</td>
     <td>${total.carts || 0}</td>
     <td>${total.orders || 0}</td>
     <td>${Math.round(total.buys) || 0}</td>
-    <td>${isNaN(total.margin.toFixed(2)) ? 0 : total.margin.toFixed(2)}%</td>
+    <td>${totalMargin}%</td>
     <td>${isNaN(total.rev.toFixed(0)) ? 0 : total.rev.toFixed(0)}₽</td>
   </tr>
   `
