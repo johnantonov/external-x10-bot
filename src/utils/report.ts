@@ -18,7 +18,7 @@ export async function getReportHtml(articleData: Article[]) {
         const imgUrl = getWbArticlePhoto(+data.article);
         const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
         let imgBuffer = Buffer.from(response.data, 'binary');
-        imgBuffer = await sharp(imgBuffer).resize({ width: 120, height: 170 }).toBuffer();
+        imgBuffer = await sharp(imgBuffer).resize({ width: 140, height: 170 }).toBuffer();
         const imgBase64 = imgBuffer.toString('base64');
         imgSrc = `data:image/jpeg;base64,${imgBase64}`;
       } catch (error) {
@@ -113,10 +113,6 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 Прибыль с ДРР: ${revTotal.toFixed(0)}₽
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
-}
-
-function increaseTotal(totalObj: Record<string, any>) {
-
 }
 
 function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
@@ -240,9 +236,9 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
   }
 
   // total
-  const totalDrr = (total.drr.reduce((sum: any, num: any) => sum + num, 0) / (total.drr.length || 1)).toFixed(0);
-  const totalArkCtr = (total.ark.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.ark.ctr.length || 1)).toFixed(2);
-  const totalPrlCtr = (total.prk.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.prk.ctr.length || 1)).toFixed(2);
+  const totalDrr = (total.drr.reduce((sum: any, num: any) => sum + num, 0) / (total.drr.length || 1)).toFixed(2);
+  const totalArkCtr = ((total.ark.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.ark.ctr.length || 1)) * 100).toFixed(2);
+  const totalPrkCtr = ((total.prk.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.prk.ctr.length || 1)) * 100).toFixed(2);
   const totalMargin = (total.margin.reduce((sum: any, num: any) => sum + num, 0) / (total.margin.length || 1)).toFixed(2);
 
   dayRows += `
@@ -251,7 +247,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     <td class="bl">${total.ark.clicks.toFixed(0) || 0}</td>
     <td>${totalArkCtr || 0}%</td>
     <td class="bl">${total.prk.clicks.toFixed(0 || 0)}</td>
-    <td>${totalPrlCtr || 0}%</td>
+    <td>${totalPrkCtr || 0}%</td>
     <td class="bl">${total.marketingCost.toFixed(0) || 0}₽</td>
     <td>${totalDrr || 0}%</td>
     <td>${total.carts || 0}</td>
