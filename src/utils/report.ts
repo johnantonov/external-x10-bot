@@ -313,12 +313,11 @@ const CSS = `
   <style>
     body {
       font-family: Arial, sans-serif;
-      font-size: 16px;
+      font-size: 12px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      // margin-bottom: 0px;
     }
     table, th, td {
       border: 0.2px solid #AFEEEE;
@@ -329,8 +328,8 @@ const CSS = `
       /* width: 10%; */
     }
     .article_col {
-      // width: 30%; 
-      width 500px !important
+      width: 30%; 
+      // width 500px !important
     }
     .photo_cell {
       width: 900px !important;
