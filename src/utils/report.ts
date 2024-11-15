@@ -328,15 +328,15 @@ const CSS = `
       /* width: 10%; */
     }
     .article_col {
-      width: 40%; 
-      // width 200px !important
+      // width: 40%; 
+      width 200px !important
     }
     .photo_cell {
-      width: 800px !important;
-      height: 150px !important
+      // width: 800px !important;
+      // height: 150px !important
     }
     .day_cell {
-      width: 250px !important
+      // width: 250px !important
     }
     .header {
       background-color: #f2f2f2;
