@@ -316,7 +316,7 @@ const CSS = `
       font-size: 12px;
     }
     table {
-      width: 1000px;
+      width: 1400px !important;
       border-collapse: collapse;
     }
     table, th, td {
