@@ -216,20 +216,6 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       buysCount = buysData[0];
     }
 
-    total.ark.clicks += ark.clicks;
-    total.ark.ctr.push(ctrArk);
-    total.prk.clicks += prk.clicks;
-    total.prk.ctr.push(ctrPrk);
-    total.buys += buysCount;
-    total.carts += addToCartCount;
-    total.drr.push(drr);
-    total.krrr.push(krrr);
-    total.margin.push(margin);
-    total.marketingCost += marketingCost;
-    total.orders += ordersCount;
-    total.rev += rev;
-    total.revDrr = total.rev - total.marketingCost;
-
     dayRows += `
       <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
       <td class="bl">${ark.clicks.toFixed(0) || 0}</td>
@@ -246,6 +232,20 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${isNaN(rev) ? 0 : rev.toFixed(0)}₽</td>
       <td class="bl">${isNaN(total.revDrr) ? 0 : total.revDrr.toFixed(0)}₽</td>
     `
+
+    total.ark.clicks += ark.clicks;
+    total.ark.ctr.push(ctrArk);
+    total.prk.clicks += prk.clicks;
+    total.prk.ctr.push(ctrPrk);
+    total.buys += buysCount;
+    total.carts += addToCartCount;
+    total.drr.push(drr);
+    total.krrr.push(krrr);
+    total.margin.push(margin);
+    total.marketingCost += marketingCost;
+    total.orders += ordersCount;
+    total.rev += rev;
+    total.revDrr += total.rev - total.marketingCost;
   }
 
   // total
