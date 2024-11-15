@@ -38,6 +38,7 @@ export async function getReportHtml(articleData: Article[]) {
           <th rowspan="2" colspan="1">CTR</th>
           <th rowspan="2" colspan="1" class="bl">Расходы реклама</th>
           <th rowspan="2" colspan="1">ДРР</th>
+          <th rowspan="2" colspan="1">КРРР</th>
           <th rowspan="2" colspan="1">Корзины</th>
           <th rowspan="2" colspan="1">Заказы</th>
           <th rowspan="2" colspan="1">Выкупы</th>
