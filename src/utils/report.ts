@@ -230,7 +230,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${Math.round(buysCount) || 0}</td>
       <td>${isNaN(margin) ? 0 : margin.toFixed(2)}%</td>
       <td>${isNaN(rev) ? 0 : rev.toFixed(0)}₽</td>
-      <td class="bl">${isNaN(total.revDrr) ? 0 : total.revDrr.toFixed(0)}₽</td>
+      <td class="bl">${isNaN(revDrr) ? 0 : revDrr.toFixed(0)}₽</td>
     `
 
     total.ark.clicks += ark.clicks;
