@@ -245,7 +245,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     total.marketingCost += marketingCost;
     total.orders += ordersCount;
     total.rev += rev;
-    total.revDrr += total.rev - total.marketingCost;
+    total.revDrr += rev - marketingCost;
   }
 
   // total
