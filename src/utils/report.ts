@@ -208,7 +208,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
       krrr = ((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100;
       rev = (buysData[1] ?? 0) - otherCosts
-      revDrr += rev - marketingCost
+      revDrr = rev - marketingCost
       margin = formatNumber(rev / (buysData[1] || 1) * 100)
 
       addToCartCount = stats?.addToCartCount;
@@ -228,7 +228,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     total.marketingCost += marketingCost;
     total.orders += ordersCount;
     total.rev += rev;
-    total.revDrr += total.rev - total.marketingCost;
+    // total.revDrr = total.rev - total.marketingCost;
 
     dayRows += `
       <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
@@ -244,7 +244,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${Math.round(buysCount) || 0}</td>
       <td>${isNaN(+margin.toFixed(2)) ? 0 : margin.toFixed(2)}%</td>
       <td>${isNaN(+rev.toFixed(0)) ? 0 : rev.toFixed(0)}₽</td>
-      <td class="bl">${isNaN(+revDrr.toFixed(0)) ? 0 : revDrr.toFixed(0)}₽</td>
+      <td class="bl">${isNaN(+(total.rev - total.marketingCost).toFixed(0)) ? 0 : (total.rev - total.marketingCost).toFixed(0)}₽</td>
     `
   }
 
