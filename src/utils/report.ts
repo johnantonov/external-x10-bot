@@ -206,7 +206,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
-      krrr = ((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100;
+      krrr = ((buysData[1] - otherCosts - marketingCost) / ((buysData[1] - otherCosts) || 1)) * 100;
       rev = (buysData[1] ?? 0) - otherCosts
       revDrr = rev - marketingCost
       margin = formatNumber(rev / (buysData[1] || 1) * 100)
@@ -248,7 +248,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     total.revDrr += rev - marketingCost;
   }
 
-  // total
+  // total row
   const totalDrr = (total.drr.reduce((sum: any, num: any) => sum + num, 0) / (total.drr.length || 1)).toFixed(2);
   const totalKrrr = (total.krrr.reduce((sum: any, num: any) => sum + num, 0) / (total.krrr.length || 1)).toFixed(2);
   const totalArkCtr = ((total.ark.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.ark.ctr.length || 1)) * 100).toFixed(2);
