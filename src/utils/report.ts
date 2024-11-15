@@ -329,10 +329,10 @@ const CSS = `
     }
     .article_col {
       width: 40%; 
-      // width 500px !important
+      // width 200px !important
     }
     .photo_cell {
-      width: 1500px !important;
+      width: 800px !important;
       height: 150px !important
     }
     .day_cell {
