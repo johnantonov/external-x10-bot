@@ -313,7 +313,7 @@ const CSS = `
   <style>
     body {
       font-family: Arial, sans-serif;
-      font-size: 12px;
+      font-size: 16px;
     }
     table {
       width: 100%;
