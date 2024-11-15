@@ -332,11 +332,11 @@ const CSS = `
       width 200px !important
     }
     .photo_cell {
-      // width: 800px !important;
-      // height: 150px !important
+      width: 120px !important;
+      height: 150px !important
     }
     .day_cell {
-      // width: 250px !important
+      width: 80px !important
     }
     .header {
       background-color: #f2f2f2;
