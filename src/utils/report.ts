@@ -18,7 +18,7 @@ export async function getReportHtml(articleData: Article[]) {
         const imgUrl = getWbArticlePhoto(+data.article);
         const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
         let imgBuffer = Buffer.from(response.data, 'binary');
-        imgBuffer = await sharp(imgBuffer).resize({ width: 130, height: 170 }).toBuffer();
+        imgBuffer = await sharp(imgBuffer).resize({ width: 100, height: 140 }).toBuffer();
         const imgBase64 = imgBuffer.toString('base64');
         imgSrc = `data:image/jpeg;base64,${imgBase64}`;
       } catch (error) {
@@ -125,6 +125,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     prk: { clicks: 0, ctr: [] },
     marketingCost: 0,
     drr: [],
+    krrr: [],
     carts: 0,
     orders: 0,
     buys: 0,
@@ -149,10 +150,10 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     let buysCount = 0;
     let ordersSum = 0;
     let buysSum = 0;
-  
     let ctrArk;
     let ctrPrk;
     let drr = 0;
+    let krrr = 0;
     let rev = 0;
     let revDrr = 0;
     let margin = 0;
@@ -188,6 +189,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       revDrr += rev - marketingCost
       margin += formatNumber(rev / (buysSum || 1) * 100) 
       drr += (marketingCost / (ordersSum || 1)) * 100;
+      krrr += formatNumber(((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100);
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
     } else {
@@ -203,6 +205,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
+      krrr = formatNumber(((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100);
       rev = (buysData[1] ?? 0) - otherCosts
       margin = formatNumber(rev / (buysData[1] || 1) * 100)
 
@@ -211,18 +214,19 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       buysCount = buysData[0];
     }
 
-    total.ark.clicks += ark.clicks
-    total.ark.ctr.push(ctrArk)
-    total.prk.clicks += prk.clicks
-    total.prk.ctr.push(ctrPrk)
-    total.buys += buysCount
-    total.carts += addToCartCount
-    total.drr.push(drr)
-    total.margin.push(margin)
-    total.marketingCost += marketingCost
-    total.orders += ordersCount
-    total.rev += rev
-    total.revDrr += total.rev - total.marketingCost
+    total.ark.clicks += ark.clicks;
+    total.ark.ctr.push(ctrArk);
+    total.prk.clicks += prk.clicks;
+    total.prk.ctr.push(ctrPrk);
+    total.buys += buysCount;
+    total.carts += addToCartCount;
+    total.drr.push(drr);
+    total.krrr.push(krrr);
+    total.margin.push(margin);
+    total.marketingCost += marketingCost;
+    total.orders += ordersCount;
+    total.rev += rev;
+    total.revDrr += total.rev - total.marketingCost;
 
     dayRows += `
       <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
@@ -232,17 +236,19 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${(ctrPrk * 100).toFixed(2) || 0}%</td>
       <td class="bl">${marketingCost.toFixed(0) || 0}₽</td>
       <td>${drr.toFixed(2) || 0}%</td>
+      <td>${krrr.toFixed(2) || 0}%</td>
       <td>${addToCartCount || 0}</td>
       <td>${ordersCount || 0}</td>
       <td>${Math.round(buysCount) || 0}</td>
       <td>${isNaN(+margin.toFixed(2)) ? 0 : margin.toFixed(2)}%</td>
       <td>${isNaN(+rev.toFixed(0)) ? 0 : rev.toFixed(0)}₽</td>
-      <td>${isNaN(+revDrr.toFixed(0)) ? 0 : revDrr.toFixed(0)}₽</td>
+      <td class="bl">${isNaN(+revDrr.toFixed(0)) ? 0 : revDrr.toFixed(0)}₽</td>
     `
   }
 
   // total
   const totalDrr = (total.drr.reduce((sum: any, num: any) => sum + num, 0) / (total.drr.length || 1)).toFixed(2);
+  const totalKrrr = (total.krrr.reduce((sum: any, num: any) => sum + num, 0) / (total.krrr.length || 1)).toFixed(2);
   const totalArkCtr = ((total.ark.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.ark.ctr.length || 1)) * 100).toFixed(2);
   const totalPrkCtr = ((total.prk.ctr.reduce((sum: any, num: any) => sum + num, 0) / (total.prk.ctr.length || 1)) * 100).toFixed(2);
   const totalMargin = (total.margin.reduce((sum: any, num: any) => sum + num, 0) / (total.margin.length || 1)).toFixed(2);
@@ -256,40 +262,18 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     <td>${totalPrkCtr || 0}%</td>
     <td class="bl">${total.marketingCost.toFixed(0) || 0}₽</td>
     <td>${totalDrr || 0}%</td>
+    <td>${totalKrrr || 0}%</td>
     <td>${total.carts || 0}</td>
     <td>${total.orders || 0}</td>
     <td>${Math.round(total.buys) || 0}</td>
     <td>${totalMargin}%</td>
     <td>${isNaN(total.rev.toFixed(0)) ? 0 : total.rev.toFixed(0)}₽</td>
-    <td>${isNaN(total.revDrr.toFixed(0)) ? 0 : total.revDrr.toFixed(0)}₽</td>
+    <td class="bl">${isNaN(total.revDrr.toFixed(0)) ? 0 : total.revDrr.toFixed(0)}₽</td>
   </tr>
   `
 
   return dayRows
 }
-
-// function getCosts(data: Article, date: string) {
-//   const stats = data.order_info?.[date];
-
-//   const tax = parsePercent(data?.tax)
-//   const acquiring = config?.acquiring
-//   const commission = parsePercent(stats?.commission) || 0
-
-//   // WIP -------
-//   stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100))
-//   stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100))
-//   // -----------
-
-//   let selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
-//   let markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
-//   let taxCost = (stats?.buysSum ?? 0) * tax;
-//   let acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-//   let commissionCost = (stats?.buysSum ?? 0) * commission;
-//   let storageCost = (stats?.buysCount ?? 0) * data.storage;
-//   let logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
-
-//   return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost
-// }
 
 function getCosts(data: Article, date: string) {
   const stats = data.order_info?.[date] || { buysCount: 0, buysSum: 0 };
