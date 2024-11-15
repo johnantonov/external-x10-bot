@@ -43,6 +43,7 @@ export async function getReportHtml(articleData: Article[]) {
           <th rowspan="2" colspan="1">Выкупы</th>
           <th rowspan="2" colspan="1">Маржа</th>
           <th class="br" rowspan="2" colspan="1">Прогноз прибыли до ДРР</th>
+          <th class="br" rowspan="2" colspan="1">Прогноз прибыли с ДРР</th>
         </tr>
       </thead>
       <tbody  class="br">
@@ -128,7 +129,8 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     orders: 0,
     buys: 0,
     margin: [],
-    rev: 0
+    rev: 0,
+    revDrr: 0,
   };
 
   for (let i = daysCount; i > 0; i--) {
@@ -152,6 +154,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     let ctrPrk;
     let drr = 0;
     let rev = 0;
+    let revDrr = 0;
     let margin = 0;
 
     dayRows += `<tr class="row">`
@@ -182,6 +185,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       })
       
       rev += (buysSum ?? 0) - otherCosts
+      revDrr += rev - marketingCost
       margin += formatNumber(rev / (buysSum || 1) * 100) 
       drr += (marketingCost / (ordersSum || 1)) * 100;
       ctrArk = (ark.clicks / ark.views) || 0;
@@ -218,6 +222,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     total.marketingCost += marketingCost
     total.orders += ordersCount
     total.rev += rev
+    total.revDrr += total.rev - total.marketingCost
 
     dayRows += `
       <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
@@ -232,6 +237,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${Math.round(buysCount) || 0}</td>
       <td>${isNaN(+margin.toFixed(2)) ? 0 : margin.toFixed(2)}%</td>
       <td>${isNaN(+rev.toFixed(0)) ? 0 : rev.toFixed(0)}₽</td>
+      <td>${isNaN(+revDrr.toFixed(0)) ? 0 : revDrr.toFixed(0)}₽</td>
     `
   }
 
@@ -255,6 +261,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     <td>${Math.round(total.buys) || 0}</td>
     <td>${totalMargin}%</td>
     <td>${isNaN(total.rev.toFixed(0)) ? 0 : total.rev.toFixed(0)}₽</td>
+    <td>${isNaN(total.revDrr.toFixed(0)) ? 0 : total.revDrr.toFixed(0)}₽</td>
   </tr>
   `
 
