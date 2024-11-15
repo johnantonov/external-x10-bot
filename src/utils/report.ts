@@ -228,7 +228,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     total.marketingCost += marketingCost;
     total.orders += ordersCount;
     total.rev += rev;
-    // total.revDrr = total.rev - total.marketingCost;
+    total.revDrr = total.rev - total.marketingCost;
 
     dayRows += `
       <td rowspan="1" colspan="2" class="day_cell">${formatDay}</td>
@@ -242,9 +242,9 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${addToCartCount || 0}</td>
       <td>${ordersCount || 0}</td>
       <td>${Math.round(buysCount) || 0}</td>
-      <td>${isNaN(+margin.toFixed(2)) ? 0 : margin.toFixed(2)}%</td>
-      <td>${isNaN(+rev.toFixed(0)) ? 0 : rev.toFixed(0)}₽</td>
-      <td class="bl">${isNaN(+(total.rev - total.marketingCost).toFixed(0)) ? 0 : (total.rev - total.marketingCost).toFixed(0)}₽</td>
+      <td>${isNaN(margin) ? 0 : margin.toFixed(2)}%</td>
+      <td>${isNaN(rev) ? 0 : rev.toFixed(0)}₽</td>
+      <td class="bl">${isNaN(total.revDrr) ? 0 : total.revDrr.toFixed(0)}₽</td>
     `
   }
 
