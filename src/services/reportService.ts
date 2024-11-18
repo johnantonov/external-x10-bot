@@ -229,10 +229,7 @@ export class ReportService {
       },
       page: 1
     };
-
-    console.log(monthStartDateTime)
-    console.log(monthEndDateTime)
-
+    
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
@@ -269,6 +266,7 @@ export class ReportService {
           // const stocks = el.stocks;
 
           el.history.forEach((day: Record<string, any>) => {
+            console.log(JSON.stringify(day))
             if (!result[el.nmID].order_info) {
               result[el.nmID].order_info = {};
             }
@@ -285,9 +283,6 @@ export class ReportService {
           
           result[el.nmID].price_before_spp = (alwaysInfo.ordersSumRub / alwaysInfo.ordersCount) || null
           result[el.nmID].vendor = el.vendorCode
-          
-          console.log(JSON.stringify(buyoutsPercent))
-          console.log(JSON.stringify(result))
         }
       });
     } catch (error) {

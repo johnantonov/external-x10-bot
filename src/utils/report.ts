@@ -195,7 +195,9 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       revDrr += rev - marketingCost
       margin += formatNumber(rev / (buysSum || 1) * 100) 
       drr += (marketingCost / (ordersSum || 1)) * 100;
-      krrr += formatNumber(((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100);
+
+      krrr += formatNumber((revDrr / (rev || 1)) * 100);
+
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
     } else {
@@ -303,15 +305,6 @@ function getCosts(data: Article, date: string): number {
   } catch {
     return 0
   }
-}
-
-function getBuysData(article: Article, date: string): [number, number] {
-  const stats = article.order_info?.[date] || {};
-
-  const buysCount = Math.round(stats?.ordersCount * ((article?.percent_buys || 0) / 100))
-  const buysSum = Math.round(stats?.ordersSum * ((article?.percent_buys || 0) / 100))
-
-  return [buysCount, buysSum]
 }
 
 const CSS = `
