@@ -182,9 +182,6 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
           ordersCount += stats.ordersCount || 0;
           ordersSum += stats.ordersSum || 0;
           infoBuysCount += stats.infoBuysCount || 0;
-
-          // buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
-          // buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
           buysCount += stats.buysCount
           buysSum += stats.buysSum
           otherCosts += getCosts(article, day)
@@ -206,8 +203,6 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       ark = marketing?.[day]?.ark || { clicks: 0, views: 0 };
       marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
       stats = data.order_info?.[day] || {};
-      
-      // const buysData = getBuysData(data, day)
       otherCosts = getCosts(data, day)
       infoBuysCount = stats.infoBuysCount || 0;
       ctrArk = (ark.clicks / ark.views) || 0;
@@ -302,7 +297,8 @@ function getCosts(data: Article, date: string): number {
     const logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
   
     return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
-  } catch {
+  } catch (e) {
+    console.error('error getting other costs: ', data.article, " ", e)
     return 0
   }
 }

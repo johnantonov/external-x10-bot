@@ -266,7 +266,6 @@ export class ReportService {
           // const stocks = el.stocks;
 
           el.history.forEach((day: Record<string, any>) => {
-            console.log(JSON.stringify(day))
             if (!result[el.nmID].order_info) {
               result[el.nmID].order_info = {};
             }
