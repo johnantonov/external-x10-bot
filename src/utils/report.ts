@@ -18,7 +18,7 @@ export async function getReportHtml(articleData: Article[]) {
         const imgUrl = getWbArticlePhoto(+data.article);
         const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
         let imgBuffer = Buffer.from(response.data, 'binary');
-        imgBuffer = await sharp(imgBuffer).resize({ width: 140, height: 160 }).toBuffer();
+        imgBuffer = await sharp(imgBuffer).resize({ width: 140, height: 170 }).toBuffer();
         const imgBase64 = imgBuffer.toString('base64');
         imgSrc = `data:image/jpeg;base64,${imgBase64}`;
       } catch (error) {
@@ -86,20 +86,20 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
 
     const otherCosts = getCosts(articleData, date)
-    const [buysCount, buysSum] = getBuysData(articleData, date)
+    // const [buysCount, buysSum] = getBuysData(articleData, date)
   
     const krrr = formatNumber(
-    ((buysSum - otherCosts - marketingCost) / ((buysSum - otherCosts) || 1)) * 100);
+    ((stats.buysSum - otherCosts - marketingCost) / ((stats.buysSum - otherCosts) || 1)) * 100);
 
     krrrTotalArray.push(krrr)
 
     ordersSumTotal += (stats.ordersSum || 0)
     ordersCountTotal += (stats.ordersCount || 0)
-    buysSumTotal += (buysSum || 0)
-    buysCountTotal += (buysCount || 0)
+    buysSumTotal += (stats.buysSum || 0)
+    buysCountTotal += (stats.buysCount || 0)
     marketingCostTotal += marketingCost
   
-    revTotal += formatNumber((buysSum || 0) - otherCosts - marketingCost);
+    revTotal += formatNumber((stats.buysSum || 0) - otherCosts - marketingCost);
   })
 
   const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0));
@@ -180,8 +180,10 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
           ordersCount += stats.ordersCount || 0;
           ordersSum += stats.ordersSum || 0;
 
-          buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
-          buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
+          // buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
+          // buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
+          buysCount = stats.buysCount
+          buysSum = stats.buysSum
           otherCosts += getCosts(article, day)
         }
       })
@@ -200,20 +202,20 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
       stats = data.order_info?.[day] || {};
       
-      const buysData = getBuysData(data, day)
+      // const buysData = getBuysData(data, day)
       otherCosts = getCosts(data, day)
 
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
-      krrr = ((buysData[1] - otherCosts - marketingCost) / ((buysData[1] - otherCosts) || 1)) * 100;
-      rev = (buysData[1] ?? 0) - otherCosts
+      krrr = ((stats.buysSum - otherCosts - marketingCost) / ((stats.buysSum - otherCosts) || 1)) * 100;
+      rev = (stats.buysSum ?? 0) - otherCosts
       revDrr = rev - marketingCost
-      margin = formatNumber(rev / (buysData[1] || 1) * 100)
+      margin = formatNumber(rev / (stats.buysSum || 1) * 100)
 
       addToCartCount = stats?.addToCartCount;
       ordersCount = stats?.ordersCount;
-      buysCount = buysData[0];
+      buysCount = stats.buysCount;
     }
 
     dayRows += `

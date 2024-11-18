@@ -80,13 +80,11 @@ export class ReportService {
         }
 
         const [monthAgoDate, yesterday, today] = getXDaysPeriod(31)
-
-        const report = (await this.fetchWbStatistics(nms, wb_api_key));
-
         const yesterdayTime = yesterday + " 23:59:59"
         const monthAgoDateTime = monthAgoDate + " 00:00:00"
 
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
+        const report = (await this.fetchWbStatistics(nms, wb_api_key, percent_buys));
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
         const logisticsObj = await calculateLogisticsStorage(size)
 
@@ -204,7 +202,7 @@ export class ReportService {
     }
   }
 
-  async fetchWbStatistics(articles: article[], wb_api_key: string) {
+  async fetchWbStatistics(articles: article[], wb_api_key: string, buyoutsPercent: number) {
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
 
@@ -277,8 +275,10 @@ export class ReportService {
             result[el.nmID].order_info[day.dt] = {
               ordersCount: day.ordersCount,
               ordersSum: day.ordersSumRub,
-              buysCount: day.buyoutsCount,
-              buysSum: day.buyoutsSumRub,
+              // buysCount: day.buyoutsCount,
+              // buysSum: day.buyoutsSumRub,
+              buysCount: Math.round(day.ordersCount * ((buyoutsPercent || 0) / 100)),
+              buysSum: Math.round(day.ordersSumRub * ((buyoutsPercent || 0) / 100)),
               addToCartCount: day.addToCartCount,
               // stocksMp: stocks.stocksMp,
               // stocksWb: stocks.stocksWb
