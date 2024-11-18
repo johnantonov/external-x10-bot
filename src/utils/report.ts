@@ -1,4 +1,4 @@
-import { config } from "../config/configRecalc";
+import { config } from "../config/config";
 import { Article } from "../dto/articles";
 import { getWbArticlePhoto, parsePercent } from "./parse";
 import { formatNumber } from "./string";
@@ -218,33 +218,6 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
   return dayRows
 }
 
-function getCosts(data: Article, date: string): number {
-  try {
-    const stats = data.order_info?.[date];
-  
-    const tax = parsePercent(data?.tax);
-    const acquiring = config?.acquiring;
-    const commission = parsePercent(data.order_info?.commission) || 0;
-  
-    const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
-    const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
-    const taxCost = (stats?.buysSum ?? 0) * tax;
-    const acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-    const commissionCost = (stats?.buysSum ?? 0) * commission;
-    const storageCost = (stats?.buysCount ?? 0) * data.storage;
-    const logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
-
-    // console.log('___________________________________')
-    // console.log(data.article)
-    // console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
-  
-    return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
-  } catch (e) {
-    console.error('error getting other costs: ', data.article, " ", e)
-    return 0
-  }
-}
-
 export function createReportMessage(articles: Article[], formatReportDate: string) {
   let message = ``;
   let ordersSumTotal = 0;
@@ -291,6 +264,35 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 Прибыль с ДРР: ${revTotal.toFixed(0)}₽
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
+}
+
+function getCosts(data: Article, date: string): number {
+  try {
+    const stats = data.order_info?.[date];
+  
+    const tax = parsePercent(data?.tax);
+    const acquiring = config?.acquiring;
+    const commission = parsePercent(data.order_info?.commission) || 0;
+  
+    const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
+    const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
+    const taxCost = (stats?.buysSum ?? 0) * tax;
+    const acquiringCost = (stats?.buysSum ?? 0) * acquiring;
+    const commissionCost = (stats?.buysSum ?? 0) * commission;
+    const storageCost = (stats?.buysCount ?? 0) * data.storage * config.turnover;
+
+    const logisticsBase = (stats?.buysCount ?? 0) * data.logistics;
+    const logisticsCost = (config.returnLogistics / (data.percent_buys / 100) - 50) + (config.returnLogistics / data.percent_buys)
+
+    // console.log('___________________________________')
+    // console.log(data.article)
+    // console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
+  
+    return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
+  } catch (e) {
+    console.error('error getting other costs: ', data.article, " ", e)
+    return 0
+  }
 }
 
 

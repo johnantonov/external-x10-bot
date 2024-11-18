@@ -30,8 +30,8 @@ async function test() {
   const yesterdayRequestData = {
     nmIDs: [254642549],
     period: {
-      begin: "2024-11-14 00:00:00",
-      end: "2024-11-14 23:59:59"
+      begin: "2024-11-13 00:00:00",
+      end: "2024-11-13 23:59:59"
     },
     page: 1
   };
