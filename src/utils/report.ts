@@ -247,7 +247,9 @@ function getCosts(data: Article, date: string): number {
     const storageCost = (stats?.buysCount ?? 0) * data.storage;
     const logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
 
-    console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
+    // console.log('___________________________________')
+    // console.log(data.article)
+    // console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
   
     return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch (e) {
