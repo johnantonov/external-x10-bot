@@ -177,7 +177,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${(ctrPrk * 100).toFixed(2) || 0}%</td>
       <td class="bl">${marketingCost.toFixed(0) || 0}₽</td>
       <td>${drr.toFixed(2) || 0}%</td>
-      <td>${krrr.toFixed(2) || 0}%</td>
+      <td>${krrr}%</td>
       <td>${addToCartCount || 0}</td>
       <td>${ordersCount || 0}</td>
       <td>${infoBuysCount || 0}</td>
