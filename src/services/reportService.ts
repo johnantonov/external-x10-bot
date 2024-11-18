@@ -281,7 +281,7 @@ export class ReportService {
             }
           })
 
-          console.log(JSON.stringify(result))
+          console.log(buyoutsPercent)
 
           result[el.nmID].price_before_spp = (alwaysInfo.ordersSumRub / alwaysInfo.ordersCount) || null
           result[el.nmID].vendor = el.vendorCode
