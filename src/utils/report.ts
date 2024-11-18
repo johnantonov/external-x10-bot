@@ -105,7 +105,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       dayRows += `<td rowspan="${config.tableDays+1}" colspan="3" class="photo_cell">${value}</td>`
     }
 
-    if (index === 0 && allData.length > 1) {
+    if (index === 0 && allData.length > 2) {
       allData.forEach((article: Article, indexArticle: number) => {
         if (indexArticle > 0) {
           stats = article.order_info?.[day] || {};
@@ -284,7 +284,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 Выкупы: ${buysSumTotal.toFixed(0)}₽, ${buysCountTotal}шт
 Реклама: ${marketingCostTotal.toFixed(0)}₽
 ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
-Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100).toFixed(0)}%
+Маржа до ДРР: ${formatNumber((rev / (buysSumTotal || 1)) * 100).toFixed(0)}%
 Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100).toFixed(0)}%
 КРРР: ${isNaN(krrrTotal) ? 0 : krrrTotal}%
 Прибыль с ДРР: ${revTotal.toFixed(0)}₽
