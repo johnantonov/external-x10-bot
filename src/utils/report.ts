@@ -186,8 +186,6 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td class="bl">${isNaN(revDrr) ? 0 : revDrr.toFixed(0)}₽</td>
     `
 
-    // console.log(krrr)
-
     total.ark.clicks += ark.clicks;
     total.ark.ctr.push(ctrArk);
     total.prk.clicks += prk.clicks;
