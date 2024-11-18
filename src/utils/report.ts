@@ -8,10 +8,8 @@ import sharp from 'sharp';
 
 export async function getReportHtml(articleData: Article[]) {
   let tables = ``;
-  
-  if (articleData.length > 1) {
-    articleData.unshift({} as Article);  // для создания таблицы итого
-  }
+  // if (articleData.length > 1) {}
+  articleData.unshift({} as Article);  // для создания таблицы итого
 
   for (const [i, data] of articleData.entries()) {
     let imgSrc: any;
@@ -108,7 +106,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       dayRows += `<td rowspan="${config.tableDays+1}" colspan="3" class="photo_cell">${value}</td>`
     }
 
-    if (index === 0 && allData.length > 1) {
+    if (index === 0 && allData.length > 2) {
       allData.forEach((article: Article, indexArticle: number) => {
         if (indexArticle > 0) {
           stats = article.order_info?.[day] || {};
