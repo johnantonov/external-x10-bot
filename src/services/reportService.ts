@@ -275,13 +275,9 @@ export class ReportService {
             result[el.nmID].order_info[day.dt] = {
               ordersCount: day.ordersCount,
               ordersSum: day.ordersSumRub,
-              // buysCount: day.buyoutsCount,
-              // buysSum: day.buyoutsSumRub,
               buysCount: Math.round(day.ordersCount * ((buyoutsPercent || 0) / 100)),
               buysSum: Math.round(day.ordersSumRub * ((buyoutsPercent || 0) / 100)),
               addToCartCount: day.addToCartCount,
-              // stocksMp: stocks.stocksMp,
-              // stocksWb: stocks.stocksWb
             }
           })
 

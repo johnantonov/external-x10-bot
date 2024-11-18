@@ -182,8 +182,8 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
 
           // buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
           // buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
-          buysCount = stats.buysCount
-          buysSum = stats.buysSum
+          buysCount += stats.buysCount
+          buysSum += stats.buysSum
           otherCosts += getCosts(article, day)
         }
       })
@@ -286,10 +286,10 @@ function getCosts(data: Article, date: string) {
   const acquiring = config?.acquiring;
   const commission = parsePercent(stats?.commission) || 0;
 
-  if (stats) {
-    stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100));
-    stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100));
-  }
+  // if (stats) {
+  //   stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100));
+  //   stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100));
+  // }
 
   const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
   const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
