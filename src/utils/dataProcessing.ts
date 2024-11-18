@@ -91,7 +91,7 @@ export async function calculateLogisticsStorage(sizesNms: Record<article, Record
   const tariffs = await box_tariffs_db.getBoxTariff(config.storagesForLogistics)
   const result: Record<string, any> = {}
 
-  console.log(JSON.stringify(tariffs))
+  // console.log(JSON.stringify(tariffs))
 
   const nms = Object.keys(sizesNms)
 
@@ -106,7 +106,7 @@ export async function calculateLogisticsStorage(sizesNms: Record<article, Record
       storageSum += +t.boxStorageBase + adjustedLiters * +t.boxStorageLiter
     })
 
-    console.log(JSON.stringify(storageSum))
+    // console.log(JSON.stringify(storageSum))
 
     result[nm] = {
       logistics: logisticsSum / tariffs.length,
@@ -114,7 +114,7 @@ export async function calculateLogisticsStorage(sizesNms: Record<article, Record
     }
   })
 
-  console.log(JSON.stringify(result))
+  // console.log(JSON.stringify(result))
 
   return result
 }
