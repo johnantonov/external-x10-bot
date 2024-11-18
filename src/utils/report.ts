@@ -8,13 +8,14 @@ import sharp from 'sharp';
 
 export async function getReportHtml(articleData: Article[]) {
   let tables = ``;
-  // if (articleData.length > 1) {}
-  articleData.unshift({} as Article);  // для создания таблицы итого
+  if (articleData.length > 1) {
+    articleData.unshift({} as Article);  // для создания таблицы итого
+  }
 
   for (const [i, data] of articleData.entries()) {
     let imgSrc: any;
 
-    if (i > 0 && data.article) {
+    if (data.article) {
       try {
         const imgUrl = getWbArticlePhoto(+data.article);
         const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
