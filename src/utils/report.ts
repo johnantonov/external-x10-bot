@@ -267,8 +267,8 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 
     ordersSumTotal += (stats.ordersSum || 0)
     ordersCountTotal += (stats.ordersCount || 0)
-    buysSumTotal += (stats.infoBuysSum || 0)
-    buysCountTotal += (stats.infoBuysCount || 0)
+    buysSumTotal += (stats.buysSum || 0)
+    buysCountTotal += (stats.buysCount || 0)
     marketingCostTotal += marketingCost
     
     rev += (stats.buysSum || 0) - otherCosts;
@@ -278,7 +278,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     krrrTotalArray.push(Number(krrr))
   })
 
-  const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0));
+  const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(2));
 
   message = `
 Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
@@ -295,11 +295,11 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 
 
 function calcKrrr(revWithDrr: any, rev: any): number {
-  return formatNumber((revWithDrr / (rev || 1)) * 100);
+  return formatNumber(((revWithDrr || 0) / (rev || 1)) * 100);
 }
 
 function calcMargin(rev: any, buysSum: any): number {
-  return formatNumber(rev / (buysSum || 1) * 100);
+  return formatNumber((rev || 0) / (buysSum || 1) * 100);
 }
 
 function totalDataInit(): Record<string, any> {  
