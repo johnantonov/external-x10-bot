@@ -8,6 +8,7 @@ import sharp from 'sharp';
 
 export async function getReportHtml(articleData: Article[]) {
   let tables = ``;
+  
   if (articleData.length > 1) {
     articleData.unshift({} as Article);  // для создания таблицы итого
   }
