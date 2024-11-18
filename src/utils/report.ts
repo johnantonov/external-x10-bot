@@ -286,13 +286,6 @@ function getCosts(data: Article, date: string): number {
     const tax = parsePercent(data?.tax);
     const acquiring = config?.acquiring;
     const commission = parsePercent(stats?.commission) || 0;
-
-    console.log(JSON.stringify(stats))
-  
-    // if (stats) {
-    //   stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100));
-    //   stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100));
-    // }
   
     const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
     const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
@@ -301,8 +294,6 @@ function getCosts(data: Article, date: string): number {
     const commissionCost = (stats?.buysSum ?? 0) * commission;
     const storageCost = (stats?.buysCount ?? 0) * data.storage;
     const logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
-
-    console.log(selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost)
   
     return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch {
