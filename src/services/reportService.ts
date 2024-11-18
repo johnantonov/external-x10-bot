@@ -202,7 +202,7 @@ export class ReportService {
     }
   }
 
-  async fetchWbStatistics(articles: article[], wb_api_key: string, buyoutsPercent: number) {
+  async fetchWbStatistics(articles: article[], wb_api_key: string, buyoutsPercent: Record<string, number>) {
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
 
@@ -275,13 +275,11 @@ export class ReportService {
             result[el.nmID].order_info[day.dt] = {
               ordersCount: day.ordersCount,
               ordersSum: day.ordersSumRub,
-              buysCount: Math.round(day.ordersCount * ((buyoutsPercent || 0) / 100)),
-              buysSum: Math.round(day.ordersSumRub * ((buyoutsPercent || 0) / 100)),
+              buysCount: Math.round(day.ordersCount * ((buyoutsPercent[el.nmID] || 0) / 100)),
+              buysSum: Math.round(day.ordersSumRub * ((buyoutsPercent[el.nmID] || 0) / 100)),
               addToCartCount: day.addToCartCount,
             }
           })
-
-          console.log(buyoutsPercent)
 
           result[el.nmID].price_before_spp = (alwaysInfo.ordersSumRub / alwaysInfo.ordersCount) || null
           result[el.nmID].vendor = el.vendorCode
