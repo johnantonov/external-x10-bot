@@ -237,7 +237,7 @@ function getCosts(data: Article, date: string): number {
   
     const tax = parsePercent(data?.tax);
     const acquiring = config?.acquiring;
-    const commission = parsePercent(stats?.commission) || 0;
+    const commission = parsePercent(data.order_info?.commission) || 0;
   
     const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
     const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
