@@ -282,7 +282,7 @@ function getCosts(data: Article, date: string): number {
     const storageCost = (stats?.buysCount ?? 0) * data.storage * config.turnover;
 
     const logisticsBase = (stats?.buysCount ?? 0) * data.logistics;
-    const logisticsCost = (config.returnLogistics / data.percent_buys - 50) + (logisticsBase / data.percent_buys)
+    const logisticsCost = (config.returnLogistics / (data.percent_buys / 100) - 50) + (logisticsBase / (data.percent_buys / 100))
 
     // console.log('___________________________________')
     // console.log(data.article)
