@@ -133,6 +133,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     margin: [],
     rev: 0,
     revDrr: 0,
+    infoBuys: 0,
   };
 
   for (let i = daysCount; i > 0; i--) {
@@ -149,6 +150,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     let addToCartCount = 0;
     let ordersCount = 0;
     let buysCount = 0;
+    let infoBuysCount = 0;
     let ordersSum = 0;
     let buysSum = 0;
     let ctrArk;
@@ -179,6 +181,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
           addToCartCount += stats.addToCartCount || 0;
           ordersCount += stats.ordersCount || 0;
           ordersSum += stats.ordersSum || 0;
+          infoBuysCount += stats.infoBuysCount || 0;
 
           // buysCount = Math.round(ordersCount * ((article.percent_buys || 0) / 100))
           // buysSum = Math.round(ordersSum * ((article.percent_buys || 0) / 100))
@@ -204,7 +207,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       
       // const buysData = getBuysData(data, day)
       otherCosts = getCosts(data, day)
-
+      infoBuysCount = stats.infoBuysCount || 0;
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
@@ -229,7 +232,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${krrr.toFixed(2) || 0}%</td>
       <td>${addToCartCount || 0}</td>
       <td>${ordersCount || 0}</td>
-      <td>${Math.round(buysCount) || 0}</td>
+      <td>${infoBuysCount || 0}</td>
       <td>${isNaN(margin) ? 0 : margin.toFixed(2)}%</td>
       <td>${isNaN(rev) ? 0 : rev.toFixed(0)}₽</td>
       <td class="bl">${isNaN(revDrr) ? 0 : revDrr.toFixed(0)}₽</td>
@@ -240,6 +243,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     total.prk.clicks += prk.clicks;
     total.prk.ctr.push(ctrPrk);
     total.buys += buysCount;
+    total.infoBuys += infoBuysCount;
     total.carts += addToCartCount;
     total.drr.push(drr);
     total.krrr.push(krrr);
@@ -269,7 +273,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     <td>${totalKrrr || 0}%</td>
     <td>${total.carts || 0}</td>
     <td>${total.orders || 0}</td>
-    <td>${Math.round(total.buys) || 0}</td>
+    <td>${total.infoBuys || 0}</td>
     <td>${totalMargin}%</td>
     <td>${isNaN(total.rev.toFixed(0)) ? 0 : total.rev.toFixed(0)}₽</td>
     <td class="bl">${isNaN(total.revDrr.toFixed(0)) ? 0 : total.revDrr.toFixed(0)}₽</td>
