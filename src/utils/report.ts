@@ -68,55 +68,6 @@ export async function getReportHtml(articleData: Article[]) {
     `
 }
 
-export function createReportMessage(articles: Article[], formatReportDate: string) {
-  let message = ``;
-  let ordersSumTotal = 0;
-  let ordersCountTotal = 0;
-  let buysSumTotal = 0;
-  let buysCountTotal = 0;
-  let marketingCostTotal = 0;
-  let revTotal = 0;
-  let krrrTotalArray: number[] = [];
-
-  const date = getYesterdayDate();
-
-  articles.forEach(articleData => {
-    const stats = articleData.order_info?.[date] || {};
-    const marketing = articleData?.marketing_cost || {};
-    const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
-
-    const otherCosts = getCosts(articleData, date)
-    // const [buysCount, buysSum] = getBuysData(articleData, date)
-  
-    const krrr = formatNumber(
-    ((stats.buysSum - otherCosts - marketingCost) / ((stats.buysSum - otherCosts) || 1)) * 100);
-
-    krrrTotalArray.push(krrr)
-
-    ordersSumTotal += (stats.ordersSum || 0)
-    ordersCountTotal += (stats.ordersCount || 0)
-    buysSumTotal += (stats.buysSum || 0)
-    buysCountTotal += (stats.buysCount || 0)
-    marketingCostTotal += marketingCost
-  
-    revTotal += formatNumber((stats.buysSum || 0) - otherCosts - marketingCost);
-  })
-
-  const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0));
-
-  message = `
-Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
-Выкупы: ${buysSumTotal.toFixed(0)}₽, ${Math.round(buysCountTotal)}шт
-Реклама: ${marketingCostTotal.toFixed(0)}₽
-ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
-Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100).toFixed(0)}%
-Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100).toFixed(0)}%
-КРРР: ${isNaN(krrrTotal) ? 0 : krrrTotal}%
-Прибыль с ДРР: ${revTotal.toFixed(0)}₽
-  `
-  return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
-}
-
 function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject());
   let dayRows = ``;
@@ -208,7 +159,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
-      krrr = ((stats.buysSum - otherCosts - marketingCost) / ((stats.buysSum - otherCosts) || 1)) * 100;
+      krrr = formatNumber((revDrr / (rev || 1)) * 100);
       rev = (stats.buysSum ?? 0) - otherCosts
       revDrr = rev - marketingCost
       margin = formatNumber(rev / (stats.buysSum || 1) * 100)
@@ -301,6 +252,55 @@ function getCosts(data: Article, date: string): number {
     console.error('error getting other costs: ', data.article, " ", e)
     return 0
   }
+}
+
+export function createReportMessage(articles: Article[], formatReportDate: string) {
+  let message = ``;
+  let ordersSumTotal = 0;
+  let ordersCountTotal = 0;
+  let buysSumTotal = 0;
+  let buysCountTotal = 0;
+  let marketingCostTotal = 0;
+  let revTotal = 0;
+  let krrrTotalArray: number[] = [];
+
+  const date = getYesterdayDate();
+
+  articles.forEach(articleData => {
+    const stats = articleData.order_info?.[date] || {};
+    const marketing = articleData?.marketing_cost || {};
+    const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
+
+    const otherCosts = getCosts(articleData, date)
+    // const [buysCount, buysSum] = getBuysData(articleData, date)
+  
+    const krrr = formatNumber(
+    ((stats.buysSum - otherCosts - marketingCost) / ((stats.buysSum - otherCosts) || 1)) * 100);
+
+    krrrTotalArray.push(krrr)
+
+    ordersSumTotal += (stats.ordersSum || 0)
+    ordersCountTotal += (stats.ordersCount || 0)
+    buysSumTotal += (stats.buysSum || 0)
+    buysCountTotal += (stats.buysCount || 0)
+    marketingCostTotal += marketingCost
+  
+    revTotal += formatNumber((stats.buysSum || 0) - otherCosts - marketingCost);
+  })
+
+  const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0));
+
+  message = `
+Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
+Выкупы: ${buysSumTotal.toFixed(0)}₽, ${Math.round(buysCountTotal)}шт
+Реклама: ${marketingCostTotal.toFixed(0)}₽
+ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
+Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100).toFixed(0)}%
+Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100).toFixed(0)}%
+КРРР: ${isNaN(krrrTotal) ? 0 : krrrTotal}%
+Прибыль с ДРР: ${revTotal.toFixed(0)}₽
+  `
+  return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
 
 const CSS = `

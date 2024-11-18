@@ -15,6 +15,8 @@ export async function updateBoxTariffs() {
     });
 
     let data = tariffsResponse.data.response.data.warehouseList;
+
+    console.log(JSON.stringify(data))
     
     data = data.map((tariff: any) => ({
       warehouseName: tariff.warehouseName,
