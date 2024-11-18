@@ -71,21 +71,7 @@ export async function getReportHtml(articleData: Article[]) {
 function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
   let days = Object.keys(create30DaysObject());
   let dayRows = ``;
-
-  const total: Record<string, any> = {
-    ark: { clicks: 0, ctr: [] },
-    prk: { clicks: 0, ctr: [] },
-    marketingCost: 0,
-    drr: [],
-    krrr: [],
-    carts: 0,
-    orders: 0,
-    buys: 0,
-    margin: [],
-    rev: 0,
-    revDrr: 0,
-    infoBuys: 0,
-  };
+  const total = totalDataInit() 
 
   for (let i = daysCount; i > 0; i--) {
     const day = days[i];
@@ -163,7 +149,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       revDrr = rev - marketingCost
       margin = formatNumber(revDrr / (stats.buysSum || 1) * 100)
       
-      krrr = formatNumber((revDrr / (rev || 1)) * 100);
+      krrr = calcKrrr(revDrr, rev);
       addToCartCount = stats?.addToCartCount;
       ordersCount = stats?.ordersCount;
       buysCount = stats.buysCount;
@@ -265,6 +251,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   let buysSumTotal = 0;
   let buysCountTotal = 0;
   let marketingCostTotal = 0;
+  let rev = 0;
   let revTotal = 0;
   let krrrTotalArray: number[] = [];
 
@@ -276,27 +263,25 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     const marketingCost = parseFloat(marketing?.[date]?.cost) || 0;
 
     const otherCosts = getCosts(articleData, date)
-    // const [buysCount, buysSum] = getBuysData(articleData, date)
-  
-    const krrr = formatNumber(
-    ((stats.buysSum - otherCosts - marketingCost) / ((stats.buysSum - otherCosts) || 1)) * 100);
-
-    krrrTotalArray.push(krrr)
 
     ordersSumTotal += (stats.ordersSum || 0)
     ordersCountTotal += (stats.ordersCount || 0)
-    buysSumTotal += (stats.buysSum || 0)
-    buysCountTotal += (stats.buysCount || 0)
+    buysSumTotal += (stats.infoBuysSum || 0)
+    buysCountTotal += (stats.infoBuysCount || 0)
     marketingCostTotal += marketingCost
-  
-    revTotal += formatNumber((stats.buysSum || 0) - otherCosts - marketingCost);
+    
+    rev += (stats.buysSum || 0) - otherCosts;
+    revTotal += formatNumber(rev - marketingCost);
+
+    const krrr = calcKrrr(revTotal, rev)
+    krrrTotalArray.push(krrr)
   })
 
   const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0));
 
   message = `
 Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
-Выкупы: ${buysSumTotal.toFixed(0)}₽, ${Math.round(buysCountTotal)}шт
+Выкупы: ${buysSumTotal.toFixed(0)}₽, ${buysCountTotal}шт
 Реклама: ${marketingCostTotal.toFixed(0)}₽
 ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
 Маржа до ДРР: ${formatNumber(((revTotal + marketingCostTotal) / (buysSumTotal || 1)) * 100).toFixed(0)}%
@@ -305,6 +290,19 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 Прибыль с ДРР: ${revTotal.toFixed(0)}₽
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
+}
+
+
+function calcKrrr(revWithDrr: any, rev: any) {
+  return formatNumber((revWithDrr / (rev || 1)) * 100);
+}
+
+function totalDataInit(): Record<string, any> {  
+  return { 
+    ark: { clicks: 0, ctr: [] }, prk: { clicks: 0, ctr: [] }, 
+    marketingCost: 0, drr: [], krrr: [], carts: 0, orders: 0, 
+    buys: 0, margin: [], rev: 0, revDrr: 0, infoBuys: 0,
+  };
 }
 
 const CSS = `
