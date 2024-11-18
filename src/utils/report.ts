@@ -279,27 +279,35 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
   return dayRows
 }
 
-function getCosts(data: Article, date: string) {
-  const stats = data.order_info?.[date] || { buysCount: 0, buysSum: 0 };
+function getCosts(data: Article, date: string): number {
+  try {
+    const stats = data.order_info?.[date];
+  
+    const tax = parsePercent(data?.tax);
+    const acquiring = config?.acquiring;
+    const commission = parsePercent(stats?.commission) || 0;
 
-  const tax = parsePercent(data?.tax);
-  const acquiring = config?.acquiring;
-  const commission = parsePercent(stats?.commission) || 0;
+    console.log(JSON.stringify(stats))
+  
+    // if (stats) {
+    //   stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100));
+    //   stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100));
+    // }
+  
+    const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
+    const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
+    const taxCost = (stats?.buysSum ?? 0) * tax;
+    const acquiringCost = (stats?.buysSum ?? 0) * acquiring;
+    const commissionCost = (stats?.buysSum ?? 0) * commission;
+    const storageCost = (stats?.buysCount ?? 0) * data.storage;
+    const logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
 
-  // if (stats) {
-  //   stats.buysCount = Math.round((stats?.ordersCount || 0) * ((data?.percent_buys || 0) / 100));
-  //   stats.buysSum = Math.round((stats?.ordersSum || 0) * ((data?.percent_buys || 0) / 100));
-  // }
-
-  const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
-  const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
-  const taxCost = (stats?.buysSum ?? 0) * tax;
-  const acquiringCost = (stats?.buysSum ?? 0) * acquiring;
-  const commissionCost = (stats?.buysSum ?? 0) * commission;
-  const storageCost = (stats?.buysCount ?? 0) * data.storage;
-  const logisticsCost = (stats?.buysCount ?? 0) * data.logistics;
-
-  return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
+    console.log(selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost)
+  
+    return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
+  } catch {
+    return 0
+  }
 }
 
 function getBuysData(article: Article, date: string): [number, number] {
