@@ -98,7 +98,7 @@ export async function calculateLogisticsStorage(sizesNms: Record<article, Record
   nms.forEach(nm => {
     let logisticsSum = 0
     let storageSum = 0
-    const literSize = sizesNms[nm].literSize 
+    const literSize = Math.ceil(sizesNms[nm].literSize); 
 
     tariffs.forEach((t: BoxTariff) => {
       const adjustedLiters = (literSize - 1) < 0 ? 0 : (literSize - 1);
