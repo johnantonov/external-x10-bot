@@ -149,8 +149,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
       rev = (stats.buysSum ?? 0) - otherCosts
       revDrr = rev - marketingCost
-      margin = formatNumber(revDrr / (stats.buysSum || 1) * 100)
-      
+      margin = calcMargin(revDrr, stats.buysSum)
       krrr = calcKrrr(revDrr, rev);
       addToCartCount = stats?.addToCartCount;
       ordersCount = stats?.ordersCount;
@@ -165,11 +164,11 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${(ctrPrk * 100).toFixed(2) || 0}%</td>
       <td class="bl">${marketingCost.toFixed(0) || 0}₽</td>
       <td>${drr.toFixed(2) || 0}%</td>
-      <td>${krrr}%</td>
+      <td>${krrr.toFixed(2)}%</td>
       <td>${addToCartCount || 0}</td>
       <td>${ordersCount || 0}</td>
       <td>${infoBuysCount || 0}</td>
-      <td>${isNaN(margin) ? 0 : margin.toFixed(2)}%</td>
+      <td>${margin.toFixed(2)}%</td>
       <td>${isNaN(rev) ? 0 : rev.toFixed(0)}₽</td>
       <td class="bl">${isNaN(revDrr) ? 0 : revDrr.toFixed(0)}₽</td>
     `
@@ -276,7 +275,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
     revTotal += formatNumber(rev - marketingCost);
 
     const krrr = calcKrrr(revTotal, rev)
-    krrrTotalArray.push(krrr)
+    krrrTotalArray.push(Number(krrr))
   })
 
   const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(0));
@@ -286,8 +285,8 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 Выкупы: ${buysSumTotal.toFixed(0)}₽, ${buysCountTotal}шт
 Реклама: ${marketingCostTotal.toFixed(0)}₽
 ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
-Маржа до ДРР: ${formatNumber((rev / (buysSumTotal || 1)) * 100).toFixed(0)}%
-Маржа с ДРР: ${formatNumber((revTotal / (buysSumTotal || 1)) * 100).toFixed(0)}%
+Маржа до ДРР: ${calcMargin(rev, buysSumTotal)}%
+Маржа с ДРР: ${calcMargin(revTotal, buysSumTotal)}%
 КРРР: ${isNaN(krrrTotal) ? 0 : krrrTotal}%
 Прибыль с ДРР: ${revTotal.toFixed(0)}₽
   `
@@ -295,8 +294,12 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 }
 
 
-function calcKrrr(revWithDrr: any, rev: any) {
+function calcKrrr(revWithDrr: any, rev: any): number {
   return formatNumber((revWithDrr / (rev || 1)) * 100);
+}
+
+function calcMargin(rev: any, buysSum: any): number {
+  return formatNumber(rev / (buysSum || 1) * 100);
 }
 
 function totalDataInit(): Record<string, any> {  
