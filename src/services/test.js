@@ -20,7 +20,7 @@ const advertIds = `[{"id":18361701,"dates":["2024-11-06","2024-11-05","2024-11-0
 // }
 
 async function test() {    
-  const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
+  const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail'
 
   const headers = {
     'Authorization': wb_api_key, 
@@ -30,9 +30,10 @@ async function test() {
   const yesterdayRequestData = {
     nmIDs: [254642549],
     period: {
-      begin: "2024-11-05",
-      end: "2024-11-11"
+      begin: "2024-11-14 00:00:00",
+      end: "2024-11-14 23:59:59"
     },
+    page: 1
   };
 
   const yesterdayResponse = await axios.post(yesterdayUrl, yesterdayRequestData, {

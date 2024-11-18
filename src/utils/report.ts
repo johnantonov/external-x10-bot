@@ -161,7 +161,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
       rev = (stats.buysSum ?? 0) - otherCosts
       revDrr = rev - marketingCost
-      margin = formatNumber(rev / (stats.buysSum || 1) * 100)
+      margin = formatNumber(revDrr / (stats.buysSum || 1) * 100)
       
       krrr = formatNumber((revDrr / (rev || 1)) * 100);
       addToCartCount = stats?.addToCartCount;
