@@ -289,13 +289,12 @@ function getCosts(data: Article, date: string): number {
     const commissionCost = (stats?.buysSum ?? 0) * commission;
     const storageCost = (stats?.buysCount ?? 0) * data.storage * config.turnover;
 
-    // const logisticsBase = (stats?.buysCount ?? 0) * data.logistics;
     const logisticsBase = (config.returnLogistics / (data.percent_buys / 100) - config.returnLogistics) + (data.logistics / (data.percent_buys / 100))
-    console.log(logisticsBase)
     const logisticsCost = (stats?.buysCount ?? 0) * logisticsBase
 
     console.log('___________________________________')
     console.log(data.article)
+    console.log(date)
     console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
   
     return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
