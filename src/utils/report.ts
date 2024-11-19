@@ -2,7 +2,7 @@ import { config } from "../config/config";
 import { Article } from "../dto/articles";
 import { getWbArticlePhoto, parsePercent } from "./parse";
 import { formatNumber } from "./string";
-import { create30DaysObject, getYesterdayDate } from "./time";
+import { create31DaysObject, getYesterdayDate } from "./time";
 import axios from 'axios';
 import sharp from 'sharp';
 
@@ -45,7 +45,7 @@ export async function getReportHtml(articleData: Article[]) {
           <th rowspan="2" colspan="1">Заказы</th>
           <th rowspan="2" colspan="1">Выкупы</th>
           <th rowspan="2" colspan="1">Маржа</th>
-          <th class="br" rowspan="2" colspan="1">Прогноз прибыли до ДРР</th>
+          <th rowspan="2" colspan="1">Прогноз прибыли до ДРР</th>
           <th class="br" rowspan="2" colspan="1">Прогноз прибыли с ДРР</th>
         </tr>
       </thead>
@@ -71,7 +71,7 @@ export async function getReportHtml(articleData: Article[]) {
 }
 
 function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
-  let days = Object.keys(create30DaysObject());
+  let days = Object.keys(create31DaysObject());
   let dayRows = ``;
   const total = totalDataInit() 
 
@@ -140,17 +140,22 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       const marketing = data?.marketing_cost || {};
       prk = marketing?.[day]?.prk || { clicks: 0, views: 0 };
       ark = marketing?.[day]?.ark || { clicks: 0, views: 0 };
-      marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
-      stats = data.order_info?.[day] || {};
-      otherCosts = getCosts(data, day)
-      infoBuysCount = stats.infoBuysCount || 0;
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
       drr = (marketingCost / (stats.ordersSum || 1)) * 100;
+
+      marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
+      stats = data.order_info?.[day] || {};
+      otherCosts = getCosts(data, day)
+      
+      infoBuysCount = stats.infoBuysCount || 0;
+      
       rev = (stats.buysSum ?? 0) - otherCosts
       revDrr = rev - marketingCost
+
       margin = calcMargin(revDrr, stats.buysSum)
       krrr = calcKrrr(revDrr, rev);
+      
       addToCartCount = stats?.addToCartCount;
       ordersCount = stats?.ordersCount;
       buysCount = stats.buysCount;
@@ -170,7 +175,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       <td>${infoBuysCount || 0}</td>
       <td>${margin.toFixed(2)}%</td>
       <td>${isNaN(rev) ? 0 : rev.toFixed(0)}₽</td>
-      <td class="bl">${isNaN(revDrr) ? 0 : revDrr.toFixed(0)}₽</td>
+      <td>${isNaN(revDrr) ? 0 : revDrr.toFixed(0)}₽</td>
     `
 
     total.ark.clicks += ark.clicks;

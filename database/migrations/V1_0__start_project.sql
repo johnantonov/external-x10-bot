@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS articles (
     notification_time NUMERIC,
     self_cost DECIMAL,
     marketing_cost JSONB,
+    sales JSONB,
     other_cost DECIMAL,
     order_info JSONB,
     mark DECIMAL,

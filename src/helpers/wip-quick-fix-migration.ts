@@ -20,6 +20,7 @@ export const migrations = [
             notification_time NUMERIC,
             self_cost DECIMAL,
             marketing_cost JSONB,
+            sales JSONB,
             other_cost DECIMAL,
             order_info JSONB,
             mark DECIMAL,
@@ -86,25 +87,6 @@ export const migrations = [
     ],
 
     [
-        `CREATE TABLE IF NOT EXISTS box_tariffs (
-            "warehouseName" VARCHAR,
-            "boxDeliveryAndStorageExpr" NUMERIC,
-            "boxDeliveryBase" NUMERIC,
-            "boxDeliveryLiter" NUMERIC,
-            "boxStorageBase" NUMERIC,
-            "boxStorageLiter" NUMERIC,
-            PRIMARY KEY ("warehouseName")
-        );`, 
-        `CREATE OR REPLACE FUNCTION set_wb_api_key()
-        RETURNS TRIGGER AS $$
-        BEGIN
-        SELECT u.wb_api_key, u.notification_time
-        INTO NEW.wb_api_key, NEW.notification_time
-        FROM users u
-        WHERE u.chat_id = NEW.chat_id;
-
-        RETURN NEW;
-        END;
-        $$ LANGUAGE plpgsql;`
+        `ALTER TABLE articles ADD COLUMN sales JSONB;`
     ]
 ];

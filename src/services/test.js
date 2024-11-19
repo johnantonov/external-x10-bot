@@ -19,29 +19,33 @@ const advertIds = `[{"id":18361701,"dates":["2024-11-06","2024-11-05","2024-11-0
 //   return data
 // }
 
-async function test() {    
-  const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail'
+async function test(nmIDs = [254642549]) {    
+  const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFrom=2024-11-13'
 
   const headers = {
     'Authorization': wb_api_key, 
     'Content-Type': 'application/json',
   }
 
-  const yesterdayRequestData = {
-    nmIDs: [254642549],
-    period: {
-      begin: "2024-11-13 00:00:00",
-      end: "2024-11-13 23:59:59"
-    },
-    page: 1
-  };
-
-  const yesterdayResponse = await axios.post(yesterdayUrl, yesterdayRequestData, {
+  const salesResponse = await axios.get(salesUrl, {
     headers: headers
   });
 
-  const logData = yesterdayResponse.data
-  console.log(`yesterday data:`, JSON.stringify(logData))
+  const result = {};
+  nmIDs.forEach(nm => result[nm] = {})
+
+  salesResponse.data.forEach(sale => {
+    if (nmIDs.includes(sale.nmId)) {
+      const date = sale.date.split('T')[0]
+      if (!result[sale.nmId][date]) {
+        result[sale.nmId][date] = 1
+      } else {
+        result[sale.nmId][date] += 1
+      }
+    }
+  });
+
+  console.log(JSON.stringify(result))
 }
 
 test()

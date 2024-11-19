@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 import cron from 'node-cron';
 import pool from '../../database/db';
-import { create30DaysObject, getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } from '../utils/time';
+import { create31DaysObject, getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { Article, article} from '../dto/articles';
@@ -79,14 +79,15 @@ export class ReportService {
           advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
         }
 
-        const [monthAgoDate, yesterday, today] = getXDaysPeriod(31)
-        const yesterdayTime = yesterday + " 23:59:59"
-        const monthAgoDateTime = monthAgoDate + " 00:00:00"
+        const [monthAgoDate, yesterday] = getXDaysPeriod(31)
 
-        const percent_buys = await this.getBuyPercent(nms, wb_api_key, monthAgoDateTime, yesterdayTime)
-        const report = (await this.fetchWbStatistics(nms, wb_api_key, percent_buys));
+        const dates = Object.keys(create31DaysObject())
+
+        const percent_buys = await this.getBuyPercent(nms, wb_api_key, dates[dates.length-1] + " 23:59:59", dates[0] + " 00:00:00")
+        const report = await this.fetchWbStatistics(nms, wb_api_key, percent_buys, dates);
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
         const logisticsObj = await calculateLogisticsStorage(size)
+        const sales = await this.getSales(nms, dates[6], wb_api_key)
 
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
@@ -100,9 +101,11 @@ export class ReportService {
           let percentBuys = percent_buys?.[nm] ?? null;
           let spp = report[nm]?.price_before_spp ?? null;
           let vendor = report[nm]?.vendor ?? null;
+          let salesObj = sales[nm]
 
           await articles_db.updateFields(id, +nm, {
             order_info: info,
+            sales: salesObj,
             percent_buys: percentBuys,
             size: sizes,
             price_before_spp: spp,
@@ -202,18 +205,16 @@ export class ReportService {
     }
   }
 
-  async fetchWbStatistics(articles: article[], wb_api_key: string, buyoutsPercent: Record<string, number>) {
+  async fetchWbStatistics(articles: article[], wb_api_key: string, buyoutsPercent: Record<string, number>, dates: string[]) {
     const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail';
     const yesterdayUrl = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
-
-    const dates = Object.keys(create30DaysObject())
 
     let moscowTime = new Date().toLocaleString("en-CA", {
       timeZone: "Europe/Moscow",
       hour12: false
     }).replace(",", "");
+
     let monthStartDateTime = dates[dates.length-1] + ' 00:00:00'
-    // let monthEndDateTime = `${dates[0]} ${moscowTime.split(" ")[1]}`
     let hours = moscowTime.split(" ")[1].split(":")[0];
     let minutesAndSeconds = moscowTime.split(" ")[1].slice(2);
     if (hours === "24") {
@@ -398,6 +399,35 @@ export class ReportService {
       formatError(e, 'error fetching campaigns data')
       return {};
     }
+  }
+
+  async getSales(nmIDs: article[], dateFrom: string, wb_api_key: string) {
+    const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFrom=' + dateFrom
+  
+    const headers = {
+      'Authorization': wb_api_key, 
+      'Content-Type': 'application/json',
+    }
+  
+    const salesResponse = await axios.get(salesUrl, {
+      headers: headers
+    });
+  
+    const result: Record<string, any> = {};
+    nmIDs.forEach(nm => result[nm] = {})
+  
+    salesResponse.data.forEach((sale: Record<string, any>) => {
+      if (nmIDs.includes(sale.nmId)) {
+        const date = sale.date.split('T')[0]
+        if (!result[sale.nmId][date]) {
+          result[sale.nmId][date] = 1
+        } else {
+          result[sale.nmId][date] += 1
+        }
+      }
+    });
+  
+    return result
   }
 
   // Send message to user

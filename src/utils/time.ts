@@ -41,23 +41,21 @@ export function getXDaysPeriod(X: number) {
 
   const startDate = subDays(moscowTime, X);
   const endDate = subDays(moscowTime, 1);
-  const todayDate = subDays(moscowTime, 0);
 
   const formattedStartDate = format(startDate, 'yyyy-MM-dd');
   const formattedEndDate = format(endDate, 'yyyy-MM-dd');
-  const formattedToday = format(todayDate, 'yyyy-MM-dd');
 
-  return [formattedStartDate, formattedEndDate, formattedToday]
+  return [formattedStartDate, formattedEndDate]
 }
 
 /**
  * create objects as { "2024-09-30": info } 
  */
-export function create30DaysObject() {
+export function create31DaysObject() {
   const daysObj: Record<string, any> = {};
   const today = new Date();
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 31; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
     const dateString = date.toISOString().split('T')[0];

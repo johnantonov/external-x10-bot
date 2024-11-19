@@ -13,7 +13,7 @@ import { reportService } from "../services/reportService";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
 import { getStateMessage, texts } from "../components/texts";
 import dotenv from 'dotenv';
-import { config } from "../config/configInterface";
+import { config } from "../config/config";
 dotenv.config();
 
 /**
@@ -85,7 +85,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     case 'add article':
       data = parseArticleData(userCallbackData);
       newButtonCallback = newArticleData(data);
-      const maxCount = config.maxCount
+      const maxCount = config.maxArticles
       const articlesCount = (await articles_db.getAllArticlesForUser(chat_id)).rows.length
       if (articlesCount < maxCount) {
         await RS.setUserState(chat_id, rStates.waitArticle, ttls.usual)

@@ -5,7 +5,8 @@ export interface Article {
   wb_api_key: string;
   notification_time?: number;
   self_cost: number;
-  marketing_cost: Record<any, any>;
+  marketing_cost: Record<string, any>;
+  sales: Record<string, any>
   other_cost: number;
   mark: number;
   tax: string;
