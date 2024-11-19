@@ -292,11 +292,11 @@ function getCosts(data: Article, date: string): number {
     const logisticsBase = (config.returnLogistics / (data.percent_buys / 100) - config.returnLogistics) + (data.logistics / (data.percent_buys / 100))
     const logisticsCost = (stats?.buysCount ?? 0) * logisticsBase
 
-    console.log('___________________________________')
-    console.log(data.article)
-    console.log(date)
-    console.log(JSON.stringify(data))
-    console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
+    // console.log('___________________________________')
+    // console.log(data.article)
+    // console.log(date)
+    // console.log(JSON.stringify(data))
+    // console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
   
     return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch (e) {
@@ -334,6 +334,9 @@ const CSS = `
     }
     table, th, td {
       border: 0.2px solid #AFEEEE;
+    }
+    th {
+      width: 78px
     }
     th, td {
       padding: 8px;
