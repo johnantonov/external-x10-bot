@@ -149,6 +149,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
       stats = data.order_info?.[day] || {};
       otherCosts = getCosts(data, day)
+      
       drr = (marketingCost / (stats?.ordersSum || 1)) * 100;
       infoBuysCount = data.sales?.[day] || 0;
       
