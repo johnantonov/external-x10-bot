@@ -274,7 +274,6 @@ export class ReportService {
             }
           })
 
-          
           result[el.nmID].price_before_spp = (alwaysInfo.ordersSumRub / alwaysInfo.ordersCount) || null
           result[el.nmID].vendor = el.vendorCode
         }
