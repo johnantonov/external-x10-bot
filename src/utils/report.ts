@@ -111,6 +111,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       allData.forEach((article: Article, indexArticle: number) => {
         if (indexArticle > 0) {
           stats = article.order_info?.[day] || {};
+
           const marketing = article?.marketing_cost || {};
           prk.clicks += marketing?.[day]?.prk?.clicks || 0
           prk.views += marketing?.[day]?.prk?.views || 0 
@@ -120,7 +121,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
           addToCartCount += stats.addToCartCount || 0;
           ordersCount += stats.ordersCount || 0;
           ordersSum += stats.ordersSum || 0;
-          infoBuysCount += stats.infoBuysCount || 0;
+          infoBuysCount += article.sales?.[day] || 0;
           buysCount += stats.buysCount
           buysSum += stats.buysSum
           otherCosts += getCosts(article, day)
@@ -148,7 +149,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       stats = data.order_info?.[day] || {};
       otherCosts = getCosts(data, day)
       
-      infoBuysCount = stats.infoBuysCount || 0;
+      infoBuysCount = data.sales?.[day] || 0;
       
       rev = (stats.buysSum ?? 0) - otherCosts
       revDrr = rev - marketingCost

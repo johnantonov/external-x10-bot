@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 import cron from 'node-cron';
 import pool from '../../database/db';
-import { create31DaysObject, getXdaysAgoArr, getXDaysPeriod, getYesterdayDate } from '../utils/time';
+import { create31DaysObject, getXdaysAgoArr, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { Article, article} from '../dto/articles';
@@ -78,8 +78,6 @@ export class ReportService {
         if (advertDetailsResponse) {
           advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
         }
-
-        const [monthAgoDate, yesterday] = getXDaysPeriod(31)
 
         const dates = Object.keys(create31DaysObject())
 
@@ -263,9 +261,6 @@ export class ReportService {
             result[el.nmID] = {};
           }
 
-          // const data = el.statistics.selectedPeriod;
-          // const stocks = el.stocks;
-
           el.history.forEach((day: Record<string, any>) => {
             if (!result[el.nmID].order_info) {
               result[el.nmID].order_info = {};
@@ -273,8 +268,6 @@ export class ReportService {
             result[el.nmID].order_info[day.dt] = {
               ordersCount: day.ordersCount,
               ordersSum: day.ordersSumRub,
-              infoBuysCount: day.buyoutsCount,
-              infoBuysSum: day.buyoutsSumRub,
               buysCount: Math.round(day.ordersCount * ((buyoutsPercent[el.nmID] || 0) / 100)),
               buysSum: Math.round(day.ordersSumRub * ((buyoutsPercent[el.nmID] || 0) / 100)),
               addToCartCount: day.addToCartCount,
