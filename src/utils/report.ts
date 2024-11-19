@@ -20,7 +20,7 @@ export async function getReportHtml(articleData: Article[]) {
         const imgUrl = getWbArticlePhoto(+data.article);
         const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
         let imgBuffer = Buffer.from(response.data, 'binary');
-        imgBuffer = await sharp(imgBuffer).resize({ width: 140, height: 170 }).toBuffer();
+        imgBuffer = await sharp(imgBuffer).resize({ width: 100, height: 120 }).toBuffer();
         const imgBase64 = imgBuffer.toString('base64');
         imgSrc = `data:image/jpeg;base64,${imgBase64}`;
       } catch (error) {
@@ -355,7 +355,7 @@ const CSS = `
       width 350px !important
     }
     .photo_cell {
-      width: 350px !important;
+      width: 240px !important;
       height: 140px !important
     }
     .day_cell {
