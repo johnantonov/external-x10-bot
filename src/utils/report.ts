@@ -128,21 +128,23 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
         }
       })
       
-      rev += (buysSum ?? 0) - otherCosts
-      revDrr += rev - marketingCost
-      margin += formatNumber(rev / (buysSum || 1) * 100) 
-      drr += (marketingCost / (ordersSum || 1)) * 100;
+      rev += (buysSum ?? 0) - otherCosts;
+      revDrr += rev - marketingCost;
+      margin += formatNumber(rev / (buysSum || 1) * 100);
 
+      drr += (marketingCost / (ordersSum || 1)) * 100;
       krrr += formatNumber((revDrr / (rev || 1)) * 100);
 
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
+
     } else {
       const marketing = data?.marketing_cost || {};
       prk = marketing?.[day]?.prk || { clicks: 0, views: 0 };
       ark = marketing?.[day]?.ark || { clicks: 0, views: 0 };
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
+      
       drr = (marketingCost / (stats?.ordersSum || 1)) * 100;
 
       marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
@@ -288,7 +290,8 @@ function getCosts(data: Article, date: string): number {
     const storageCost = (stats?.buysCount ?? 0) * data.storage * config.turnover;
 
     // const logisticsBase = (stats?.buysCount ?? 0) * data.logistics;
-    const logisticsBase = (config.returnLogistics / (data.percent_buys / 100) - 50) + (data.logistics / (data.percent_buys / 100))
+    const logisticsBase = (config.returnLogistics / (data.percent_buys / 100) - config.returnLogistics) + (data.logistics / (data.percent_buys / 100))
+    console.log(logisticsBase)
     const logisticsCost = (stats?.buysCount ?? 0) * logisticsBase
 
     console.log('___________________________________')
