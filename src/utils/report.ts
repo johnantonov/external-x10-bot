@@ -104,7 +104,12 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     dayRows += `<tr class="row">`
 
     if (i === daysCount) {
-      const value = (index === 0 && allData.length > 1 && !imgBase64) ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
+      let value;
+      if (imgBase64) {
+        value = (index === 0 && allData.length > 1) ? "ИТОГО" : `<img src="${imgBase64}" alt="${data.vendor_code}" >`
+      } else {
+        "Не удалось\nзагрузить\nизображение"
+      }
       dayRows += `<td rowspan="${config.tableDays+1}" colspan="3" class="photo_cell">${value}</td>`
     }
 
