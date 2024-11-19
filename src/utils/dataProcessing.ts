@@ -2,11 +2,11 @@ import { box_tariffs_db } from "../../database/models/box_tariffs";
 import { config } from "../config/config";
 import { article } from "../dto/articles";
 import { BoxTariff } from "../dto/boxTariffs";
-import { create30DaysObject  } from "./time";
+import { create31DaysObject  } from "./time";
 
 export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[], advertTypes: Record<string, any>) {
   const data: Record<string, any> = {}
-  const days = create30DaysObject();
+  const days = create31DaysObject();
 
   userNmIds.forEach(nm => {
     const result: Record<string, any> = {};
