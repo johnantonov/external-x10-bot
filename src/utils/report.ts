@@ -120,7 +120,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
           marketingCost += parseFloat(marketing?.[day]?.cost) || 0;
           addToCartCount += stats.addToCartCount || 0;
           ordersCount += stats.ordersCount || 0;
-          ordersSum += stats.ordersSum || 0;
+          ordersSum += stats?.ordersSum || 0;
           infoBuysCount += article.sales?.[day] || 0;
           buysCount += stats.buysCount
           buysSum += stats.buysSum
@@ -143,7 +143,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
       ark = marketing?.[day]?.ark || { clicks: 0, views: 0 };
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
-      drr = (marketingCost / (stats.ordersSum || 1)) * 100;
+      drr = (marketingCost / (stats?.ordersSum || 1)) * 100;
 
       marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
       stats = data.order_info?.[day] || {};
@@ -244,7 +244,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
 
     const otherCosts = getCosts(articleData, date)
 
-    ordersSumTotal += (stats.ordersSum || 0)
+    ordersSumTotal += (stats?.ordersSum || 0)
     ordersCountTotal += (stats.ordersCount || 0)
     buysSumTotal += (stats.buysSum || 0)
     buysCountTotal += (stats.buysCount || 0)
