@@ -13,7 +13,7 @@ export async function getReportHtml(articleData: Article[]) {
   }
 
   for (const [i, data] of articleData.entries()) {
-    let imgSrc: any;
+    let imgSrc: any = null;
 
     if (data.article) {
       try {
@@ -25,6 +25,7 @@ export async function getReportHtml(articleData: Article[]) {
         imgSrc = `data:image/jpeg;base64,${imgBase64}`;
       } catch (error) {
         console.error(`Error while generating table html: ${error}`);
+        imgSrc = null
       }
     }
 
