@@ -295,6 +295,7 @@ function getCosts(data: Article, date: string): number {
     console.log('___________________________________')
     console.log(data.article)
     console.log(date)
+    console.log(JSON.stringify(data))
     console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
   
     return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
