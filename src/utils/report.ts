@@ -344,7 +344,7 @@ const CSS = `
     table, th, td {
       border: 0.2px solid #AFEEEE;
     }
-    th {
+    td {
       width: 78px
     }
     th, td {
