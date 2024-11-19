@@ -217,7 +217,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     <td>${total.infoBuys || 0}</td>
     <td>${totalMargin}%</td>
     <td>${isNaN(total.rev.toFixed(0)) ? 0 : total.rev.toFixed(0)}₽</td>
-    <td class="bl">${isNaN(total.revDrr.toFixed(0)) ? 0 : total.revDrr.toFixed(0)}₽</td>
+    <td>${isNaN(total.revDrr.toFixed(0)) ? 0 : total.revDrr.toFixed(0)}₽</td>
   </tr>
   `
 
@@ -291,9 +291,9 @@ function getCosts(data: Article, date: string): number {
     const logisticsBase = (config.returnLogistics / (data.percent_buys / 100) - 50) + (data.logistics / (data.percent_buys / 100))
     const logisticsCost = (stats?.buysCount ?? 0) * logisticsBase
 
-    // console.log('___________________________________')
-    // console.log(data.article)
-    // console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
+    console.log('___________________________________')
+    console.log(data.article)
+    console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
   
     return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch (e) {
