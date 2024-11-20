@@ -55,11 +55,22 @@ export async function awaitingHandler(data: UserMsg, state: string) {
 
     } else if (state.startsWith(rStates.waitArticle)) {
       try {
-        const newArticles = text.split(',')
-        await articles_db.addArticles(chat_id, newArticles)
+        const lines = text.split('\n');
+      
+        const newArticles = lines
+          .flatMap(line => line.split(',')) 
+          .map(article => article.trim())  
+          .filter(article => article !== ''); 
+        
+        if (newArticles.length === 0) {
+          return handleError("Список артикулов пуст. Пожалуйста, проверьте ввод.");
+        }
+      
+        await articles_db.addArticles(chat_id, newArticles);
+      
         return new AwaitingAnswer({ result: true, text: texts.addedArticle, type: 'article' });
       } catch (e) {
-        console.error('Ошибка в процессе добавления артикула: ', e)
+        console.error('Ошибка в процессе добавления артикула: ', e);
         return handleError("Возникла ошибка, попробуйте еще раз.");
       }
 
