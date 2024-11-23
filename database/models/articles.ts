@@ -6,6 +6,7 @@ import { article, SKU } from '../../src/dto/articles';
 import { sortObjDatesKeys } from '../../src/utils/time';
 import { config } from '../../src/config/config';
 import { user_type } from '../../src/dto/user';
+import { users_db } from './users';
 dotenv.config();
 
 class ArticlesModel extends BaseModel<SKU> {
@@ -197,7 +198,7 @@ class ArticlesModel extends BaseModel<SKU> {
       await this.pool.query(skuQuery, [tax, chat_id]);
 
       const usersQuery = `
-        UPDATE ${this.tableName}
+        UPDATE ${users_db.tableName}
         SET type = $1, tax = $2
         WHERE chat_id = $3
       `;

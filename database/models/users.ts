@@ -1,15 +1,16 @@
 import { BaseModel } from "../BaseModel";
-import { Pool, QueryResult } from 'pg';
+import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
 import pool from "../db";
 import { User, user_type } from "../../src/dto/user";
-import { article } from "../../src/dto/articles";
-import { articles_db } from "./articles";
 dotenv.config();
 
 class UsersModel extends BaseModel<User> {
+  tableName: string;
+
   constructor(pool: Pool) {
-    super('users', pool)
+    super('users', pool);
+    this.tableName = 'users'; 
   }
 
   async processUserRequest(chat_id: number, newUsername: string | undefined): Promise<[user_type | null, number | null]> {
