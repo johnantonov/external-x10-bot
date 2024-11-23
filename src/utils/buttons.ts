@@ -22,6 +22,6 @@ export function getStartedButton(type: user_type) {
 
 export const btn = (buttonKeys: string[] | string, source: Record<string, any> = mainButtons) => {
   if (!Array.isArray(buttonKeys)) buttonKeys = [buttonKeys];
-  const buttons = buttonKeys.map(key => source[key]);
-  return new Options([buttons]).reply_markup;
+  const buttons = buttonKeys.map(key => [source[key]]);
+  return new Options(buttons).reply_markup;
 }
