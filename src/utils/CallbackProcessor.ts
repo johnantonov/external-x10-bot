@@ -6,15 +6,15 @@ import { inputStates, rStates } from "../redis";
 
 export class CallbackProcessor {
   private userCallbackData: string;
-  private userType: user_type;
+  private userType: user_type | null;
 
-  constructor(userCallbackData: string, type: user_type) {
+  constructor(userCallbackData: string, type: user_type | null) {
     this.userCallbackData = userCallbackData;
     this.userType = type;
   }
 
   getAction(): CallbackAction {
-    if (this.userType === 'waitTax') {
+    if (this?.userType === 'waitTax') {
       return 'update tax'
     }
 
