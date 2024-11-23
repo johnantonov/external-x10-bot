@@ -6,7 +6,7 @@ export type CallbackAction =
   "yes no" |
   "edits" |
   "return article menu" |
-  "input states" |
+  "update tax" |
   "change time" |
   "articles" |
   "go article" |

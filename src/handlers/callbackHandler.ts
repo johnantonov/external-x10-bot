@@ -39,7 +39,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   const [type, last_report_call] = await users_db.processUserRequest(chat_id, username)
   const returnBtn = returnMenu(true);
   const mainBtn = mainOptions(false, type ?? 'new')
-  const action = new CallbackProcessor(userCallbackData).getAction();
+  const action = new CallbackProcessor(userCallbackData, type).getAction();
   const [state, currentArticle] = getStateAndArticleFromCallback(userCallbackData);
   const callbackObj = parseArticleData(userCallbackData)
 
@@ -114,15 +114,18 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       }
       break;
 
-    // case "input states":
-    //   const message = getStateMessage(state)
-    //   await RediceService.setUserState(chat_id, state + "?" + currentArticle)
-    //   if (message) {
-    //     editData = createEditData(message, returnArticleMenu(currentArticle));
-    //   } else {
-    //     editData = createEditData(texts.errorAddLater, returnArticleMenu(currentArticle));
-    //   }
-    //   break;
+    case "update tax":
+      try {
+        await RediceService.setUserState(chat_id, state)
+        if (type === 'waitTax') {
+          editData = createEditData(texts.addedSku);
+        } else {
+          editData = createEditData(texts.updateTax, returnBtn);
+        }
+      } catch {
+        editData = createEditData(texts.errorAddLater, returnBtn);
+      }
+      break;
 
     case 'delete article':
       newButtonCallback = newArticleData(callbackObj);

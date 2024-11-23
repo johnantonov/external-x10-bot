@@ -1,16 +1,23 @@
 import { CallbackData } from "../components/botButtons";
 import { CallbackAction } from "../dto/callback";
-import { inputStates } from "../redis";
+import { user_type } from "../dto/user";
+import { inputStates, rStates } from "../redis";
 
 
 export class CallbackProcessor {
   private userCallbackData: string;
+  private userType: user_type;
 
-  constructor(userCallbackData: string) {
+  constructor(userCallbackData: string, type: user_type) {
     this.userCallbackData = userCallbackData;
+    this.userType = type;
   }
 
   getAction(): CallbackAction {
+    if (this.userType === 'waitTax') {
+      return 'update tax'
+    }
+
     if (this.isMenuAction()) {
       return "menu";
     }
@@ -35,8 +42,8 @@ export class CallbackProcessor {
       return "change time";
     }
 
-    if (this.isInputState()) {
-      return "input states";
+    if (this.isTaxState()) {
+      return "update tax";
     }
 
     if (this.isArticlesMenu()) {
@@ -90,8 +97,8 @@ export class CallbackProcessor {
     return this.userCallbackData === CallbackData.articlesMenu
   }
 
-  private isInputState(): boolean {
-    return inputStates.some(state => this.userCallbackData.startsWith(state as string));
+  private isTaxState(): boolean {
+    return this.userCallbackData.startsWith(rStates.waitTax as string);
   }
 
   private isReturnArticleMenu(): boolean {
