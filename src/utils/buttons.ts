@@ -10,5 +10,12 @@ export function getStartedButton(type: user_type) {
     return new Options([[mainButtons.newSku]]).reply_markup; 
   };
 
+  if (type === 'preregistered') {
+    return new Options([
+      [mainButtons.chooseTime],
+      [mainButtons.timeLater]
+    ]).reply_markup; 
+  }
+
   return null;
 }

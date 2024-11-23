@@ -1,7 +1,7 @@
 import { CallbackData } from "../components/botButtons";
 import { CallbackAction } from "../dto/callback";
 import { user_type } from "../dto/user";
-import { inputStates, rStates } from "../redis";
+import { rStates } from "../redis";
 
 
 export class CallbackProcessor {
@@ -70,6 +70,10 @@ export class CallbackProcessor {
       return "get all reports";
     }
 
+    if (this.isAllReadyToReport()) {
+      return "all ready";
+    }
+
     return null; // error
   }
 
@@ -123,5 +127,9 @@ export class CallbackProcessor {
 
   private getAllReportNow(): boolean {
     return this.userCallbackData === CallbackData.getAllReportNow
+  }
+
+  private isAllReadyToReport(): boolean {
+    return this.userCallbackData === CallbackData.timeLater
   }
 }

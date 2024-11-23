@@ -1,6 +1,6 @@
-import { article } from "./articles";
+// preregistered - промежуточный тип для единоразового формирования меню после регистрации, фактически не используется в БД
+export type user_type = 'new' | 'waitSku' | 'waitTax' | 'preregistered' | 'registered' 
 
-export type user_type = 'new' | 'waitSku' | 'waitTax' | 'registered' 
 
 export class User {
   chat_id: number;

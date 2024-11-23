@@ -5,6 +5,7 @@ import pool from "../db";
 import { article, SKU } from '../../src/dto/articles';
 import { sortObjDatesKeys } from '../../src/utils/time';
 import { config } from '../../src/config/config';
+import { user_type } from '../../src/dto/user';
 dotenv.config();
 
 class ArticlesModel extends BaseModel<SKU> {
@@ -187,12 +188,13 @@ class ArticlesModel extends BaseModel<SKU> {
 
   async updateTax(chat_id: number, tax: number): Promise<void> {
     try {
+      const type: user_type = 'registered' // нам следует обновить type, т.к. на данном этапе новые пользователи становятся registered
       const query = `
         UPDATE ${this.tableName}
-        SET tax = $1
-        WHERE chat_id = $2
+        SET tax = $1, type = $2
+        WHERE chat_id = $3
       `;
-      await this.pool.query(query, [tax, chat_id]);
+      await this.pool.query(query, [tax, type, chat_id]);
     } catch (e) {
       console.error("Error while updating tax: ", e)
     }

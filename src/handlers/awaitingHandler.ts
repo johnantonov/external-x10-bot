@@ -6,6 +6,7 @@ import { articles_db } from "../../database/models/articles";
 import jwt from 'jsonwebtoken'; 
 import { texts } from "../components/texts";
 import { parsePercent } from "../utils/parse";
+import { user_type } from "../dto/user";
 
 dotenv.config();
 
@@ -87,11 +88,9 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         const type = (await users_db.getUserById(chat_id))?.type
         const formattingTax = parsePercent(+text)
         await articles_db.updateTax(chat_id, formattingTax)
-        if (type === 'waitTax') {
-          await users_db.updateType(chat_id, 'registered')
-          return new AwaitingAnswer({ result: true, text: texts.setTax });
-        }
-        return new AwaitingAnswer({ result: true, text: texts.updatedTax });
+        const resText = type === 'waitTax' ? texts.settedTax : texts.updatedTax
+        const resType: user_type = type === 'waitTax' ? 'preregistered' : 'registered'
+        return new AwaitingAnswer({ result: true, text: resText, type: resType });
       } catch (e) {
         console.error('Error processing add tax: ', e)
         return handleError(texts.error);

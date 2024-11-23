@@ -47,8 +47,6 @@ export const rStates = {
   waitNewKey: waitingStates[4],
 }
 
-export const inputStates = [rStates.waitSelfCost, rStates.waitTax]
-
 export const ttls = {
   usual: 600,
   hour: 3600,

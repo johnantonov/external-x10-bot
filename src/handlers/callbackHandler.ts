@@ -4,7 +4,7 @@ import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import { createEditData, MessageService } from "../services/messageService";
-import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/botButtons";
+import { articleOptions, btn, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/botButtons";
 import { users_db } from "../../database/models/users";
 import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
@@ -78,6 +78,10 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'articles':
       editData = createEditData(texts.chooseSku, { inline_keyboard: await generateArticlesButtons(chat_id) });
+      break;
+
+    case 'all ready': 
+      editData = createEditData(texts.allReady, btn('getAllReportNow'));
       break;
 
     case 'add article':
@@ -170,7 +174,14 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       } else {
         await users_db.updateNotificationTime(chat_id, selectedTime);
         await articles_db.updateNotificationTime(chat_id, selectedTime)
-        if (mainBtn) editData = createEditData(`${texts.successNewTime} ${selectedTime}:00`, mainBtn)
+        const timeSuccessText = `${texts.successNewTime} ${selectedTime}:00`
+
+        if (userCallbackData.startsWith(CallbackData.chooseTime)) { 
+          editData = createEditData(timeSuccessText + '\n\n' + texts.allReady, btn('getAllReportNow'))
+        } else {
+          if (mainBtn) editData = createEditData(timeSuccessText, mainBtn)
+        }
+        
       };
       break;
 

@@ -13,4 +13,5 @@ export type CallbackAction =
   "delete article" |
   "new menu" |
   "get all reports" |
+  "all ready" | 
   null;

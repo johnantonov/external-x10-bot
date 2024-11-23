@@ -56,6 +56,8 @@ export const CallbackData = {
   connectionBtn: 'con?',
   changeWbApiKey: 'onc?',
   changeTime: 'ct?',
+  chooseTime: 'ct?' + "new",
+  timeLater: 'tl',
   editSelfCost: 'esc?',
   editMark: 'em?',
   editTax: 'et?',
@@ -70,24 +72,31 @@ export const CallbackData = {
 export const mainButtons = {
   returnMain: { text: '🔙 Вернуться в главное меню', callback_data: CallbackData.returnMain },
   returnNewMenu: { text: '↩️ Меню', callback_data: CallbackData.returnNewMenu },
-  getAllReportNow: { text: '📂 Сформировать отчеты сейчас', callback_data: CallbackData.getAllReportNow },
+  getAllReportNow: { text: '📂 Сформировать отчет', callback_data: CallbackData.getAllReportNow },
   newSku: { text: '➕ Добавить SKU', callback_data: CallbackData.newSku },
   newTax: { text: '💸 Обновить налог', callback_data: CallbackData.editTax },
   editArticle: { text: '⚙️ Настройки товара', callback_data: CallbackData.editArticle },
   menu: { text: '↩️ Меню', callback_data: CallbackData.menu },
   menuAndEdit: { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit },
   changeTime: { text: '🕘 Настроить расписание отчетов', callback_data: CallbackData.changeTime },
+  chooseTime: { text: '🕘 Выбрать время', callback_data: CallbackData.chooseTime },
+  timeLater: { text: '➡️ Настроить позже', callback_data: CallbackData.timeLater },
   changeWbApiKey: { text: '🔑 Обновить WB API KEY', callback_data: CallbackData.changeWbApiKey },
   loading: { text: '⏳ Загрузка...', callback_data: CallbackData.loading },
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 SKU', callback_data: CallbackData.articlesMenu },
 };
 
-
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
   editSelfCost: (article: article) => { return { text: '💰 Обновить себестоимость', callback_data: CallbackData.editSelfCost! + article } },
   returnArticle: (article: string) => { return { text: '↩️ Вернуться к настройкам', callback_data: CallbackData.returnArticle + article } },
   deleteArticle: (article: string) => { return { text: '🗑 Удалить артикул', callback_data: CallbackData.deleteArticle + article } },
+}
+
+export const btn = (buttonKeys: keyof typeof mainButtons | Array<keyof typeof mainButtons>) => {
+  if (!Array.isArray(buttonKeys)) buttonKeys = [buttonKeys];
+  const buttons = buttonKeys.map(key => mainButtons[key]);
+  return new Options([buttons]).reply_markup;
 }
 
 /**

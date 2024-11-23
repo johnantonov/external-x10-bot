@@ -8,7 +8,7 @@ import { getPath } from "../utils/parse";
 import { user_type } from "../dto/user";
 import { images } from "../dto/images";
 import { texts } from "./texts";
-import { rStates } from "../redis";
+import { rStates, ttls } from "../redis";
 
 /**
  * handles the /start or /menu commands and manages menu rendering
@@ -34,22 +34,19 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
 
     if (isUser) {
       const type = user.type
-      if (user.type === 'waitTax') {
-        RediceService.setUserState(chat_id, rStates.waitTax)
-        return bot.sendMessage(msg.chat_id, texts.updateTax);
-      }
+      const text = type === 'waitTax' ? texts.updateTax : texts.menu
 
       if (!isNewMsg) {
         if (!menuId) {
-          await sendNewMenu(chat_id, img, texts.menu, type)
+          await sendNewMenu(chat_id, img, text, type)
           return console.error('handleStartMenu: error to get menu id:', msg, command, isNewMsg, menuId)
         }
         const editedBtn = mainOptions(false, type);
         if (editedBtn) {
-          return MS.editMessage(chat_id, menuId, texts.menu, editedBtn)
+          return MS.editMessage(chat_id, menuId, text, editedBtn)
         }
       } else {
-        await sendNewMenu(chat_id, img, texts.menu, type)
+        await sendNewMenu(chat_id, img, text, type)
       }
     } else {
       await users_db.insert({ chat_id: chat_id, username: msg.username, type: 'new' });
