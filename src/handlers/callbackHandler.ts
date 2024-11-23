@@ -69,7 +69,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'new user':
       await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.day)
-      editData = createEditData(texts.sendKey, undefined, getPath(images.apiKey));
+      editData = createEditData(texts.sendKey, undefined, images.apiKey);
       break;
 
     case 'change key':
@@ -174,9 +174,6 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     case 'change time':
       const timeCallback = userCallbackData.split('?')
       const selectedTime = timeCallback[timeCallback.length-1]
-
-      console.log(selectedTime)
-      console.log(userCallbackData)
 
       // если нет время в коллбэке, генерируем клавиатуру, при нажатии на время вернется тот же колбэк но уже с selectedTime
       if (!selectedTime) { 
