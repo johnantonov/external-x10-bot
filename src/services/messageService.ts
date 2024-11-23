@@ -13,7 +13,7 @@ dotenv.config();
  * @param {TelegramBot.InlineKeyboardButton[][]} Options - new buttons
  * @param {string} image - string of img name and extension
  */
-export function createEditData(text: string, options: Options['reply_markup'], image?: string) {
+export function createEditData(text: string, options?: Options['reply_markup'], image?: string) {
   return { text, options, image };
 }
 

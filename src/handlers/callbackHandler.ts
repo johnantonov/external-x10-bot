@@ -46,7 +46,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   let articleMenu;
   let data: any;
   let newButtonCallback: string;
-  let editData: { text: string; options: Options['reply_markup']; image?: string } | null = null;
+  let editData: { text: string; options?: Options['reply_markup']; image?: string } | null = null;
 
   switch (action) {
     case 'menu':
@@ -68,7 +68,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'new user':
       await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.usual)
-      editData = createEditData(texts.sendKey, returnBtn);
+      editData = createEditData(texts.sendKey);
       break;
 
     case 'change key':
