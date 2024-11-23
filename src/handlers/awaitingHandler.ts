@@ -48,7 +48,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
             return new AwaitingAnswer({ result: true, text: texts.updatedWbKeyAndDeleted, type: user?.type });
           }
         } else { // если это новый пользователь, то ведем его - выставляем состояние ожидания SKU и расходов
-          await users_db.updateType(chat_id, 'waitSku');
+          await users_db.updateType(chat_id, 'waitSku', text);
           return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'waitSku' });
         }
       } catch (e) {
