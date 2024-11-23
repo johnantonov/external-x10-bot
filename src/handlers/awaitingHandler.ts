@@ -47,7 +47,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
           }
         } else {
           await users_db.updateType(chat_id, 'waitSku');
-          return new AwaitingAnswer({ result: true, text: texts.addedSku, type: 'waitSku' });
+          return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'waitSku' });
         }
       } catch (e) {
         console.error('Error processing add wb api key: ', e);
@@ -75,7 +75,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     
         await articles_db.addSku(chat_id, newSku);  
     
-        return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'waitTax' });
+        return new AwaitingAnswer({ result: true, text: texts.addedSku, type: 'waitTax' });
       } catch (e) {
         console.error('Error processing add sku: ', e);
         return handleError(texts.error);
