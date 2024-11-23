@@ -37,7 +37,7 @@ export class Options {
         }))
       );
     } catch (e) {
-      console.error('Возникла ошибка при создании кнопок: ', buttons)
+      console.error('Error while generating: ', buttons)
       return []
     }
   }

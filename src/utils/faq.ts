@@ -3,7 +3,7 @@ import { texts } from "../components/texts";
 import { btn } from "./buttons";
 
 export const getFaqData = (callbackData: string): [string, Options["reply_markup"]] => {
-  if (callbackData === CallbackData.faq) return [texts.FAQ, btn(faqButtons)];
+  if (callbackData === CallbackData.faq) return [texts.FAQ, btn(Object.keys(faqButtons), faqButtons)];
 
   const returnBtn = returnMenu(true)
 
