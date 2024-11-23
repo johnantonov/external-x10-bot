@@ -5,7 +5,6 @@ const advertIds = `[{"id":18361701,"dates":["2024-11-06","2024-11-05","2024-11-0
   const wb_api_key = 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQxMDE2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTc0NjMwOTIyOSwiaWQiOiIwMTkyZWM0Yi05NTU5LTdjNjEtOWY5Ny1jZGFhN2E3NjQwODciLCJpaWQiOjQ2ODIwNDgsIm9pZCI6MzE1MDQzLCJzIjoxMDczNzQ5NzU4LCJzaWQiOiJlZDE3YTVjNC1lZjZlLTQzNWYtYjUwOS00ZGU3NjkyZjhkMjUiLCJ0IjpmYWxzZSwidWlkIjo0NjgyMDQ4fQ.uQCMJwM2VQSIRByiMWYvmIyg9iB2IbNeA_NW0vl3GzmQn-dr2vkSE69InFLdup5N4piVndT4jcwrEww8zNnMHg'
  
 // async function test() {  
-
 //   const advertDetailsResponse = await axios.post('https://advert-api.wildberries.ru/adv/v2/fullstats', advertIds, {
 //     headers: {
 //       'Authorization': wb_api_key,
@@ -19,11 +18,11 @@ const advertIds = `[{"id":18361701,"dates":["2024-11-06","2024-11-05","2024-11-0
 //   return data
 // }
 
-async function test(nmIDs = [254642549]) {    
-  const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFrom=2024-11-13'
+async function test(nmIDs) {    
+  const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/orders?dateFrom=2024-11-13'
 
   const headers = {
-    'Authorization': wb_api_key, 
+    'Authorization': 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQxMDE2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTc0NzE4MjUzMSwiaWQiOiIwMTkzMjA1OS0xYzViLTcwZTUtYTFlZS0zZWNjYTUzZjc1NDQiLCJpaWQiOjYyMjkwNTU3LCJvaWQiOjE0MjEzMDksInMiOjEwNzM3NDk3NTgsInNpZCI6IjAwNTIxMzFkLTZiOWEtNGM0Ni04YzE2LTQzNzhmMWI2ZGJkMyIsInQiOmZhbHNlLCJ1aWQiOjYyMjkwNTU3fQ.vURknktYGchxINTcgPtpi9lRmqeig6iDNDGeuDKSOLD9rQ-e2nR_W6cuuonmBmMPD6LwWB7fnyPtoPrjbB8d8w', 
     'Content-Type': 'application/json',
   }
 
@@ -32,20 +31,71 @@ async function test(nmIDs = [254642549]) {
   });
 
   const result = {};
-  nmIDs.forEach(nm => result[nm] = {})
 
   salesResponse.data.forEach(sale => {
-    if (nmIDs.includes(sale.nmId)) {
       const date = sale.date.split('T')[0]
-      if (!result[sale.nmId][date]) {
-        result[sale.nmId][date] = 1
+      if (!result[date]) {
+        result[date] = 1
       } else {
-        result[sale.nmId][date] += 1
+        result[date] += 1
       }
-    }
   });
 
   console.log(JSON.stringify(result))
 }
+
+// async function test(nmIDs) {    
+//   const url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail/history'
+
+//   const headers = {
+//     'Authorization': 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQxMDE2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTc0NzE4MjUzMSwiaWQiOiIwMTkzMjA1OS0xYzViLTcwZTUtYTFlZS0zZWNjYTUzZjc1NDQiLCJpaWQiOjYyMjkwNTU3LCJvaWQiOjE0MjEzMDksInMiOjEwNzM3NDk3NTgsInNpZCI6IjAwNTIxMzFkLTZiOWEtNGM0Ni04YzE2LTQzNzhmMWI2ZGJkMyIsInQiOmZhbHNlLCJ1aWQiOjYyMjkwNTU3fQ.vURknktYGchxINTcgPtpi9lRmqeig6iDNDGeuDKSOLD9rQ-e2nR_W6cuuonmBmMPD6LwWB7fnyPtoPrjbB8d8w', 
+//     'Content-Type': 'application/json',
+//   }
+
+//   const articles = [223296751, 245542876, 279828707, 194507354, 223324611, 223399765]
+
+//   const yesterdayRequestData = {
+//     nmIDs: articles,
+//     period: {
+//       begin: "2024-11-16",
+//       end: "2024-11-21"
+//     },
+//   };
+
+//   const yesterdayResponse = await axios.post(url, yesterdayRequestData, {
+//     headers: headers
+//   });
+
+
+//   const result = {};
+
+//   yesterdayResponse.data.data.forEach((el) => {
+//     if (articles.includes(el.nmID)) {
+//       const alwaysInfo = el.history[0]
+
+//       // if (!result[el.nmID]) {
+//       //   result[el.nmID] = {};
+//       // }
+
+//       el.history.forEach((day) => {
+//         if (!result[el.nmID].order_info) {
+//           result[el.nmID].order_info = {};
+//         }
+//         result[el.nmID].order_info[day.dt] = {
+//           ordersCount: day.ordersCount,
+//           ordersSum: day.ordersSumRub,
+//           // buysCount: day.ordersCount * ((buyoutsPercent[el.nmID] || 0) / 100),
+//           // buysSum: day.ordersSumRub * ((buyoutsPercent[el.nmID] || 0) / 100),
+//           addToCartCount: day.addToCartCount,
+//         }
+//       })
+
+//       // result[el.nmID].price_before_spp = (alwaysInfo.ordersSumRub / alwaysInfo.ordersCount) || null
+//       // result[el.nmID].vendor = el.vendorCode
+//     }
+//   });
+
+//   console.log(JSON.stringify(result))
+// }
 
 test()

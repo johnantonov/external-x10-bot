@@ -6,7 +6,7 @@ import pool from '../../database/db';
 import { create31DaysObject, getXdaysAgoArr, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
-import { Article, article} from '../dto/articles';
+import { SKU, article} from '../dto/articles';
 import { calculateLogisticsStorage, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
 import { formatError } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
@@ -49,7 +49,7 @@ export class ReportService {
 
         console.log('processing: ', id)
 
-        const articles = (await articles_db.getAllArticlesForUser(id)).rows
+        const articles = (await articles_db.getAllSkuForUser(id)).rows
 
 
         if (articles.length === 0) {
@@ -478,7 +478,7 @@ export class ReportService {
     }
   }
 
-  async processReport(articles: Article[], yesterdayDate: string, chat_id: number) {
+  async processReport(articles: SKU[], yesterdayDate: string, chat_id: number) {
     const messageText = createReportMessage(articles, yesterdayDate)
     const htmlTable = await getReportHtml(articles);
     const pdfBuffer = await generatePdfFromHtml(htmlTable);
@@ -519,7 +519,7 @@ export class ReportService {
       let articles;
       const yesterdayDate = getYesterdayDate('ru');
 
-      articles = (await articles_db.getAllArticlesForUser(chat_id)).rows
+      articles = (await articles_db.getAllSkuForUser(chat_id)).rows
       if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
           await this.processReport(articles, yesterdayDate, chat_id)

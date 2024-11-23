@@ -1,11 +1,12 @@
 import TelegramBot, { CallbackQuery, InlineKeyboardButton } from "node-telegram-bot-api";
 import { user_type } from "../dto/user";
-import { Article, article, ArticleCallbackData } from "../dto/articles";
+import { article, SKU, SKUCallbackData } from "../dto/articles";
 import { articles_db } from "../../database/models/articles";
 import { newArticleData } from "../utils/parse";
+import { getStartedButton } from "../utils/buttons";
 
 /**
- * set bot commands (now using when bot starting)
+ * set bot commands (using when bot starting)
  */
 export async function setBotCommands(bot: TelegramBot) {
   try {
@@ -42,11 +43,11 @@ export class Options {
   }
 }
 
-export const CallbackData: Record<string, CallbackQuery['data']> = {
+export const CallbackData = {
   returnMain: 'return_main',
   returnNewMenu: 'return_new_menu',
   registrateUser: 'snu',
-  newArticle: 'ton?',
+  newSku: 'ton?',
   yes: '?yes',
   no: '?no',
   menu: 'menu',
@@ -64,28 +65,27 @@ export const CallbackData: Record<string, CallbackQuery['data']> = {
   getAllReportNow: 'arn?',
   goArticle: 'ar?',
   deleteArticle: 'da?'
-} as const
+} as const;
 
-export const mainButtons: Record<string, InlineKeyboardButton> = {
+export const mainButtons = {
   returnMain: { text: '🔙 Вернуться в главное меню', callback_data: CallbackData.returnMain },
   returnNewMenu: { text: '↩️ Меню', callback_data: CallbackData.returnNewMenu },
-  getReportNow: { text: '📂 Сформировать отчет сейчас', callback_data: CallbackData.getReportNow },
   getAllReportNow: { text: '📂 Сформировать отчеты сейчас', callback_data: CallbackData.getAllReportNow },
-  newArticle: { text: '➕ Добавить артикулы', callback_data: CallbackData.newArticle },
+  newSku: { text: '➕ Добавить SKU', callback_data: CallbackData.newSku },
+  newTax: { text: '💸 Обновить налог', callback_data: CallbackData.editTax },
   editArticle: { text: '⚙️ Настройки товара', callback_data: CallbackData.editArticle },
   menu: { text: '↩️ Меню', callback_data: CallbackData.menu },
   menuAndEdit: { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit },
   changeTime: { text: '🕘 Настроить расписание отчетов', callback_data: CallbackData.changeTime },
   changeWbApiKey: { text: '🔑 Обновить WB API KEY', callback_data: CallbackData.changeWbApiKey },
   loading: { text: '⏳ Загрузка...', callback_data: CallbackData.loading },
-  registrateUser: { text: '🔑 Подключить WB API KEY', callback_data: CallbackData.registrateUser },
-  articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
-}
+  registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
+  articlesMenu: { text: '🔢 SKU', callback_data: CallbackData.articlesMenu },
+};
+
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
-  editSelfCost: (article: article) => { return { text: '💰 Себестоимость', callback_data: CallbackData.editSelfCost! + article } },
-  editMark: (article: article) => { return { text: '🗂 Указать маркировку', callback_data: CallbackData.editMark! + article } },
-  editTax: (article: article) => { return { text: '💸 Указать налог', callback_data: CallbackData.editTax! + article } },
+  editSelfCost: (article: article) => { return { text: '💰 Обновить себестоимость', callback_data: CallbackData.editSelfCost! + article } },
   returnArticle: (article: string) => { return { text: '↩️ Вернуться к настройкам', callback_data: CallbackData.returnArticle + article } },
   deleteArticle: (article: string) => { return { text: '🗑 Удалить артикул', callback_data: CallbackData.deleteArticle + article } },
 }
@@ -108,11 +108,11 @@ export const returnNewMenu = () => {
  * @param {boolean} type - current type of user
  */
 export const mainOptions = (waitReport?: boolean, type?: user_type) => {
-  if (type === 'new') {
-    return new Options([[mainButtons.registrateUser]]).reply_markup
+  if (type && type !== 'registered') {
+    return getStartedButton(type)
   }
 
-  const menu = [
+  const menu: Array<Array<any>> = [
     [mainButtons.getAllReportNow],
     [mainButtons.articlesMenu],
     [mainButtons.changeTime],
@@ -120,11 +120,11 @@ export const mainOptions = (waitReport?: boolean, type?: user_type) => {
   ];
 
   if (waitReport) {
-    menu[0] = [mainButtons.loading]
+    menu[0] = [mainButtons.loading];
   }
 
   return new Options(menu).reply_markup;
-}
+};
 
 /**
  * returns article menu
@@ -170,14 +170,14 @@ export const yesNo = (cbPart: string) => {
  * @param {number} chat_id - user chat id
  */
 export async function generateArticlesButtons(chat_id: number, page: number = 1): Promise<TelegramBot.InlineKeyboardButton[][]> {
-  const articles = (await articles_db.getAllArticlesForUser(chat_id)).rows;
+  const articles = (await articles_db.getAllSkuForUser(chat_id)).rows;
   const articleButtons: TelegramBot.InlineKeyboardButton[][] = [];
   const articlesPerPage = 12;
   const pages = Math.ceil(articles.length / articlesPerPage);
 
   // use little keys because btn callback limit is 64 bytes and we have a large string ss id
-  articles.forEach((article: Article, i) => {
-    const data: ArticleCallbackData = {
+  articles.forEach((article: SKU, i) => {
+    const data: SKUCallbackData = {
       type: CallbackData.goArticle,
       art: article.article,
       action: "",
@@ -195,7 +195,7 @@ export async function generateArticlesButtons(chat_id: number, page: number = 1)
     });
   });
 
-  articleButtons.push([mainButtons.newArticle, { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit }]);
+  articleButtons.push([mainButtons.newSku, { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit }]);
 
   return articleButtons;
 }
@@ -221,4 +221,5 @@ export function generateReportTimeButtons(callback: string, page: number = 0): T
   times.push([mainButtons.menuAndEdit])
   return times;
 }
+
 

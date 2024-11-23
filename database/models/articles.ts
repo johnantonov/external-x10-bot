@@ -2,12 +2,12 @@ import { Pool, QueryResult } from 'pg';
 import { BaseModel } from "../BaseModel";
 import * as dotenv from 'dotenv';
 import pool from "../db";
-import { article, Article } from '../../src/dto/articles';
+import { article, SKU } from '../../src/dto/articles';
 import { sortObjDatesKeys } from '../../src/utils/time';
 import { config } from '../../src/config/config';
 dotenv.config();
 
-class ArticlesModel extends BaseModel<Article> {
+class ArticlesModel extends BaseModel<SKU> {
   constructor(pool: Pool) {
     super('articles', pool);
   }
@@ -44,7 +44,7 @@ class ArticlesModel extends BaseModel<Article> {
     }
   }
 
-  async getArticle(chatId: number, article: article): Promise<Article> {
+  async getArticle(chatId: number, article: article): Promise<SKU> {
     const query = `
       SELECT * FROM ${this.tableName}
       WHERE chat_id = $1 AND article = $2
@@ -59,7 +59,7 @@ class ArticlesModel extends BaseModel<Article> {
       WHERE notification_time = $1
     `;
 
-    const data = (await this.pool.query<Article>(query, [notification_time])).rows
+    const data = (await this.pool.query<SKU>(query, [notification_time])).rows
     const res: Record<string, any> = {};
 
     data.forEach(row => {
@@ -73,53 +73,62 @@ class ArticlesModel extends BaseModel<Article> {
     return res;
   }
 
-  async getAllArticles(limit: number = 100, offset: number = 0): Promise<Article[]> {
+  async getAllArticles(limit: number = 100, offset: number = 0): Promise<SKU[]> {
     const query = `
       SELECT * FROM ${this.tableName}
       WHERE status = $1
       LIMIT $2 OFFSET $3
     `;
 
-    return (await this.pool.query<Article>(query, [status, limit, offset])).rows;
+    return (await this.pool.query<SKU>(query, [status, limit, offset])).rows;
   }
 
-  async getAllArticlesForUser(chat_id: number): Promise<QueryResult<Article>> {
+  async getAllSkuForUser(chat_id: number): Promise<QueryResult<SKU>> {
     let query = `
       SELECT * FROM ${this.tableName}
       WHERE chat_id = $1
     `;
-    return await this.pool.query<Article>(query, [chat_id]);
+    return await this.pool.query<SKU>(query, [chat_id]);
   }
 
-  async addArticle(article: Partial<Article>): Promise<void> {
+  async addArticle(article: Partial<SKU>): Promise<void> {
     await this.insert(article);
   }
 
-  async addArticles(chat_id: number, articles: article[]): Promise<void> {
-    const maxCount = config.maxArticles
-    let articlesCount = (await articles_db.getAllArticlesForUser(chat_id)).rows.length
-
-    for (const article of articles) {
-      if (articlesCount >= maxCount) {
-        return
+  async addSku(chat_id: number, articles: number[][]): Promise<void> {
+    try {
+      const maxCount = config.maxSku
+      let skuCount = (await articles_db.getAllSkuForUser(chat_id)).rows.length
+  
+      for (const article of articles) {
+        if (skuCount >= maxCount) {
+          return
+        }
+  
+        await this.insert({ chat_id, article: article[0], self_cost: article[1] });
+        skuCount++
       }
-      await this.insert({ chat_id, article: +article.toString().trim() });
-      articlesCount++
+    } catch (e) {
+      console.error('Error while adding new sku into DB: ',e)
     }
   }
 
-  async removeArticle(chat_id: number, article?: article): Promise<void> {
-    const values = [chat_id]
-    let query = `
-      DELETE FROM ${this.tableName}
-      WHERE chat_id = $1
-    `
-    if (article) {
-      query += ` AND article = $2`;
-      values.push(article as number)
+  async removeSku(chat_id: number, article?: article): Promise<void> {
+    try {
+      const values = [chat_id]
+      let query = `
+        DELETE FROM ${this.tableName}
+        WHERE chat_id = $1
+      `
+      if (article) {
+        query += ` AND article = $2`;
+        values.push(article as number)
+      }
+  
+      await this.pool.query(query, values);
+    } catch (e) {
+      console.error('Error while removing new sku from DB: ',e)
     }
-
-    await this.pool.query(query, values);
   }
 
   async updateNotificationTime(chat_id: number, notification_time: number, article?: article): Promise<void> {
@@ -176,13 +185,17 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [mark, chat_id, article]);
   }
 
-  async updateTax(chat_id: number, article: article, tax: number): Promise<void> {
-    const query = `
-      UPDATE ${this.tableName}
-      SET tax = $1
-      WHERE chat_id = $2 AND article = $3
-    `;
-    await this.pool.query(query, [tax, chat_id, article]);
+  async updateTax(chat_id: number, tax: number): Promise<void> {
+    try {
+      const query = `
+        UPDATE ${this.tableName}
+        SET tax = $1
+        WHERE chat_id = $2
+      `;
+      await this.pool.query(query, [tax, chat_id]);
+    } catch (e) {
+      console.error("Error while updating tax: ", e)
+    }
   }
 
   async updatePercentBuys(chat_id: number, article: article, percent_buys: number): Promise<void> {
@@ -239,7 +252,7 @@ class ArticlesModel extends BaseModel<Article> {
     await this.pool.query(query, [order_info, chat_id, article]);
   }
 
-  async updateFields(chat_id: number, article: article, fields: Partial<Article>): Promise<void> {
+  async updateFields(chat_id: number, article: article, fields: Partial<SKU>): Promise<void> {
     const keys = Object.keys(fields);
     const values = Object.values(fields);
 

@@ -1,15 +1,15 @@
 import { config } from "../config/config";
-import { Article } from "../dto/articles";
+import { SKU } from "../dto/articles";
 import { getWbArticlePhoto, parsePercent } from "./parse";
 import { formatNumber } from "./string";
 import { create31DaysObject, getYesterdayDate } from "./time";
 import axios from 'axios';
 import sharp from 'sharp';
 
-export async function getReportHtml(articleData: Article[]) {
+export async function getReportHtml(articleData: SKU[]) {
   let tables = ``;
   if (articleData.length > 1) {
-    articleData.unshift({} as Article);  // для создания таблицы итого
+    articleData.unshift({} as SKU);  // для создания таблицы итого
   }
 
   for (const [i, data] of articleData.entries()) {
@@ -71,7 +71,7 @@ export async function getReportHtml(articleData: Article[]) {
     `
 }
 
-function getDaysRows(daysCount: number, data: Article, index: number, imgBase64: any, allData: Article[]) {
+function getDaysRows(daysCount: number, data: SKU, index: number, imgBase64: any, allData: SKU[]) {
   let days = Object.keys(create31DaysObject());
   let dayRows = ``;
   const total = totalDataInit() 
@@ -117,7 +117,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
     }
 
     if (index === 0 && allData.length > 2) {
-      allData.forEach((article: Article, indexArticle: number) => {
+      allData.forEach((article: SKU, indexArticle: number) => {
         if (indexArticle > 0) {
           stats = article.order_info?.[day] || {};
 
@@ -235,7 +235,7 @@ function getDaysRows(daysCount: number, data: Article, index: number, imgBase64:
   return dayRows
 }
 
-export function createReportMessage(articles: Article[], formatReportDate: string) {
+export function createReportMessage(articles: SKU[], formatReportDate: string) {
   let message = ``;
   let ordersSumTotal = 0;
   let ordersCountTotal = 0;
@@ -283,7 +283,7 @@ export function createReportMessage(articles: Article[], formatReportDate: strin
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
 
-function getCosts(data: Article, date: string): number {
+function getCosts(data: SKU, date: string): number {
   try {
     const stats = data.order_info?.[date];
   

@@ -1,5 +1,5 @@
 import { resolve } from "path"
-import { article, ArticleCallbackData } from "../dto/articles"
+import { article, SKUCallbackData } from "../dto/articles"
 
 export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
@@ -43,7 +43,7 @@ export const getStateAndArticleFromCallback = (data: string): any[] => {
 }
 
 // use short keys because btn callback limit is 64 bytes
-export const parseArticleData = (data: string): ArticleCallbackData => {
+export const parseArticleData = (data: string): SKUCallbackData => {
   const newData = data.split('?')
   return {
     type: newData[0],
@@ -52,7 +52,7 @@ export const parseArticleData = (data: string): ArticleCallbackData => {
   }
 }
 
-export const newArticleData = (data: ArticleCallbackData): string => {
+export const newArticleData = (data: SKUCallbackData): string => {
   return data.art + "?" + data.action
 }
 

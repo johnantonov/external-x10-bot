@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { articles_db } from "../../database/models/articles";
 import jwt from 'jsonwebtoken'; 
 import { texts } from "../components/texts";
+import { parsePercent } from "../utils/parse";
 
 dotenv.config();
 
@@ -15,11 +16,11 @@ dotenv.config();
  */
 export async function awaitingHandler(data: UserMsg, state: string) {
   if (!data.text) {
-    return new AwaitingAnswer({ result: false, text: "Текст отсутствует" });
+    return new AwaitingAnswer({ result: false, text: texts.errorNoText });
   }
 
   if (!isKey(data.text, state)) {
-    return new AwaitingAnswer({ result: false, text: "Введенные данные не соответствуют ожидаемому формату" });
+    return new AwaitingAnswer({ result: false, text: texts.errorFormat });
   }
 
   const { chat_id, text } = data;
@@ -40,76 +41,66 @@ export async function awaitingHandler(data: UserMsg, state: string) {
             await users_db.updateWbApiKey(chat_id, text);
             return new AwaitingAnswer({ result: true, text: texts.updatedWbKey, type: user?.type });
           } else {
-            await articles_db.removeArticle(chat_id);
+            await articles_db.removeSku(chat_id);
             await users_db.updateWbApiKey(chat_id, text);
             return new AwaitingAnswer({ result: true, text: texts.updatedWbKeyAndDeleted, type: user?.type });
           }
         } else {
-          await users_db.updateTypeAndKey(chat_id, text);
-          return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'registered' });
+          await users_db.updateType(chat_id, 'waitSku');
+          return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'waitSku' });
         }
       } catch (e) {
         console.error('Error processing add wb api key: ', e);
-        return handleError("Возникла ошибка, попробуйте позже.");
+        return handleError(texts.error);
       }
 
-    } else if (state.startsWith(rStates.waitArticle)) {
+    } else if (state.startsWith(rStates.waitSku)) {
       try {
-        const lines = text.split('\n');
-      
-        const newArticles = lines
-          .flatMap(line => line.split(',')) 
-          .map(article => article.trim())  
-          .filter(article => article !== ''); 
-        
-        if (newArticles.length === 0) {
-          return handleError("Список артикулов пуст. Пожалуйста, проверьте ввод.");
+        const lines = text.split('\n'); 
+        const newSku = [];
+    
+        for (const line of lines) {
+          const [sku, expense] = line.split('-').map(part => part.trim());
+    
+          if (!sku || isNaN(Number(sku)) || !expense || isNaN(Number(expense))) {
+            return handleError(texts.errorInvalidSKUFormat); 
+          }
+    
+          newSku.push([ Number(sku), Number(expense) ]); 
         }
-      
-        await articles_db.addArticles(chat_id, newArticles);
-      
-        return new AwaitingAnswer({ result: true, text: texts.addedArticle, type: 'article' });
+    
+        if (newSku.length === 0) {
+          return handleError(texts.errorNoSKU);  
+        }
+    
+        await articles_db.addSku(chat_id, newSku);  
+    
+        return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'waitTax' });
       } catch (e) {
-        console.error('Ошибка в процессе добавления артикула: ', e);
-        return handleError("Возникла ошибка, попробуйте еще раз.");
+        console.error('Error processing add sku: ', e);
+        return handleError(texts.error);
       }
-
-    } else if (state.startsWith(rStates.waitMark)) {
-      try {
-        const article = state.split('?')[1]
-        console.log(chat_id, article, +text)
-        await articles_db.updateMark(chat_id, article, +text)
-        return new AwaitingAnswer({ result: true, text: "✅ Данные о маркировке сохранены" });
-      } catch (e) {
-        console.error('Ошибка в процессе сохранения маркировки: ', e)
-        return handleError("Возникла ошибка, попробуйте позже.");
-      }
-
-    } else if (state.startsWith(rStates.waitSelfCost)) {
-      try {
-        const article = state.split('?')[1]
-        await articles_db.updateSelfCost(chat_id, article, +text)
-        return new AwaitingAnswer({ result: true, text: "✅ Себестоимость товара сохранена" });
-      } catch (e) {
-        console.error('Ошибка в процессе обновления себестоимости: ', e)
-        return handleError("Возникла ошибка, попробуйте позже.");
-      }
-
+ 
     } else if (state.startsWith(rStates.waitTax)) {
       try {
-        const article = state.split('?')[1]
-        await articles_db.updateTax(chat_id, article, +text)
-        return new AwaitingAnswer({ result: true, text: "✅ Налог сохранен" });
+        const type = (await users_db.getUserById(chat_id))?.type
+        const formattingTax = parsePercent(+text)
+        await articles_db.updateTax(chat_id, formattingTax)
+        if (type === 'waitTax') {
+          await users_db.updateType(chat_id, 'registered')
+          return new AwaitingAnswer({ result: true, text: texts.setTax });
+        }
+        return new AwaitingAnswer({ result: true, text: texts.updatedTax });
       } catch (e) {
-        console.error('Ошибка в процессе сохранения налога: ', e)
-        return handleError("Возникла ошибка, попробуйте позже.");
+        console.error('Error processing add tax: ', e)
+        return handleError(texts.error);
       }
     }
 
-    return handleError("Возникла ошибка, попробуйте еще раз.");
+    return handleError(texts.errorDoAgain);
   } catch (e) {
     console.error('Error in awaiting handler: ' + e)
-    return new AwaitingAnswer({ result: false, text: "Возникла ошибка, попробуйте еще раз." })
+    return new AwaitingAnswer({ result: false, text: texts.errorDoAgain })
   }
 }
 
@@ -125,10 +116,6 @@ export function isKey(text: string, state: string): Boolean {
 
   if (state.startsWith(rStates.waitTax)) {
     return /^(\d+([.,]\d+)?|[.,]?\d+)$/.test(text);
-  }
-
-  if ([rStates.waitSelfCost, rStates.waitMark].includes(state.split('?')[0])) {
-    return /^\d+$/.test(text);
   }
 
   return true;

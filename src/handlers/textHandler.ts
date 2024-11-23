@@ -30,11 +30,13 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
     } else {
       await RediceService.deleteUserState(chat_id);
       await MS.deleteOldAndNewMessages(chat_id, msgs);
-      let newBtns = mainOptions(false, answer.type).inline_keyboard
+      let newBtns;
       if (inputStates?.includes(userState?.split('?')[0])) {
         const article = await articles_db.getArticle(chat_id, userState?.split('?')[1])
         const articleBtns = await articleOptions(chat_id, article.article)
         if (articleBtns) newBtns = articleBtns.inline_keyboard
+      } else {
+        newBtns = mainOptions(false, answer.type)?.inline_keyboard
       }
       const successResponse = await sendImageWithText(bot, chat_id, 'menu.jpg', answer.text, newBtns);
       if (successResponse) {

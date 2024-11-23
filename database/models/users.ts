@@ -17,7 +17,7 @@ class UsersModel extends BaseModel<User> {
       const userResult = await this.select({ chat_id });
 
       if (userResult.rows.length === 0) {
-        console.error(`Пользователь с chat_id ${chat_id} не найден`);
+        console.error(`User with chat_id ${chat_id} not found`);
         return [null, null];
       }
 
@@ -35,7 +35,7 @@ class UsersModel extends BaseModel<User> {
 
       return [user.type, user.last_report_call];
     } catch (error) {
-      console.error(`Ошибка при обновлении username: ${error}`);
+      console.error(`Error while updating username: ${error}`);
       return [null, null];
     }
   }
@@ -67,14 +67,19 @@ class UsersModel extends BaseModel<User> {
 
 
   async findOrCreateUser(chat_id: number, username: string | undefined): Promise<User | null> {
-    const existingUser = await this.select({ chat_id });
-
-    if (existingUser.rows.length > 0) {
-      return existingUser.rows[0];
-    } else {
-      const newUser: Partial<User> = { chat_id, username };
-      await this.insert(newUser);
-      return (await this.select({ chat_id })).rows[0];
+    try {
+      const existingUser = await this.select({ chat_id });
+  
+      if (existingUser.rows.length > 0) {
+        return existingUser.rows[0];
+      } else {
+        const newUser: Partial<User> = { chat_id, username };
+        await this.insert(newUser);
+        return (await this.select({ chat_id })).rows[0];
+      }
+    } catch (e) {
+      console.error("Error in findOrCreateUser: ",e)
+      return null
     }
   }
 
@@ -107,36 +112,23 @@ class UsersModel extends BaseModel<User> {
     await this.pool.query(query2, [wb_api_key, chat_id]);
   }
 
-  async updateArticle(chat_id: number, article: article): Promise<void> {
-    const query = `
-      UPDATE ${this.tableName}
-      SET article = $1, type = 'article'
-      WHERE chat_id = $2
-    `;
-    await this.pool.query(query, [article, chat_id]);
-  }
-
-  async updateTypeAndKey(chat_id: number, wb_api_key?: string | null, article?: article, decreaseTo?: user_type): Promise<void> {
-    if (decreaseTo) {
-      await this.update('chat_id', chat_id, { type: decreaseTo }, ['chat_id'])
-      return
-    }
-
-    if (wb_api_key || article) {
-      const type: user_type = wb_api_key && article ? 'article' : wb_api_key && !article ? 'registered' : 'article'
-
+  async updateType(chat_id: number, type: user_type, wb_api_key?: string | null): Promise<void> {
+    try {
       const updateData: Partial<User> = {
         type: type,
-        wb_api_key: wb_api_key,
       };
-
+  
+      if (wb_api_key) {
+        updateData.wb_api_key = wb_api_key
+      }
+  
       await this.update('chat_id', chat_id, updateData, ['chat_id']);
-    } else {
-      console.error(`Ошибка ВБ ключа или артикула: ${chat_id}\nартикул: ${article}\n\nключ: ${wb_api_key}`)
+    } catch {
+      console.error(`Ошибка при обновлении типа пользователя: `,chat_id, " ", type)
     }
   }
 
-  async getUserById(chat_id: number) {
+  async getUserById(chat_id: number): Promise<User | null> {
     const existingUser = await this.select({ chat_id });
     if (existingUser.rows.length > 0) {
       return existingUser.rows[0];
@@ -146,10 +138,7 @@ class UsersModel extends BaseModel<User> {
   }
 
   async getReportUsers() {
-    const query = `
-      SELECT chat_id FROM ${this.tableName}
-      `;
-    // WHERE notification_time > 0
+    const query = `SELECT chat_id FROM ${this.tableName}`;
 
     const res = await this.pool.query(query);
     return res.rows

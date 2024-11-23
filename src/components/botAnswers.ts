@@ -1,4 +1,4 @@
-import TelegramBot, { ChatId, InlineKeyboardButton, Message } from "node-telegram-bot-api";
+import TelegramBot, { InlineKeyboardButton, Message } from "node-telegram-bot-api";
 import { SendMessageOptions } from 'node-telegram-bot-api';
 import { users_db } from "../../database/models/users";
 import { UserCallback, UserMsg } from "../dto/messages";
@@ -7,6 +7,7 @@ import { bot, MS } from "../bot";
 import { getPath } from "../utils/parse";
 import { user_type } from "../dto/user";
 import { images } from "../dto/images";
+import { texts } from "./texts";
 
 /**
  * handles the /start or /menu commands and manages menu rendering
@@ -28,28 +29,31 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
       return console.error('handleStartMenu: error to get chat id:', msg, command, isNewMsg, menuId)
     }
 
-    const text = command === '/menu' ? ' ' : `Это телеграм бот для получения ежедневных отчетов по вашему артикулу.\n\nДля начала работы привяжите свой WB API KEY:`;
     const img = command === '/menu' ? images.menu : images.hello;
 
     if (isUser) {
+      const type = user.type
+
       if (!isNewMsg) {
         if (!menuId) {
-          await sendNewMenu(chat_id, img, text, user.type)
+          await sendNewMenu(chat_id, img, texts.menu, type)
           return console.error('handleStartMenu: error to get menu id:', msg, command, isNewMsg, menuId)
         }
-        const editedBtn = mainOptions(false, user.type);
-        return MS.editMessage(chat_id, menuId, text, editedBtn)
+        const editedBtn = mainOptions(false, type);
+        if (editedBtn) {
+          return MS.editMessage(chat_id, menuId, texts.menu, editedBtn)
+        }
       } else {
-        await sendNewMenu(chat_id, img, text, user.type)
+        await sendNewMenu(chat_id, img, texts.menu, type)
       }
     } else {
       await users_db.insert({ chat_id: chat_id, username: msg.username, type: 'new' });
-      await sendNewMenu(chat_id, img, text, 'new')
-      console.log('insert new user into db: ', chat_id, msg.username)
+      await sendNewMenu(chat_id, img, texts.start, 'new')
+      console.log('insert new user into db: ', chat_id, " ", msg.username)
     }
   } catch (error) {
     console.error('error while processing the /start command', error);
-    return bot.sendMessage(msg.chat_id, 'Произошла ошибка. Попробуйте позже.');
+    return bot.sendMessage(msg.chat_id, texts.error);
   }
 }
 
@@ -88,7 +92,7 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
  * @returns {Promise<void>}
  */
 export async function sendNewMenu(chat_id: number, img: string, caption: string, userType: user_type) {
-  const keyboard = mainOptions(false, userType).inline_keyboard
+  const keyboard = mainOptions(false, userType)?.inline_keyboard
   const newMenu = await sendImageWithText(bot, chat_id, img, caption, keyboard);
   if (newMenu) {
     await MS.deleteAllMessages(chat_id)

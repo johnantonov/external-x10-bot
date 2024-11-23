@@ -34,22 +34,20 @@ export class redis {
 export const waitingStates = [
   'awaiting_wb_api_key',
   'esc',
-  'em',
   'et',
-  'awaiting_article',
+  'awaiting_sku',
   'awaiting_new_key',
 ]
 
 export const rStates = {
   waitWbApiKey: waitingStates[0],
   waitSelfCost: waitingStates[1],
-  waitMark: waitingStates[2],
-  waitTax: waitingStates[3],
-  waitArticle: waitingStates[4],
-  waitNewKey: waitingStates[5],
+  waitTax: waitingStates[2],
+  waitSku: waitingStates[3],
+  waitNewKey: waitingStates[4],
 }
 
-export const inputStates = [rStates.waitSelfCost, rStates.waitTax, rStates.waitMark]
+export const inputStates = [rStates.waitSelfCost, rStates.waitTax]
 
 export const ttls = {
   usual: 600,

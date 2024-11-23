@@ -1,4 +1,4 @@
-export interface Article {
+export interface SKU {
   stats: any;
   article: article;
   chat_id: number;
@@ -22,7 +22,7 @@ export interface Article {
 
 export type article = number | string;
 
-export interface ArticleCallbackData {
+export interface SKUCallbackData {
   type?: string;
   art: article;
   action?: string;

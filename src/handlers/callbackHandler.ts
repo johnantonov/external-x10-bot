@@ -11,7 +11,7 @@ import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
-import { getStateMessage, texts } from "../components/texts";
+import { texts } from "../components/texts";
 import dotenv from 'dotenv';
 import { config } from "../config/config";
 dotenv.config();
@@ -48,12 +48,10 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   let newButtonCallback: string;
   let editData: { text: string; options: Options['reply_markup']; image?: string } | null = null;
 
-
   switch (action) {
     case 'menu':
       await RediceService.deleteUserState(chat_id)
       const menu = await MS.getSpecialMsg(chat_id, 'menu');
-
 
       if (userCallbackData === CallbackData.menuAndEdit && menu?.message_id) {
         await handleStartMenu(userCallback, '/menu', false, menu.message_id)
@@ -79,19 +77,19 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'articles':
-      editData = createEditData(texts.chooseArt, { inline_keyboard: await generateArticlesButtons(chat_id) });
+      editData = createEditData(texts.chooseSku, { inline_keyboard: await generateArticlesButtons(chat_id) });
       break;
 
     case 'add article':
       data = parseArticleData(userCallbackData);
       newButtonCallback = newArticleData(data);
-      const maxCount = config.maxArticles
-      const articlesCount = (await articles_db.getAllArticlesForUser(chat_id)).rows.length
+      const maxCount = config.maxSku
+      const articlesCount = (await articles_db.getAllSkuForUser(chat_id)).rows.length
       if (articlesCount < maxCount) {
-        await RS.setUserState(chat_id, rStates.waitArticle, ttls.usual)
-        editData = createEditData(texts.addArticles, returnBtn);
+        await RS.setUserState(chat_id, rStates.waitSku, ttls.usual)
+        editData = createEditData(texts.addSku, returnBtn);
       } else {
-        editData = createEditData(texts.errorMaxArts, returnBtn);
+        editData = createEditData(texts.errorMaxSku, returnBtn);
       }
       break;
 
@@ -103,7 +101,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
           editData = createEditData(' ', articleMenu);
         }
       } else {
-        editData = createEditData(texts.errorGetArt, returnBtn);
+        editData = createEditData(texts.errorGetSku, returnBtn);
       }
       break;
 
@@ -112,19 +110,19 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       if (articleMenu) {
         editData = createEditData(' ', articleMenu);
       } else {
-        editData = createEditData(texts.errorGetArt, returnBtn);
+        editData = createEditData(texts.errorGetSku, returnBtn);
       }
       break;
 
-    case "input states":
-      const message = getStateMessage(state)
-      await RediceService.setUserState(chat_id, state + "?" + currentArticle)
-      if (message) {
-        editData = createEditData(message, returnArticleMenu(currentArticle));
-      } else {
-        editData = createEditData(texts.errorAddLater, returnArticleMenu(currentArticle));
-      }
-      break;
+    // case "input states":
+    //   const message = getStateMessage(state)
+    //   await RediceService.setUserState(chat_id, state + "?" + currentArticle)
+    //   if (message) {
+    //     editData = createEditData(message, returnArticleMenu(currentArticle));
+    //   } else {
+    //     editData = createEditData(texts.errorAddLater, returnArticleMenu(currentArticle));
+    //   }
+    //   break;
 
     case 'delete article':
       newButtonCallback = newArticleData(callbackObj);
@@ -140,11 +138,11 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
           if (articleMenu) {
             editData = createEditData(' ', articleMenu);
           } else {
-            editData = createEditData(' ', mainBtn);
+            if (mainBtn) editData = createEditData(' ', mainBtn);
           }
         } else {
-          await articles_db.removeArticle(chat_id, currentArticle)
-          editData = createEditData(`✅ Вы успешно удалили артикул ${currentArticle}`, mainBtn);
+          await articles_db.removeSku(chat_id, currentArticle)
+          if (mainBtn) editData = createEditData(`✅ Вы успешно удалили артикул ${currentArticle}`, mainBtn);
         }
       }
       break;
@@ -158,7 +156,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
         let reportResponse = await reportService.runForUser(chat_id)
         await MS.deleteMessage(chat_id, loadingMsg.message_id)
       } else {
-        editData = createEditData(texts.errorGetArtAgain, mainBtn);
+        if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
       }
       break;
 
@@ -169,12 +167,12 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       } else {
         await users_db.updateNotificationTime(chat_id, selectedTime);
         await articles_db.updateNotificationTime(chat_id, selectedTime)
-        editData = createEditData(`${texts.successNewTime} ${selectedTime}:00`, mainBtn)
+        if (mainBtn) editData = createEditData(`${texts.successNewTime} ${selectedTime}:00`, mainBtn)
       };
       break;
 
     default:
-      await bot.sendMessage(chat_id, texts.errorResponse, { reply_markup: mainBtn })
+      if (mainBtn) await bot.sendMessage(chat_id, texts.errorResponse, { reply_markup: mainBtn })
       console.error('Error processing callback')
       break;
   }

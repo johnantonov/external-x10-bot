@@ -1,13 +1,12 @@
 import { article } from "./articles";
 
-export type user_type = 'new' | 'registered' | 'article'
+export type user_type = 'new' | 'waitSku' | 'waitTax' | 'registered' 
 
 export class User {
   chat_id: number;
   username: string | undefined;
   wb_api_key: string | undefined | null;
   type: user_type;
-  article: article;
   notification_time: number | null;
   added_at: string;
   last_report_call: number | null;

@@ -182,8 +182,11 @@ export class MessageService {
 
       if (user) {
         this.clearMessages(user.chat_id)
-        const message = await this.bot.sendPhoto(user.chat_id, imagePath, { caption: newText, reply_markup: mainOptions(false, user.type ?? 'new') })
-        await this.saveMessage({ chat_id: user.chat_id, message_id: message.message_id, special: 'menu' })
+        const reply_markup = mainOptions(false, user.type ?? 'new')
+        if (reply_markup) {
+          const message = await this.bot.sendPhoto(user.chat_id, imagePath, { caption: newText, reply_markup: reply_markup })
+          await this.saveMessage({ chat_id: user.chat_id, message_id: message.message_id, special: 'menu' })
+        }
       }
 
       const errorMessage = (error as any).response?.body?.description || (error as Error).message || 'Unknown error';
