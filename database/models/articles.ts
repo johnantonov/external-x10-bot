@@ -189,12 +189,19 @@ class ArticlesModel extends BaseModel<SKU> {
   async updateTax(chat_id: number, tax: number): Promise<void> {
     try {
       const type: user_type = 'registered' // нам следует обновить type, т.к. на данном этапе новые пользователи становятся registered
-      const query = `
+      const skuQuery = `
         UPDATE ${this.tableName}
-        SET tax = $1, type = $2
+        SET tax = $1
+        WHERE chat_id = $2
+      `;
+      await this.pool.query(skuQuery, [tax, chat_id]);
+
+      const usersQuery = `
+        UPDATE ${this.tableName}
+        SET type = $1, tax = $2
         WHERE chat_id = $3
       `;
-      await this.pool.query(query, [tax, type, chat_id]);
+      await this.pool.query(usersQuery, [type, tax, chat_id]);
     } catch (e) {
       console.error("Error while updating tax: ", e)
     }

@@ -8,9 +8,10 @@ export const migrations = [
             username VARCHAR(255),
             wb_api_key VARCHAR,
             type VARCHAR DEFAULT 'new',
+            tax DECIMAL,
             notification_time NUMERIC,
             added_at TIMESTAMP DEFAULT NOW(),
-            last_report_call TIMESTAMP
+            last_report_call TIMESTAMP,
         );`,
 
         `CREATE TABLE IF NOT EXISTS articles (
@@ -39,8 +40,8 @@ export const migrations = [
         `CREATE OR REPLACE FUNCTION set_wb_api_key()
         RETURNS TRIGGER AS $$
         BEGIN
-        SELECT u.wb_api_key, u.notification_time
-        INTO NEW.wb_api_key, NEW.notification_time
+        SELECT u.wb_api_key, u.notification_time, u.tax
+        INTO NEW.wb_api_key, NEW.notification_time, NEW.tax
         FROM users u
         WHERE u.chat_id = NEW.chat_id;
 
@@ -87,6 +88,6 @@ export const migrations = [
     ],
 
     [
-        `ALTER TABLE articles ADD COLUMN sales JSONB;`
+        `ALTER TABLE users ADD COLUMN tax DECIMAL;`
     ]
 ];

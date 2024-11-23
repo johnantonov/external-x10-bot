@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(255),
     wb_api_key VARCHAR,
     type VARCHAR DEFAULT 'new',
+    tax DECIMAL,
     notification_time NUMERIC,
     added_at TIMESTAMP DEFAULT NOW(),
     last_report_call TIMESTAMP,
