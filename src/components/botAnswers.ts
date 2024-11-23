@@ -3,11 +3,12 @@ import { SendMessageOptions } from 'node-telegram-bot-api';
 import { users_db } from "../../database/models/users";
 import { UserCallback, UserMsg } from "../dto/messages";
 import { mainOptions } from "./botButtons";
-import { bot, MS } from "../bot";
+import { bot, MS, RediceService } from "../bot";
 import { getPath } from "../utils/parse";
 import { user_type } from "../dto/user";
 import { images } from "../dto/images";
 import { texts } from "./texts";
+import { rStates } from "../redis";
 
 /**
  * handles the /start or /menu commands and manages menu rendering
@@ -33,6 +34,10 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
 
     if (isUser) {
       const type = user.type
+      if (user.type === 'waitTax') {
+        RediceService.setUserState(chat_id, rStates.waitTax)
+        return bot.sendMessage(msg.chat_id, texts.updateTax);
+      }
 
       if (!isNewMsg) {
         if (!menuId) {
