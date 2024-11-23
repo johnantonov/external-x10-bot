@@ -47,7 +47,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
           }
         } else {
           await users_db.updateType(chat_id, 'waitSku');
-          return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'waitSku' });
+          return new AwaitingAnswer({ result: true, text: texts.addedSku, type: 'waitSku' });
         }
       } catch (e) {
         console.error('Error processing add wb api key: ', e);

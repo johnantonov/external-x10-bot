@@ -67,7 +67,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'new user':
-      await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.usual)
+      await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.day)
       editData = createEditData(texts.sendKey);
       break;
 

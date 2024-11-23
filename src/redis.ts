@@ -50,6 +50,7 @@ export const rStates = {
 export const inputStates = [rStates.waitSelfCost, rStates.waitTax]
 
 export const ttls = {
-  usual: 30,
+  usual: 600,
   hour: 3600,
+  day: 3600 * 12
 }
