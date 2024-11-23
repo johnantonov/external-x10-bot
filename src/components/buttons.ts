@@ -104,8 +104,6 @@ export const faqButtons = {
   faq_5: { text: 'Что такое КРРР?', callback_data: CallbackData.faq_5 },
 }
 
-
-
 /**
  * returns menu
  * @param {boolean} edit - the message or callback data
