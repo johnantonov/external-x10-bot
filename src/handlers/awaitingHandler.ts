@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import { texts } from "../components/texts";
 import { parsePercent } from "../utils/parse";
 import { user_type } from "../dto/user";
+import { RediceService } from "../bot";
 
 dotenv.config();
 
@@ -81,6 +82,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         }
     
         await users_db.updateType(chat_id, 'waitTax');
+        await RediceService.setUserState(chat_id, 'waitTax')
         return new AwaitingAnswer({ result: true, text: texts.addedSku, type: 'waitTax' });
       } catch (e) {
         console.error('Error processing add sku: ', e);
