@@ -79,7 +79,7 @@ export class CallbackProcessor {
   }
 
   private isAddArticle(): boolean {
-    return this.userCallbackData.startsWith(CallbackData.newArticle as string)
+    return this.userCallbackData.startsWith(CallbackData.newSku as string)
   }
 
   private isEdits(): boolean {
