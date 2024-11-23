@@ -14,4 +14,5 @@ export type CallbackAction =
   "new menu" |
   "get all reports" |
   "all ready" | 
+  "info" |
   null;

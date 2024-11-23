@@ -42,7 +42,7 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
           await sendNewMenu(chat_id, img, text, type)
           return console.error('handleStartMenu: error to get menu id:', msg, command, isNewMsg, menuId)
         }
-        const editedBtn = mainOptions(false, type);
+        const editedBtn = mainOptions(type);
         if (editedBtn) {
           return MS.editMessage(chat_id, menuId, text, editedBtn)
         }
@@ -95,7 +95,7 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
  * @returns {Promise<void>}
  */
 export async function sendNewMenu(chat_id: number, img: string, caption: string, userType: user_type) {
-  const keyboard = mainOptions(false, userType)?.inline_keyboard
+  const keyboard = mainOptions(userType)?.inline_keyboard
   const newMenu = await sendImageWithText(bot, chat_id, img, caption, keyboard);
   if (newMenu) {
     await MS.deleteAllMessages(chat_id)

@@ -34,8 +34,12 @@ export class CallbackProcessor {
       return "add sku";
     }
 
-    if (this.isEdits()) {
-      return 'edits'
+    if (this.isInfo()) {
+      return 'info'
+    }
+
+    if (this.isFaqQuestion()) {
+      return 'info'
     }
 
     if (this.changeTime()) {
@@ -93,8 +97,12 @@ export class CallbackProcessor {
     return this.userCallbackData.startsWith(CallbackData.newSku as string)
   }
 
-  private isEdits(): boolean {
-    return this.userCallbackData === CallbackData.editArticle
+  private isInfo(): boolean {
+    return this.userCallbackData === CallbackData.info
+  }
+
+  private isFaqQuestion(): boolean {
+    return this.userCallbackData.startsWith(CallbackData.faq)
   }
 
   private isArticlesMenu(): boolean {

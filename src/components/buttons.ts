@@ -51,22 +51,26 @@ export const CallbackData = {
   yes: '?yes',
   no: '?no',
   menu: 'menu',
+  info: 'info',
   menuAndEdit: 'menu_edit',
-  loading: 'loading',
-  connectionBtn: 'con?',
   changeWbApiKey: 'onc?',
   changeTime: 'ct?',
   chooseTime: 'ct?' + "new?",
   timeLater: 'tl',
   editSelfCost: 'esc?',
-  editMark: 'em?',
   editTax: 'et?',
   returnArticle: 'rc?',
-  editArticle: 'ea?',
   articlesMenu: 'artm?',
   getAllReportNow: 'arn?',
   goArticle: 'ar?',
-  deleteArticle: 'da?'
+  deleteArticle: 'da?',
+
+  faq: 'faq',
+  faq_1: 'faq_1',
+  faq_2: 'faq_2',
+  faq_3: 'faq_3',
+  faq_4: 'faq_4',
+  faq_5: 'faq_5',
 } as const;
 
 export const mainButtons = {
@@ -75,16 +79,15 @@ export const mainButtons = {
   getAllReportNow: { text: '📂 Сформировать отчет', callback_data: CallbackData.getAllReportNow },
   newSku: { text: '➕ Добавить SKU', callback_data: CallbackData.newSku },
   newTax: { text: '💸 Обновить налог', callback_data: CallbackData.editTax },
-  editArticle: { text: '⚙️ Настройки товара', callback_data: CallbackData.editArticle },
   menu: { text: '↩️ Меню', callback_data: CallbackData.menu },
+  info: { text: 'ℹ️ Информация', callback_data: CallbackData.info },
   menuAndEdit: { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit },
   changeTime: { text: '🕘 Настроить расписание отчетов', callback_data: CallbackData.changeTime },
   chooseTime: { text: '🕘 Выбрать время', callback_data: CallbackData.chooseTime },
   timeLater: { text: '➡️ Настроить позже', callback_data: CallbackData.timeLater },
-  changeWbApiKey: { text: '🔑 Обновить WB API KEY', callback_data: CallbackData.changeWbApiKey },
-  loading: { text: '⏳ Загрузка...', callback_data: CallbackData.loading },
+  changeWbApiKey: { text: '🔑 Обновить ключ API', callback_data: CallbackData.changeWbApiKey },
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
-  articlesMenu: { text: '🔢 SKU', callback_data: CallbackData.articlesMenu },
+  articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
 };
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
@@ -93,11 +96,15 @@ export const articleButtons: Record<string, ((article: any) => TelegramBot.Inlin
   deleteArticle: (article: string) => { return { text: '🗑 Удалить артикул', callback_data: CallbackData.deleteArticle + article } },
 }
 
-export const btn = (buttonKeys: keyof typeof mainButtons | Array<keyof typeof mainButtons>) => {
-  if (!Array.isArray(buttonKeys)) buttonKeys = [buttonKeys];
-  const buttons = buttonKeys.map(key => mainButtons[key]);
-  return new Options([buttons]).reply_markup;
+export const faqButtons = {
+  faq_1: { text: 'Как получить полный отчет по всем SKU?', callback_data: CallbackData.faq_1 },
+  faq_2: { text: 'Расшифровка показателей в отчете', callback_data: CallbackData.faq_2 },
+  faq_3: { text: 'Почему отчет только за вчера?', callback_data: CallbackData.faq_3 },
+  faq_4: { text: 'Как считается прибыль?', callback_data: CallbackData.faq_4 },
+  faq_5: { text: 'Что такое КРРР?', callback_data: CallbackData.faq_5 },
 }
+
+
 
 /**
  * returns menu
@@ -116,7 +123,7 @@ export const returnNewMenu = () => {
  * @param {boolean} waitReport - if user wait all reports change btn to loading text
  * @param {boolean} type - current type of user
  */
-export const mainOptions = (waitReport?: boolean, type?: user_type) => {
+export const mainOptions = (type?: user_type) => {
   if (type && type !== 'registered') {
     return getStartedButton(type)
   }
@@ -125,12 +132,9 @@ export const mainOptions = (waitReport?: boolean, type?: user_type) => {
     [mainButtons.getAllReportNow],
     [mainButtons.articlesMenu],
     [mainButtons.changeTime],
+    [mainButtons.info],
     [mainButtons.changeWbApiKey]
   ];
-
-  if (waitReport) {
-    menu[0] = [mainButtons.loading];
-  }
 
   return new Options(menu).reply_markup;
 };
@@ -145,7 +149,6 @@ export const articleOptions = async (chat_id: number, article: article) => {
 
   const articleBtns = [
     [articleButtons.editSelfCost(article)],
-    [articleButtons.editMark(article)],
     [articleButtons.editTax(article)],
     [articleButtons.deleteArticle(article)],
     [mainButtons.menuAndEdit]

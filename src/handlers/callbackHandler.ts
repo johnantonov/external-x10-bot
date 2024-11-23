@@ -4,9 +4,9 @@ import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import { createEditData, MessageService } from "../services/messageService";
-import { articleOptions, btn, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/buttons";
+import { articleOptions, CallbackData, faqButtons, generateArticlesButtons, generateReportTimeButtons, mainButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/buttons";
 import { users_db } from "../../database/models/users";
-import { getPath, getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
+import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
@@ -15,6 +15,7 @@ import { texts } from "../components/texts";
 import dotenv from 'dotenv';
 import { config } from "../config/config";
 import { images } from "../dto/images";
+import { btn } from "../utils/buttons";
 dotenv.config();
 
 /**
@@ -39,7 +40,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   const { chat_id, userCallbackData, message_id, username } = userCallback;
   const [type, last_report_call] = await users_db.processUserRequest(chat_id, username)
   const returnBtn = returnMenu(true);
-  const mainBtn = mainOptions(false, type ?? 'new')
+  const mainBtn = mainOptions(type ?? 'new')
   const action = new CallbackProcessor(userCallbackData, type).getAction();
   const [state, currentArticle] = getStateAndArticleFromCallback(userCallbackData);
   const callbackObj = parseArticleData(userCallbackData)
@@ -99,6 +100,15 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       } else {
         editData = createEditData(texts.errorMaxSku, returnBtn);
       }
+      break;
+    
+    case 'info':
+      if (userCallbackData === CallbackData.faq) editData = createEditData(texts.FAQ, btn(faqButtons));
+      if (userCallbackData === CallbackData.faq_1) editData = createEditData(texts.faq_1, returnBtn);
+      if (userCallbackData === CallbackData.faq_2) editData = createEditData(texts.faq_2, returnBtn);
+      if (userCallbackData === CallbackData.faq_3) editData = createEditData(texts.faq_3, returnBtn);
+      if (userCallbackData === CallbackData.faq_4) editData = createEditData(texts.faq_4, returnBtn);
+      if (userCallbackData === CallbackData.faq_5) editData = createEditData(texts.faq_5, returnBtn);
       break;
 
     case 'return article menu':
