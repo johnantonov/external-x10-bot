@@ -54,7 +54,7 @@ class UsersModel extends BaseModel<User> {
     await pool.query('UPDATE users SET last_report_call = $1 WHERE chat_id = $2', [now, chat_id]);
   }
 
-  async updateNotificationTime(chat_id: number, notification_time: number): Promise<void> {
+  async updateNotificationTime(chat_id: number, notification_time: number | string): Promise<void> {
     const values = [notification_time, chat_id]
 
     let query = `

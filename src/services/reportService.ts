@@ -10,7 +10,7 @@ import { SKU, article} from '../dto/sku';
 import { calculateLogisticsStorage, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
 import { formatError } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
-import { returnNewMenu } from '../components/botButtons';
+import { returnNewMenu } from '../components/buttons';
 import { conversions_db } from '../../database/models/conversions';
 import { updateCommissions } from '../utils/comissions';
 import { commissions_db } from '../../database/models/commissions';

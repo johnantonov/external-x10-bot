@@ -1,4 +1,4 @@
-import { CallbackData } from "../components/botButtons";
+import { CallbackData } from "../components/buttons";
 import { CallbackAction } from "../dto/callback";
 import { user_type } from "../dto/user";
 import { rStates } from "../redis";

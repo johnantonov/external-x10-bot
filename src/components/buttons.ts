@@ -56,7 +56,7 @@ export const CallbackData = {
   connectionBtn: 'con?',
   changeWbApiKey: 'onc?',
   changeTime: 'ct?',
-  chooseTime: 'ct?' + "new",
+  chooseTime: 'ct?' + "new?",
   timeLater: 'tl',
   editSelfCost: 'esc?',
   editMark: 'em?',

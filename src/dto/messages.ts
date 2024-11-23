@@ -1,5 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
-import { Options } from "../components/botButtons";
+import { Options } from "../components/buttons";
 import { user_type } from "./user";
 
 // class of user text message

@@ -1,7 +1,7 @@
 import { articles_db } from "../../database/models/articles";
 import { bot, MS, RediceService } from "../bot";
 import { handleStartMenu, sendImageWithText } from "../components/botAnswers";
-import { articleOptions, mainOptions } from "../components/botButtons";
+import { articleOptions, mainOptions } from "../components/buttons";
 import { AwaitingAnswer, MessageMS, UserMsg } from "../dto/messages";
 import { rStates, ttls, waitingStates } from "../redis";
 import { awaitingHandler } from "./awaitingHandler";

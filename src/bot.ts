@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
 import dotenv from 'dotenv';
-import { setBotCommands } from './components/botButtons';
+import { setBotCommands } from './components/buttons';
 import { redis } from './redis';
 import { MessageMS, UserMsg } from './dto/messages';
 import { MessageService } from './services/messageService';

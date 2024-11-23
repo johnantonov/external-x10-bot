@@ -1,4 +1,4 @@
-import { mainButtons, Options } from "../components/botButtons";
+import { mainButtons, Options } from "../components/buttons";
 import { user_type } from "../dto/user";
 
 export function getStartedButton(type: user_type) {

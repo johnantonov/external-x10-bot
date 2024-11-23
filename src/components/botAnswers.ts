@@ -2,7 +2,7 @@ import TelegramBot, { InlineKeyboardButton, Message } from "node-telegram-bot-ap
 import { SendMessageOptions } from 'node-telegram-bot-api';
 import { users_db } from "../../database/models/users";
 import { UserCallback, UserMsg } from "../dto/messages";
-import { mainOptions } from "./botButtons";
+import { mainOptions } from "./buttons";
 import { bot, MS, RediceService } from "../bot";
 import { getPath } from "../utils/parse";
 import { user_type } from "../dto/user";

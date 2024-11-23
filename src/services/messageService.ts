@@ -197,7 +197,7 @@ export class MessageService {
 
 import fs from 'fs';
 import FormData from 'form-data';
-import { mainOptions, Options } from '../components/botButtons';
+import { mainOptions, Options } from '../components/buttons';
 import { images } from '../dto/images';
 import { users_db } from '../../database/models/users';
 

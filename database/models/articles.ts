@@ -133,7 +133,7 @@ class ArticlesModel extends BaseModel<SKU> {
     }
   }
 
-  async updateNotificationTime(chat_id: number, notification_time: number, article?: article): Promise<void> {
+  async updateNotificationTime(chat_id: number, notification_time: number | string, article?: article): Promise<void> {
     let status = notification_time === 0 ? 'off' : 'on';
     const values = [notification_time, chat_id]
 

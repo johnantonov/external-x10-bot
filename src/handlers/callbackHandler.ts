@@ -4,9 +4,9 @@ import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import { createEditData, MessageService } from "../services/messageService";
-import { articleOptions, btn, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/botButtons";
+import { articleOptions, btn, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/buttons";
 import { users_db } from "../../database/models/users";
-import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
+import { getPath, getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
@@ -14,6 +14,7 @@ import { CallbackProcessor } from "../utils/CallbackProcessor";
 import { texts } from "../components/texts";
 import dotenv from 'dotenv';
 import { config } from "../config/config";
+import { images } from "../dto/images";
 dotenv.config();
 
 /**
@@ -68,7 +69,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'new user':
       await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.day)
-      editData = createEditData(texts.sendKey);
+      editData = createEditData(texts.sendKey, undefined, getPath(images.apiKey));
       break;
 
     case 'change key':
@@ -171,8 +172,14 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'change time':
-      const selectedTime = +userCallbackData.split('?')[1]
-      if (!selectedTime) {
+      const timeCallback = userCallbackData.split('?')
+      const selectedTime = timeCallback[timeCallback.length-1]
+
+      console.log(selectedTime)
+      console.log(userCallbackData)
+
+      // если нет время в коллбэке, генерируем клавиатуру, при нажатии на время вернется тот же колбэк но уже с selectedTime
+      if (!selectedTime) { 
         editData = { text: texts.chooseTime, options: { inline_keyboard: generateReportTimeButtons(userCallbackData) } }
       } else {
         await users_db.updateNotificationTime(chat_id, selectedTime);
