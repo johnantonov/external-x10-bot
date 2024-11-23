@@ -3,7 +3,7 @@ import { bot, MS, RediceService } from "../bot";
 import { handleStartMenu, sendImageWithText } from "../components/botAnswers";
 import { articleOptions, mainOptions } from "../components/botButtons";
 import { AwaitingAnswer, MessageMS, UserMsg } from "../dto/messages";
-import { rStates, waitingStates } from "../redis";
+import { rStates, ttls, waitingStates } from "../redis";
 import { awaitingHandler } from "./awaitingHandler";
 
 export async function handleMenuCommand(UserMsg: UserMsg, chat_id: number, text: string, msgs: MessageMS[]) {
@@ -17,6 +17,7 @@ export async function handleMenuCommand(UserMsg: UserMsg, chat_id: number, text:
 
 export async function handleUserState(chat_id: number, msgs: MessageMS[], userTextMessage: UserMsg) {
   const userState = await RediceService.getUserState(chat_id);
+  console.log(userState)
 
   if (userState) {
     const response = await bot.sendMessage(chat_id, "Проверяем...⌛️");
@@ -35,7 +36,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
       let newBtns;
 
       if (answer.type === 'waitTax') {
-        await RediceService.setUserState(chat_id, 'waitTax')
+        await RediceService.setUserState(chat_id, 'waitTax', ttls.day)
         newBtns = mainOptions(false, answer.type)?.inline_keyboard
       } else if (userState === rStates.waitSelfCost) {
         const article = await articles_db.getArticle(chat_id, userState?.split('?')[1])

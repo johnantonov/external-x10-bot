@@ -31,6 +31,7 @@ bot.on('message', async (msg: TelegramBot.Message) => {
   const { chat_id, text, message_id } = UserTextMessage;
 
   if (!text) {
+    console.log('there are no text')
     return;
   };
 

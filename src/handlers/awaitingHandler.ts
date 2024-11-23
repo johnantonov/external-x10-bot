@@ -47,7 +47,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
             await users_db.updateWbApiKey(chat_id, text);
             return new AwaitingAnswer({ result: true, text: texts.updatedWbKeyAndDeleted, type: user?.type });
           }
-        } else {
+        } else { // если это новый пользователь, то ведем его - выставляем состояние ожидания SKU и расходов
           await users_db.updateType(chat_id, 'waitSku');
           return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'waitSku' });
         }
@@ -88,8 +88,9 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         return handleError(texts.error);
       }
  
-    } else if (state.startsWith(rStates.waitTax)) {
+    } else if (state === rStates.waitTax) {
       try {
+        console.log('set tax for user: ', chat_id)
         const type = (await users_db.getUserById(chat_id))?.type
         const formattingTax = parsePercent(+text)
         await articles_db.updateTax(chat_id, formattingTax)
