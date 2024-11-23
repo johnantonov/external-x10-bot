@@ -70,6 +70,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     case 'new user':
       await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.day)
       editData = createEditData(texts.sendKey, undefined, images.apiKey);
+      console.log(editData)
       break;
 
     case 'change key':
