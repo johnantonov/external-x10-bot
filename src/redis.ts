@@ -36,6 +36,7 @@ export const waitingStates = [
   'esc',
   'et',
   'awaiting_sku',
+  'awaiting_sku_old',
   'awaiting_new_key',
 ]
 
@@ -44,7 +45,8 @@ export const rStates = {
   waitSelfCost: waitingStates[1],
   waitTax: waitingStates[2],
   waitSku: waitingStates[3],
-  waitNewKey: waitingStates[4],
+  waitSkuOldUser: waitingStates[4],
+  waitNewKey: waitingStates[5],
 }
 
 export const ttls = {

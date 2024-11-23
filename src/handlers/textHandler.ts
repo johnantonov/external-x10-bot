@@ -34,7 +34,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
 
       let newBtns;
 
-      if (userState === rStates.waitTax) {
+      if (answer.type === 'waitTax') {
         newBtns = mainOptions(false, answer.type)?.inline_keyboard
 
       } else if (userState === rStates.waitSelfCost) {
