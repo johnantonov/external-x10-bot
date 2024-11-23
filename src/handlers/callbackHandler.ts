@@ -10,12 +10,13 @@ import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from
 import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
-import { CallbackProcessor } from "../utils/CallbackProcessor";
 import { texts } from "../components/texts";
 import dotenv from 'dotenv';
 import { config } from "../config/config";
 import { images } from "../dto/images";
 import { btn } from "../utils/buttons";
+import { getFaqData } from "../utils/faq";
+import { CallbackProcessor } from "../utils/CallbackProcessor";
 dotenv.config();
 
 /**
@@ -103,12 +104,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
     
     case 'info':
-      if (userCallbackData === CallbackData.faq) editData = createEditData(texts.FAQ, btn(faqButtons));
-      if (userCallbackData === CallbackData.faq_1) editData = createEditData(texts.faq_1, returnBtn);
-      if (userCallbackData === CallbackData.faq_2) editData = createEditData(texts.faq_2, returnBtn);
-      if (userCallbackData === CallbackData.faq_3) editData = createEditData(texts.faq_3, returnBtn);
-      if (userCallbackData === CallbackData.faq_4) editData = createEditData(texts.faq_4, returnBtn);
-      if (userCallbackData === CallbackData.faq_5) editData = createEditData(texts.faq_5, returnBtn);
+      const [faqText, faqBtn] = getFaqData(userCallbackData)
+      editData = createEditData(faqText, faqBtn);
       break;
 
     case 'return article menu':

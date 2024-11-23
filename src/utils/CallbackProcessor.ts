@@ -38,10 +38,6 @@ export class CallbackProcessor {
       return 'info'
     }
 
-    if (this.isFaqQuestion()) {
-      return 'info'
-    }
-
     if (this.changeTime()) {
       return "change time";
     }
@@ -98,10 +94,6 @@ export class CallbackProcessor {
   }
 
   private isInfo(): boolean {
-    return this.userCallbackData === CallbackData.info
-  }
-
-  private isFaqQuestion(): boolean {
     return this.userCallbackData.startsWith(CallbackData.faq)
   }
 
