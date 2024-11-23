@@ -31,7 +31,7 @@ export class CallbackProcessor {
     }
 
     if (this.isAddArticle()) {
-      return "add article";
+      return "add sku";
     }
 
     if (this.isEdits()) {

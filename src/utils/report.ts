@@ -1,5 +1,5 @@
 import { config } from "../config/config";
-import { SKU } from "../dto/articles";
+import { SKU } from "../dto/sku";
 import { getWbArticlePhoto, parsePercent } from "./parse";
 import { formatNumber } from "./string";
 import { create31DaysObject, getYesterdayDate } from "./time";

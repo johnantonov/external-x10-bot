@@ -6,7 +6,7 @@ import pool from '../../database/db';
 import { create31DaysObject, getXdaysAgoArr, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
-import { SKU, article} from '../dto/articles';
+import { SKU, article} from '../dto/sku';
 import { calculateLogisticsStorage, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
 import { formatError } from '../utils/string';
 import { updateConversions } from '../utils/conversions';

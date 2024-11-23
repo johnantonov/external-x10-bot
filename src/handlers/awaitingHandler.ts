@@ -90,7 +90,6 @@ export async function awaitingHandler(data: UserMsg, state: string) {
  
     } else if (state === rStates.waitTax) {
       try {
-        console.log('set tax for user: ', chat_id)
         const type = (await users_db.getUserById(chat_id))?.type
         const formattingTax = parsePercent(+text)
         await articles_db.updateTax(chat_id, formattingTax)

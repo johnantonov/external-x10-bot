@@ -84,13 +84,13 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       editData = createEditData(texts.allReady, btn('getAllReportNow'));
       break;
 
-    case 'add article':
+    case 'add sku':
       data = parseArticleData(userCallbackData);
       newButtonCallback = newArticleData(data);
       const maxCount = config.maxSku
       const articlesCount = (await articles_db.getAllSkuForUser(chat_id)).rows.length
       if (articlesCount < maxCount) {
-        await RS.setUserState(chat_id, rStates.waitSku, ttls.usual)
+        await RS.setUserState(chat_id, rStates.waitSkuOldUser, ttls.usual)
         editData = createEditData(texts.addSku, returnBtn);
       } else {
         editData = createEditData(texts.errorMaxSku, returnBtn);

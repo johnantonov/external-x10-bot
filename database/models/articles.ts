@@ -2,7 +2,7 @@ import { Pool, QueryResult } from 'pg';
 import { BaseModel } from "../BaseModel";
 import * as dotenv from 'dotenv';
 import pool from "../db";
-import { article, SKU } from '../../src/dto/articles';
+import { article, SKU } from '../../src/dto/sku';
 import { sortObjDatesKeys } from '../../src/utils/time';
 import { config } from '../../src/config/config';
 import { user_type } from '../../src/dto/user';

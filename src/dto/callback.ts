@@ -2,7 +2,7 @@ export type CallbackAction =
   "menu" |
   "new user" |
   "change key" |
-  "add article" |
+  "add sku" |
   "yes no" |
   "edits" |
   "return article menu" |

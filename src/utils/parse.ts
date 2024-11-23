@@ -1,5 +1,5 @@
 import { resolve } from "path"
-import { article, SKUCallbackData } from "../dto/articles"
+import { article, SKUCallbackData } from "../dto/sku"
 
 export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)

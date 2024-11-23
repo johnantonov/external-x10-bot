@@ -1,6 +1,6 @@
 import TelegramBot, { CallbackQuery, InlineKeyboardButton } from "node-telegram-bot-api";
 import { user_type } from "../dto/user";
-import { article, SKU, SKUCallbackData } from "../dto/articles";
+import { article, SKU, SKUCallbackData } from "../dto/sku";
 import { articles_db } from "../../database/models/articles";
 import { newArticleData } from "../utils/parse";
 import { getStartedButton } from "../utils/buttons";
