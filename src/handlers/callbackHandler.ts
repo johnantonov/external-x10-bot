@@ -90,7 +90,10 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       const maxCount = config.maxSku
       const articlesCount = (await articles_db.getAllSkuForUser(chat_id)).rows.length
       if (articlesCount < maxCount) {
-        await RS.setUserState(chat_id, rStates.waitSkuOldUser, ttls.usual)
+        // разные состояние ожидания артикулов для нового и для старого пользователя (для нового ожидается автоматически следующий шаг tax)
+        const newUserState = type === 'waitSku' ? rStates.waitSku : rStates.waitSkuOldUser 
+
+        await RS.setUserState(chat_id, newUserState, ttls.usual)
         editData = createEditData(texts.addSku, returnBtn);
       } else {
         editData = createEditData(texts.errorMaxSku, returnBtn);
