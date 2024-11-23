@@ -34,7 +34,7 @@ export class redis {
 export const waitingStates = [
   'awaiting_wb_api_key',
   'esc',
-  'et',
+  'waitTax',
   'awaiting_sku',
   'awaiting_sku_old',
   'awaiting_new_key',
