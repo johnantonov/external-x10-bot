@@ -75,6 +75,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     
         await articles_db.addSku(chat_id, newSku);  
     
+        await users_db.updateType(chat_id, 'waitTax');
         return new AwaitingAnswer({ result: true, text: texts.addedSku, type: 'waitTax' });
       } catch (e) {
         console.error('Error processing add sku: ', e);
