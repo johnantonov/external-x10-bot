@@ -46,9 +46,11 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
 
     config.pdf.cols.forEach(col => {
       const classNames = col.class.join(' ');
-      const value = getSkuData(data, col.source(day))
-      const cell = generateCell(classNames, value, col.unit as 'р.' | '%' | null)
-      dayRows += cell
+      col.source(day).forEach(source => {
+        const value = getSkuData(data, source)
+        const cell = generateCell(classNames, value, col.unit as 'р.' | '%' | null)
+        dayRows += cell
+      })
     })
 
     dayRows += `</tr>`

@@ -34,6 +34,7 @@ async function test(nmIDs) {
 
   salesResponse.data.forEach(sale => {
       const date = sale.date.split('T')[0]
+      console.log(sale)
       if (!result[date]) {
         result[date] = 1
       } else {

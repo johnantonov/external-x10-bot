@@ -41,7 +41,11 @@ export type MarketingData = {
 };
 export type MarketingObject = Record<DateKey, MarketingData>;
 
-export type SalesObject = Record<DateKey, number>;
+export type SalesObject = Record<DateKey, SalesData>;
+export type SalesData = {
+  infoBuysCount: number;
+  infoBuysSum: number;
+}
 
 export type DayData = {
   buysSum: number;
