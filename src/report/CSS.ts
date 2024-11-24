@@ -1,8 +1,9 @@
 const mainWidth = 1400
 const fontFamily = `Arial, sans-serif`
 const fontSize = 16
-const usualBorder = `0.1px dashed #AFEEEE`;
-const usualPadding = `8`
+const usualBorder = `none`;
+const specialBorder = `0.2px dashed black`
+const usualPadding = 4
 const cellTextAlign = `center`
 const rowHeight = 30
 
@@ -47,16 +48,16 @@ export const CSS = (cols: number) => `
       font-weight: bold;
     }
     .bl {
-      border-left: 2px solid black;
+      border-left: ${specialBorder};
     }
     .br {
-      border-right: 2px solid black;
+      border-right: ${specialBorder};
     }
     .b {
-      border-top: 2px solid black;
-      border-right: 2px solid black;
-      border-left: 2px solid black;
-      border-bottom: 2px solid black;
+      border-top: ${specialBorder};
+      border-right: ${specialBorder};
+      border-left: ${specialBorder};
+      border-bottom: ${specialBorder};
     }
   </style>
 `

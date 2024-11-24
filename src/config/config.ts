@@ -9,7 +9,7 @@ export const config = {
 
   pdf: {
     tableDays: 5,
-
+    skuCol: 5,
     format(unit: '%' | 'р.' | null, value: string | number) {
       if (unit === '%') return `${value}%`
       if (unit === 'р.') return `р.${value}`
@@ -41,7 +41,7 @@ export const config = {
     },
 
     get summaryColSpan() {
-      let count = 0;
+      let count = this.skuCol;
       this.cols.forEach(col => count += col.colspan.length);
       return count;
     },

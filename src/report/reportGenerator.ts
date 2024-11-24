@@ -1,4 +1,4 @@
-import { generateTable, generateRow, generateCell } from "./htmlBuilder";
+import { generateTable, generateRow, generateCell, generateTableHeader } from "./htmlBuilder";
 import { calculateMetrics } from "./dataProcessing";
 import { fetchAndResizeImage } from "./imageProcessing";
 import { SKU } from "../dto/sku";
@@ -42,20 +42,3 @@ const generateDayRows = (data: SKU, imgSrc: string | null): string => {
   return ``;
 };
 
-const generateTableHeader = (data: SKU): string => {
-  const rs = config.pdf.headerRowspan
-  let cells = ``
-
-  config.pdf.cols.forEach(col => {
-    const bg = col.headBg || '#ffffff'; 
-    cells += `<th rowspan="${rs}" colspan="${col.colspan.length}" style="background:${bg}" class="${col.class.join(' ')}">${col.title}</th>`;
-  });
-
-  return `
-    <thead class="br">
-      <tr class="header br">
-        <th rowspan="${rs}" colspan="5" class="article_col">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
-        ${cells}
-      </tr>
-    </thead>`;
-};
