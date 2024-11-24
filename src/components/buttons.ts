@@ -102,6 +102,7 @@ export const faqButtons = {
   faq_3: { text: 'Почему отчет только за вчера?', callback_data: CallbackData.faq_3 },
   faq_4: { text: 'Как считается прибыль?', callback_data: CallbackData.faq_4 },
   faq_5: { text: 'Что такое КРРР?', callback_data: CallbackData.faq_5 },
+  menu: mainButtons.menu
 }
 
 /**
