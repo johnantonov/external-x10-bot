@@ -16,7 +16,7 @@ import { config } from "../config/config";
 import { images } from "../dto/images";
 import { btn } from "../utils/buttons";
 import { getFaqData } from "../utils/faq";
-import { CallbackProcessor } from "../utils/callbackProcessor";
+import { CallbackProcessor } from "../utils/CallbackProcessor";
 
 dotenv.config();
 
