@@ -72,7 +72,7 @@ export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}
       col.source(day).forEach((source, index) => {
         const value = getSkuData(data, source);
 
-        const key = `${index}`;
+        const key = `${col.title}${index}`;
         if (!total[key]) {
           total[key] = [];
         }
