@@ -67,7 +67,7 @@ enum TotalType {
 export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}`[]) => {
   const dayCount = config.pdf.tableDays;
   
-  const total: { [key: string]: number | number[] } = {};
+  const total: { [key: number]: number | number[] } = {};
   let totalRow = ``;
 
   for (let i = dayCount; i > 0; i--) {
