@@ -5,25 +5,13 @@ export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
 }
 
-export function getSkuData(sku: SKU, path: string): any {
+export function getSkuData(sku: any, path: string): any {
   const keys = path.split('.');
+  const remainingKeys = keys.slice(1);
 
-  console.log(sku)
-  console.log(path)
-  console.log(keys)
-
-  let result: any = sku;
-
-  for (let key of keys) {
-    if (key in result) {
-      result = result[key];
-    } else {
-      return undefined; 
-    }
-  }
-
-  console.log(result)
-  return result;
+  return remainingKeys.reduce((current, key) => {
+    return current && current[key] !== undefined ? current[key] : undefined;
+  }, sku); 
 }
 
 export function parseSum(input: string | number): number {
