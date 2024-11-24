@@ -32,7 +32,7 @@ export const generateTableHeader = (data: SKU): string => {
 export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${number}-${number}-${number}`[]): string => {
   let dayRows = ``;
 
-  for (let i = 0; i > config.pdf.tableDays; i++) {
+  for (let i = 0; i < config.pdf.tableDays; i++) {
     const day = days[i];
     const formatDay = getReportFormatDay(day);
     dayRows += `<tr class="row">
