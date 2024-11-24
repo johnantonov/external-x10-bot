@@ -1,6 +1,6 @@
 const mainWidth = 1600
 const fontFamily = `Arial, sans-serif`
-const fontSize = 16
+const fontSize = 24
 const usualBorder = `none`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
