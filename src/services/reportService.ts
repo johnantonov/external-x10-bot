@@ -454,8 +454,10 @@ export class ReportService {
       if (nmIDs.includes(sale.nmId)) {
         const date = sale.date.split('T')[0]
         if (!result[sale.nmId][date]) {
-          result[sale.nmId][date].infoBuysCount = 1
-          result[sale.nmId][date].infoBuysSum = sale.finishedPrice
+          result[sale.nmId][date] = {
+            infoBuysCount: 1,
+            infoBuysSum: sale.finishedPrice
+          }
         } else {
           result[sale.nmId][date].infoBuysCount += 1
           result[sale.nmId][date].infoBuysSum += sale.finishedPrice

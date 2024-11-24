@@ -1,4 +1,4 @@
-const mainWidth = 1400
+const mainWidth = 1600
 const fontFamily = `Arial, sans-serif`
 const fontSize = 16
 const usualBorder = `none`;

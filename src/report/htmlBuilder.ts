@@ -62,7 +62,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
 function generateCell(className: string, value: any, unit: 'р.' | '%' | null, toFixedVal: number = 0): string {
   const formattedValue = formatNumber(value, toFixedVal)
   const unittedValue = formatUnitValue(unit, formattedValue)
-  return `<td class=${className}>${unittedValue}</td>`
+  return `<td class="${className}">${unittedValue}</td>`
 }
 
 function formatUnitValue(unit: '%' | 'р.' | null, value: string | number) {
