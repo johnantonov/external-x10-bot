@@ -10,6 +10,7 @@ export class User {
   notification_time: number | null;
   added_at: string;
   last_report_call: number | null;
+  tax: number | null;
 
   [key: string]: any;
 
@@ -18,13 +19,9 @@ export class User {
     this.username = data.from?.username
     this.wb_api_key = data.message_id
     this.type = data.text;
-    this.article = data.message_id
     this.notification_time = null
     this.added_at = `${new Date()}`
     this.last_report_call = null
+    this.tax = data.tax
   }
-}
-
-export interface UserData {
-
 }

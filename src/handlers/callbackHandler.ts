@@ -175,24 +175,37 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'change time':
-      const timeCallback = userCallbackData.split('?')
-      const selectedTime = timeCallback[timeCallback.length-1]
-
-      // если нет время в коллбэке, генерируем клавиатуру, при нажатии на время вернется тот же колбэк но уже с selectedTime
-      if (!selectedTime) { 
-        editData = { text: texts.chooseTime, options: { inline_keyboard: generateReportTimeButtons(userCallbackData) } }
-      } else {
-        await users_db.updateNotificationTime(chat_id, selectedTime);
-        await articles_db.updateNotificationTime(chat_id, selectedTime)
-        const timeSuccessText = `${texts.successNewTime} ${selectedTime}:00`
-
-        if (userCallbackData.startsWith(CallbackData.chooseTime)) { 
-          editData = createEditData(timeSuccessText + '\n\n' + texts.allReady, btn('getAllReportNow'))
+      try {
+        const timeCallback = userCallbackData.split('?')
+        const selectedTime = timeCallback[timeCallback.length-1]
+  
+        // если нет время в коллбэке, генерируем клавиатуру, при нажатии на время вернется тот же колбэк но уже с selectedTime
+        if (!selectedTime) { 
+          editData = { text: texts.chooseTime, options: { inline_keyboard: generateReportTimeButtons(userCallbackData) } }
         } else {
-          if (mainBtn) editData = createEditData(timeSuccessText, mainBtn)
-        }
-        
-      };
+          await users_db.updateNotificationTime(chat_id, selectedTime);
+          await articles_db.updateNotificationTime(chat_id, selectedTime)
+          const timeSuccessText = `${texts.successNewTime} ${selectedTime}:00`
+  
+          if (userCallbackData.startsWith(CallbackData.chooseTime)) { 
+            editData = createEditData(timeSuccessText + '\n\n' + texts.allReady, btn('getAllReportNow'))
+          } else {
+            if (mainBtn) editData = createEditData(timeSuccessText, mainBtn)
+          }
+        }; 
+      } catch(e) {
+        console.error('Error changing time: ', e)
+      }
+      break;
+
+    case 'selfcost': 
+      try {
+        await RediceService.setUserState(chat_id, rStates.waitSelfCost + "?" + callbackObj.art)
+        editData = createEditData(texts.updateSelfcost, returnBtn);
+      } catch(e) {
+        editData = createEditData(texts.errorAddLater, returnBtn);
+        console.error("Error processing new selfcost: ", e)
+      }
       break;
 
     default:

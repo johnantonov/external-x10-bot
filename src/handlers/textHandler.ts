@@ -17,8 +17,7 @@ export async function handleMenuCommand(UserMsg: UserMsg, chat_id: number, text:
 
 export async function handleUserState(chat_id: number, msgs: MessageMS[], userTextMessage: UserMsg) {
   const userState = await RediceService.getUserState(chat_id);
-  console.log(userState)
-
+  
   if (userState) {
     const response = await bot.sendMessage(chat_id, "Проверяем...⌛️");
     const answer: AwaitingAnswer = await awaitingHandler(userTextMessage, userState);

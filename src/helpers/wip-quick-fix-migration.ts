@@ -24,7 +24,6 @@ export const migrations = [
             sales JSONB,
             other_cost DECIMAL,
             order_info JSONB,
-            mark DECIMAL,
             tax DECIMAL,
             percent_buys DECIMAL,
             percent_mp DECIMAL,

@@ -8,7 +8,6 @@ export interface SKU {
   marketing_cost: Record<string, any>;
   sales: Record<string, any>
   other_cost: number;
-  mark: number;
   tax: string;
   percent_buys: number;
   percent_mp: number;

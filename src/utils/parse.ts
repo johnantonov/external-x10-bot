@@ -5,6 +5,18 @@ export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
 }
 
+export function parseSum(input: string | number): number {
+  if (!input) {
+    return 0;
+  }
+
+  let str = input.toString().toLowerCase().replace(',', '.').trim();
+  let match = str.match(/[0-9]*\.?[0-9]+/);
+  
+  return match ? parseFloat(match[0]) : 0;
+}
+
+
 export function parsePercent(input: string | number): number {
   if (!input) {
     return 0;

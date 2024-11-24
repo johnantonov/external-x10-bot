@@ -5,9 +5,8 @@ import dotenv from 'dotenv';
 import { articles_db } from "../../database/models/articles";
 import jwt from 'jsonwebtoken'; 
 import { texts } from "../components/texts";
-import { parsePercent } from "../utils/parse";
+import { parsePercent, parseSum } from "../utils/parse";
 import { user_type } from "../dto/user";
-import { RediceService } from "../bot";
 
 dotenv.config();
 
@@ -95,13 +94,23 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     } else if (state === rStates.waitTax) {
       try {
         const type = (await users_db.getUserById(chat_id))?.type
-        const formattingTax = parsePercent(+text)
+        const formattingTax = parsePercent(text)
         await articles_db.updateTax(chat_id, formattingTax)
         const resText = type === 'waitTax' ? texts.settedTax : texts.updatedTax
         const resType: user_type = type === 'waitTax' ? 'preregistered' : 'registered'
         return new AwaitingAnswer({ result: true, text: resText, type: resType });
       } catch (e) {
         console.error('Error processing add tax: ', e)
+        return handleError(texts.error);
+      }
+    } else if (state.startsWith(rStates.waitSelfCost)) {
+      try {
+        const article = state.split('?')[1]
+        const formattingCost = parseSum(text)
+        await articles_db.updateSelfCost(chat_id, article, formattingCost)
+        return new AwaitingAnswer({ result: true, text: texts.addedSelfcost, type: 'registered' });
+      } catch (e) {
+        console.error('Error processing update self cost: ', e)
         return handleError(texts.error);
       }
     }

@@ -65,6 +65,10 @@ export class CallbackProcessor {
       return "new menu";
     }
 
+    if (this.isNewSelfcost()) {
+      return "selfcost";
+    }
+
     if (this.getAllReportNow()) {
       return "get all reports";
     }
@@ -122,6 +126,10 @@ export class CallbackProcessor {
 
   private isNewMenu(): boolean {
     return this.userCallbackData.startsWith(CallbackData.returnNewMenu as string)
+  }
+
+  private isNewSelfcost(): boolean {
+    return this.userCallbackData.startsWith(CallbackData.editSelfCost as string)
   }
 
   private getAllReportNow(): boolean {
