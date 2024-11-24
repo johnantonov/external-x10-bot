@@ -45,10 +45,10 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
     dayRows += `<tr>${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
 
     config.pdf.cols.forEach((col, index) => {
-      const classNames = col.class[index];
-      const unit = col.unit[index] as 'р.' | '%' | null
-      const toFixedVal = col?.toFixed
-      col.source(day).forEach(source => {
+      col.source(day).forEach((source, index) => {
+        const classNames = col.class[index];
+        const unit = col.unit[index] as 'р.' | '%' | null
+        const toFixedVal = col?.toFixed
         const value = getSkuData(data, source)
         const cell = generateCell(classNames, value, unit, toFixedVal)
         dayRows += cell
