@@ -132,7 +132,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case "update tax":
       try {
-        await RediceService.setUserState(chat_id, state)
+        await RediceService.setUserState(chat_id, rStates.waitTax)
         if (type === 'waitTax') {
           editData = createEditData(texts.addedSku);
         } else {
