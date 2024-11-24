@@ -50,6 +50,12 @@ export const CSS = (cols: number) => `
     .br {
       border-right: ${specialBorder};
     }
+    .bt {
+      border-top: ${specialBorder};
+    }
+    .bb {
+      border-bottom: ${specialBorder};
+    }
     .b {
       border-top: ${specialBorder};
       border-right: ${specialBorder};

@@ -18,6 +18,7 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
       marginBottom: '1mm',
       marginLeft: '1mm',
       marginRight: '1mm',
+      orientation: 'Landscape' as 'Landscape',
       disableJavascript: false,
       images: true,
     };
