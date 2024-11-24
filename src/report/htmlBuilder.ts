@@ -59,15 +59,10 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
   return dayRows;
 };
 
-enum TotalType {
-  Number = 'number',
-  Array = 'array',
-}
-
 export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}`[]) => {
   const dayCount = config.pdf.tableDays;
   
-  const total: { [key: number]: number | number[] } = {};
+  const total: { [key: string]: number | number[] } = {};
   let totalRow = ``;
 
   for (let i = dayCount; i > 0; i--) {
@@ -76,19 +71,20 @@ export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}
     config.pdf.cols.forEach((col) => {
       col.source(day).forEach((source, index) => {
         const value = getSkuData(data, source);
+        const key = `${index}${i}`
 
         if (index === 0) {
           if (col.totalType === 'array') {
-            total[index] = [];
+            total[key] = [];
           } else {
-            total[index] = 0;
+            total[key] = 0;
           }
         }
 
-        if (typeof total[index] === 'number') {
-          total[index] += value
+        if (typeof total[key] === 'number') {
+          total[key] += value
         } else {
-          total[index].push(value)
+          total[key].push(value)
         }
       });
     })
