@@ -101,7 +101,7 @@ export class CallbackProcessor {
   }
 
   private isTaxState(): boolean {
-    return this.userCallbackData === rStates.waitTax;
+    return this.userCallbackData === CallbackData.editTax;
   }
 
   private isReturnArticleMenu(): boolean {
