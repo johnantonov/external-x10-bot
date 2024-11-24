@@ -118,6 +118,7 @@ export async function calculateLogisticsStorage(sizesNms: Record<article, Record
 export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
   try {
     const stats = data.order_info?.[date];
+    // console.log(JSON/stats)
   
     const tax = parsePercent(sku?.tax);
     const acquiring = config.acquiring || 0.015;
