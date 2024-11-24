@@ -6,7 +6,7 @@ import { getReportFormatDay } from "../utils/time";
 
 export const generateTable = (header: string, dayRows: string, totalRow: string): string => `
   <table class="b">
-    <thead class="br">${header}</thead>
+    <thead class="b">${header}</thead>
     <tbody class="br">${dayRows}${totalRow}</tbody>
   </table>
 `;
