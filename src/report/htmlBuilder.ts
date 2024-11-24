@@ -17,11 +17,11 @@ export const generateTableHeader = (data: SKU): string => {
 
   config.pdf.cols.forEach((col) => {
     const bg = col.headBg || '#ffffff'; 
-    cells += `<th rowspan="${rs}" colspan="${col.colspan}" style="background:${bg}" class="${col.class.join(' ')}">${col.title}</th>`;
+    cells += `<th rowspan="${rs}" colspan="${col.colspan}" style="background:${bg}" class="${col.class.join(' ')}  b">${col.title}</th>`;
   });
 
   return `
-    <tr class="header b">
+    <tr class="header">
       <th class="no_border" rowspan="${rs}" colspan="${config.pdf.skuCol}">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
       ${cells}
     </tr>`

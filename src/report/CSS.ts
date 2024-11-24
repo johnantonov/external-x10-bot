@@ -1,4 +1,4 @@
-const mainWidth = 1600
+const mainWidth = 2000
 const fontFamily = `Arial, sans-serif`
 const fontSize = 30
 const noBorder = `none !important`;
@@ -11,9 +11,9 @@ const headFontStyle = 'bold'
 
 export const CSS = (cols: number) => `
   <style>
-  * {
-    border-collapse: collapse;
-  }
+    * {
+      border-collapse: collapse;
+    }
     body {
       font-family: ${fontFamily};
       font-size: ${fontSize}px !important;
