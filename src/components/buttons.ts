@@ -75,6 +75,7 @@ export const CallbackData = {
 export const mainButtons = {
   returnMain: { text: '🔙 Вернуться в главное меню', callback_data: CallbackData.returnMain },
   returnNewMenu: { text: '↩️ Меню', callback_data: CallbackData.returnNewMenu },
+  returnFaq: { text: '↩️ FAQ', callback_data: CallbackData.faq },
   getAllReportNow: { text: '📂 Сформировать отчет', callback_data: CallbackData.getAllReportNow },
   newSku: { text: '➕ Добавить SKU', callback_data: CallbackData.newSku },
   newTax: { text: '💸 Изменить % налога', callback_data: CallbackData.editTax },
