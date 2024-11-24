@@ -27,7 +27,7 @@ export const config = {
     get cols() {
       return [
         { title: 'Клики\nАРК',
-           unit: null, 
+           unit: [null], 
            colspan: 1, 
            headBg: '#fff2cc',
            condFormat: [false],
@@ -35,15 +35,16 @@ export const config = {
            source(day: DateKey){ return [`marketing_cost.${day}.ark.clicks`]} }, 
 
         { title: "CTR\nАРК",
-           unit: "%", 
+           unit: ["%"], 
            colspan: 1, 
+           toFixed: 2, 
            headBg: '#fff2cc',
            condFormat: [true],
            class: ['br'],
            source(day: DateKey){ return [`other_metricks.${day}.ctrArk`]} },
 
         { title: "Клики\nПРК",
-           unit: null, 
+           unit: [null], 
            colspan: 1, 
            headBg: '#fff2cc',
            condFormat: [false],
@@ -51,15 +52,16 @@ export const config = {
            source(day: DateKey){ return [`marketing_cost.${day}.prk.clicks`]} },
 
         { title: "CTR\nПРК",
-           unit: "%", 
+           unit: ["%"], 
            colspan: 1, 
+           toFixed: 2, 
            headBg: '#fff2cc',
            condFormat: [true],
            class: ['br'],
            source(day: DateKey){ return [`other_metricks.${day}.ctrPrk`]} },
 
         { title: "Корз.",
-           unit: null, 
+           unit: [null], 
            colspan: 1, 
            headBg: '#c9daf8',
            condFormat: [true],
@@ -67,7 +69,7 @@ export const config = {
            source(day: DateKey){ return [`order_info.${day}.addToCartCount`]} },
 
         { title: "Заказы",
-           unit: null, 
+           unit: [null, 'р.'], 
            colspan: 2,
            headBg: '#c9daf8',
            condFormat: [false, true],
@@ -75,7 +77,7 @@ export const config = {
            source(day: DateKey){ return [`order_info.${day}.ordersCount`, `order_info.${day}.ordersSum`]} },
 
         { title: "Выкупы",
-           unit: null,
+           unit: [null, 'р.'], 
            colspan: 2, 
            headBg: '#c9daf8',
            condFormat: [false, true],
@@ -83,7 +85,7 @@ export const config = {
            source(day: DateKey){ return [`order_info.${day}.ordersCount`, `order_info.${day}.ordersSum`]}  },
 
         { title: "Расходы\nреклама",
-           unit: "р.", 
+           unit: ["р."], 
            colspan: 1, 
            headBg: '#f4cccc',
            condFormat: [false],
@@ -91,7 +93,7 @@ export const config = {
            source(day: DateKey){ return [`marketing_cost.${day}.cost`]} },
 
         { title: "ДРР",
-           unit: "%", 
+           unit: ["%"], 
            colspan: 1, 
            headBg: '#f4cccc',
            condFormat: [true],
@@ -99,7 +101,7 @@ export const config = {
            source(day: DateKey){ return [`other_metricks.${day}.drr`]} },
 
         { title: "Маржа",
-           unit: "%", 
+           unit: ["%"], 
            colspan: 1, 
            headBg: '#d9ead3',
            condFormat: [false],
@@ -107,7 +109,7 @@ export const config = {
            source(day: DateKey){ return  [`other_metricks.${day}.margin`]} },
 
         { title: "Прибыль\nдо ДРР",
-           unit: "р.", 
+           unit: ["р."], 
            colspan: 1, 
            headBg: '#d9ead3',
            condFormat: [false],
@@ -115,7 +117,7 @@ export const config = {
            source(day: DateKey){ return [`other_metricks.${day}.revWithoutDrr`]} },
 
         { title: "Прибыль\nс ДРР",
-           unit: "р.", 
+           unit: ["р."], 
            colspan: 1, 
            headBg: '#d9ead3',
            condFormat: [true],
@@ -123,7 +125,7 @@ export const config = {
            source(day: DateKey){ return [`other_metricks.${day}.revWithDrr`]} },
 
         { title: "КРРР",
-           unit: "%", 
+           unit: ["%"], 
            colspan: 1, 
            headBg: '#d9ead3',
            condFormat: [false],

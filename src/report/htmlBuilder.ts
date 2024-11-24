@@ -42,13 +42,15 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
     const day = days[i];
     const formatDay = getReportFormatDay(day);
 
-    dayRows += `<tr class="row">${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
+    dayRows += `<tr>${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
 
     config.pdf.cols.forEach((col, index) => {
       const classNames = col.class[index];
+      const unit = col.unit[index] as 'р.' | '%' | null
+      const toFixedVal = col?.toFixed
       col.source(day).forEach(source => {
         const value = getSkuData(data, source)
-        const cell = generateCell(classNames, value, col.unit as 'р.' | '%' | null)
+        const cell = generateCell(classNames, value, unit, toFixedVal)
         dayRows += cell
       })
     })
