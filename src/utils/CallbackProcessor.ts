@@ -3,7 +3,6 @@ import { CallbackAction } from "../dto/callback";
 import { user_type } from "../dto/user";
 import { rStates } from "../redis";
 
-
 export class CallbackProcessor {
   private userCallbackData: string;
   private userType: user_type | null;
