@@ -44,12 +44,12 @@ const generateDayRows = (data: SKU, imgSrc: string | null): string => {
 
 const generateTableHeader = (data: SKU): string => {
   const rs = config.pdf.headerRowspan
-
   let cells = ``
 
   config.pdf.cols.forEach(col => {
-    cells += `<th rowspan="${rs}" colspan="${col.colspan.length}" class="${col.class.join(' ')}">${col.title}/th>`
-  })
+    const bg = col.headBg || '#ffffff'; 
+    cells += `<th rowspan="${rs}" colspan="${col.colspan.length}" style="background:${bg}" class="${col.class.join(' ')}">${col.title}</th>`;
+  });
 
   return `
     <thead class="br">
