@@ -11,7 +11,7 @@ export const migrations = [
             tax DECIMAL,
             notification_time NUMERIC,
             added_at TIMESTAMP DEFAULT NOW(),
-            last_report_call TIMESTAMP,
+            last_report_call TIMESTAMP
         );`,
 
         `CREATE TABLE IF NOT EXISTS articles (
