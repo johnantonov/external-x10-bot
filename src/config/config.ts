@@ -68,18 +68,18 @@ export const config = {
 
         { title: "Заказы",
            unit: null, 
-           colspan: 2,
+           colspan: 4,
            headBg: '#c9daf8',
            condFormat: [false, true],
-           class: ['br'],
+           class: ['', 'br'],
            source(day: DateKey){ return [`order_info.${day}.ordersCount`, `order_info.${day}.ordersSum`]} },
 
         { title: "Выкупы",
            unit: null,
-           colspan: 2, 
+           colspan: 4, 
            headBg: '#c9daf8',
            condFormat: [false, true],
-           class: ['br'],
+           class: [''],
            source(day: DateKey){ return [`order_info.${day}.ordersCount`, `order_info.${day}.ordersSum`]}  },
 
         { title: "Расходы\nреклама",
@@ -87,7 +87,7 @@ export const config = {
            colspan: 1, 
            headBg: '#f4cccc',
            condFormat: [false],
-           class: [''],
+           class: ['bl'],
            source(day: DateKey){ return [`marketing_cost.${day}.cost`]} },
 
         { title: "ДРР",

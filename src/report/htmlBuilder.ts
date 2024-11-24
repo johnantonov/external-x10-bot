@@ -15,9 +15,9 @@ export const generateTableHeader = (data: SKU): string => {
   const rs = config.pdf.headerRowspan
   let cells = ``
 
-  config.pdf.cols.forEach(col => {
+  config.pdf.cols.forEach((col, index) => {
     const bg = col.headBg || '#ffffff'; 
-    cells += `<th rowspan="${rs}" colspan="${col.colspan}" style="background:${bg}" class="${col.class.join(' ')}">${col.title}</th>`;
+    cells += `<th rowspan="${rs}" colspan="${col.colspan}" style="background:${bg}" class="${col.class[index]}">${col.title}</th>`;
   });
 
   return `
@@ -44,8 +44,8 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
 
     dayRows += `<tr class="row">${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
 
-    config.pdf.cols.forEach(col => {
-      const classNames = col.class.join(' ');
+    config.pdf.cols.forEach((col, index) => {
+      const classNames = col.class[index];
       col.source(day).forEach(source => {
         const value = getSkuData(data, source)
         const cell = generateCell(classNames, value, col.unit as 'р.' | '%' | null)
