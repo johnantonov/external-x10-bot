@@ -66,14 +66,15 @@ export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}
   let totalRow = ``;
 
   for (let i = dayCount; i > 0; i--) {
-    const day = days[i];
+    const day = days[i]; 
 
     config.pdf.cols.forEach((col, colIndex) => {
       col.source(day).forEach((source, index) => {
         const value = getSkuData(data, source);
-        const key = `${colIndex}${i}`
 
-        if (i === dayCount) {
+        const key = `${colIndex}-${i}-${index}`;
+
+        if (!total[key]) {
           if (Array.isArray(col.totalType)) {
             total[key] = [];
           } else {
@@ -87,7 +88,7 @@ export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}
           (total[key] as number[]).push(value);
         }
       });
-    })
+    });
   };
 
   console.log(total);
