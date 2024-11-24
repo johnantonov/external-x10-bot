@@ -9,12 +9,15 @@ export const config = {
 
   pdf: {
     tableDays: 5,
+
     format(unit: '%' | 'р.' | null, value: string | number) {
       if (unit === '%') return `${value}%`
       if (unit === 'р.') return `р.${value}`
       return value
     },
+
     headerRowspan: 2,
+
     get cols() {
       return [
         { title: 'Клики\nАРК', colspan: ['ordersSum', 'ordersCount'], headBg: '#fff2cc', condFormat: [false], class: [''] }, 
@@ -32,9 +35,17 @@ export const config = {
         { title: "КРРР", colspan: ['ordersSum'], headBg: '#d9ead3', condFormat: [false], class: [''] }, 
       ]
     },
+
     formatData(col: any, value: string | number) {
       return this.format(col.unit, value);
     },
+
+    get summaryColSpan() {
+      let count = 0;
+      this.cols.forEach(col => count += col.colspan.length);
+      return count;
+    },
+
     footerText:  `Отчёт подготовлен ботом @bot_123 от команды 10X.\nПолучите подробный отчет по всем SKU вашего кабинета. <b>Бесплатный доступ на 3 дня:</b> @tenXsupport_bot`
   },
 }

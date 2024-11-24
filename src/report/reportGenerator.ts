@@ -27,7 +27,7 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
     <head>
       <meta charset="UTF-8">
       <style>
-       ${CSS}
+       ${CSS(config.pdf.summaryColSpan)}
       </style>
     </head>
     <body>

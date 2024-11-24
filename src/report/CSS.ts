@@ -1,7 +1,7 @@
 const mainWidth = 1400
 const fontFamily = `Arial, sans-serif`
 const fontSize = 16
-const usualBorder = `0.2px solid #AFEEEE`
+const usualBorder = `0.1px dashed #AFEEEE`;
 const usualPadding = `8`
 const cellTextAlign = `center`
 const rowHeight = 30
