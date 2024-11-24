@@ -15,12 +15,13 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
   let days = Object.keys(create31DaysObject()).reverse() as `${number}-${number}-${number}`[];
 
   for (const data of articleData) {
+      console.log(data.article)
       const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
-      const dayRows = generateDayRows(data, imgSrc, days)
+      const dayRows = generateDayRows(data, imgSrc, days);
+      console.log(dayRows)
       const totalRow = ``
       const header = generateTableHeader(data);
       tables += generateTable(header, dayRows, totalRow);
-      console.log(tables)
   }
 
   return `

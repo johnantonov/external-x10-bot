@@ -113,9 +113,7 @@ export class ReportService {
             storage: storage,
           }
 
-          // console.log(articles)
           const currentSku = articles.find(sku => +sku.article === +nm);
-
           let other_metricks: ObjectOther = {}
 
           if (currentSku) {
@@ -123,8 +121,6 @@ export class ReportService {
           } else {
             console.error('Could not find SKU while calculating metrics: ', currentSku, " ", id)
           }
-
-          console.log(currentSku)
           
           newInfoSku.other_metricks = other_metricks
           await articles_db.updateFields(id, +nm, newInfoSku);
@@ -162,7 +158,6 @@ export class ReportService {
     })
 
 
-    console.log(res)
     return res as ObjectOther
   }
 
