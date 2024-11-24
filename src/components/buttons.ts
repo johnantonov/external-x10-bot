@@ -146,7 +146,6 @@ export const articleOptions = async (chat_id: number, article: article) => {
 
   const articleBtns = [
     [articleButtons.editSelfCost(article)],
-    [articleButtons.editTax(article)],
     [articleButtons.deleteArticle(article)],
     [mainButtons.menuAndEdit]
   ]
@@ -204,7 +203,10 @@ export async function generateArticlesButtons(chat_id: number, page: number = 1)
     });
   });
 
-  articleButtons.push([mainButtons.newSku, { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit }]);
+  articleButtons.push(
+    [mainButtons.newSku, mainButtons.newTax],
+    [{ text: '↩️ Меню', callback_data: CallbackData.menuAndEdit }]
+  );
 
   return articleButtons;
 }

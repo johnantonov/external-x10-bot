@@ -16,7 +16,7 @@ import { config } from "../config/config";
 import { images } from "../dto/images";
 import { btn } from "../utils/buttons";
 import { getFaqData } from "../utils/faq";
-import { CallbackProcessor } from "../utils/CallbackProcessor";
+import { CallbackProcessor } from "../utils/callbackProcessor";
 dotenv.config();
 
 /**
@@ -76,7 +76,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'change key':
       await RS.setUserState(chat_id, rStates.waitNewKey, ttls.usual)
-      editData = createEditData(texts.warningChangeKey, returnBtn);
+      editData = createEditData(texts.warningChangeKey, returnBtn, images.apiKey);
       break;
 
     case 'articles':
@@ -144,9 +144,6 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'delete article':
       newButtonCallback = newArticleData(callbackObj);
-
-      console.log(JSON.stringify(newButtonCallback))
-      console.log(JSON.stringify(callbackObj))
 
       if (!callbackObj.action) {
         editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.type + "?" + callbackObj.art));
