@@ -4,7 +4,7 @@ import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import { createEditData, MessageService } from "../services/messageService";
-import { articleOptions, CallbackData, faqButtons, generateArticlesButtons, generateReportTimeButtons, mainButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/buttons";
+import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/buttons";
 import { users_db } from "../../database/models/users";
 import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
