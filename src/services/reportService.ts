@@ -16,8 +16,8 @@ import { updateCommissions } from '../utils/comissions';
 import { commissions_db } from '../../database/models/commissions';
 import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
-import { createReportMessage, getReportHtml } from '../utils/report';
 import { updateBoxTariffs } from '../utils/boxTariffs';
+import { generateReportHtml } from '../report/reportGenerator';
 
 dotenv.config();
 
@@ -479,8 +479,9 @@ export class ReportService {
   }
 
   async processReport(articles: SKU[], yesterdayDate: string, chat_id: number) {
-    const messageText = createReportMessage(articles, yesterdayDate)
-    const htmlTable = await getReportHtml(articles);
+    // const messageText = createReportMessa(articles, yesterdayDate)
+    const messageText = 'test'
+    const htmlTable = await generateReportHtml(articles);
     const pdfBuffer = await generatePdfFromHtml(htmlTable);
     if (pdfBuffer && messageText) {
       const formatYesterdayDate = yesterdayDate.slice(0, 5)
