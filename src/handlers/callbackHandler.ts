@@ -89,8 +89,6 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'add sku':
-      data = parseArticleData(userCallbackData);
-      newButtonCallback = newArticleData(data);
       const maxCount = config.maxSku
       const articlesCount = (await articles_db.getAllSkuForUser(chat_id)).rows.length
       if (articlesCount < maxCount) {

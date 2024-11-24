@@ -74,6 +74,8 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         if (newSku.length === 0) {
           return handleError(texts.errorNoSKU);  
         }
+
+        console.log(newSku)
     
         await articles_db.addSku(chat_id, newSku);  
 
