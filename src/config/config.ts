@@ -70,7 +70,7 @@ export const config = {
 
         { title: "Заказы",
            unit: ['р.', null], 
-           colspan: 2,
+           colspan: 3,
            headBg: '#c9daf8',
            condFormat: [false, true],
            class: ['', 'br'],
@@ -78,7 +78,7 @@ export const config = {
 
         { title: "Выкупы",
            unit: ['р.', null],
-           colspan: 2, 
+           colspan: 3, 
            headBg: '#c9daf8',
            condFormat: [false, true],
            class: [''],

@@ -17,7 +17,7 @@ export const generateTableHeader = (data: SKU): string => {
 
   config.pdf.cols.forEach((col) => {
     const bg = col.headBg || '#ffffff'; 
-    cells += `<th rowspan="${rs}" colspan="${col.colspan > 1 ? col.colspan * 2 : col.colspan}" style="background:${bg}" class="${col.class.join(' ')}">${col.title}</th>`;
+    cells += `<th rowspan="${rs}" colspan="${col.colspan}" style="background:${bg}" class="${col.class.join(' ')}">${col.title}</th>`;
   });
 
   return `
