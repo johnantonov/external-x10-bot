@@ -1,6 +1,6 @@
 const mainWidth = 1600
 const fontFamily = `Arial, sans-serif`
-const fontSize = 24
+const fontSize = 30
 const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
@@ -13,13 +13,13 @@ export const CSS = (cols: number) => `
   <style>
     body {
       font-family: ${fontFamily};
-      font-size: ${fontSize}px;
+      font-size: ${fontSize}px !important;
     }
     table {
       width: ${mainWidth}px !important;
       border-collapse: collapse;
     }
-    .noBorder {
+    .no_border {
       border-top: ${noBorder};
       border-right: ${noBorder};
       border-left: ${noBorder};

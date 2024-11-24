@@ -82,7 +82,7 @@ export const config = {
            headBg: '#c9daf8',
            condFormat: [false, true],
            class: [''],
-           source(day: DateKey){ return [`order_info.${day}.ordersSum`, `order_info.${day}.ordersCount`]}  },
+           source(day: DateKey){ return [`sales.${day}.infoBuysSum`, `sales.${day}.infoBuysCount`]}  },
 
         { title: "Расходы\nреклама",
            unit: ["р."], 
