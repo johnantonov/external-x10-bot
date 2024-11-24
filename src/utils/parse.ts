@@ -8,7 +8,12 @@ export const getPath = (imageName: string) => {
 export function getSkuData(sku: SKU, path: string): any {
   const keys = path.split('.');
 
+  console.log(sku)
+  console.log(path)
+  console.log(keys)
+
   let result: any = sku;
+
   for (let key of keys) {
     if (key in result) {
       result = result[key];
@@ -16,6 +21,8 @@ export function getSkuData(sku: SKU, path: string): any {
       return undefined; 
     }
   }
+
+  console.log(result)
   return result;
 }
 
