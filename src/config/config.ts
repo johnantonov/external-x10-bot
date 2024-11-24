@@ -5,5 +5,5 @@ export const config = {
   turnover: 30,
   returnLogistics: 50,
 
-  maxSku: 10
+  maxSku: 5
 }
