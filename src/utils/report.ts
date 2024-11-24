@@ -278,7 +278,7 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
 Маржа до ДРР: ${calcMargin(rev, buysSumTotal)}%
 Маржа с ДРР: ${calcMargin(revTotal, buysSumTotal)}%
 КРРР: ${isNaN(krrrTotal) ? 0 : krrrTotal}%
-Прибыль с ДРР: ${revTotal.toFixed(0)}₽
+Прибыль с ДРР: ${isNaN(revTotal) ? 0 : revTotal.toFixed(0)}₽
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
