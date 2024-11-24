@@ -74,7 +74,7 @@ export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}
         const key = `${index}${i}`
 
         if (index === 0) {
-          if (col.totalType === 'array') {
+          if (Array.isArray(col.totalType)) {
             total[key] = [];
           } else {
             total[key] = 0;

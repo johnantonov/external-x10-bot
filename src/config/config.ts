@@ -142,7 +142,7 @@ export const config = {
            headBg: '#d9ead3',
            condFormat: [false],
            class: ['br'],
-           totalType: 'array',
+           totalType: [],
            source(day: DateKey){ return [`other_metricks.${day}.krrr`]} }, 
       ]
     },
