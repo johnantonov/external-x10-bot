@@ -6,9 +6,9 @@ import pool from '../../database/db';
 import { create31DaysObject, getXdaysAgoArr, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
-import { SKU, article} from '../dto/sku';
+import { DateKey, MarketingObject, ObjectOther, OtherData, SKU, StatsObject, article} from '../dto/sku';
 import { calculateLogisticsStorage, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
-import { formatError } from '../utils/string';
+import { formatError, NumberOrZero } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/buttons';
 import { conversions_db } from '../../database/models/conversions';
@@ -18,6 +18,8 @@ import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 import { generateReportHtml } from '../report/reportGenerator';
+import { OrderInfo } from 'node-telegram-bot-api';
+import { getCosts } from '../report/dataProcessing';
 
 dotenv.config();
 
@@ -51,7 +53,6 @@ export class ReportService {
 
         const articles = (await articles_db.getAllSkuForUser(id)).rows
 
-
         if (articles.length === 0) {
           console.log('No articles with status ON to fetch advertisement data: ' + id);
           continue;
@@ -79,7 +80,7 @@ export class ReportService {
           advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
         }
 
-        const dates = Object.keys(create31DaysObject())
+        const dates = Object.keys(create31DaysObject()) as DateKey[]
 
         const percent_buys = await this.getBuyPercent(nms, wb_api_key, dates[dates.length-1] + " 23:59:59", dates[0] + " 00:00:00")
         const report = await this.fetchWbStatistics(nms, wb_api_key, percent_buys, dates);
@@ -101,7 +102,7 @@ export class ReportService {
           let vendor = report[nm]?.vendor ?? null;
           let salesObj = sales[nm]
 
-          await articles_db.updateFields(id, +nm, {
+          let newInfoSku: Partial<SKU> = {
             order_info: info,
             sales: salesObj,
             percent_buys: percentBuys,
@@ -110,7 +111,20 @@ export class ReportService {
             vendor_code: vendor,
             logistics: logistics,
             storage: storage,
-          });
+          }
+
+          const currentSku = articles.find(sku => sku.article === nm);
+
+          let other_metricks: ObjectOther = {}
+
+          if (currentSku) {
+            other_metricks = this.calculateOtherMetrics(dates, newInfoSku, currentSku, advRes[nm])
+          } else {
+            console.error('Could not find SKU while calculating metrics: ', currentSku, " ", id)
+          }
+          
+          newInfoSku.other_metricks = other_metricks
+          await articles_db.updateFields(id, +nm, newInfoSku);
         }
 
         console.log(`Report details for articles with chat ID ${id}`);
@@ -119,6 +133,32 @@ export class ReportService {
     } catch (e) {
       formatError(e, 'Error to prerape report service: ')
     }
+  }
+
+  calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku: SKU, marketing: MarketingObject): ObjectOther {
+    let res: ObjectOther = {}
+
+    dates.forEach(date => {
+      if (data.order_info?.[date]) {
+        const marketingCost = NumberOrZero(marketing?.[date]?.cost)
+        const ordersSum = NumberOrZero(data.order_info?.[date].ordersSum)
+        const buysSum = NumberOrZero(data.order_info?.[date].buysSum)
+        const otherCosts = getCosts(data, sku, date)
+
+        const revWithoutDrr = buysSum - otherCosts
+        const revWithDrr = revWithoutDrr - marketingCost
+
+        res[date] = {
+          revWithoutDrr: revWithoutDrr,
+          revWithDrr: revWithDrr,
+          drr: marketingCost / ordersSum,
+          margin: revWithoutDrr / buysSum * 100,
+          krrr: revWithDrr / revWithoutDrr * 100,
+        }
+      }
+    })
+
+    return res as ObjectOther
   }
 
   async getNmSizeInfo(nmIDs: number[], wb_api_key: string) {

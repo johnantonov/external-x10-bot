@@ -1,8 +1,22 @@
 import { resolve } from "path"
-import { article, SKUCallbackData } from "../dto/sku"
+import { article, SKU, SKUCallbackData } from "../dto/sku"
 
 export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
+}
+
+export function getSkuData(sku: SKU, path: string): any {
+  const keys = path.split('.');
+
+  let result: any = sku;
+  for (let key of keys) {
+    if (key in result) {
+      result = result[key];
+    } else {
+      return undefined; 
+    }
+  }
+  return result;
 }
 
 export function parseSum(input: string | number): number {
@@ -17,7 +31,7 @@ export function parseSum(input: string | number): number {
 }
 
 
-export function parsePercent(input: string | number): number {
+export function parsePercent(input: string | number | undefined): number {
   if (!input) {
     return 0;
   }

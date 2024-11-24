@@ -1,9 +1,10 @@
-import { generateTable, generateRow, generateCell, generateTableHeader } from "./htmlBuilder";
+import { generateTable, generateTableHeader, generateDayRows } from "./htmlBuilder";
 import { calculateMetrics } from "./dataProcessing";
 import { fetchAndResizeImage } from "./imageProcessing";
 import { SKU } from "../dto/sku";
 import { CSS } from "./CSS";
 import { config } from "../config/config";
+import { create31DaysObject } from "../utils/time";
 
 export const generateReportHtml = async (articleData: SKU[]): Promise<string> => {
   let tables = ``;
@@ -11,14 +12,14 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
     articleData.unshift({} as SKU);  // для создания таблицы итого
   }
 
+  let days = Object.keys(create31DaysObject()).reverse() as `${number}-${number}-${number}`[];
+
   for (const data of articleData) {
-    if (data.article) {
       const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
-      const dayRows = ``
+      const dayRows = generateDayRows(data, imgSrc, days)
       const totalRow = ``
       const header = generateTableHeader(data);
       tables += generateTable(header, dayRows, totalRow);
-    } 
   }
 
   return `
@@ -37,8 +38,5 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
   `;
 };
 
-const generateDayRows = (data: SKU, imgSrc: string | null): string => {
-  // Реализация генерации строк для дней
-  return ``;
-};
+
 

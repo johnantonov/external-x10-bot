@@ -1,3 +1,5 @@
+import { DateKey } from "../dto/sku"
+
 export const config = {
   storagesForLogistics: ['Коледино', 'Казань', 'Тула'],
   acquiring: 0.015,
@@ -10,6 +12,8 @@ export const config = {
   pdf: {
     tableDays: 5,
     skuCol: 5,
+    photoColspan: 3,
+    dayColspan: 2,
     format(unit: '%' | 'р.' | null, value: string | number) {
       if (unit === '%') return `${value}%`
       if (unit === 'р.') return `р.${value}`
@@ -20,19 +24,19 @@ export const config = {
 
     get cols() {
       return [
-        { title: 'Клики\nАРК', colspan: ['ordersSum', 'ordersCount'], headBg: '#fff2cc', condFormat: [false], class: [''] }, 
-        { title: "CTR\nАРК", colspan: ['ordersSum'], headBg: '#fff2cc', condFormat: [true], class: ['br'] },
-        { title: "Клики\nПРК", colspan: ['ordersSum'], headBg: '#fff2cc', condFormat: [false], class: [''] }, 
-        { title: "CTR\nПРК", colspan: ['ordersSum'], headBg: '#fff2cc', condFormat: [true], class: ['br'] }, 
-        { title: "Корз.", colspan: ['ordersSum'], headBg: '#c9daf8', condFormat: [true], class: ['br'] },
-        { title: "Заказы", colspan: ['ordersSum', 'ordersCount'], headBg: '#c9daf8', condFormat: [false, true], class: ['br']  }, 
-        { title: "Выкупы", colspan: ['buysSum', 'buysCount'], headBg: '#c9daf8', condFormat: [false, true], class: ['br']  }, 
-        { title: "Расходы\nреклама", colspan: ['ordersSum'], headBg: '#f4cccc', condFormat: [false], class: [''] }, 
-        { title: "ДРР", colspan: ['ordersSum'], headBg: '#f4cccc', condFormat: [true], class: ['br'] }, 
-        { title: "Маржа", colspan: ['ordersSum'], headBg: '#d9ead3', condFormat: [false], class: [''] }, 
-        { title: "Прибыль\nдо ДРР", colspan: ['ordersSum'], headBg: '#d9ead3', condFormat: [false], class: [''] }, 
-        { title: "Прибыль\nс ДРР", colspan: ['ordersSum'], headBg: '#d9ead3', condFormat: [true], class: [''] }, 
-        { title: "КРРР", colspan: ['ordersSum'], headBg: '#d9ead3', condFormat: [false], class: [''] }, 
+        { title: 'Клики\nАРК', colspan: 1, headBg: '#fff2cc', condFormat: [false], class: [''], source(day: DateKey){ return `sku.marketing_cost.${day}.ark.clicks`} }, 
+        { title: "CTR\nАРК", colspan: 1, headBg: '#fff2cc', condFormat: [true], class: ['br'], source(day: DateKey){ return `sku.marketing_cost.${day}.ark.ctr`} },
+        { title: "Клики\nПРК", colspan: 1, headBg: '#fff2cc', condFormat: [false], class: [''], source(day: DateKey){ return `sku.marketing_cost.${day}.prk.clicks`} }, 
+        { title: "CTR\nПРК", colspan: 1, headBg: '#fff2cc', condFormat: [true], class: ['br'], source(day: DateKey){ return `sku.marketing_cost.${day}.prk.ctr`} }, 
+        { title: "Корз.", colspan: 1, headBg: '#c9daf8', condFormat: [true], class: ['br'], source(day: DateKey){ return `sku.order_info.${day}.addToCartCount`} },
+        { title: "Заказы", colspan: 2, headBg: '#c9daf8', condFormat: [false, true], class: ['br'], source(day: DateKey){ return `sku.order_info.${day}.addToCartCount`} }, 
+        { title: "Выкупы", colspan: 2, headBg: '#c9daf8', condFormat: [false, true], class: ['br'], source(day: DateKey){ return `sku.order_info.${day}.addToCartCount`}  }, 
+        { title: "Расходы\nреклама", colspan: 1, headBg: '#f4cccc', condFormat: [false], class: [''], source(day: DateKey){ return `sku.marketing_cost.${day}.cost`} }, 
+        { title: "ДРР", colspan: 1, headBg: '#f4cccc', condFormat: [true], class: ['br'], source(day: DateKey){ return `sku.other_metricks.${day}.drr`} }, 
+        { title: "Маржа", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return  `sku.other_metricks.${day}.margin`} }, 
+        { title: "Прибыль\nдо ДРР", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return `sku.other_metricks.${day}.revWithoutDrr`} }, 
+        { title: "Прибыль\nс ДРР", colspan: 1, headBg: '#d9ead3', condFormat: [true], class: [''], source(day: DateKey){ return `sku.other_metricks.${day}.revWithDrr`} }, 
+        { title: "КРРР", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return `sku.other_metricks.${day}.krrr`} }, 
       ]
     },
 
@@ -42,7 +46,7 @@ export const config = {
 
     get summaryColSpan() {
       let count = this.skuCol;
-      this.cols.forEach(col => count += col.colspan.length);
+      this.cols.forEach(col => count += col.colspan);
       return count;
     },
 

@@ -53,13 +53,13 @@ export function getXDaysPeriod(X: number) {
  * create objects as { "2024-09-30": info } 
  */
 export function create31DaysObject() {
-  const daysObj: Record<string, any> = {};
+  const daysObj: Record<`${number}-${number}-${number}`, any> = {};
   const today = new Date();
 
   for (let i = 0; i < 31; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = date.toISOString().split('T')[0] as `${number}-${number}-${number}`;
     daysObj[dateString] = 0;
   }
 
@@ -101,6 +101,12 @@ export function sortObjDatesEntries(obj: Record<string, any>) {
   );
 }
 
+export function getReportFormatDay(day: string) {
+  const dayParts = day.slice(5).split('-');
+  const formatDay = `${dayParts[1]}.${dayParts[0]}`;
+  return formatDay;
+}
+
 /**
  * проверяет доступен ли пользователю отчет
  */
@@ -116,3 +122,4 @@ export function isReportAvailable(lastTime: User['last_report_call']) {
   return true
   return timeDiffMinutes >= config.reportStopTime;
 }
+

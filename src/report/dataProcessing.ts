@@ -1,9 +1,9 @@
 import { config } from "../config/config";
-import { SKU } from "../dto/sku";
+import { DateKey, SKU } from "../dto/sku";
 import { parsePercent } from "../utils/parse";
 import { NumberOrZero } from "../utils/string";
 
-export const calculateMetrics = (data: SKU, day: string) => {
+export const calculateMetrics = (data: SKU, day: DateKey) => {
   const marketing = data?.marketing_cost || {};
   const prk = marketing?.[day]?.prk || { clicks: 0, views: 0 };
   const ark = marketing?.[day]?.ark || { clicks: 0, views: 0 };
@@ -11,18 +11,18 @@ export const calculateMetrics = (data: SKU, day: string) => {
   const ctrArk = (ark.clicks / ark.views) || 0;
   const ctrPrk = (prk.clicks / prk.views) || 0;
 
-  const marketingCost = parseFloat(marketing?.[day]?.cost) || 0;
+  const marketingCost = NumberOrZero(marketing?.[day]?.cost)
   const stats = data.order_info?.[day] || {};
-  const rev = (stats.buysSum || 0) - getCosts(data, day);
+  // const rev = (stats.buysSum || 0) - getCosts(data, day);
 
-  return { ctrArk, ctrPrk, marketingCost, rev };
+  // return { ctrArk, ctrPrk, marketingCost, rev };
 };
 
-export function getCosts(data: SKU, date: string): number {
+export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
   try {
     const stats = data.order_info?.[date];
   
-    const tax = parsePercent(data?.tax);
+    const tax = parsePercent(sku?.tax);
     const acquiring = config.acquiring || 0.015;
     const commission = parsePercent(data.order_info?.commission);
   
@@ -32,7 +32,7 @@ export function getCosts(data: SKU, date: string): number {
     const commissionCost = NumberOrZero(stats?.buysSum) * commission;
     const storageCost = NumberOrZero(stats?.buysCount) * NumberOrZero(data?.storage) * config.turnover;
 
-    const logisticsBase = (config.returnLogistics / (data.percent_buys / 100) - config.returnLogistics) + (data.logistics / (data.percent_buys / 100))
+    const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
     const logisticsCost = NumberOrZero(stats?.buysCount) * logisticsBase
   
     return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;

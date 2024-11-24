@@ -1,31 +1,87 @@
-export interface SKU {
-  stats: any;
-  article: article;
-  chat_id: number;
-  wb_api_key: string;
-  notification_time?: number;
-  self_cost: number;
-  marketing_cost: Record<string, any>;
-  sales: Record<string, any>
-  other_cost: number;
-  tax: string;
-  percent_buys: number;
-  percent_mp: number;
-  price_before_spp: number;
-  logistics: number;
-  storage: number;
-  size: number;
-  order_info: Record<any, any>;
-  vendor_code: string | number;
-}
-
-export type article = number | string;
-
 export interface SKUCallbackData {
   type?: string;
   art: article;
   action?: string;
 }
 
+export interface SKU {
+  article: article;
+  chat_id: number;
+  wb_api_key: string;
+  notification_time?: number;
+  self_cost: number;
+  marketing_cost: MarketingObject;
+  sales: SalesObject;
+  other_metricks?: ObjectOther;
+  order_info: StatsObject;
+  tax: number;
+  percent_buys: number;
+  percent_mp: number;
+  price_before_spp: number;
+  logistics: number;
+  storage: number;
+  size: BoxDimensions;
+  vendor_code: string;
+}
+
+export type article = number | string;
+
+export type DateKey = `${number}-${number}-${number}`; 
+
+export type MarketingData = {
+  ark: {
+    views: number;
+    clicks: number;
+  };
+  prk: {
+    views: number;
+    clicks: number;
+  };
+  cost: number;
+};
+export type MarketingObject = Record<DateKey, MarketingData>;
+
+export type SalesObject = Record<DateKey, number>;
+
+export type DayData = {
+  buysSum: number;
+  buysCount: number;
+  ordersSum: number;
+  ordersCount: number;
+  addToCartCount: number;
+};
+
+export type Metrics = {
+  commission: number;
+  cart_to_order: number;
+  click_to_cart: number;
+  ordersCount30: number;
+  buyoutsPercent: number;
+  fullConversion: string;
+  addToCartPercent: number;
+  cartToOrderPercent: number;
+};
+
+export type StatsObject = Record<DateKey, DayData> & Metrics;
+
+export type BoxDimensions = {
+  width: number;
+  height: number;
+  length: number;
+  isValid: boolean;
+  literSize: number;
+};
+
+
+export type ObjectOther = Record<DateKey, OtherData>;
+export type OtherData = {
+  drr: number,
+  margin: number, 
+  revWithoutDrr: number,
+  revWithDrr: number, 
+  krrr: number,
+}
+
+// test 190552356
 
 

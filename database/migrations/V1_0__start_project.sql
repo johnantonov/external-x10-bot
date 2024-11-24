@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS articles (
     self_cost DECIMAL,
     marketing_cost JSONB,
     sales JSONB,
-    other_cost DECIMAL,
+    other_metricks JSONB,
     order_info JSONB,
     tax DECIMAL,
     percent_buys DECIMAL,
