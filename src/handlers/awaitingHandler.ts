@@ -77,7 +77,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     
         const successAdded = await articles_db.addSku(chat_id, newSku);  
 
-        if (state === rStates.waitSkuOldUser && successAdded > 0) {
+        if (state === rStates.waitSkuOldUser) {
           return new AwaitingAnswer({ 
             result: successAdded > 0 ? true : false,
             text: successAdded > 0 ? texts.addedSkuOld(successAdded) : texts.errorAddNewSku,
