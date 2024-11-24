@@ -23,7 +23,7 @@ export const generateTableHeader = (data: SKU): string => {
   return `
     <tr class="header b">
       <th class="no_border" rowspan="${rs}" colspan="${config.pdf.skuCol}">${data?.article || ''}<br>${data?.vendor_code  || ''}</th>
-      <div class="b">${cells}</div>
+      ${cells}
     </tr>`
 };
 

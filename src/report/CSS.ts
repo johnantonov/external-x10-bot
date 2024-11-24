@@ -11,6 +11,9 @@ const headFontStyle = 'bold'
 
 export const CSS = (cols: number) => `
   <style>
+  * {
+    border-collapse: collapse;
+  }
     body {
       font-family: ${fontFamily};
       font-size: ${fontSize}px !important;
@@ -20,10 +23,10 @@ export const CSS = (cols: number) => `
       border-collapse: collapse;
     }
     .no_border {
-      border-top: ${noBorder};
-      border-right: ${noBorder};
-      border-left: ${noBorder};
-      border-bottom: ${noBorder};
+      border-top: ${noBorder} !important;
+      border-right: ${noBorder} !important;
+      border-left: ${noBorder} !important;
+      border-bottom: ${noBorder} !important;
     }
     
     td {
