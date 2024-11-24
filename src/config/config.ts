@@ -14,34 +14,24 @@ export const config = {
     skuCol: 5,
     photoColspan: 3,
     dayColspan: 2,
-    format(unit: '%' | 'р.' | null, value: string | number) {
-      if (unit === '%') return `${value}%`
-      if (unit === 'р.') return `р.${value}`
-      return value
-    },
-
     headerRowspan: 2,
 
     get cols() {
       return [
-        { title: 'Клики\nАРК', colspan: 1, headBg: '#fff2cc', condFormat: [false], class: [''], source(day: DateKey){ return `marketing_cost.${day}.ark.clicks`} }, 
-        { title: "CTR\nАРК", colspan: 1, headBg: '#fff2cc', condFormat: [true], class: ['br'], source(day: DateKey){ return `other_metricks.${day}.ctrArk`} },
-        { title: "Клики\nПРК", colspan: 1, headBg: '#fff2cc', condFormat: [false], class: [''], source(day: DateKey){ return `marketing_cost.${day}.prk.clicks`} }, 
-        { title: "CTR\nПРК", colspan: 1, headBg: '#fff2cc', condFormat: [true], class: ['br'], source(day: DateKey){ return `other_metricks.${day}.ctrPrk`} }, 
-        { title: "Корз.", colspan: 1, headBg: '#c9daf8', condFormat: [true], class: ['br'], source(day: DateKey){ return `order_info.${day}.addToCartCount`} },
-        { title: "Заказы", colspan: 2, headBg: '#c9daf8', condFormat: [false, true], class: ['br'], source(day: DateKey){ return `order_info.${day}.addToCartCount`} }, 
-        { title: "Выкупы", colspan: 2, headBg: '#c9daf8', condFormat: [false, true], class: ['br'], source(day: DateKey){ return `order_info.${day}.addToCartCount`}  }, 
-        { title: "Расходы\nреклама", colspan: 1, headBg: '#f4cccc', condFormat: [false], class: [''], source(day: DateKey){ return `marketing_cost.${day}.cost`} }, 
-        { title: "ДРР", colspan: 1, headBg: '#f4cccc', condFormat: [true], class: ['br'], source(day: DateKey){ return `other_metricks.${day}.drr`} }, 
-        { title: "Маржа", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return  `other_metricks.${day}.margin`} }, 
-        { title: "Прибыль\nдо ДРР", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return `other_metricks.${day}.revWithoutDrr`} }, 
-        { title: "Прибыль\nс ДРР", colspan: 1, headBg: '#d9ead3', condFormat: [true], class: [''], source(day: DateKey){ return `other_metricks.${day}.revWithDrr`} }, 
-        { title: "КРРР", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return `other_metricks.${day}.krrr`} }, 
+        { title: 'Клики\nАРК', unit: null, colspan: 1, headBg: '#fff2cc', condFormat: [false], class: [''], source(day: DateKey){ return `marketing_cost.${day}.ark.clicks`} }, 
+        { title: "CTR\nАРК", unit: "%", colspan: 1, headBg: '#fff2cc', condFormat: [true], class: ['br'], source(day: DateKey){ return `other_metricks.${day}.ctrArk`} },
+        { title: "Клики\nПРК", unit: null, colspan: 1, headBg: '#fff2cc', condFormat: [false], class: [''], source(day: DateKey){ return `marketing_cost.${day}.prk.clicks`} }, 
+        { title: "CTR\nПРК", unit: "%", colspan: 1, headBg: '#fff2cc', condFormat: [true], class: ['br'], source(day: DateKey){ return `other_metricks.${day}.ctrPrk`} }, 
+        { title: "Корз.", unit: null, colspan: 1, headBg: '#c9daf8', condFormat: [true], class: ['br'], source(day: DateKey){ return `order_info.${day}.addToCartCount`} },
+        { title: "Заказы", unit: null, colspan: 2, headBg: '#c9daf8', condFormat: [false, true], class: ['br'], source(day: DateKey){ return `order_info.${day}.addToCartCount`} }, 
+        { title: "Выкупы", unit: null, colspan: 2, headBg: '#c9daf8', condFormat: [false, true], class: ['br'], source(day: DateKey){ return `order_info.${day}.addToCartCount`}  }, 
+        { title: "Расходы\nреклама", unit: "р", colspan: 1, headBg: '#f4cccc', condFormat: [false], class: [''], source(day: DateKey){ return `marketing_cost.${day}.cost`} }, 
+        { title: "ДРР", unit: "%", colspan: 1, headBg: '#f4cccc', condFormat: [true], class: ['br'], source(day: DateKey){ return `other_metricks.${day}.drr`} }, 
+        { title: "Маржа", unit: "р", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return  `other_metricks.${day}.margin`} }, 
+        { title: "Прибыль\nдо ДРР", unit: "р", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return `other_metricks.${day}.revWithoutDrr`} }, 
+        { title: "Прибыль\nс ДРР", unit: "р", colspan: 1, headBg: '#d9ead3', condFormat: [true], class: [''], source(day: DateKey){ return `other_metricks.${day}.revWithDrr`} }, 
+        { title: "КРРР", unit: "%", colspan: 1, headBg: '#d9ead3', condFormat: [false], class: [''], source(day: DateKey){ return `other_metricks.${day}.krrr`} }, 
       ]
-    },
-
-    formatData(col: any, value: string | number) {
-      return this.format(col.unit, value);
     },
 
     get summaryColSpan() {

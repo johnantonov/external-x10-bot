@@ -42,7 +42,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
     config.pdf.cols.forEach(col => {
       const classNames = col.class.join(' ');
       const value = getSkuData(data, col.source(day))
-      const cell = generateCell(classNames, value)
+      const cell = generateCell(classNames, value, col.unit as 'р.' | '%' | null)
       dayRows += cell
     })
 
@@ -52,6 +52,14 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
   return dayRows;
 };
 
-function generateCell(className: string, value: any, toFixedVal: number = 0): string {
-  return `<td class=${className}>${formatNumber(value, toFixedVal)}</td>`
+function generateCell(className: string, value: any, unit: 'р.' | '%' | null, toFixedVal: number = 0): string {
+  const formattedValue = formatNumber(value, toFixedVal)
+  const unittedValue = formatUnitValue(unit, formattedValue)
+  return `<td class=${className}>${unittedValue}</td>`
+}
+
+function formatUnitValue(unit: '%' | 'р.' | null, value: string | number) {
+  if (unit === '%') return `${value}%`
+  if (unit === 'р.') return `р.${value}`
+  return value
 }
