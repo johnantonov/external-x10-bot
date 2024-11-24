@@ -19,12 +19,13 @@ export const CSS = (cols: number) => `
       width: ${mainWidth}px !important;
       border-collapse: collapse;
     }
-    noBorder {
+    .noBorder {
       border-top: ${noBorder};
       border-right: ${noBorder};
       border-left: ${noBorder};
       border-bottom: ${noBorder};
     }
+    
     td {
       white-space: nowrap;
       height: ${rowHeight};
