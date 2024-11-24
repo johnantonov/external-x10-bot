@@ -116,6 +116,10 @@ export const returnNewMenu = () => {
   return new Options([[mainButtons.returnNewMenu]]).reply_markup
 }
 
+export const returnFaq = () => {
+  return new Options([[mainButtons.returnFaq]]).reply_markup
+}
+
 /**
  * returns main options for new or registred user
  * @param {boolean} waitReport - if user wait all reports change btn to loading text

@@ -1,11 +1,11 @@
-import { CallbackData, faqButtons, Options, returnMenu } from "../components/buttons";
+import { CallbackData, faqButtons, Options, returnFaq } from "../components/buttons";
 import { texts } from "../components/texts";
 import { btn } from "./buttons";
 
 export const getFaqData = (callbackData: string): [string, Options["reply_markup"]] => {
   if (callbackData === CallbackData.faq) return [texts.FAQ, btn(Object.keys(faqButtons), faqButtons)];
 
-  const returnBtn = returnMenu(true)
+  const returnBtn = returnFaq()
 
   if (callbackData === CallbackData.faq_1) return [texts.faq_1, returnBtn];
   if (callbackData === CallbackData.faq_2) return [texts.faq_2, returnBtn];
