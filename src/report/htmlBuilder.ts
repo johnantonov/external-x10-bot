@@ -34,7 +34,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
 
   console.log(days)
 
-  for (let i = config.pdf.tableDays; i > 0; i++) {
+  for (let i = config.pdf.tableDays; i > 0; i--) {
     const day = days[i];
     console.log(day)
     const formatDay = getReportFormatDay(day);
