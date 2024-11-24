@@ -12,7 +12,7 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
     const result: Record<string, any> = {};
 
     Object.keys(days).forEach(dayDate => {
-      result[dayDate] = { cost: 0, ark: { views: 0, clicks: 0 }, prk: { views: 0, clicks: 0 } };
+      result[dayDate] = { cost: 0, ark: { views: 0, clicks: 0, ctr: 0 }, prk: { views: 0, clicks: 0, ctr: 0 } };
     });
 
     advertisements.forEach((campaign: any) => {

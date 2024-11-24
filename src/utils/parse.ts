@@ -7,9 +7,8 @@ export const getPath = (imageName: string) => {
 
 export function getSkuData(sku: any, path: string): any {
   const keys = path.split('.');
-  const remainingKeys = keys.slice(1);
 
-  return remainingKeys.reduce((current, key) => {
+  return keys.reduce((current, key) => {
     return current && current[key] !== undefined ? current[key] : undefined;
   }, sku); 
 }

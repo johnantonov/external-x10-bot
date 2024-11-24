@@ -80,6 +80,8 @@ export type OtherData = {
   revWithoutDrr: number,
   revWithDrr: number, 
   krrr: number,
+  ctrArk: number,
+  ctrPrk: number,
 }
 
 // test 190552356
