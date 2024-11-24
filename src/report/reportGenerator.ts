@@ -1,4 +1,4 @@
-import { generateTable, generateTableHeader, generateDayRows } from "./htmlBuilder";
+import { generateTable, generateTableHeader, generateDayRows, generateTotalRow } from "./htmlBuilder";
 import { fetchAndResizeImage } from "./imageProcessing";
 import { SKU } from "../dto/sku";
 import { CSS } from "./CSS";
@@ -17,7 +17,7 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
     const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
     const header = generateTableHeader(data);
     const dayRows = generateDayRows(data, imgSrc, days);
-    const totalRow = ``
+    const totalRow = generateTotalRow(data, days)
     tables += generateTable(header, dayRows, totalRow);
   }
 

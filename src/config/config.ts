@@ -32,6 +32,7 @@ export const config = {
            headBg: '#fff2cc',
            condFormat: [false],
            class: ['bl'],
+           totalType: 0,
            source(day: DateKey){ return [`marketing_cost.${day}.ark.clicks`]} }, 
 
         { title: "CTR\nАРК",
@@ -41,6 +42,7 @@ export const config = {
            headBg: '#fff2cc',
            condFormat: [true],
            class: ['br'],
+           totalType: [],
            source(day: DateKey){ return [`other_metricks.${day}.ctrArk`]} },
 
         { title: "Клики\nПРК",
@@ -49,6 +51,7 @@ export const config = {
            headBg: '#fff2cc',
            condFormat: [false],
            class: [''],
+           totalType: 0,
            source(day: DateKey){ return [`marketing_cost.${day}.prk.clicks`]} },
 
         { title: "CTR\nПРК",
@@ -58,6 +61,7 @@ export const config = {
            headBg: '#fff2cc',
            condFormat: [true],
            class: ['br'],
+           totalType: [],
            source(day: DateKey){ return [`other_metricks.${day}.ctrPrk`]} },
 
         { title: "Корз.",
@@ -66,6 +70,7 @@ export const config = {
            headBg: '#c9daf8',
            condFormat: [true],
            class: ['br'],
+           totalType: 0,
            source(day: DateKey){ return [`order_info.${day}.addToCartCount`]} },
 
         { title: "Заказы",
@@ -74,6 +79,7 @@ export const config = {
            headBg: '#c9daf8',
            condFormat: [false, true],
            class: ['', 'br'],
+           totalType: 0,
            source(day: DateKey){ return [`order_info.${day}.ordersSum`, `order_info.${day}.ordersCount`]} },
 
         { title: "Выкупы",
@@ -82,6 +88,7 @@ export const config = {
            headBg: '#c9daf8',
            condFormat: [false, true],
            class: [''],
+           totalType: 0,
            source(day: DateKey){ return [`sales.${day}.infoBuysSum`, `sales.${day}.infoBuysCount`]}  },
 
         { title: "Расходы\nреклама",
@@ -90,6 +97,7 @@ export const config = {
            headBg: '#f4cccc',
            condFormat: [false],
            class: ['bl'],
+           totalType: 0,
            source(day: DateKey){ return [`marketing_cost.${day}.cost`]} },
 
         { title: "ДРР",
@@ -98,6 +106,7 @@ export const config = {
            headBg: '#f4cccc',
            condFormat: [true],
            class: ['br'],
+           totalType: [],
            source(day: DateKey){ return [`other_metricks.${day}.drr`]} },
 
         { title: "Маржа",
@@ -106,6 +115,7 @@ export const config = {
            headBg: '#d9ead3',
            condFormat: [false],
            class: [''],
+           totalType: [],
            source(day: DateKey){ return  [`other_metricks.${day}.margin`]} },
 
         { title: "Прибыль\nдо ДРР",
@@ -113,7 +123,8 @@ export const config = {
            colspan: 1, 
            headBg: '#d9ead3',
            condFormat: [false],
-           class: [''],
+           class: 'array',
+           totalType: 0,
            source(day: DateKey){ return [`other_metricks.${day}.revWithoutDrr`]} },
 
         { title: "Прибыль\nс ДРР",
@@ -122,6 +133,7 @@ export const config = {
            headBg: '#d9ead3',
            condFormat: [true],
            class: [''],
+           totalType: 0,
            source(day: DateKey){ return [`other_metricks.${day}.revWithDrr`]} },
 
         { title: "КРРР",
@@ -130,6 +142,7 @@ export const config = {
            headBg: '#d9ead3',
            condFormat: [false],
            class: ['br'],
+           totalType: 'array',
            source(day: DateKey){ return [`other_metricks.${day}.krrr`]} }, 
       ]
     },

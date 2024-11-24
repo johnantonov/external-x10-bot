@@ -59,6 +59,44 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
   return dayRows;
 };
 
+enum TotalType {
+  Number = 'number',
+  Array = 'array',
+}
+
+export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}`[]) => {
+  const dayCount = config.pdf.tableDays;
+  
+  const total: { [key: string]: number | number[] } = {};
+  let totalRow = ``;
+
+  for (let i = dayCount; i > 0; i--) {
+    const day = days[i];
+
+    config.pdf.cols.forEach((col) => {
+      col.source(day).forEach((source, index) => {
+        const value = getSkuData(data, source);
+
+        if (index === 0) {
+          if (col.totalType === 'array') {
+            total[source] = [];
+          } else {
+            total[source] = 0;
+          }
+        }
+
+        if (typeof total[source] === 'number') {
+          total[source] += value
+        } else {
+          total[source].push(value)
+        }
+    });
+  })
+
+  console.log(total);
+  return totalRow;
+};
+
 function generateCell(className: string, value: any, unit: 'р.' | '%' | null, toFixedVal: number = 0): string {
   const formattedValue = formatNumber(value, toFixedVal)
   const unittedValue = formatUnitValue(unit, formattedValue)
@@ -69,4 +107,16 @@ function formatUnitValue(unit: '%' | 'р.' | null, value: string | number) {
   if (unit === '%') return `${value}%`
   if (unit === 'р.') return `р.${value}`
   return value
+}
+
+function totalDataInit(): Record<string, any> {
+  return { 
+    ark: { clicks: 0, ctr: [] }, prk: { clicks: 0, ctr: [] }, 
+    marketingCost: 0, drr: [], krrr: [], carts: 0, orders: 0, 
+    buys: 0, margin: [], rev: 0, revDrr: 0, infoBuys: 0,
+  };
+}
+
+function addToTotal(totalObj, totalObj) {
+  totalObj
 }
