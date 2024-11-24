@@ -15,11 +15,9 @@ export const generateTableHeader = (data: SKU): string => {
   const rs = config.pdf.headerRowspan
   let cells = ``
 
-  config.pdf.cols.forEach(col => {
-    col.class.forEach((classNames, index) => {
-      const bg = col.headBg || '#ffffff'; 
-      cells += `<th rowspan="${rs}" colspan="${col.colspan}" style="background:${bg}" class="${classNames}">${col.title}</th>`;
-    })
+  config.pdf.cols.forEach((col) => {
+    const bg = col.headBg || '#ffffff'; 
+    cells += `<th rowspan="${rs}" colspan="${col.colspan > 1 ? col.colspan * 2 : col.colspan}" style="background:${bg}" class="${col.class.join(' ')}">${col.title}</th>`;
   });
 
   return `
