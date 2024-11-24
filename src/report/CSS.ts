@@ -6,6 +6,7 @@ const specialBorder = `0.2px dashed black`
 const usualPadding = 4
 const cellTextAlign = `center`
 const rowHeight = 30
+const headFontStyle = 'bold'
 
 
 export const CSS = (cols: number) => `
@@ -23,29 +24,17 @@ export const CSS = (cols: number) => `
     }
     td {
       height: ${rowHeight};
-      width: ${mainWidth / cols}
     }
     th, td {
       padding: ${usualPadding}px;
       text-align: ${cellTextAlign};
     }
-    .article_col {
-      width 350px !important
-    }
-    .photo_cell {
-      width: 240px !important;
-      height: 140px !important
-    }
-    .day_cell {
-      width: 110px !important
-    }
     .header {
-      background-color: #f2f2f2;
       font-weight: bold;
     }
     .title-row {
-      text-align: left;
-      font-weight: bold;
+      text-align: ${cellTextAlign};
+      font-weight: ${headFontStyle};
     }
     .bl {
       border-left: ${specialBorder};
