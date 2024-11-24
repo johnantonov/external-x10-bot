@@ -82,9 +82,9 @@ export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}
         }
 
         if (typeof total[key] === 'number') {
-          total[key] += value
-        } else {
-          total[key].push(value)
+          total[key] += value;
+        } else if (Array.isArray(total[key])) {
+          (total[key] as number[]).push(value);
         }
       });
     })
