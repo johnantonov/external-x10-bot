@@ -19,9 +19,6 @@ export const CSS = (cols: number) => `
       width: ${mainWidth}px !important;
       border-collapse: collapse;
     }
-    table, th, td {
-      border: ${usualBorder};
-    }
     td {
       height: ${rowHeight};
     }
