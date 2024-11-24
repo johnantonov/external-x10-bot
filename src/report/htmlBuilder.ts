@@ -40,6 +40,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
     `
   
     config.pdf.cols.forEach(col => {
+      console.log(col)
       const classNames = col.class.join(' ');
       const value = getSkuData(data, col.source(day))
       const cell = generateCell(classNames, value)

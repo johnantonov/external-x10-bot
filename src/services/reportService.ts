@@ -122,6 +122,8 @@ export class ReportService {
           } else {
             console.error('Could not find SKU while calculating metrics: ', currentSku, " ", id)
           }
+
+          console.log(currentSku)
           
           newInfoSku.other_metricks = other_metricks
           await articles_db.updateFields(id, +nm, newInfoSku);
@@ -158,6 +160,8 @@ export class ReportService {
       }
     })
 
+
+    console.log(res)
     return res as ObjectOther
   }
 
