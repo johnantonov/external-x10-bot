@@ -16,7 +16,10 @@ export const CSS = (cols: number) => `
     }
     body {
       font-family: ${fontFamily};
-      font-size: ${fontSize}px !important;
+      font-size: ${fontSize}px;
+    }
+    fz14 {
+      font-size: 14px !important;
     }
     table {
       width: ${mainWidth}px !important;

@@ -147,12 +147,10 @@ export class ReportService {
         const revWithoutDrr = buysSum - otherCosts
         const revWithDrr = revWithoutDrr - marketingCost
 
-        console.log(marketingCost, ordersSum)
-
         res[date] = {
           revWithoutDrr: revWithoutDrr,
           revWithDrr: revWithDrr,
-          drr: marketingCost / ordersSum,
+          drr: marketingCost / ordersSum * 100,
           margin: revWithoutDrr / buysSum * 100,
           krrr: revWithDrr / revWithoutDrr * 100,
           ctrArk: NumberOrZero(marketing?.[date]?.ark.clicks) / NumberOrZero(marketing?.[date]?.ark.views)  * 100,
