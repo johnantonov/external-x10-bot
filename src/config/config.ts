@@ -123,7 +123,7 @@ export const config = {
            colspan: 1, 
            headBg: '#d9ead3',
            condFormat: [false],
-           class: 'array',
+           class: [''],
            totalType: 0,
            source(day: DateKey){ return [`other_metricks.${day}.revWithoutDrr`]} },
 

@@ -90,12 +90,14 @@ export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}
         } else {
           total[source].push(value)
         }
-    });
-  })
+      });
+    })
+
+  };
 
   console.log(total);
   return totalRow;
-};
+}
 
 function generateCell(className: string, value: any, unit: 'р.' | '%' | null, toFixedVal: number = 0): string {
   const formattedValue = formatNumber(value, toFixedVal)
@@ -115,8 +117,4 @@ function totalDataInit(): Record<string, any> {
     marketingCost: 0, drr: [], krrr: [], carts: 0, orders: 0, 
     buys: 0, margin: [], rev: 0, revDrr: 0, infoBuys: 0,
   };
-}
-
-function addToTotal(totalObj, totalObj) {
-  totalObj
 }
