@@ -20,7 +20,10 @@ export const CSS = (cols: number) => `
       border-collapse: collapse;
     }
     noBorder {
-      border: ${noBorder};
+      border-top: ${noBorder};
+      border-right: ${noBorder};
+      border-left: ${noBorder};
+      border-bottom: ${noBorder};
     }
     td {
       white-space: nowrap;
