@@ -1,7 +1,7 @@
 import { config } from "../config/config";
 import { SKU } from "../dto/sku";
 import { getWbArticlePhoto, parsePercent } from "./parse";
-import { formatNumber } from "./string";
+import { formatNumber, NumberOrZero } from "./string";
 import { create31DaysObject, getYesterdayDate } from "./time";
 import axios from 'axios';
 import sharp from 'sharp';
@@ -139,10 +139,10 @@ function getDaysRows(daysCount: number, data: SKU, index: number, imgBase64: any
       
       rev += (buysSum ?? 0) - otherCosts;
       revDrr += rev - marketingCost;
-      margin += formatNumber(rev / (buysSum || 1) * 100);
+      margin += NumberOrZero(rev / (buysSum || 1) * 100);
 
       drr += (marketingCost / (ordersSum || 1)) * 100;
-      krrr += formatNumber((revDrr / (rev || 1)) * 100);
+      krrr += NumberOrZero((revDrr / (rev || 1)) * 100);
 
       ctrArk = (ark.clicks / ark.views) || 0;
       ctrPrk = (prk.clicks / prk.views) || 0;
@@ -262,7 +262,7 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
     marketingCostTotal += marketingCost
     
     rev += (stats.buysSum || 0) - otherCosts;
-    revTotal += formatNumber(rev - marketingCost);
+    revTotal += NumberOrZero(rev - marketingCost);
 
     const krrr = calcKrrr(revTotal, rev)
     krrrTotalArray.push(Number(krrr))
@@ -292,7 +292,6 @@ function getCosts(data: SKU, date: string): number {
     const commission = parsePercent(data.order_info?.commission) || 0;
   
     const selfCost = (stats?.buysCount ?? 0) * (data?.self_cost ?? 0);
-    const markCost = (stats?.buysCount ?? 0) * (data?.mark ?? 0);
     const taxCost = (stats?.buysSum ?? 0) * tax;
     const acquiringCost = (stats?.buysSum ?? 0) * acquiring;
     const commissionCost = (stats?.buysSum ?? 0) * commission;
@@ -300,14 +299,8 @@ function getCosts(data: SKU, date: string): number {
 
     const logisticsBase = (config.returnLogistics / (data.percent_buys / 100) - config.returnLogistics) + (data.logistics / (data.percent_buys / 100))
     const logisticsCost = (stats?.buysCount ?? 0) * logisticsBase
-
-    // console.log('___________________________________')
-    // console.log(data.article)
-    // console.log(date)
-    // console.log(JSON.stringify(data))
-    // console.log('selfCost: ',selfCost, 'markCost:', markCost, 'taxCost:', taxCost, 'acquiringCost:', acquiringCost, 'commissionCost:', commissionCost, 'storageCost:', storageCost, 'logisticsCost: ', logisticsCost)
   
-    return selfCost + markCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
+    return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch (e) {
     console.error('error getting other costs: ', data.article, " ", e)
     return 0
@@ -316,11 +309,11 @@ function getCosts(data: SKU, date: string): number {
 
 
 function calcKrrr(revWithDrr: any, rev: any): number {
-  return formatNumber(((revWithDrr || 0) / (rev || 1)) * 100);
+  return NumberOrZero(((revWithDrr || 0) / (rev || 1)) * 100);
 }
 
 function calcMargin(rev: any, buysSum: any): number {
-  return formatNumber((rev || 0) / (buysSum || 1) * 100);
+  return NumberOrZero((rev || 0) / (buysSum || 1) * 100);
 }
 
 function totalDataInit(): Record<string, any> {  

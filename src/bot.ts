@@ -37,13 +37,14 @@ bot.on('message', async (msg: TelegramBot.Message) => {
 
   const msgs: MessageMS[] = [new MessageMS({ chat_id, message_id, content: text })];
 
-  if (text.startsWith('/admin__')) {
-    return handleAdminCommand(chat_id, text, bot)
-  }
-
+  
   if (['/start', '/menu'].includes(text)) {
     await handleMenuCommand(UserTextMessage, chat_id, text, msgs);
     return;
+  }
+  
+  if (text.startsWith('/admin__')) {
+    return handleAdminCommand(chat_id, text, bot)
   }
 
   await handleUserState(chat_id, msgs, UserTextMessage);

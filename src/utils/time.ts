@@ -1,6 +1,7 @@
 import { format, subDays } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { User } from '../dto/user';
+import { config } from '../config/config';
 
 /**
  * get yesterday date
@@ -100,6 +101,9 @@ export function sortObjDatesEntries(obj: Record<string, any>) {
   );
 }
 
+/**
+ * проверяет доступен ли пользователю отчет
+ */
 export function isReportAvailable(lastTime: User['last_report_call']) {
   if (!lastTime) {
     return true
@@ -110,5 +114,5 @@ export function isReportAvailable(lastTime: User['last_report_call']) {
 
   const timeDiffMinutes = (now.getTime() - lastReportTime.getTime()) / (1000 * 60);
   return true
-  return timeDiffMinutes >= 30;
+  return timeDiffMinutes >= config.reportStopTime;
 }

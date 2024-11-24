@@ -3,7 +3,7 @@ import { bot, MS, RediceService } from "../bot";
 import { handleStartMenu, sendImageWithText } from "../components/botAnswers";
 import { articleOptions, mainOptions } from "../components/buttons";
 import { AwaitingAnswer, MessageMS, UserMsg } from "../dto/messages";
-import { rStates, ttls, waitingStates } from "../redis";
+import { rStates, ttls } from "../redis";
 import { awaitingHandler } from "./awaitingHandler";
 
 export async function handleMenuCommand(UserMsg: UserMsg, chat_id: number, text: string, msgs: MessageMS[]) {

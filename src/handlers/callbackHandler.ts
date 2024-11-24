@@ -4,9 +4,9 @@ import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import { createEditData, MessageService } from "../services/messageService";
-import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainButtons, mainOptions, Options, returnArticleMenu, returnMenu, yesNo } from "../components/buttons";
+import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, returnMenu, yesNo } from "../components/buttons";
 import { users_db } from "../../database/models/users";
-import { getStateAndArticleFromCallback, newArticleData, parseArticleData } from "../utils/parse";
+import { getCurrentArticle, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
 import { reportService } from "../services/reportService";
@@ -44,12 +44,10 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   const returnBtn = returnMenu(true);
   const mainBtn = mainOptions(type ?? 'new')
   const action = new CallbackProcessor(userCallbackData, type).getAction();
-  const [state, currentArticle] = getStateAndArticleFromCallback(userCallbackData);
+  const currentArticle = getCurrentArticle(userCallbackData);
   const callbackObj = parseArticleData(userCallbackData)
 
   let articleMenu;
-  let data: any;
-  let newButtonCallback: string;
   let editData: { text: string; options?: Options['reply_markup']; image?: string } | null = null;
 
   switch (action) {
@@ -109,7 +107,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'return article menu':
       if (currentArticle) {
-        const articleToReturn = await articles_db.getArticle(chat_id, +currentArticle)
+        const articleToReturn = await articles_db.getArticle(chat_id, currentArticle)
         articleMenu = (await articleOptions(chat_id, +articleToReturn.article))
         if (articleMenu) {
           editData = createEditData(' ', articleMenu);
@@ -142,13 +140,11 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'delete article':
-      newButtonCallback = newArticleData(callbackObj);
-
       if (!callbackObj.action) {
         editData = createEditData(`❔ Вы уверены, что хотите удалить артикул ${callbackObj.art}?`, yesNo(callbackObj.type + "?" + callbackObj.art));
       } else {
         if (callbackObj.action === 'no') {
-          articleMenu = (await articleOptions(chat_id, +currentArticle))
+          articleMenu = (await articleOptions(chat_id, currentArticle))
           if (articleMenu) {
             editData = createEditData(' ', articleMenu);
           } else {

@@ -12,6 +12,5 @@ export const getFaqData = (callbackData: string): [string, Options["reply_markup
   if (callbackData === CallbackData.faq_3) return [texts.faq_3, returnBtn];
   if (callbackData === CallbackData.faq_4) return [texts.faq_4, returnBtn];
 
-  // if (callbackData === CallbackData.faq_5) return [texts.faq_5, returnBtn];
   return [texts.faq_5, returnBtn];
 }

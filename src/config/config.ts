@@ -5,5 +5,6 @@ export const config = {
   turnover: 30,
   returnLogistics: 50,
 
-  maxSku: 5
+  maxSku: 5,
+  reportStopTime: 30,
 }

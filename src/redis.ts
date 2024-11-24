@@ -31,22 +31,13 @@ export class redis {
   }
 }
 
-export const waitingStates = [
-  'awaiting_wb_api_key',
-  'esc',
-  'waitTax',
-  'awaiting_sku',
-  'awaiting_sku_old',
-  'awaiting_new_key',
-]
-
 export const rStates = {
-  waitWbApiKey: waitingStates[0],
-  waitSelfCost: waitingStates[1],
-  waitTax: waitingStates[2],
-  waitSku: waitingStates[3],
-  waitSkuOldUser: waitingStates[4],
-  waitNewKey: waitingStates[5],
+  waitWbApiKey: 'awaiting_wb_api_key',
+  waitSelfCost: 'esc',
+  waitTax: 'waitTax',
+  waitSku: 'awaiting_sku',
+  waitSkuOldUser: 'awaiting_sku_old',
+  waitNewKey: 'awaiting_new_key',
 }
 
 export const ttls = {

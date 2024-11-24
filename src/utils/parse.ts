@@ -49,12 +49,12 @@ export function parseNumericValue(value: string): number | null {
   return parseFloat(value.replace(",", "."));
 }
 
-export const getStateAndArticleFromCallback = (data: string): any[] => {
+export const getCurrentArticle = (data: string): article => {
   const splitData = data.split('?')
-  return [splitData[0], splitData[1]]
+  return splitData[1]
 }
 
-// use short keys because btn callback limit is 64 bytes
+// use short values because btn callback limit is 64 bytes
 export const parseArticleData = (data: string): SKUCallbackData => {
   const newData = data.split('?')
   return {

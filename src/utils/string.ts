@@ -3,7 +3,24 @@ export function formatError(error: any, contextMessage: string) {
   console.error(`Error: ${contextMessage} - ${errorMessage.substring(0, 200)}`);
 }
 
-export const formatNumber = (num: number): number => {
-  return num % 1 === 0 ? num : Number(num.toFixed(2));
-};
+export function formatNumber(value: number, decimals: number = 0): string {
+  if (isNaN(value)) {
+    return '0';
+  }
 
+  let fixedValue = value % 1 === 0 ? value.toString() : value.toFixed(decimals);
+  let [integerPart, decimalPart] = fixedValue.split('.');
+  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+  return decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
+}
+
+export function NumberOrZero(input: any) {
+  let value = parseFloat(input);
+
+  if (isNaN(value)) {
+    return 0;
+  } else {
+    return value
+  }
+}
