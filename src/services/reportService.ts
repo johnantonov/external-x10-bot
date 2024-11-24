@@ -113,7 +113,8 @@ export class ReportService {
             storage: storage,
           }
 
-          const currentSku = articles.find(sku => sku.article === nm);
+          // console.log(articles)
+          const currentSku = articles.find(sku => +sku.article === +nm);
 
           let other_metricks: ObjectOther = {}
 

@@ -8,9 +8,9 @@ import { create31DaysObject } from "../utils/time";
 
 export const generateReportHtml = async (articleData: SKU[]): Promise<string> => {
   let tables = ``;
-  if (articleData.length > 1) {
-    articleData.unshift({} as SKU);  // для создания таблицы итого
-  }
+  // if (articleData.length > 1) {
+  //   articleData.unshift({} as SKU);  // для создания таблицы итого
+  // }
 
   let days = Object.keys(create31DaysObject()).reverse() as `${number}-${number}-${number}`[];
 
@@ -20,6 +20,7 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
       const totalRow = ``
       const header = generateTableHeader(data);
       tables += generateTable(header, dayRows, totalRow);
+      console.log(tables)
   }
 
   return `
