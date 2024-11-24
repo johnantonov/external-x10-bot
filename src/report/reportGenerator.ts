@@ -1,5 +1,4 @@
 import { generateTable, generateTableHeader, generateDayRows } from "./htmlBuilder";
-import { calculateMetrics } from "./dataProcessing";
 import { fetchAndResizeImage } from "./imageProcessing";
 import { SKU } from "../dto/sku";
 import { CSS } from "./CSS";
@@ -15,11 +14,11 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
   let days = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
 
   for (const data of articleData) {
-      const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
-      const dayRows = generateDayRows(data, imgSrc, days);
-      const totalRow = ``
-      const header = generateTableHeader(data);
-      tables += generateTable(header, dayRows, totalRow);
+    const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
+    const header = generateTableHeader(data);
+    const dayRows = generateDayRows(data, imgSrc, days);
+    const totalRow = ``
+    tables += generateTable(header, dayRows, totalRow);
   }
 
   return `

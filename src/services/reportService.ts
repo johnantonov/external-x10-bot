@@ -19,7 +19,7 @@ import FormData from 'form-data';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 import { generateReportHtml } from '../report/reportGenerator';
 import { OrderInfo } from 'node-telegram-bot-api';
-import { getCosts } from '../report/dataProcessing';
+import { getCosts } from '../utils/dataProcessing';
 
 dotenv.config();
 

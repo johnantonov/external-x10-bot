@@ -1,8 +1,10 @@
 import { box_tariffs_db } from "../../database/models/box_tariffs";
 import { config } from "../config/config";
-import { article } from "../dto/sku";
+import { article, DateKey, SKU } from "../dto/sku";
 import { BoxTariff } from "../dto/boxTariffs";
 import { create31DaysObject  } from "./time";
+import { parsePercent } from "./parse";
+import { NumberOrZero } from "./string";
 
 export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[], advertTypes: Record<string, any>) {
   const data: Record<string, any> = {}
@@ -111,4 +113,28 @@ export async function calculateLogisticsStorage(sizesNms: Record<article, Record
   })
 
   return result
+}
+
+export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
+  try {
+    const stats = data.order_info?.[date];
+  
+    const tax = parsePercent(sku?.tax);
+    const acquiring = config.acquiring || 0.015;
+    const commission = parsePercent(data.order_info?.commission);
+  
+    const selfCost = NumberOrZero(stats?.buysCount) * NumberOrZero(data?.self_cost);
+    const taxCost = NumberOrZero(stats?.buysSum) * tax;
+    const acquiringCost = NumberOrZero(stats?.buysSum) * acquiring;
+    const commissionCost = NumberOrZero(stats?.buysSum) * commission;
+    const storageCost = NumberOrZero(stats?.buysCount) * NumberOrZero(data?.storage) * config.turnover;
+
+    const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
+    const logisticsCost = NumberOrZero(stats?.buysCount) * logisticsBase
+  
+    return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
+  } catch (e) {
+    console.error('error getting other costs: ', data.article, " ", e)
+    return 0
+  }
 }
