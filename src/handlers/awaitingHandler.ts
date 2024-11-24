@@ -74,14 +74,16 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         if (newSku.length === 0) {
           return handleError(texts.errorNoSKU);  
         }
-
-        console.log(newSku)
     
-        await articles_db.addSku(chat_id, newSku);  
+        const successAdded = await articles_db.addSku(chat_id, newSku);  
 
-        if (state === rStates.waitSkuOldUser) {
-          return new AwaitingAnswer({ result: true, text: texts.addedSkuOld, type: 'registered' });
-        }
+        if (state === rStates.waitSkuOldUser && successAdded > 0) {
+          return new AwaitingAnswer({ 
+            result: successAdded > 0 ? true : false,
+            text: successAdded > 0 ? texts.addedSkuOld(successAdded) : texts.errorAddNewSku,
+            type: 'registered'
+          });
+        } 
     
         await users_db.updateType(chat_id, 'waitTax');
         return new AwaitingAnswer({ result: true, text: texts.addedSku, type: 'waitTax' });

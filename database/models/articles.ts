@@ -97,21 +97,26 @@ class ArticlesModel extends BaseModel<SKU> {
     await this.insert(article);
   }
 
-  async addSku(chat_id: number, articles: number[][]): Promise<void> {
+  async addSku(chat_id: number, articles: number[][]): Promise<number> {
     try {
       const maxCount = config.maxSku
       let skuCount = (await articles_db.getAllSkuForUser(chat_id)).rows.length
+      let newCount = 0
   
       for (const article of articles) {
         if (skuCount >= maxCount) {
-          return
+          return newCount
         }
   
         await this.insert({ chat_id, article: article[0], self_cost: article[1] });
         skuCount++
+        newCount++
       }
+
+      return newCount
     } catch (e) {
       console.error('Error while adding new sku into DB: ',e)
+      return 0
     }
   }
 
