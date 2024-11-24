@@ -31,7 +31,7 @@ export const config = {
            colspan: 1, 
            headBg: '#fff2cc',
            condFormat: [false],
-           class: [''],
+           class: ['bl'],
            source(day: DateKey){ return [`marketing_cost.${day}.ark.clicks`]} }, 
 
         { title: "CTR\nАРК",

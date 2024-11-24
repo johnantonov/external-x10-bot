@@ -41,10 +41,10 @@ export const CSS = (cols: number) => `
       border-right: ${specialBorder};
     }
     .b {
-      border-top: ${usualBorder};
-      border-right: ${usualBorder};
-      border-left: ${usualBorder};
-      border-bottom: ${usualBorder};
+      border-top: ${specialBorder};
+      border-right: ${specialBorder};
+      border-left: ${specialBorder};
+      border-bottom: ${specialBorder};
     }
   </style>
 `
