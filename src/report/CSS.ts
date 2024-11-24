@@ -20,6 +20,7 @@ export const CSS = (cols: number) => `
       border-collapse: collapse;
     }
     td {
+      white-space: nowrap;
       height: ${rowHeight};
     }
     th, td {
