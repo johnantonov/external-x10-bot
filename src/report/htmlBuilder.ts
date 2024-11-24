@@ -31,14 +31,19 @@ export const generateTableHeader = (data: SKU): string => {
 
 export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${number}-${number}-${number}`[]): string => {
   let dayRows = ``;
+  const dayCount = config.pdf.tableDays
 
-  for (let i = config.pdf.tableDays; i > 0; i--) {
+  const titleCol = `
+    <td rowspan="${dayCount+1}" colspan="${config.pdf.photoColspan}">
+      ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" >` : "Ошибка данных"}
+    </td>`
+
+  for (let i = dayCount; i > 0; i--) {
     const day = days[i];
     const formatDay = getReportFormatDay(day);
-    dayRows += `<tr class="row">
-    <td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>
-    `
-  
+
+    dayRows += `<tr class="row">${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
+
     config.pdf.cols.forEach(col => {
       const classNames = col.class.join(' ');
       const value = getSkuData(data, col.source(day))
