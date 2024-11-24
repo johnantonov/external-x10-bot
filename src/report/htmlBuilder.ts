@@ -76,19 +76,20 @@ export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}
     config.pdf.cols.forEach((col) => {
       col.source(day).forEach((source, index) => {
         const value = getSkuData(data, source);
+        const key = source.split('.')[0]
 
         if (index === 0) {
           if (col.totalType === 'array') {
-            total[source] = [];
+            total[key] = [];
           } else {
-            total[source] = 0;
+            total[key] = 0;
           }
         }
 
-        if (typeof total[source] === 'number') {
-          total[source] += value
+        if (typeof total[key] === 'number') {
+          total[key] += value
         } else {
-          total[source].push(value)
+          total[key].push(value)
         }
       });
     })
