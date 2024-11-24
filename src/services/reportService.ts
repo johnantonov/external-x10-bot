@@ -147,6 +147,8 @@ export class ReportService {
         const revWithoutDrr = buysSum - otherCosts
         const revWithDrr = revWithoutDrr - marketingCost
 
+        console.log(marketingCost, ordersSum)
+
         res[date] = {
           revWithoutDrr: revWithoutDrr,
           revWithDrr: revWithDrr,

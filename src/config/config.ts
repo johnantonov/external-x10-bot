@@ -129,7 +129,7 @@ export const config = {
            colspan: 1, 
            headBg: '#d9ead3',
            condFormat: [false],
-           class: [''],
+           class: ['br'],
            source(day: DateKey){ return [`other_metricks.${day}.krrr`]} }, 
       ]
     },
