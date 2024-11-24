@@ -1,7 +1,7 @@
 const mainWidth = 1600
 const fontFamily = `Arial, sans-serif`
 const fontSize = 24
-const usualBorder = `none`;
+const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
 const cellTextAlign = `center`
@@ -18,6 +18,9 @@ export const CSS = (cols: number) => `
     table {
       width: ${mainWidth}px !important;
       border-collapse: collapse;
+    }
+    noBorder {
+      border: ${noBorder};
     }
     td {
       white-space: nowrap;
