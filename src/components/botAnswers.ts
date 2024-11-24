@@ -44,7 +44,7 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
         }
         const editedBtn = mainOptions(type);
         if (editedBtn) {
-          return MS.editMessage(chat_id, menuId, text, editedBtn)
+          return MS.editMessage(chat_id, menuId, text, editedBtn, img)
         }
       } else {
         await sendNewMenu(chat_id, img, text, type)
