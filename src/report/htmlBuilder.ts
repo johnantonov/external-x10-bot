@@ -32,7 +32,7 @@ export const generateTableHeader = (data: SKU): string => {
 export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${number}-${number}-${number}`[]): string => {
   let dayRows = ``;
 
-  for (let i = 0; i < config.pdf.tableDays; i++) {
+  for (let i = config.pdf.tableDays; i > 0; i++) {
     const day = days[i];
     const formatDay = getReportFormatDay(day);
     dayRows += `<tr class="row">
@@ -40,8 +40,8 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
     `
   
     config.pdf.cols.forEach(col => {
-      console.log(col)
       const classNames = col.class.join(' ');
+      console.log(col.source(day))
       const value = getSkuData(data, col.source(day))
       const cell = generateCell(classNames, value)
       dayRows += cell

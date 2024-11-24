@@ -12,7 +12,7 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
   //   articleData.unshift({} as SKU);  // для создания таблицы итого
   // }
 
-  let days = Object.keys(create31DaysObject()).reverse() as `${number}-${number}-${number}`[];
+  let days = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
 
   for (const data of articleData) {
       const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
