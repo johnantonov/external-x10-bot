@@ -42,7 +42,6 @@ export const CSS = (cols: number) => `
     }
     table {
       width: 100%;
-      table-layout: fixed;
       margin-bottom: 10px;
       border-collapse: collapse;
     }
