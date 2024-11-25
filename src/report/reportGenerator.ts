@@ -31,6 +31,9 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
     </head>
     <body>
       ${tables}
+      <br>
+      <br>
+      <p>${config.pdf.footerText}</p>
     </body>
     </html>
   `;

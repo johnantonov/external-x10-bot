@@ -19,6 +19,9 @@ export const config = {
     title: '10X\nSYSTEM',
     footerText:  `Отчёт подготовлен ботом @bot_123 от команды 10X.\nПолучите подробный отчет по всем SKU вашего кабинета. <b>Бесплатный доступ на 3 дня:</b> @tenXsupport_bot`,
 
+    imgWidth: 180,
+    imgHeight: 300,
+
     get summaryColSpan() {
       let count = this.skuCol;
       this.cols.forEach(col => count += col.colspan);
