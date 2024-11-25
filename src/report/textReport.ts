@@ -36,22 +36,22 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
   const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(2));
 
   message = `
-Заказы: ${ordersSumTotal}₽, ${ordersCountTotal}шт
-Выкупы: ${buysSumTotal.toFixed(0)}₽, ${buysCountTotal}шт
-Реклама: ${marketingCostTotal.toFixed(0)}₽
-ДРР: ${formatNumber((marketingCostTotal / (ordersSumTotal || 1)) * 100)}%
+Заказы: ${formatNumber(ordersSumTotal)}₽, ${ordersCountTotal}шт
+Выкупы: ${formatNumber(buysSumTotal)}₽, ${buysCountTotal}шт
+Реклама: ${formatNumber(marketingCostTotal)}₽
+ДРР: ${formatNumber(marketingCostTotal / ordersSumTotal * 100)}%
 Маржа до ДРР: ${calcMargin(rev, buysSumTotal)}%
 Маржа с ДРР: ${calcMargin(revTotal, buysSumTotal)}%
 КРРР: ${isNaN(krrrTotal) ? 0 : krrrTotal}%
-<b>Прибыль с ДРР: ${isNaN(revTotal) ? 0 : revTotal.toFixed(0)}₽</b>
+<b>Прибыль с ДРР: ${formatNumber(revTotal)}₽</b>
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
 
-function calcKrrr(revWithDrr: any, rev: any): number {
-  return NumberOrZero(((revWithDrr || 0) / (rev || 1)) * 100);
+function calcKrrr(revWithDrr: any, rev: any): string {
+  return formatNumber(((revWithDrr || 0) / (rev || 1)) * 100);
 }
 
-function calcMargin(rev: any, buysSum: any): number {
-  return NumberOrZero((rev || 0) / (buysSum || 1) * 100);
+function calcMargin(rev: any, buysSum: any): string {
+  return formatNumber((rev || 0) / (buysSum || 1) * 100);
 }
