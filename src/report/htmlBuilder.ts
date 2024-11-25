@@ -217,7 +217,7 @@ function generateCell(
       // логика для инверсных значений (3 стадии) (например дрр где чем выше тем хуже)
       if (value === max) {
         conditionalClass = 'red'; // самое большое
-      } else if (value < min + (max/3) ) {
+      } else if (value < min + (max / 3) ) {
         conditionalClass = 'light-red'; // чуть меньше максимума
       } else {
         conditionalClass = 'white'; // все остальные
@@ -231,10 +231,10 @@ function generateCell(
         conditionalClass = 'light-green-1'; // 20-40%
       } else if (value <= min + step * 3) {
         conditionalClass = 'light-green-2'; // 40-60%
-      } else if (value <= min + step * 4) {
-        conditionalClass = 'light-green-3'; // 60-80%
+      } else if (value === max) {
+        conditionalClass = 'green'; // 60-80%
       } else {
-        conditionalClass = 'green'; // самое большое
+        conditionalClass = 'light-green-3'; // самое большое
       }
     }
   }
