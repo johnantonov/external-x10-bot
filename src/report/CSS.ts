@@ -21,9 +21,9 @@ export const CSS = (cols: number) => `
       font-size: ${fontSize}px;
     }
     .title {
-      font-size: ${config.pdf.titleFz}
+      font-size: ${config.pdf.titleFz} !important;
     }
-    .title_cell: {
+    .title_cell {
       width: ${config.pdf.imgWidth} !important;
       height: ${config.pdf.imgWidth} !important
     }
