@@ -152,6 +152,7 @@ export class ReportService {
           revWithDrr: revWithDrr,
           drr: marketingCost / ordersSum * 100,
           margin: revWithoutDrr / buysSum * 100,
+          marginWithDrr: revWithDrr / buysSum * 100,
           krrr: revWithDrr / revWithoutDrr * 100,
           ctrArk: NumberOrZero(marketing?.[date]?.ark.clicks) / NumberOrZero(marketing?.[date]?.ark.views)  * 100,
           ctrPrk: NumberOrZero(marketing?.[date]?.prk.clicks) / NumberOrZero(marketing?.[date]?.prk.views)  * 100

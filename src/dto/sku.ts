@@ -81,6 +81,7 @@ export type ObjectOther = Record<DateKey, OtherData>;
 export type OtherData = {
   drr: number,
   margin: number, 
+  marginWithDrr: number,
   revWithoutDrr: number,
   revWithDrr: number, 
   krrr: number,

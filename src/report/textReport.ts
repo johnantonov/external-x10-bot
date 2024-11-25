@@ -11,6 +11,9 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
   let marketingCostTotal = 0;
   let rev = 0;
   let revTotal = 0;
+  let drr: number[] = [];
+  let margins: number[] = [];
+  let marginsWithDrr: number[] = [];
   let krrrTotalArray: number[] = [];
 
   const date = getYesterdayDate() as `${number}-${number}-${number}`;
@@ -29,29 +32,26 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
     rev += NumberOrZero(stats.buysSum);
     revTotal += NumberOrZero(rev - marketingCost);
 
-    const krrr = calcKrrr(revTotal, rev)
-    krrrTotalArray.push(Number(krrr))
+    krrrTotalArray.push(articleData?.other_metricks?.[date].krrr ?? 0)
+    margins.push(articleData?.other_metricks?.[date].margin ?? 0)
+    marginsWithDrr.push(articleData?.other_metricks?.[date].marginWithDrr ?? 0)
+    drr.push(articleData?.other_metricks?.[date].drr ?? 0)
   })
 
-  const krrrTotal = +((krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1)).toFixed(2));
+  const krrrTotal = (krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1));
+  const marginTotal = (margins.reduce((sum, num) => sum + num, 0) / (margins.length || 1));
+  const marginWithDrrTotal = (marginsWithDrr.reduce((sum, num) => sum + num, 0) / (marginsWithDrr.length || 1));
+  const drrTotal = (drr.reduce((sum, num) => sum + num, 0) / (drr.length || 1));
 
   message = `
 Заказы: ${formatNumber(ordersSumTotal)}₽, ${ordersCountTotal}шт
-Выкупы: ${formatNumber(buysSumTotal)}₽, ${buysCountTotal}шт
+Выкупы: ${formatNumber(buysSumTotal)}₽, ${formatNumber(buysCountTotal)}шт
 Реклама: ${formatNumber(marketingCostTotal)}₽
-ДРР: ${formatNumber(marketingCostTotal / ordersSumTotal * 100)}%
-Маржа до ДРР: ${calcMargin(rev, buysSumTotal)}%
-Маржа с ДРР: ${calcMargin(revTotal, buysSumTotal)}%
-КРРР: ${isNaN(krrrTotal) ? 0 : krrrTotal}%
+ДРР: ${formatNumber(drrTotal)}%
+Маржа до ДРР: ${marginTotal}%
+Маржа с ДРР: ${marginWithDrrTotal}%
+КРРР: ${formatNumber(krrrTotal)}%
 <b>Прибыль с ДРР: ${formatNumber(revTotal)}₽</b>
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
-}
-
-function calcKrrr(revWithDrr: any, rev: any): string {
-  return formatNumber(((revWithDrr || 0) / (rev || 1)) * 100);
-}
-
-function calcMargin(rev: any, buysSum: any): string {
-  return formatNumber((rev || 0) / (buysSum || 1) * 100);
 }
