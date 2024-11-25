@@ -1,3 +1,5 @@
+import { config } from "../config/config";
+
 const mainWidth = 2400
 const fontFamily = `Arial, sans-serif`
 const fontSize = 24
@@ -22,7 +24,8 @@ export const CSS = (cols: number) => `
       font-size: 14px !important;
     }
     total_row {
-      
+      font-weight: bold;
+      background-color: ${config.pdf.totalRowColor};
     }
     table {
       width: ${mainWidth}px !important;

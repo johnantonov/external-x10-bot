@@ -15,7 +15,7 @@ export const config = {
     photoColspan: 3,
     dayColspan: 2,
     headerRowspan: 2,
-    totalRowColor: '' 
+    totalRowColor: '#f3f3f3',
     title: '10X\nSYSTEM',
     footerText:  `Отчёт подготовлен ботом @bot_123 от команды 10X.\nПолучите подробный отчет по всем SKU вашего кабинета. <b>Бесплатный доступ на 3 дня:</b> @tenXsupport_bot`,
 
