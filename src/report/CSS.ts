@@ -32,6 +32,7 @@ export const CSS = (cols: number) => `
     }
     table {
       width: ${mainWidth}px !important;
+      margin-bottom: 20px;
       border-collapse: collapse;
     }
     .no_border {
