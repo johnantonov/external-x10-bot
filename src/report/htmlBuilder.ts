@@ -132,7 +132,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[
         const toFixedVal = col?.toFixed
         const value = getSkuData(data, source)
         let cell;
-        if (col.condFormat) {
+        if (col.condFormat[index]) {
           cell = generateCell(
             classNames,
             value,
