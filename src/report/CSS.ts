@@ -25,7 +25,7 @@ export const CSS = (cols: number) => `
     }
     total_row {
       font-weight: bold;
-      background-color: ${config.pdf.totalRowColor};
+      background: ${config.pdf.totalRowColor};
     }
     table {
       width: ${mainWidth}px !important;
