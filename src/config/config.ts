@@ -116,6 +116,7 @@ export const config = {
         { title: "ДРР",
            unit: ["%"], 
            colspan: 1, 
+           toFixed: 2,  
            headBg: '#f4cccc',
            condFormat: [true],
            condReverse: [true],

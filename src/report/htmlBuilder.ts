@@ -217,7 +217,7 @@ function generateCell(
       // логика для инверсных значений (3 стадии) (например дрр где чем выше тем хуже)
       if (value === max) {
         conditionalClass = 'red'; // самое большое
-      } else if (value >= max / 2) {
+      } else if (value < min + (max/3) ) {
         conditionalClass = 'light-red'; // чуть меньше максимума
       } else {
         conditionalClass = 'white'; // все остальные
