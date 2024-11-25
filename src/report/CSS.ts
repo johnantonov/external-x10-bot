@@ -1,6 +1,6 @@
 import { config } from "../config/config";
 
-const mainWidth = 2400
+const mainWidth = 2600
 const fontFamily = `Arial, sans-serif`
 const fontSize = 24
 const noBorder = `none !important`;
@@ -20,10 +20,10 @@ export const CSS = (cols: number) => `
       font-family: ${fontFamily};
       font-size: ${fontSize}px;
     }
-    fz14 {
+    .fz14 {
       font-size: 14px !important;
     }
-    total_row {
+    .total_row {
       font-weight: bold;
       background: ${config.pdf.totalRowColor};
     }
