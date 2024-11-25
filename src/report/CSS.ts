@@ -17,6 +17,7 @@ export const CSS = (cols: number) => `
     }
     body {
       font-family: ${fontFamily};
+      font-size: ${fontSize}px;
     }
     .title {
       font-size: ${config.pdf.titleFz}px !important;
@@ -52,7 +53,6 @@ export const CSS = (cols: number) => `
     td {
       white-space: nowrap;
       height: ${rowHeight};
-      font-size: ${fontSize}px;
     }
     th, td {
       padding: ${usualPadding}px;
@@ -62,7 +62,6 @@ export const CSS = (cols: number) => `
       font-weight: bold;
     }
     .title-row {
-      font-size: 20px;
       text-align: ${cellTextAlign};
       font-weight: ${headFontStyle};
     }
