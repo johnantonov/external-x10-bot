@@ -20,6 +20,9 @@ export const CSS = (cols: number) => `
       font-family: ${fontFamily};
       font-size: ${fontSize}px;
     }
+    .title {
+      font-size: ${config.pdf.titleFz}
+    }
     .fz14 {
       font-size: 14px !important;
     }
