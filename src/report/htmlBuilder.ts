@@ -32,7 +32,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
   const dayCount = config.pdf.tableDays
 
   const total: { [key: string]: number[] | number} = {};
-  let totalRow = `<td rowspan="1" class="total_row" colspan="${config.pdf.dayColspan}">Итог</td>`;
+  let totalRow = `<tr class="total_row"><td rowspan="1" colspan="${config.pdf.dayColspan}">Итог</td>`;
 
   const titleCol = `
     <td rowspan="${dayCount+1}" colspan="${config.pdf.photoColspan}">
@@ -88,6 +88,8 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
       totalRow += cell
     })
   })
+
+  totalRow = '</tr>'
 
   return dayRows + totalRow;
 };

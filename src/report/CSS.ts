@@ -1,6 +1,6 @@
 import { config } from "../config/config";
 
-const mainWidth = 2600
+const mainWidth = 3000;
 const fontFamily = `Arial, sans-serif`
 const fontSize = 24
 const noBorder = `none !important`;
