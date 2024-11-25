@@ -26,10 +26,6 @@ export const CSS = (cols: number) => `
       line-height: 1.2 !important;
       text-align: center; 
     }
-    .title_cell {
-      width: ${config.pdf.imgWidth} !important;
-      height: ${config.pdf.imgHeight} !important
-    }
     .fz14 {
       font-size: 14px !important;
     }
