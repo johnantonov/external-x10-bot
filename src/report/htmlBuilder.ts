@@ -69,15 +69,17 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
     dayRows += `</tr>`
   }
 
-  const totalKeys = Object.keys(total)  
+  const totalKeys = Object.keys(total)
   let keyI = 0
   config.pdf.cols.forEach((col, index) => {
     col.class.forEach((classNames, index) => {
       let value;
-      if (typeof total[totalKeys[keyI]] === 'number') {
-        value = total[totalKeys[keyI]]
+      if (typeof total[totalKeys[keyI]] === 'number' || typeof total[totalKeys[keyI]] === 'string') {
+        value = total[totalKeys[keyI]];
+      } else if (Array.isArray(total[totalKeys[keyI]])) {
+        value = (total[totalKeys[keyI]] as number[]).reduce((sum: number, num: number) => sum + num, 0) / (total[totalKeys[keyI]] as number[]).length;
       } else {
-        (value = total[totalKeys[keyI]] as number[]).reduce((sum: any, num: any) => sum + num, 0) / (totalKeys[keyI].length || 1)
+        value = 0; 
       }
       const unit = col.unit[index] as 'р.' | '%' | null
       const toFixedVal = col?.toFixed
