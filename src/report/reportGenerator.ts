@@ -18,6 +18,7 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
     const ranges = calculateRangesForSku(data, days, config.pdf.cols);
     const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
     const header = generateTableHeader(data);
+    console.log(ranges)
     const dayRows = generateDayRows(data, imgSrc, days, ranges);
     tables += generateTable(header, dayRows);
   }

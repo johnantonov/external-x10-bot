@@ -225,7 +225,7 @@ function generateCell(
     } else {
       // логика для обычных значений (5 стадий)
       const step = (max - min) / 5;
-      if (value === min) {
+      if (value <= min + step) {
         conditionalClass = 'white'; // самое маленькое
       } else if (value <= min + step * 2) {
         conditionalClass = 'light-green-1'; // 20-40%
