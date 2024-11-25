@@ -198,33 +198,30 @@ function generateCell(
 
   let conditionalClass = '';
   if (range) {
-    const { min, max, reverseColors = false, tolerance = 20 } = range;
-    const mid = (max + min) / 2;
-    const toleranceRange = (max - min) * (tolerance / 100);
-    const lowerBound = mid - toleranceRange / 2;
-    const upperBound = mid + toleranceRange / 2;
+    const { min, max, reverseColors = false } = range;
 
-    if (value >= lowerBound && value <= upperBound) {
-      conditionalClass = 'white';
-    } else if (reverseColors) {
+    if (reverseColors) {
+      // логика для инверсных значений (3 стадии) (например дрр где чем выше тем хуже)
       if (value === max) {
-        conditionalClass = 'red';
-      } else if (value === min) {
-        conditionalClass = 'green';
-      } else if (value > mid) {
-        conditionalClass = 'light-green';
+        conditionalClass = 'red'; // самое большое
+      } else if (value >= min + (max - min) / 2) {
+        conditionalClass = 'light-red'; // чуть меньше максимума
       } else {
-        conditionalClass = 'light-red';
+        conditionalClass = 'white'; // все остальные
       }
     } else {
-      if (value === max) {
-        conditionalClass = 'green';
-      } else if (value === min) {
-        conditionalClass = 'red';
-      } else if (value > mid) {
-        conditionalClass = 'light-red';
+      // логика для обычных значений (5 стадий)
+      const step = (max - min) / 5;
+      if (value <= min + step) {
+        conditionalClass = 'white'; // самое маленькое
+      } else if (value <= min + step * 2) {
+        conditionalClass = 'light-green-1'; // 20-40%
+      } else if (value <= min + step * 3) {
+        conditionalClass = 'light-green-2'; // 40-60%
+      } else if (value <= min + step * 4) {
+        conditionalClass = 'light-green-3'; // 60-80%
       } else {
-        conditionalClass = 'light-green';
+        conditionalClass = 'green'; // самое большое
       }
     }
   }

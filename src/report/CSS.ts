@@ -83,20 +83,33 @@ export const CSS = (cols: number) => `
       border-left: ${specialBorder};
       border-bottom: ${specialBorder};
     }
+      
     .red {
-      background-color: #e67c73;
+      background-color: #e67c73; /* Ярко-красный */
     }
+
     .light-red {
-      background-color: #f3beba;
+      background-color: #f3beba; /* Светло-красный */
     }
+
     .white {
-      background-color: white;
+      background-color: white; /* Белый */
     }
-    .light-green {
-      background-color: #81cca8;
+
+    .light-green-1 {
+      background-color: #d5eee2; /* Самый светлый зелёный */
     }
+
+    .light-green-2 {
+      background-color: #abddc5; /* Средний светлый зелёный */
+    }
+
+    .light-green-3 {
+      background-color: #81cca8; /* Более насыщенный светло-зелёный */
+    }
+
     .green {
-      background-color: #57bb8a;
+      background-color: #57bb8a; /* Ярко-зелёный */
     }
   </style>
 `
