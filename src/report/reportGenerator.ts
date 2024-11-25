@@ -18,7 +18,7 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
   for (const data of articleData) {
     const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
     const header = generateTableHeader(data);
-    const dayRows = generateDayRows(data, imgSrc, days);
+    const dayRows = generateDayRows(data, imgSrc, days, ranges);
     tables += generateTable(header, dayRows);
   }
 
