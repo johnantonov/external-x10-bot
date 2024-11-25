@@ -1,4 +1,4 @@
-const mainWidth = 2100
+const mainWidth = 2400
 const fontFamily = `Arial, sans-serif`
 const fontSize = 30
 const noBorder = `none !important`;

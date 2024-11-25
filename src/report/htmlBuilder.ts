@@ -71,8 +71,8 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
 
   const totalKeys = Object.keys(total)
   let keyI = 0
-  config.pdf.cols.forEach((col, index) => {
-    col.class.forEach((classNames, index) => {
+  config.pdf.cols.forEach((col) => {
+    col.condFormat.forEach((isCond, index) => {
       let value;
       if (typeof total[totalKeys[keyI]] === 'number' || typeof total[totalKeys[keyI]] === 'string') {
         value = total[totalKeys[keyI]];
@@ -83,7 +83,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
       }
       const unit = col.unit[index] as 'р.' | '%' | null
       const toFixedVal = col?.toFixed
-      const cell = generateCell(classNames, value, unit, toFixedVal)
+      const cell = generateCell(col.class[index], value, unit, toFixedVal)
       keyI++
       totalRow += cell
     })
