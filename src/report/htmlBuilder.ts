@@ -22,7 +22,7 @@ export function generateTotalTable(data: SKU[], days: DateKey[], ranges: { [key:
 
   const total: { [key: string]: number[] | number } = {};
 
-  for (let i = dayCount; i > 0; i--) {
+  for (let i = dayCount - 1; i > 0; i--) {
     const day = days[i];
     const formatDay = getReportFormatDay(day);
 
@@ -131,7 +131,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[
     ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" >` : "Ошибка данных"}
   </td>`
 
-  for (let i = dayCount; i > 0; i--) {
+  for (let i = dayCount - 1; i > 0; i--) {
     const day = days[i];
     const formatDay = getReportFormatDay(day);
 
