@@ -6,9 +6,9 @@ import { config } from "../config/config";
 import { create31DaysObject } from "../utils/time";
 
 export const generateReportHtml = async (articleData: SKU[]): Promise<string> => {
-  let days = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
+  let dates = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
+  const days = dates.slice(-config.pdf.tableDays+1)
   let tables = ``
-  days = days.slice(-config.pdf.tableDays+1)
 
   if (articleData.length > 1) {
     const totalRanges = calculateTotalRanges(articleData, days, config.pdf.cols);
