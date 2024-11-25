@@ -22,8 +22,8 @@ export function generateTotalTable(data: SKU[], days: DateKey[], ranges: { [key:
 
   const total: { [key: string]: number[] | number } = {};
 
-  for (let i = dayCount - 1; i > 0; i--) {
-    const day = days[i];
+  for (let i = dayCount; i > 0; i--) {
+    const day = days[i - 1];
     const formatDay = getReportFormatDay(day);
 
     dayRows += `<tr>${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
@@ -131,8 +131,8 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[
     ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" >` : "Ошибка данных"}
   </td>`
 
-  for (let i = dayCount - 1; i > 0; i--) {
-    const day = days[i];
+  for (let i = dayCount; i > 0; i--) {
+    const day = days[i - 1];
     const formatDay = getReportFormatDay(day);
 
     dayRows += `<tr>${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
