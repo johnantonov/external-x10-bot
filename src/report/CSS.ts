@@ -2,7 +2,7 @@ import { config } from "../config/config";
 
 const mainWidth = 1600;
 const fontFamily = `Arial, sans-serif`
-const fontSize = 28;
+const fontSize = 20;
 const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
