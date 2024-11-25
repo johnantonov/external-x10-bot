@@ -83,5 +83,17 @@ export const CSS = (cols: number) => `
       border-left: ${specialBorder};
       border-bottom: ${specialBorder};
     }
+    .red {
+      background-color: #ffcccc;
+    }
+    .light-red {
+      background-color: #ffe6e6;
+    }
+    .light-green {
+      background-color: #e6ffe6;
+    }
+    .green {
+      background-color: #ccffcc;
+    }
   </style>
 `

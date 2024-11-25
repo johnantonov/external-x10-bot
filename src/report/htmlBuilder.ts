@@ -1,5 +1,5 @@
 import { config } from "../config/config";
-import { SKU } from "../dto/sku";
+import { DateKey, SKU } from "../dto/sku";
 import { getSkuData } from "../utils/parse";
 import { formatNumber } from "../utils/string";
 import { getReportFormatDay } from "../utils/time";
@@ -11,7 +11,7 @@ export const generateTable = (header: string, dayRows: string): string => `
   </table>
 `;
 
-export function generateTotalTable(data: SKU[], days: `${number}-${number}-${number}`[]) {
+export function generateTotalTable(data: SKU[], days: DateKey[]) {
   const header = generateTableHeader();
   const dayCount = config.pdf.tableDays;
 
@@ -107,7 +107,7 @@ export const generateTableHeader = (data?: SKU): string => {
 };
 
 
-export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${number}-${number}-${number}`[]): string => {
+export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[], ranges: { [key: string]: { min: number, max: number } }): string => {
   let dayRows = ``;
   const dayCount = config.pdf.tableDays
 
@@ -131,7 +131,8 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
         const unit = col.unit[index] as 'р.' | '%' | null
         const toFixedVal = col?.toFixed
         const value = getSkuData(data, source)
-        const cell = generateCell(classNames, value, unit, toFixedVal)
+        const range = ranges[`${col.title}${index}`];
+        const cell = generateCell(classNames, value, unit, toFixedVal, range)
 
         const key = `${col.title}${index}`;
         if (Array.isArray(col.totalType)) {
@@ -174,14 +175,55 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
   return dayRows + totalRow;
 };
 
-function generateCell(className: string, value: any, unit: 'р.' | '%' | null, toFixedVal: number = 0): string {
-  const formattedValue = formatNumber(value, toFixedVal)
-  const unittedValue = formatUnitValue(unit, formattedValue)
-  return `<td class="${className}">${unittedValue}</td>`
+function generateCell(className: string, value: any, unit: 'р.' | '%' | null, toFixedVal: number = 0, range?: { min: number, max: number }): string {
+  const formattedValue = formatNumber(value, toFixedVal);
+  const unittedValue = formatUnitValue(unit, formattedValue);
+
+  let conditionalClass = '';
+  if (range) {
+    const { min, max } = range;
+    const mid = (max + min) / 2;
+    if (value === max) {
+      conditionalClass = 'red';
+    } else if (value === min) {
+      conditionalClass = 'green';
+    } else if (value > mid) {
+      conditionalClass = 'light-red';
+    } else {
+      conditionalClass = 'light-green';
+    }
+  }
+
+  return `<td class="${className} ${conditionalClass}">${unittedValue}</td>`;
 }
 
 function formatUnitValue(unit: '%' | 'р.' | null, value: string | number) {
   if (unit === '%') return `${value}%`
   if (unit === 'р.') return `р.${value}`
   return value
+}
+
+export function calculateRanges(data: SKU[], days: DateKey[], cols: typeof config.pdf.cols) {
+  const ranges: { [key: string]: { min: number, max: number } } = {};
+
+  cols.forEach((col) => {
+    col.condFormat.forEach((isCond, index) => {
+      if (isCond) {
+        const key = `${col.title}${index}`;
+        let values: number[] = [];
+
+        days.forEach((day) => {
+          values.push(
+            ...data.map((skuData) => getSkuData(skuData, col.source(day)[index]))
+          );
+        });
+
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        ranges[key] = { min, max };
+      }
+    });
+  });
+
+  return ranges;
 }

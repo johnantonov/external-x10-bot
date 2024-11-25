@@ -1,4 +1,4 @@
-import { generateTable, generateTableHeader, generateDayRows, generateTotalTable } from "./htmlBuilder";
+import { generateTable, generateTableHeader, generateDayRows, generateTotalTable, calculateRanges } from "./htmlBuilder";
 import { fetchAndResizeImage } from "./imageProcessing";
 import { SKU } from "../dto/sku";
 import { CSS } from "./CSS";
@@ -8,6 +8,8 @@ import { create31DaysObject } from "../utils/time";
 export const generateReportHtml = async (articleData: SKU[]): Promise<string> => {
   let days = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
   let tables = ``
+
+  const ranges = calculateRanges(articleData, days, config.pdf.cols);
 
   if (articleData.length > 1) {
     tables += generateTotalTable(articleData, days);
@@ -31,6 +33,7 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
     </head>
     <body>
       ${tables}
+      <br>
       <p>${config.pdf.footerText}</p>
     </body>
     </html>
