@@ -20,6 +20,7 @@ import { updateBoxTariffs } from '../utils/boxTariffs';
 import { generateReportHtml } from '../report/reportGenerator';
 import { getCosts } from '../utils/dataProcessing';
 import { createReportMessage } from '../report/textReport';
+import { User } from '../dto/user';
 
 dotenv.config();
 
@@ -45,7 +46,7 @@ export class ReportService {
         return null
       }
 
-      console.log('list of users waiting report:', userIds)
+      console.log('list of users waiting report:', userIds.map((user: User) => user.chat_id).join(' '))
       for (const chat_id of userIds) {
         const id = chat_id.chat_id
 

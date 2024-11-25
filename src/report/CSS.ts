@@ -42,7 +42,7 @@ export const CSS = (cols: number) => `
     }
     table {
       width: ${mainWidth}px !important;
-      margin-bottom: 40px;
+      margin-bottom: 10px;
       border-collapse: collapse;
     }
     .no_border {
