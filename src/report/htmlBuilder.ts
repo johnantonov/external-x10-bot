@@ -89,7 +89,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
     })
   })
 
-  totalRow = '</tr>'
+  totalRow += '</tr>'
 
   return dayRows + totalRow;
 };
