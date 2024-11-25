@@ -1,4 +1,4 @@
-import { generateTable, generateTableHeader, generateDayRows, generateTotalTable, calculateRanges } from "./htmlBuilder";
+import { generateTable, generateTableHeader, generateDayRows, generateTotalTable, calculateRangesForSku, calculateTotalRanges } from "./htmlBuilder";
 import { fetchAndResizeImage } from "./imageProcessing";
 import { SKU } from "../dto/sku";
 import { CSS } from "./CSS";
@@ -9,13 +9,13 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
   let days = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
   let tables = ``
 
-  const ranges = calculateRanges(articleData, days, config.pdf.cols);
-
   if (articleData.length > 1) {
-    tables += generateTotalTable(articleData, days);
+    const totalRanges = calculateTotalRanges(articleData, days, config.pdf.cols);
+    tables += generateTotalTable(articleData, days, totalRanges);
   }
 
   for (const data of articleData) {
+    const ranges = calculateRangesForSku(data, days, config.pdf.cols);
     const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
     const header = generateTableHeader(data);
     const dayRows = generateDayRows(data, imgSrc, days, ranges);

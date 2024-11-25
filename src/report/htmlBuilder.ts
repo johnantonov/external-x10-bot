@@ -11,7 +11,7 @@ export const generateTable = (header: string, dayRows: string): string => `
   </table>
 `;
 
-export function generateTotalTable(data: SKU[], days: DateKey[]) {
+export function generateTotalTable(data: SKU[], days: DateKey[], ranges: { [key: string]: { min: number, max: number } }) {
   const header = generateTableHeader();
   const dayCount = config.pdf.tableDays;
 
@@ -49,7 +49,19 @@ export function generateTotalTable(data: SKU[], days: DateKey[]) {
           (total[key] as number) += value
         } 
 
-        const cell = generateCell(classNames, value, unit, toFixedVal)
+        let cell;
+        if (col.condFormat[index]) {
+          cell = generateCell(
+            classNames,
+            value,
+            unit,
+            toFixedVal,
+            { ...ranges[`${col.title}${index}`],
+            reverseColors: col?.condReverse?.[0],
+            tolerance: config.pdf.toleranceFormatting })
+        } else {
+          cell = generateCell(classNames, value, unit, toFixedVal)
+        }
 
         dayRows += cell
       })
@@ -131,6 +143,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[
         const unit = col.unit[index] as 'р.' | '%' | null
         const toFixedVal = col?.toFixed
         const value = getSkuData(data, source)
+
         let cell;
         if (col.condFormat[index]) {
           cell = generateCell(
@@ -235,19 +248,20 @@ function formatUnitValue(unit: '%' | 'р.' | null, value: string | number) {
   return value
 }
 
-export function calculateRanges(data: SKU[], days: DateKey[], cols: typeof config.pdf.cols) {
+export function calculateRangesForSku(data: SKU, days: DateKey[], cols: typeof config.pdf.cols) {
   const ranges: { [key: string]: { min: number, max: number } } = {};
 
   cols.forEach((col) => {
     col.condFormat.forEach((isCond, index) => {
       if (isCond) {
         const key = `${col.title}${index}`;
-        let values: number[] = [];
+        const values: number[] = [];
 
         days.forEach((day) => {
-          values.push(
-            ...data.map((skuData) => getSkuData(skuData, col.source(day)[index]))
-          );
+          const value = getSkuData(data, col.source(day)[index]);
+          if (!isNaN(value)) {
+            values.push(value);
+          }
         });
 
         const min = Math.min(...values);
@@ -258,4 +272,32 @@ export function calculateRanges(data: SKU[], days: DateKey[], cols: typeof confi
   });
 
   return ranges;
+}
+
+export function calculateTotalRanges(data: SKU[], days: DateKey[], cols: typeof config.pdf.cols) {
+  const totalRanges: { [key: string]: { min: number; max: number } } = {};
+
+  cols.forEach((col) => {
+    col.source(days[0]).forEach((_, index) => {
+      const key = `${col.title}${index}`;
+      let allValues: number[] = [];
+
+      days.forEach((day) => {
+        col.source(day).forEach((source) => {
+          data.forEach((skuData) => {
+            const value = getSkuData(skuData, source);
+            if (!isNaN(value) && value != null) {
+              allValues.push(value);
+            }
+          });
+        });
+      });
+
+      const min = Math.min(...allValues);
+      const max = Math.max(...allValues);
+      totalRanges[key] = { min, max };
+    });
+  });
+
+  return totalRanges;
 }
