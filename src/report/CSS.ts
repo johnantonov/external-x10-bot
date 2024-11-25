@@ -1,8 +1,7 @@
 import { config } from "../config/config";
 
-const mainWidth = 1600;
-const fontFamily = `Arial, sans-serif`
-const fontSize = 22;
+const fontFamily = config.pdf.ff
+const fontSize = config.pdf.baseFz;
 const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12

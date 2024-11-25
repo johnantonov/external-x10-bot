@@ -11,15 +11,16 @@ export const config = {
 
   pdf: {
     tableDays: 5,
-    skuCol: 4,
-    photoColspan: 3,
+    skuCol: 3,
+    photoColspan: 2,
     dayColspan: 1,
     headerRowspan: 2,
     totalRowColor: '#f3f3f3',
     title: `<span>10X</span><br><span>SYSTEM</span>`,
     titleFz: 40,
     footerText:  `  Отчёт подготовлен ботом @bot_123 от команды 10X.<br>Получите подробный отчет по всем SKU вашего кабинета. <b>Бесплатный доступ на 3 дня:</b> @tenXsupport_bot`,
-    
+    ff: `Arial, sans-serif`,
+    baseFz: 22,
 
     imgWidth: 240,
     imgHeight: 300,
