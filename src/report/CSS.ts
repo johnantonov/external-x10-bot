@@ -1,6 +1,6 @@
 const mainWidth = 2400
 const fontFamily = `Arial, sans-serif`
-const fontSize = 30
+const fontSize = 24
 const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
@@ -20,6 +20,9 @@ export const CSS = (cols: number) => `
     }
     fz14 {
       font-size: 14px !important;
+    }
+    total_row {
+      
     }
     table {
       width: ${mainWidth}px !important;
