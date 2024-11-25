@@ -5,11 +5,11 @@ export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
 }
 
-export function getSkuData(sku: any, path: string): any {
+export function getSkuData(sku: any, path: string): number {
   const keys = path.split('.');
 
   return keys.reduce((current, key) => {
-    return current && current[key] !== undefined ? current[key] : undefined;
+    return current && current[key] !== undefined ? current[key] : 0;
   }, sku); 
 }
 

@@ -11,19 +11,85 @@ export const generateTable = (header: string, dayRows: string): string => `
   </table>
 `;
 
-export function generateTotalTable(data: SKU[]) {
-  const header = generateTableHeader(null)
-  const dayRows = ''
+export function generateTotalTable(data: SKU[], days: `${number}-${number}-${number}`[]) {
+  const header = generateTableHeader();
+  const dayCount = config.pdf.tableDays;
 
-  let res = `table>
-    <thead>${header}</thead>
-    <tbody class="br">${dayRows}</tbody>
-  </table>`
+  const titleCol = `<td rowspan="${dayCount+1}" colspan="${config.pdf.photoColspan}">${config.pdf.title}</td>`;
+  let totalRow = `<tr class="total_row"><td rowspan="1" colspan="${config.pdf.dayColspan}">Итог</td>`;
+  let dayRows = ``;
+
+  const total: { [key: string]: number[] | number } = {};
+
+  for (let i = dayCount; i > 0; i--) {
+    const day = days[i];
+    const formatDay = getReportFormatDay(day);
+
+    dayRows += `<tr>${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
+
+    config.pdf.cols.forEach((col) => {
+      col.source(day).forEach((source, index) => {
+        const classNames = col.class[index];
+        const unit = col.unit[index] as 'р.' | '%' | null
+        const toFixedVal = col?.toFixed
+
+        const key = `${col.title}${index}`;
+        const values = data.map(skuData => { return getSkuData(skuData, source) })
+        let value = 0;
+        
+        if (Array.isArray(col.totalType)) {
+          value = values.reduce((sum, num) => sum + num, 0) / values.length;
+          if (!total[key]) total[key] = [];
+
+          (total[key] as number[]).push(value)
+        } else {
+          value = values.reduce((sum, num) => sum + num, 0);
+          if (!total[key]) total[key] = 0;
+          (total[key] as number) += value
+        } 
+
+        const cell = generateCell(classNames, value, unit, toFixedVal)
+
+        dayRows += cell
+      })
+    })
+
+    dayRows += `</tr>`
+  }
+
+  const totalKeys = Object.keys(total)
+  let keyI = 0
+  config.pdf.cols.forEach((col) => {
+    col.condFormat.forEach((isCond, index) => {
+      let value;
+      if (typeof total[totalKeys[keyI]] === 'number' || typeof total[totalKeys[keyI]] === 'string') {
+        value = total[totalKeys[keyI]];
+      } else if (Array.isArray(total[totalKeys[keyI]])) {
+        value = (total[totalKeys[keyI]] as number[]).reduce((sum: number, num: number) => sum + num, 0) / (total[totalKeys[keyI]] as number[]).length;
+      } else {
+        value = 0;
+      }
+      const unit = col.unit[index] as 'р.' | '%' | null
+      const toFixedVal = col?.toFixed
+      const cell = generateCell(col.class[index], value, unit, toFixedVal)
+      keyI++
+      totalRow += cell
+    })
+  })
+
+  totalRow += '</tr>'
+
+
+  const res = `
+    table>
+      <thead>${header}</thead>
+      <tbody class="br">${dayRows}${totalRow}</tbody>
+    </table>`
 
   return res
 }
 
-export const generateTableHeader = (data: SKU | null): string => {
+export const generateTableHeader = (data?: SKU): string => {
   const rs = config.pdf.headerRowspan
   let cells = ``
 
@@ -48,9 +114,9 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
   let totalRow = `<tr class="total_row"><td rowspan="1" colspan="${config.pdf.dayColspan}">Итог</td>`;
 
   const titleCol = `
-    <td rowspan="${dayCount+1}" colspan="${config.pdf.photoColspan}">
-      ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" >` : "Ошибка данных"}
-    </td>`
+  <td rowspan="${dayCount+1}" colspan="${config.pdf.photoColspan}">
+    ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" >` : "Ошибка данных"}
+  </td>`
 
   for (let i = dayCount; i > 0; i--) {
     const day = days[i];
@@ -72,7 +138,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
             (total[key] as number[]).push(value)
           } else {
             if (!total[key]) total[key] = 0;
-            total[key] += value
+            (total[key] as number) += value
           } 
 
         dayRows += cell
