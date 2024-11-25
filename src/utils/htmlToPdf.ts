@@ -13,7 +13,7 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
     });
 
     const options = {
-      pageSize: 'A2' as 'A2',
+      pageSize: 'A1' as 'A1',
       marginTop: '1mm',
       marginBottom: '1mm',
       marginLeft: '1mm',
