@@ -7,7 +7,11 @@ import { create31DaysObject } from "../utils/time";
 
 export const generateReportHtml = async (articleData: SKU[]): Promise<string> => {
   let days = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
-  let tables = generateTotalTable(articleData, days);
+  let tables = ``
+
+  if (articleData.length > 1) {
+    tables += generateTotalTable(articleData, days);
+  }
 
   for (const data of articleData) {
     const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;

@@ -37,6 +37,9 @@ export const CSS = (cols: number) => `
       font-weight: bold;
       background: ${config.pdf.totalRowColor};
     }
+    .total_row td:not(:first-child) {
+      border-bottom: ${specialBorder} !important;
+    }
     table {
       width: ${mainWidth}px !important;
       margin-bottom: 40px;
