@@ -84,16 +84,19 @@ export const CSS = (cols: number) => `
       border-bottom: ${specialBorder};
     }
     .red {
-      background-color: #ffcccc;
+      background-color: #e67c73;
     }
     .light-red {
-      background-color: #ffe6e6;
+      background-color: #f3beba;
+    }
+    .white {
+      background-color: white;
     }
     .light-green {
-      background-color: #e6ffe6;
+      background-color: #81cca8;
     }
     .green {
-      background-color: #ccffcc;
+      background-color: #57bb8a;
     }
   </style>
 `

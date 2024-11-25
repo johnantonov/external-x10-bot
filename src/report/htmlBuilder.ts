@@ -131,8 +131,19 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[
         const unit = col.unit[index] as 'р.' | '%' | null
         const toFixedVal = col?.toFixed
         const value = getSkuData(data, source)
-        const range = ranges[`${col.title}${index}`];
-        const cell = generateCell(classNames, value, unit, toFixedVal, range)
+        let cell;
+        if (col.condFormat) {
+          cell = generateCell(
+            classNames,
+            value,
+            unit,
+            toFixedVal,
+            { ...ranges[`${col.title}${index}`],
+            reverseColors: col?.condReverse?.[0],
+            tolerance: config.pdf.toleranceFormatting })
+        } else {
+          cell = generateCell(classNames, value, unit, toFixedVal)
+        }
 
         const key = `${col.title}${index}`;
         if (Array.isArray(col.totalType)) {
@@ -175,22 +186,46 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[
   return dayRows + totalRow;
 };
 
-function generateCell(className: string, value: any, unit: 'р.' | '%' | null, toFixedVal: number = 0, range?: { min: number, max: number }): string {
+function generateCell(
+  className: string, 
+  value: any, 
+  unit: 'р.' | '%' | null, 
+  toFixedVal: number = 0, 
+  range?: { min: number, max: number, reverseColors?: boolean, tolerance?: number }
+): string {
   const formattedValue = formatNumber(value, toFixedVal);
   const unittedValue = formatUnitValue(unit, formattedValue);
 
   let conditionalClass = '';
   if (range) {
-    const { min, max } = range;
+    const { min, max, reverseColors = false, tolerance = 20 } = range;
     const mid = (max + min) / 2;
-    if (value === max) {
-      conditionalClass = 'red';
-    } else if (value === min) {
-      conditionalClass = 'green';
-    } else if (value > mid) {
-      conditionalClass = 'light-red';
+    const toleranceRange = (max - min) * (tolerance / 100);
+    const lowerBound = mid - toleranceRange / 2;
+    const upperBound = mid + toleranceRange / 2;
+
+    if (value >= lowerBound && value <= upperBound) {
+      conditionalClass = 'white';
+    } else if (reverseColors) {
+      if (value === max) {
+        conditionalClass = 'red';
+      } else if (value === min) {
+        conditionalClass = 'green';
+      } else if (value > mid) {
+        conditionalClass = 'light-green';
+      } else {
+        conditionalClass = 'light-red';
+      }
     } else {
-      conditionalClass = 'light-green';
+      if (value === max) {
+        conditionalClass = 'green';
+      } else if (value === min) {
+        conditionalClass = 'red';
+      } else if (value > mid) {
+        conditionalClass = 'light-red';
+      } else {
+        conditionalClass = 'light-green';
+      }
     }
   }
 
