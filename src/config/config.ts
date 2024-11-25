@@ -21,8 +21,8 @@ export const config = {
     footerText:  `  Отчёт подготовлен ботом @bot_123 от команды 10X.<br>Получите подробный отчет по всем SKU вашего кабинета. <b>Бесплатный доступ на 3 дня:</b> @tenXsupport_bot`,
     
 
-    imgWidth: 180,
-    imgHeight: 300,
+    imgWidth: 200,
+    imgHeight: 220,
 
     get summaryColSpan() {
       let count = this.skuCol;
