@@ -34,7 +34,7 @@ export const config = {
 
     get cols() {
       return [
-        { title: 'Клики\nАРК',
+        { title: 'Клики<br>АРК',
            unit: [null], 
            colspan: 1, 
            headBg: '#fff2cc',
@@ -54,7 +54,7 @@ export const config = {
            totalType: [],
            source(day: DateKey){ return [`other_metricks.${day}.ctrArk`]} },
 
-        { title: "Клики\nПРК",
+        { title: "Клики<br>ПРК",
            unit: [null], 
            colspan: 1, 
            headBg: '#fff2cc',
@@ -63,7 +63,7 @@ export const config = {
            totalType: 0,
            source(day: DateKey){ return [`marketing_cost.${day}.prk.clicks`]} },
 
-        { title: "CTR\nПРК",
+        { title: "CTR<br>ПРК",
            unit: ["%"], 
            colspan: 1, 
            toFixed: 2, 
