@@ -48,8 +48,8 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
 Выкупы: ${formatNumber(buysSumTotal)}₽, ${formatNumber(buysCountTotal)}шт
 Реклама: ${formatNumber(marketingCostTotal)}₽
 ДРР: ${formatNumber(drrTotal)}%
-Маржа до ДРР: ${marginTotal}%
-Маржа с ДРР: ${marginWithDrrTotal}%
+Маржа до ДРР: ${formatNumber(marginTotal)}%
+Маржа с ДРР: ${formatNumber(marginWithDrrTotal)}%
 КРРР: ${formatNumber(krrrTotal)}%
 <b>Прибыль с ДРР: ${formatNumber(revTotal)}₽</b>
   `

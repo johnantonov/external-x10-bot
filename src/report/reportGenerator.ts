@@ -1,4 +1,4 @@
-import { generateTable, generateTableHeader, generateDayRows } from "./htmlBuilder";
+import { generateTable, generateTableHeader, generateDayRows, generateTotalTable } from "./htmlBuilder";
 import { fetchAndResizeImage } from "./imageProcessing";
 import { SKU } from "../dto/sku";
 import { CSS } from "./CSS";
@@ -6,10 +6,7 @@ import { config } from "../config/config";
 import { create31DaysObject } from "../utils/time";
 
 export const generateReportHtml = async (articleData: SKU[]): Promise<string> => {
-  let tables = ``;
-  // if (articleData.length > 1) {
-  //   articleData.unshift({} as SKU);  // для создания таблицы итого
-  // }
+  let tables = generateTotalTable(articleData);
 
   let days = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
 

@@ -11,7 +11,19 @@ export const generateTable = (header: string, dayRows: string): string => `
   </table>
 `;
 
-export const generateTableHeader = (data: SKU): string => {
+export function generateTotalTable(data: SKU[]) {
+  const header = generateTableHeader(null)
+  const dayRows = ''
+
+  let res = `table>
+    <thead>${header}</thead>
+    <tbody class="br">${dayRows}</tbody>
+  </table>`
+
+  return res
+}
+
+export const generateTableHeader = (data: SKU | null): string => {
   const rs = config.pdf.headerRowspan
   let cells = ``
 
@@ -27,11 +39,12 @@ export const generateTableHeader = (data: SKU): string => {
     </tr>`
 };
 
+
 export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${number}-${number}-${number}`[]): string => {
   let dayRows = ``;
   const dayCount = config.pdf.tableDays
 
-  const total: { [key: string]: number[] | number} = {};
+  const total: { [key: string]: number[] | number } = {};
   let totalRow = `<tr class="total_row"><td rowspan="1" colspan="${config.pdf.dayColspan}">Итог</td>`;
 
   const titleCol = `
@@ -79,7 +92,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
       } else if (Array.isArray(total[totalKeys[keyI]])) {
         value = (total[totalKeys[keyI]] as number[]).reduce((sum: number, num: number) => sum + num, 0) / (total[totalKeys[keyI]] as number[]).length;
       } else {
-        value = 0; 
+        value = 0;
       }
       const unit = col.unit[index] as 'р.' | '%' | null
       const toFixedVal = col?.toFixed
