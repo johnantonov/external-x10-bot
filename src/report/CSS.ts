@@ -6,7 +6,7 @@ const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
 const cellTextAlign = `center`
-const rowHeight = 30
+const rowHeight = 25
 const headFontStyle = 'bold'
 
 
