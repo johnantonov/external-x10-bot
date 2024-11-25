@@ -7,7 +7,7 @@ import { create31DaysObject } from "../utils/time";
 
 export const generateReportHtml = async (articleData: SKU[]): Promise<string> => {
   let dates = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
-  const days = dates.slice(0, config.pdf.tableDays);
+  const days = dates.slice(0, config.pdf.tableDays+1);
   console.log(days)
   let tables = ``
 
