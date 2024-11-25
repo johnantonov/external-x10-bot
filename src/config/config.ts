@@ -16,8 +16,8 @@ export const config = {
     dayColspan: 2,
     headerRowspan: 2,
     totalRowColor: '#f3f3f3',
-    title: '10X<br>SYSTEM',
-    titleFz: 60,
+    title: '<div><span>10X<br><br>SYSTEM<span></div>',
+    titleFz: 54,
     footerText:  `  Отчёт подготовлен ботом @bot_123 от команды 10X.<br>Получите подробный отчет по всем SKU вашего кабинета. <b>Бесплатный доступ на 3 дня:</b> @tenXsupport_bot`,
     
 

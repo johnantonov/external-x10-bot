@@ -15,7 +15,13 @@ export function generateTotalTable(data: SKU[], days: `${number}-${number}-${num
   const header = generateTableHeader();
   const dayCount = config.pdf.tableDays;
 
-  const titleCol = `<td rowspan="${dayCount+1}" class="title_cell" colspan="${config.pdf.photoColspan}"><p class="title">${config.pdf.title}</p></td>`;
+  const titleCol = `<td rowspan="${dayCount+1}" class="title_cell" colspan="${config.pdf.photoColspan}">
+                    <div class="title">
+                      <span>10X</span><br><br>
+                      <span>SYSTEM</span>
+                    </div>
+                  </td>`;
+                  
   let totalRow = `<tr class="total_row"><td rowspan="1" colspan="${config.pdf.dayColspan}">Итог</td>`;
   let dayRows = ``;
 
