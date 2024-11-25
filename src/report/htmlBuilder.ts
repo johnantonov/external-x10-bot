@@ -58,7 +58,7 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
             if (!total[key]) total[key] = [];
             (total[key] as number[]).push(value)
           } else {
-            if (!total[key]) total[key] = [];
+            if (!total[key]) total[key] = 0;
             total[key] += value
           } 
 
