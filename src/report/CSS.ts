@@ -2,7 +2,7 @@ import { config } from "../config/config";
 
 const mainWidth = 1600;
 const fontFamily = `Arial, sans-serif`
-const fontSize = 20;
+const fontSize = 16;
 const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
@@ -42,11 +42,12 @@ export const CSS = (cols: number) => `
     }
     table {
       width: 100%;
+      table-layout: fixed;
       margin-bottom: 10px;
       border-collapse: collapse;
     }
     .table-wrapper:not(:last-child) {
-      margin-bottom: 100px; /* Добавляем отступ для всех таблиц, кроме последней */
+      margin-bottom: 100px; 
     }
     .no_border {
       border-top: ${noBorder} !important;
