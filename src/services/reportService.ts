@@ -18,8 +18,8 @@ import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 import { generateReportHtml } from '../report/reportGenerator';
-import { OrderInfo } from 'node-telegram-bot-api';
 import { getCosts } from '../utils/dataProcessing';
+import { createReportMessage } from '../report/textReport';
 
 dotenv.config();
 
@@ -525,8 +525,7 @@ export class ReportService {
   }
 
   async processReport(articles: SKU[], yesterdayDate: string, chat_id: number) {
-    // const messageText = createReportMessa(articles, yesterdayDate)
-    const messageText = 'test'
+    const messageText = createReportMessage(articles, yesterdayDate)
     const htmlTable = await generateReportHtml(articles);
     const pdfBuffer = await generatePdfFromHtml(htmlTable);
     if (pdfBuffer && messageText) {

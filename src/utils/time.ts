@@ -2,11 +2,12 @@ import { format, subDays } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { User } from '../dto/user';
 import { config } from '../config/config';
+import { DateKey } from '../dto/sku';
 
 /**
  * get yesterday date
  */
-export function getYesterdayDate(local: 'en' | 'ru' = 'en') {
+export function getYesterdayDate(local: 'en' | 'ru' = 'en'): DateKey | string  {
   const timeZone = 'Europe/Moscow';
 
   const now = new Date();
