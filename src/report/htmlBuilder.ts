@@ -4,10 +4,10 @@ import { getSkuData } from "../utils/parse";
 import { formatNumber } from "../utils/string";
 import { getReportFormatDay } from "../utils/time";
 
-export const generateTable = (header: string, dayRows: string, totalRow: string): string => `
+export const generateTable = (header: string, dayRows: string): string => `
   <table>
     <thead>${header}</thead>
-    <tbody class="br">${dayRows}${totalRow}</tbody>
+    <tbody class="br">${dayRows}</tbody>
   </table>
 `;
 
@@ -31,6 +31,9 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
   let dayRows = ``;
   const dayCount = config.pdf.tableDays
 
+  const total: { [key: string]: number[] | number} = {};
+  let totalRow = `<td rowspan="1" colspan="${config.pdf.dayColspan}">Итог: </td>`;
+
   const titleCol = `
     <td rowspan="${dayCount+1}" colspan="${config.pdf.photoColspan}">
       ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" >` : "Ошибка данных"}
@@ -49,6 +52,16 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
         const toFixedVal = col?.toFixed
         const value = getSkuData(data, source)
         const cell = generateCell(classNames, value, unit, toFixedVal)
+
+        const key = `${col.title}${index}`;
+        if (Array.isArray(col.totalType)) {
+            if (!total[key]) total[key] = [];
+            (total[key] as number[]).push(value)
+          } else {
+            if (!total[key]) total[key] = [];
+            total[key] += value
+          } 
+
         dayRows += cell
       })
     })
@@ -56,49 +69,26 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: `${numbe
     dayRows += `</tr>`
   }
 
-  return dayRows;
+  const totalKeys = Object.keys(total)  
+  let keyI = 0
+  config.pdf.cols.forEach((col, index) => {
+    col.class.forEach((classNames, index) => {
+      let value;
+      if (typeof total[totalKeys[keyI]] === 'number') {
+        value = total[totalKeys[keyI]]
+      } else {
+        (value = total[totalKeys[keyI]] as number[]).reduce((sum: any, num: any) => sum + num, 0) / (totalKeys[keyI].length || 1)
+      }
+      const unit = col.unit[index] as 'р.' | '%' | null
+      const toFixedVal = col?.toFixed
+      const cell = generateCell(classNames, value, unit, toFixedVal)
+      keyI++
+      totalRow += cell
+    })
+  })
+
+  return dayRows + totalRow;
 };
-
-export const generateTotalRow = (data: SKU, days: `${number}-${number}-${number}`[]) => {
-  const dayCount = config.pdf.tableDays;
-  
-  const total: { [key: string]: number[] | number } = {};
-  let totalRow = ``;
-
-  for (let i = dayCount; i > 0; i--) {
-    const day = days[i]; 
-
-    config.pdf.cols.forEach((col, colIndex) => {
-      col.source(day).forEach((source, index) => {
-        const value = getSkuData(data, source);
-
-        const key = `${col.title}${index}`;
-        if (!total[key]) {
-          if (Array.isArray(col.totalType)) {
-            total[key] = [];
-          } else {
-            total[key] = 0
-          }
-        }
-
-        if (typeof total[key] === 'number') {
-          total[key] += value
-        } else {
-          (total[key] as number[]).push(value);
-        }
-
-        // if (typeof total[key] === 'number') {
-        //   total[key] += value;
-        // } else if (Array.isArray(total[key])) {
-        //   (total[key] as number[]).push(value);
-        // }
-      });
-    });
-  };
-
-  console.log(total);
-  return totalRow;
-}
 
 function generateCell(className: string, value: any, unit: 'р.' | '%' | null, toFixedVal: number = 0): string {
   const formattedValue = formatNumber(value, toFixedVal)
@@ -110,12 +100,4 @@ function formatUnitValue(unit: '%' | 'р.' | null, value: string | number) {
   if (unit === '%') return `${value}%`
   if (unit === 'р.') return `р.${value}`
   return value
-}
-
-function totalDataInit(): Record<string, any> {
-  return { 
-    ark: { clicks: 0, ctr: [] }, prk: { clicks: 0, ctr: [] }, 
-    marketingCost: 0, drr: [], krrr: [], carts: 0, orders: 0, 
-    buys: 0, margin: [], rev: 0, revDrr: 0, infoBuys: 0,
-  };
 }
