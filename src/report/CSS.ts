@@ -55,7 +55,7 @@ export const CSS = (cols: number) => `
     td {
       white-space: nowrap;
       height: ${rowHeight};
-      width: ${mainWidth / 15}
+      width: ${mainWidth / 15} !important
     }
     th, td {
       padding: ${usualPadding}px;
