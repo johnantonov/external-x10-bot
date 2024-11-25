@@ -20,7 +20,7 @@ export const config = {
     titleFz: 40,
     footerText:  `  Отчёт подготовлен ботом @bot_123 от команды 10X.<br>Получите подробный отчет по всем SKU вашего кабинета. <b>Бесплатный доступ на 3 дня:</b> @tenXsupport_bot`,
     ff: `Arial, sans-serif`,
-    baseFz: 22,
+    baseFz: 24,
 
     imgWidth: 240,
     imgHeight: 300,
