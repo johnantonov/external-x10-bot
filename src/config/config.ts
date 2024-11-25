@@ -11,9 +11,9 @@ export const config = {
 
   pdf: {
     tableDays: 5,
-    skuCol: 5,
+    skuCol: 4,
     photoColspan: 3,
-    dayColspan: 2,
+    dayColspan: 1,
     headerRowspan: 2,
     totalRowColor: '#f3f3f3',
     title: `<span>10X</span><br><span>SYSTEM</span>`,
