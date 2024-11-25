@@ -81,7 +81,7 @@ export function generateTotalTable(data: SKU[], days: `${number}-${number}-${num
 
 
   const res = `
-    table>
+    <table>
       <thead>${header}</thead>
       <tbody class="br">${dayRows}${totalRow}</tbody>
     </table>`
