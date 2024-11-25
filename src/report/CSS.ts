@@ -23,6 +23,10 @@ export const CSS = (cols: number) => `
     .title {
       font-size: ${config.pdf.titleFz}
     }
+    .title_cell: {
+      width: ${config.pdf.imgWidth} !important;
+      height: ${config.pdf.imgWidth} !important
+    }
     .fz14 {
       font-size: 14px !important;
     }
@@ -32,7 +36,7 @@ export const CSS = (cols: number) => `
     }
     table {
       width: ${mainWidth}px !important;
-      margin-bottom: 20px;
+      margin-bottom: 60px;
       border-collapse: collapse;
     }
     .no_border {
