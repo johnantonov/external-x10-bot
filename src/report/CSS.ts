@@ -1,8 +1,8 @@
 import { config } from "../config/config";
 
-const mainWidth = 3000;
+const mainWidth = 2000;
 const fontFamily = `Arial, sans-serif`
-const fontSize = 24
+const fontSize = 30;
 const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
