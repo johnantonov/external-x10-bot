@@ -13,12 +13,12 @@ export async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> 
     });
 
     const options = {
-      pageSize: 'A4' as 'A4',
+      pageSize: 'A3' as 'A3',
       marginTop: '1mm',
       marginBottom: '1mm',
       marginLeft: '1mm',
       marginRight: '2mm',
-      orientation: 'Landscape' as 'Landscape',
+      // orientation: 'Landscape' as 'Landscape',
       disableJavascript: false,
       images: true,
     };
