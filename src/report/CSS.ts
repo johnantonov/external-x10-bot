@@ -41,9 +41,13 @@ export const CSS = (cols: number) => `
       border-bottom: ${specialBorder} !important;
     }
     table {
-      width: ${mainWidth}px !important;
+      width: 100%;
+      table-layout: fixed;
       margin-bottom: 10px;
       border-collapse: collapse;
+    }
+    .table-wrapper:not(:last-child) {
+      margin-bottom: 100px; /* Добавляем отступ для всех таблиц, кроме последней */
     }
     .no_border {
       border-top: ${noBorder} !important;
@@ -51,11 +55,9 @@ export const CSS = (cols: number) => `
       border-left: ${noBorder} !important;
       border-bottom: ${noBorder} !important;
     }
-    
     td {
       white-space: nowrap;
       height: ${rowHeight};
-      width: ${mainWidth / 15} !important
     }
     th, td {
       padding: ${usualPadding}px;
