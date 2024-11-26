@@ -121,7 +121,7 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const acquiring = config.acquiring || 0.015;
     const commission = parsePercent(data.order_info?.commission);
     const buysSum = NumberOrZero(data.order_info?.[date]?.buysSum)
-    const buysCount = NumberOrZero(data.order_info?.[date]?.buysCount)
+    const buysCount = Math.floor(NumberOrZero(data.order_info?.[date]?.buysCount))
   
     const selfCost = buysCount * NumberOrZero(sku?.self_cost);
     const taxCost = buysSum * tax;
@@ -132,8 +132,8 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
     const logisticsCost = Math.ceil(buysCount * logisticsBase)
 
-    console.log(`DATE: ${date}\n\nselfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
-    console.log('buysCount: ', buysCount, "\nbuysSum: ",buysSum, "\ncommission: ", commission, "\nacquiring: ", acquiring, "\ntax: ", tax)
+    console.log(`\n\nDATE: ${date}\n\nselfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
+    console.log('buysCount: ', buysCount, "\nbuysSum: ",buysSum, "\ncommission: ", commission, "\nacquiring: ", acquiring, "\ntax: ", tax, "")
     
     return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch (e) {
