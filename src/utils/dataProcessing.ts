@@ -1,6 +1,6 @@
 import { box_tariffs_db } from "../../database/models/box_tariffs";
 import { config } from "../config/config";
-import { article, DateKey, SKU } from "../dto/sku";
+import { article, DateKey, MarketingObject, ObjectOther, SKU } from "../dto/sku";
 import { BoxTariff } from "../dto/boxTariffs";
 import { create31DaysObject  } from "./time";
 import { parsePercent } from "./parse";
@@ -140,4 +140,35 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     console.error('error getting other costs: ', data.article, " ", e)
     return 0
   }
+}
+
+export function calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku: SKU, marketing: MarketingObject): ObjectOther {
+  let res: ObjectOther = {}
+
+  dates.forEach(date => {
+    if (data.order_info?.[date]) {
+      const marketingCost = NumberOrZero(marketing?.[date]?.cost)
+      const ordersSum = NumberOrZero(data.order_info?.[date].ordersSum)
+      const buysSum = NumberOrZero(data.order_info?.[date].buysSum)
+      const otherCosts = getCosts(data, sku, date)
+
+      const revWithoutDrr = buysSum - otherCosts
+      const revWithDrr = revWithoutDrr - marketingCost
+      const krrr = revWithDrr / revWithoutDrr * 100
+
+      res[date] = {
+        revWithoutDrr: revWithoutDrr,
+        revWithDrr: revWithDrr,
+        drr: marketingCost / ordersSum * 100,
+        margin: revWithoutDrr / buysSum * 100,
+        marginWithDrr: revWithDrr / buysSum * 100,
+        krrr: krrr > 0 ? krrr : 0,
+        ctrArk: NumberOrZero(marketing?.[date]?.ark.clicks) / NumberOrZero(marketing?.[date]?.ark.views)  * 100,
+        ctrPrk: NumberOrZero(marketing?.[date]?.prk.clicks) / NumberOrZero(marketing?.[date]?.prk.views)  * 100
+      }
+    }
+  })
+
+
+  return res as ObjectOther
 }

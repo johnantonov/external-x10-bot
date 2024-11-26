@@ -7,7 +7,7 @@ import { create31DaysObject, getXdaysAgoArr, getYesterdayDate } from '../utils/t
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { DateKey, MarketingObject, ObjectOther, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku';
-import { calculateLogisticsStorage, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
+import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
 import { formatError, NumberOrZero } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/buttons';
@@ -118,7 +118,7 @@ export class ReportService {
           let other_metricks: ObjectOther = {}
 
           if (currentSku) {
-            other_metricks = this.calculateOtherMetrics(dates, newInfoSku, currentSku, advRes[nm])
+            other_metricks = calculateOtherMetrics(dates, newInfoSku, currentSku, advRes[nm])
           } else {
             console.error('Could not find SKU while calculating metrics: ', currentSku, " ", id)
           }
@@ -133,37 +133,6 @@ export class ReportService {
     } catch (e) {
       formatError(e, 'Error to prerape report service: ')
     }
-  }
-
-  calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku: SKU, marketing: MarketingObject): ObjectOther {
-    let res: ObjectOther = {}
-
-    dates.forEach(date => {
-      if (data.order_info?.[date]) {
-        const marketingCost = NumberOrZero(marketing?.[date]?.cost)
-        const ordersSum = NumberOrZero(data.order_info?.[date].ordersSum)
-        const buysSum = NumberOrZero(data.order_info?.[date].buysSum)
-        const otherCosts = getCosts(data, sku, date)
-
-        const revWithoutDrr = buysSum - otherCosts
-        const revWithDrr = revWithoutDrr - marketingCost
-        const krrr = revWithDrr / revWithoutDrr * 100
-
-        res[date] = {
-          revWithoutDrr: revWithoutDrr,
-          revWithDrr: revWithDrr,
-          drr: marketingCost / ordersSum * 100,
-          margin: revWithoutDrr / buysSum * 100,
-          marginWithDrr: revWithDrr / buysSum * 100,
-          krrr: krrr > 0 ? krrr : 0,
-          ctrArk: NumberOrZero(marketing?.[date]?.ark.clicks) / NumberOrZero(marketing?.[date]?.ark.views)  * 100,
-          ctrPrk: NumberOrZero(marketing?.[date]?.prk.clicks) / NumberOrZero(marketing?.[date]?.prk.views)  * 100
-        }
-      }
-    })
-
-
-    return res as ObjectOther
   }
 
   async getNmSizeInfo(nmIDs: number[], wb_api_key: string) {
@@ -459,11 +428,11 @@ export class ReportService {
         if (!result[sale.nmId][date]) {
           result[sale.nmId][date] = {
             infoBuysCount: 1,
-            infoBuysSum: sale.finishedPrice
+            infoBuysSum: sale.priceWithDisc
           }
         } else {
           result[sale.nmId][date].infoBuysCount += 1
-          result[sale.nmId][date].infoBuysSum += sale.finishedPrice
+          result[sale.nmId][date].infoBuysSum += sale.priceWithDisc
         }
       }
     });
