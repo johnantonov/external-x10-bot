@@ -132,8 +132,8 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
     const logisticsCost = Math.ceil(buysCount * logisticsBase)
 
-    console.log(`\n\nDATE: ${date}\n\nselfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
-    console.log('buysCount: ', buysCount, "\nbuysSum: ",buysSum, "\ncommission: ", commission, "\nacquiring: ", acquiring, "\ntax: ", tax, "")
+    // console.log(`\n\nDATE: ${date}\n\nselfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
+    // console.log('buysCount: ', buysCount, "\nbuysSum: ",buysSum, "\ncommission: ", commission, "\nacquiring: ", acquiring, "\ntax: ", tax, "")
     
     return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch (e) {
@@ -156,6 +156,12 @@ export function calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku:
       const revWithDrr = revWithoutDrr - marketingCost
       const krrr = revWithDrr / revWithoutDrr * 100
 
+      console.log(date)
+      console.log('ordersSum: ',ordersSum)
+      console.log('buysSum: ',buysSum)
+      console.log('marketingCost: ',marketingCost)
+      console.log('otherCosts: ',otherCosts)
+
       res[date] = {
         revWithoutDrr: revWithoutDrr,
         revWithDrr: revWithDrr,
@@ -163,8 +169,8 @@ export function calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku:
         margin: revWithoutDrr / buysSum * 100,
         marginWithDrr: revWithDrr / buysSum * 100,
         krrr: krrr > 0 ? krrr : 0,
-        ctrArk: NumberOrZero(marketing?.[date]?.ark.clicks) / NumberOrZero(marketing?.[date]?.ark.views)  * 100,
-        ctrPrk: NumberOrZero(marketing?.[date]?.prk.clicks) / NumberOrZero(marketing?.[date]?.prk.views)  * 100
+        ctrArk: NumberOrZero(marketing?.[date]?.ark.clicks) / NumberOrZero(marketing?.[date]?.ark.views) * 100,
+        ctrPrk: NumberOrZero(marketing?.[date]?.prk.clicks) / NumberOrZero(marketing?.[date]?.prk.views) * 100
       }
     }
   })
