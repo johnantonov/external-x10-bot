@@ -198,7 +198,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     case 'selfcost': 
       try {
         await RediceService.setUserState(chat_id, rStates.waitSelfCost + "?" + callbackObj.art)
-        editData = createEditData(texts.updateSelfcost, returnBtn);
+        const currentSelfcost = (await articles_db.getArticle(chat_id, callbackObj.art)).self_cost
+        editData = createEditData(texts.currentSelfcost(currentSelfcost) + texts.updateSelfcost, returnBtn);
       } catch(e) {
         editData = createEditData(texts.errorAddLater, returnBtn);
         console.error("Error processing new selfcost: ", e)
