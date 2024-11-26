@@ -19,7 +19,7 @@ export function formatNumber(value: number, decimals: number = 0): string {
   }
 }
 
-export function NumberOrZero(input: any) {
+export function NumberOrZero(input: any, isRound: boolean = false, method?: 'up' | 'down') {
   try {
     let value = parseFloat(input);
   

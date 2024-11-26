@@ -127,7 +127,7 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const taxCost = NumberOrZero(stats?.buysSum) * tax;
     const acquiringCost = NumberOrZero(stats?.buysSum) * acquiring;
     const commissionCost = NumberOrZero(stats?.buysSum) * commission;
-    const storageCost = NumberOrZero(stats?.buysCount) * NumberOrZero(data?.storage) * config.turnover;
+    const storageCost = Math.ceil(NumberOrZero(stats?.buysCount)) * NumberOrZero(data?.storage) * config.turnover;
 
     const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
     const logisticsCost = NumberOrZero(stats?.buysCount) * logisticsBase
