@@ -113,12 +113,15 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     // send all data to spreadsheet db
     if (action.startsWith('send_all_data')) {
       const data = await users_db.getAllData();
+      console.log('sending response with all data...')
 
       // Отправка запроса без обработки
       axios.post(process.env.SS_ALL_DATA_URL!, data, {
         headers: {
           'Content-Type': 'application/json',
         },
+      }).then(res => {
+        console.log('successfully send all data: ', res.status)
       }).catch(error => {
         console.error('Error sending all data: ', error);
       });
