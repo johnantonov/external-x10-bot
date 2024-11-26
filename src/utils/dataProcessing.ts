@@ -122,18 +122,18 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const tax = parsePercent(sku?.tax);
     const acquiring = config.acquiring || 0.015;
     const commission = parsePercent(data.order_info?.commission);
+    const buysSum = Math.ceil(NumberOrZero(stats?.buysSum))
+    const buysCount = Math.ceil(NumberOrZero(stats?.buysCount))
   
-    const selfCost = Math.ceil(NumberOrZero(stats?.buysCount)) * NumberOrZero(sku?.self_cost);
-    const taxCost = NumberOrZero(stats?.buysSum) * tax;
-    const acquiringCost = NumberOrZero(stats?.buysSum) * acquiring;
-    const commissionCost = NumberOrZero(stats?.buysSum) * commission;
-    const storageCost = Math.ceil(NumberOrZero(stats?.buysCount)) * NumberOrZero(data?.storage) * config.turnover;
+    const selfCost = buysCount * NumberOrZero(sku?.self_cost);
+    const taxCost = buysSum * tax;
+    const acquiringCost = buysSum * acquiring;
+    const commissionCost = buysSum * commission;
+    const storageCost = buysCount * NumberOrZero(data?.storage) * config.turnover;
 
     const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
-    const logisticsCost = Math.ceil(NumberOrZero(stats?.buysCount)) * logisticsBase
+    const logisticsCost = buysCount * logisticsBase
 
-    console.log(NumberOrZero(stats?.buysCount))
-    console.log(NumberOrZero(sku?.self_cost))
     console.log(`DATE: ${date}\n\nselfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
     
     return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
