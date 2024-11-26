@@ -16,11 +16,13 @@ export abstract class BaseModel<T> {
   async getAllData() {
     try {
       const usersResult = await this.pool.query('SELECT * FROM users');
-      const connectionsResult = await this.pool.query('SELECT * FROM connections');
+      const articlesResult = await this.pool.query('SELECT * FROM articles');
+      const tariffsResult = await this.pool.query('SELECT * FROM box_tariffs');
 
       return {
         users: usersResult.rows,
-        connections: connectionsResult.rows,
+        articles: articlesResult.rows,
+        box_tariffs: tariffsResult.rows,
       };
     } catch (err) {
       console.error('Ошибка при получении данных:', err);
