@@ -9,11 +9,13 @@ import { updateConversions } from "../utils/conversions";
 import { updateCommissions } from "../utils/comissions";
 import { articles_db } from "../../database/models/articles";
 import { updateBoxTariffs } from "../utils/boxTariffs";
+import { RediceService } from "../bot";
 
 dotenv.config();
 
 const helpInfo = `
 /admin__run_report_service - запуск репорт сервиса на прошедший час
+/admin__check_state - проверить текущий юзер статус в редисе
 /admin__prepare_report_service - запуск подготовки данных для отчета
 /admin__clean_db_{tableName} - очистить таблицу в базе данных
 /admin__delete_user_{id} - удалить пользователя из таблицы users
@@ -136,6 +138,12 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     if (action.startsWith('get_mp_tariffs')) {
       console.log('start to updating')
       await updateBoxTariffs();
+    }
+
+    if (action.startsWith('check_state')) {
+      console.log('start to checking state')
+      const state = await RediceService.getUserState(chat_id)
+      await bot.sendMessage(chat_id, `${state}`);
     }
 
     if (action.startsWith('my_id')) {
