@@ -128,7 +128,10 @@ export async function awaitingHandler(data: UserMsg, state: string) {
  * @param {string} state - user state from redis
  */
 export function isKey(text: string, state: string): Boolean {
-  if (state === rStates.waitWbApiKey) {
+  console.log(text)
+  console.log(state)
+
+  if (state === rStates.waitWbApiKey || state === rStates.waitNewKey) {
     return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{50,}$/.test(text);
   }
 

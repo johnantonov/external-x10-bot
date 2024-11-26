@@ -106,6 +106,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'return article menu':
+      await RediceService.deleteUserState(chat_id)
       if (currentArticle) {
         const articleToReturn = await articles_db.getArticle(chat_id, currentArticle)
         articleMenu = (await articleOptions(chat_id, +articleToReturn.article))
