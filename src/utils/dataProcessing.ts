@@ -123,7 +123,7 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const acquiring = config.acquiring || 0.015;
     const commission = parsePercent(data.order_info?.commission);
   
-    const selfCost = NumberOrZero(stats?.buysCount) * NumberOrZero(sku?.self_cost);
+    const selfCost = NumberOrZero(stats?.ordersCount) * NumberOrZero(sku?.self_cost);
     const taxCost = NumberOrZero(stats?.buysSum) * tax;
     const acquiringCost = NumberOrZero(stats?.buysSum) * acquiring;
     const commissionCost = NumberOrZero(stats?.buysSum) * commission;
