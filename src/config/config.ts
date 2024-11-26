@@ -7,7 +7,7 @@ export const config = {
   returnLogistics: 50,
 
   maxSku: 5,
-  reportStopTime: 30,
+  reportStopTime: 0,
 
   pdf: {
     tableDays: 5,

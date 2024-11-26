@@ -21,6 +21,7 @@ import { generateReportHtml } from '../report/reportGenerator';
 import { getCosts } from '../utils/dataProcessing';
 import { createReportMessage } from '../report/textReport';
 import { User } from '../dto/user';
+import { config } from '../config/config';
 
 dotenv.config();
 
@@ -248,7 +249,7 @@ export class ReportService {
     const yesterdayRequestData = {
       nmIDs: articles,
       period: {
-        begin: dates[6],
+        begin: dates[config.pdf.tableDays],
         end: dates[0]
       },
     };

@@ -120,7 +120,6 @@ export function isReportAvailable(lastTime: User['last_report_call']) {
   const lastReportTime = new Date(lastTime);
 
   const timeDiffMinutes = (now.getTime() - lastReportTime.getTime()) / (1000 * 60);
-  return true
   return timeDiffMinutes >= config.reportStopTime;
 }
 
