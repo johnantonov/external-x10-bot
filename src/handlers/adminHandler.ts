@@ -16,6 +16,7 @@ dotenv.config();
 const helpInfo = `
 /admin__run_report_service - запуск репорт сервиса на прошедший час
 /admin__check_state - проверить текущий юзер статус в редисе
+/admin__clear_state - очистить текущий юзер статус в редисе
 /admin__prepare_report_service - запуск подготовки данных для отчета
 /admin__clean_db_{tableName} - очистить таблицу в базе данных
 /admin__delete_user_{id} - удалить пользователя из таблицы users
@@ -143,6 +144,12 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     if (action.startsWith('check_state')) {
       console.log('start to checking state')
       const state = await RediceService.getUserState(chat_id)
+      await bot.sendMessage(chat_id, `${state}`);
+    }
+
+    if (action.startsWith('clear_state')) {
+      console.log('start to clearing state')
+      const state = await RediceService.deleteUserState(chat_id)
       await bot.sendMessage(chat_id, `${state}`);
     }
 
