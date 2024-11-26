@@ -16,7 +16,7 @@ export const config = {
     dayColspan: 1,
     headerRowspan: 2,
     totalRowColor: '#f3f3f3',
-    title: `<span>10X</span><br><span>SYSTEM</span>`,
+    title: `<a href="https://t.me/tenXsupport_bot"><span>10X</span><br><span>SYSTEM</span></a>`,
     titleFz: 40,
     footerText: `Отчёт подготовлен ботом <a href="https://t.me/X10XTestBot">@bot_123</a> от команды 10X.<br>Получите подробный отчет по всем SKU вашего кабинета. <b>Бесплатный доступ на 3 дня:</b> <a href="https://t.me/tenXsupport_bot">@tenXsupport_bot</a>`,
     ff: `Arial, sans-serif`,

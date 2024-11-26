@@ -9,7 +9,12 @@ export const fetchAndResizeImage = async (article: article): Promise<string | nu
     const imgUrl = getWbArticlePhoto(article);
     const response = await axios.get(imgUrl, { responseType: "arraybuffer" });
     const imgBuffer = Buffer.from(response.data, "binary");
-    const resizedBuffer = await sharp(imgBuffer).resize({ width: config.pdf.imgWidth, height: config.pdf.imgHeight }).toBuffer();
+
+    const resizedBuffer = await sharp(imgBuffer)
+      .resize({ width: config.pdf.imgWidth, height: config.pdf.imgHeight })
+      .toBuffer();
+
+    // const resizedBuffer = await sharp(imgBuffer).resize({ width: config.pdf.imgWidth, height: config.pdf.imgHeight }).toBuffer();
     return `data:image/jpeg;base64,${resizedBuffer.toString("base64")}`;
   } catch (error) {
     console.error(`Error processing image: ${error}`);

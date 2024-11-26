@@ -127,8 +127,8 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[
   let totalRow = `<tr class="total_row"><td rowspan="1" colspan="${config.pdf.dayColspan}">Итог</td>`;
 
   const titleCol = `
-  <td rowspan="${dayCount+1}" colspan="${config.pdf.photoColspan}">
-    ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" >` : "Ошибка данных"}
+  <td rowspan="${dayCount+1}" colspan="${config.pdf.photoColspan} class="img-col">
+    ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" class="img-full">` : "Ошибка данных"}
   </td>`
 
   for (let i = 0; i < dayCount; i++) {

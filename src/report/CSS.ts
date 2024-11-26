@@ -41,6 +41,7 @@ export const CSS = (cols: number) => `
       margin-bottom: 10px;
       border-collapse: collapse;
     }
+    
     .table-wrapper:not(:last-child) {
       margin-bottom: 100px; 
     }
@@ -49,6 +50,16 @@ export const CSS = (cols: number) => `
       border-right: ${noBorder} !important;
       border-left: ${noBorder} !important;
       border-bottom: ${noBorder} !important;
+    }
+    .img-col {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .img-full {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* или contain, если нужно сохранить пропорции */
     }
     td {
       white-space: nowrap;
@@ -83,6 +94,7 @@ export const CSS = (cols: number) => `
       border-left: ${specialBorder};
       border-bottom: ${specialBorder};
     }
+
 
     .red {
       background-color: #e67c73; 
