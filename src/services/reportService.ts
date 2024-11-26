@@ -226,6 +226,8 @@ export class ReportService {
       hour12: false
     }).replace(",", "");
 
+    console.log(dates)
+
     let monthStartDateTime = dates[dates.length-1] + ' 00:00:00'
     let hours = moscowTime.split(" ")[1].split(":")[0];
     let minutesAndSeconds = moscowTime.split(" ")[1].slice(2);
