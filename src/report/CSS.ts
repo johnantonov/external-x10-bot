@@ -60,7 +60,7 @@ export const CSS = (cols: number) => `
       display: block;
       max-width: 100%;
       max-height: 100%;
-      object-fit: cover; /* contain */
+      object-fit: contain; /* cover */
     }
 
     td {

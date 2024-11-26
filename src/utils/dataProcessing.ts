@@ -125,6 +125,10 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const commission = parsePercent(data.order_info?.commission);
   
     const selfCost = NumberOrZero(stats?.buysCount) * NumberOrZero(data?.self_cost);
+    console.log(stats?.buysCount)
+    console.log(data?.self_cost)
+    console.log(NumberOrZero(stats?.buysCount))
+    console.log(NumberOrZero(data?.self_cost))
     const taxCost = NumberOrZero(stats?.buysSum) * tax;
     const acquiringCost = NumberOrZero(stats?.buysSum) * acquiring;
     const commissionCost = NumberOrZero(stats?.buysSum) * commission;
@@ -132,8 +136,9 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
 
     const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
     const logisticsCost = NumberOrZero(stats?.buysCount) * logisticsBase
-  
-    console.log(selfCost, "     ", taxCost, "     ", acquiringCost, "     ", commissionCost, "     ", storageCost, "     ", logisticsCost)
+
+    console.log(`selfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
+    
     return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch (e) {
     console.error('error getting other costs: ', data.article, " ", e)

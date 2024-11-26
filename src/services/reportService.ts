@@ -147,6 +147,7 @@ export class ReportService {
 
         const revWithoutDrr = buysSum - otherCosts
         const revWithDrr = revWithoutDrr - marketingCost
+        const krrr = revWithDrr / revWithoutDrr * 100
 
         res[date] = {
           revWithoutDrr: revWithoutDrr,
@@ -154,7 +155,7 @@ export class ReportService {
           drr: marketingCost / ordersSum * 100,
           margin: revWithoutDrr / buysSum * 100,
           marginWithDrr: revWithDrr / buysSum * 100,
-          krrr: revWithDrr / revWithoutDrr * 100,
+          krrr: krrr > 0 ? krrr : 0,
           ctrArk: NumberOrZero(marketing?.[date]?.ark.clicks) / NumberOrZero(marketing?.[date]?.ark.views)  * 100,
           ctrPrk: NumberOrZero(marketing?.[date]?.prk.clicks) / NumberOrZero(marketing?.[date]?.prk.views)  * 100
         }
