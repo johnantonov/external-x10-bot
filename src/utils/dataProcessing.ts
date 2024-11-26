@@ -130,7 +130,7 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const storageCost = Math.ceil(NumberOrZero(stats?.buysCount)) * NumberOrZero(data?.storage) * config.turnover;
 
     const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
-    const logisticsCost = NumberOrZero(stats?.buysCount) * logisticsBase
+    const logisticsCost = Math.ceil(NumberOrZero(stats?.buysCount)) * logisticsBase
 
     console.log(NumberOrZero(stats?.buysCount))
     console.log(NumberOrZero(sku?.self_cost))
