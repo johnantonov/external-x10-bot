@@ -65,7 +65,7 @@ export function processCampaigns(advertisements: Record<string, any>, userNmIds:
   return data
 }
 
-export function extractBuyoutsFromCards(responseData: any) {
+export function extractBuyoutsPercentFromCards(responseData: any) {
   try {
     if (responseData.data && responseData.data.data.cards && responseData.data.data.cards.length > 0) {
       const result: any = {};
@@ -156,11 +156,11 @@ export function calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku:
       const revWithDrr = revWithoutDrr - marketingCost
       const krrr = revWithDrr / revWithoutDrr * 100
 
-      console.log(date)
-      console.log('ordersSum: ',ordersSum)
-      console.log('buysSum: ',buysSum)
-      console.log('marketingCost: ',marketingCost)
-      console.log('otherCosts: ',otherCosts)
+      // console.log(date)
+      // console.log('ordersSum: ',ordersSum)
+      // console.log('buysSum: ',buysSum)
+      // console.log('marketingCost: ',marketingCost)
+      // console.log('otherCosts: ',otherCosts)
 
       res[date] = {
         revWithoutDrr: revWithoutDrr,

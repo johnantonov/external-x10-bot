@@ -7,7 +7,7 @@ import { create31DaysObject, getXdaysAgoArr, getYesterdayDate } from '../utils/t
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { DateKey, MarketingObject, ObjectOther, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku';
-import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsFromCards, processCampaigns } from '../utils/dataProcessing';
+import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns } from '../utils/dataProcessing';
 import { formatError, NumberOrZero } from '../utils/string';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/buttons';
@@ -211,7 +211,7 @@ export class ReportService {
         }
       })
 
-      return extractBuyoutsFromCards(response)
+      return extractBuyoutsPercentFromCards(response)
     } catch (e) {
       formatError(e, 'Error fetching buy percent: ');
       return {};
