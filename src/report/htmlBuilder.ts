@@ -216,7 +216,9 @@ function generateCell(
     if (reverseColors) {
       // логика для инверсных значений (3 стадии) (например дрр где чем выше тем хуже)
       const step = (max - min) / 5;
-      if (value === max) {
+      if (value === min) {
+        conditionalClass = 'white'
+      } else if (value === max) {
         conditionalClass = 'red'; // самое большое
       } else if (value >= max - step ) {
         conditionalClass = 'light-red'; // чуть меньше максимума
