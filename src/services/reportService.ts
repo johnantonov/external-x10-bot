@@ -84,7 +84,7 @@ export class ReportService {
 
         const dates = Object.keys(create31DaysObject()) as DateKey[]
 
-        const percent_buys = await this.getBuyPercent(nms, wb_api_key, dates[dates.length-1] + " 23:59:59", dates[0] + " 00:00:00")
+        const percent_buys = await this.getBuyPercent(nms, wb_api_key, dates[dates.length-2] + " 23:59:59", dates[0] + " 00:00:00")
         const report = await this.fetchWbStatistics(nms, wb_api_key, percent_buys, dates);
         const size: Record<string, any> = await this.getNmSizeInfo(nms, wb_api_key)
         const logisticsObj = await calculateLogisticsStorage(size)
