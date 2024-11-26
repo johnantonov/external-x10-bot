@@ -12,7 +12,6 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
 
   if (articleData.length > 1) {
     const totalRanges = calculateTotalRanges(articleData, days, config.pdf.cols);
-    console.log(totalRanges)
     tables += generateTotalTable(articleData, days, totalRanges);
   }
 
