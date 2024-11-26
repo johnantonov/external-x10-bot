@@ -3,7 +3,7 @@ export const migrations = [
     [],
     // -------- 1    
     [
-        `CREATE TABLE IF NOT EXISTS users (
+        `CREATE UNLOGGED TABLE IF NOT EXISTS users (
             chat_id BIGINT PRIMARY KEY,
             username VARCHAR(255),
             wb_api_key VARCHAR,
@@ -14,7 +14,7 @@ export const migrations = [
             last_report_call TIMESTAMP
         );`,
 
-        `CREATE TABLE IF NOT EXISTS articles (
+        `CREATE UNLOGGED TABLE IF NOT EXISTS articles (
             article VARCHAR NOT NULL,
             chat_id BIGINT NOT NULL,
             wb_api_key VARCHAR,
@@ -53,7 +53,7 @@ export const migrations = [
         FOR EACH ROW
         EXECUTE FUNCTION set_wb_api_key();`,
 
-        `CREATE TABLE IF NOT EXISTS conversions (
+        `CREATE UNLOGGED TABLE IF NOT EXISTS conversions (
         date VARCHAR,
         category VARCHAR,
         subject_name VARCHAR,
@@ -63,7 +63,7 @@ export const migrations = [
         PRIMARY KEY (category, subject_name)
         );`,
 
-        `CREATE TABLE IF NOT EXISTS commissions (
+        `CREATE UNLOGGED TABLE IF NOT EXISTS commissions (
         "parentName" VARCHAR,
         "subjectName" VARCHAR,
         "parentID" NUMERIC,
@@ -75,7 +75,7 @@ export const migrations = [
         PRIMARY KEY ("parentName", "subjectName")
         );`,
 
-        `CREATE TABLE IF NOT EXISTS box_tariffs (
+        `CREATE UNLOGGED TABLE IF NOT EXISTS box_tariffs (
             "warehouseName" VARCHAR,
             "boxDeliveryAndStorageExpr" NUMERIC,
             "boxDeliveryBase" NUMERIC,
@@ -86,7 +86,4 @@ export const migrations = [
         );`
     ],
 
-    [
-        `ALTER TABLE users ADD COLUMN tax DECIMAL;`
-    ]
 ];
