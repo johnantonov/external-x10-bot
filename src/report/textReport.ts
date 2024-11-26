@@ -25,8 +25,8 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
 
     ordersSumTotal += (stats?.ordersSum || 0)
     ordersCountTotal += (stats.ordersCount || 0)
-    buysSumTotal += NumberOrZero(articleData.sales?.[date].infoBuysSum)
-    buysCountTotal += NumberOrZero(articleData.sales?.[date].infoBuysCount)
+    buysSumTotal += NumberOrZero(articleData.sales?.[date]?.infoBuysSum)
+    buysCountTotal += NumberOrZero(articleData.sales?.[date]?.infoBuysCount)
     marketingCostTotal += marketingCost
     
     revTotal += NumberOrZero(articleData.other_metricks?.[date].revWithDrr);
