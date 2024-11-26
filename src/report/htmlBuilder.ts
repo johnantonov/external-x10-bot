@@ -275,27 +275,30 @@ export function calculateRangesForSku(data: SKU, days: DateKey[], cols: typeof c
   return ranges;
 }
 
-export function calculateTotalRanges(data: SKU[], days: DateKey[], cols: typeof config.pdf.cols) {
+export function calculateTotalRanges(  data: SKU[], days: DateKey[], cols: typeof config.pdf.cols): { [key: string]: { min: number; max: number } } {
   const totalRanges: { [key: string]: { min: number; max: number } } = {};
 
   cols.forEach((col) => {
     col.source(days[0]).forEach((_, index) => {
       const key = `${col.title}${index}`;
-      let allValues: number[] = [];
-
+      const allAggregatedValues: number[] = [];
       days.forEach((day) => {
+        let dailyValues: number[] = [];
         col.source(day).forEach((source) => {
-          data.forEach((skuData) => {
-            const value = getSkuData(skuData, source);
-            if (!isNaN(value) && value != null) {
-              allValues.push(value);
-            }
-          });
+          dailyValues = data.map((skuData) => getSkuData(skuData, source));
         });
+
+        const aggregatedValue = Array.isArray(col.totalType)
+          ? dailyValues.reduce((sum, val) => sum + val, 0) / dailyValues.length 
+          : dailyValues.reduce((sum, val) => sum + val, 0); 
+
+        if (!isNaN(aggregatedValue) && aggregatedValue != null) {
+          allAggregatedValues.push(aggregatedValue);
+        }
       });
 
-      const min = Math.min(...allValues);
-      const max = Math.max(...allValues);
+      const min = Math.min(...allAggregatedValues);
+      const max = Math.max(...allAggregatedValues);
       totalRanges[key] = { min, max };
     });
   });
