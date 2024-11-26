@@ -22,11 +22,11 @@ export function generateTotalTable(data: SKU[], days: DateKey[], ranges: { [key:
 
   const total: { [key: string]: number[] | number } = {};
 
-  for (let i = dayCount; i > 0; i--) {
-    const day = days[i - 1];
+  for (let i = 0; i < dayCount; i++) {
+    const day = days[i];
     const formatDay = getReportFormatDay(day);
 
-    dayRows += `<tr>${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
+    dayRows += `<tr>${i === 0 ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
 
     config.pdf.cols.forEach((col) => {
       col.source(day).forEach((source, index) => {
@@ -131,11 +131,11 @@ export const generateDayRows = (data: SKU, imgSrc: string | null, days: DateKey[
     ${imgSrc ? `<img src="${imgSrc}" alt="${data.vendor_code}" >` : "Ошибка данных"}
   </td>`
 
-  for (let i = dayCount; i > 0; i--) {
-    const day = days[i - 1];
+  for (let i = 0; i < dayCount; i++) {
+    const day = days[i];
     const formatDay = getReportFormatDay(day);
 
-    dayRows += `<tr>${i === dayCount ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
+    dayRows += `<tr>${i === 0 ? titleCol : ''}<td rowspan="1" colspan="${config.pdf.dayColspan}">${formatDay}</td>`
 
     config.pdf.cols.forEach((col) => {
       col.source(day).forEach((source, index) => {
