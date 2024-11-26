@@ -118,7 +118,6 @@ export async function calculateLogisticsStorage(sizesNms: Record<article, Record
 export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
   try {
     const stats = data.order_info?.[date];
-    // console.log(JSON/stats)
   
     const tax = parsePercent(sku?.tax);
     const acquiring = config.acquiring || 0.015;
@@ -133,7 +132,7 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
     const logisticsCost = NumberOrZero(stats?.buysCount) * logisticsBase
 
-    console.log(`selfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
+    console.log(`DATE: ${date}\n\nselfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
     
     return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
   } catch (e) {
