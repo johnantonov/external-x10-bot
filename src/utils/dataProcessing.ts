@@ -132,6 +132,8 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
     const logisticsBase = (config.returnLogistics / (NumberOrZero(data.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(data.logistics) / (NumberOrZero(data.percent_buys) / 100))
     const logisticsCost = NumberOrZero(stats?.buysCount) * logisticsBase
 
+    console.log(NumberOrZero(stats?.buysCount))
+    console.log(NumberOrZero(sku?.self_cost))
     console.log(`DATE: ${date}\n\nselfcost: ${selfCost}\ntaxCost: ${taxCost}\nacquiringCost: ${acquiringCost}\ncommissionCost: ${commissionCost}\nstorageCost: ${storageCost}\nlogisticsCost: ${logisticsCost}\n`)
     
     return selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost;
