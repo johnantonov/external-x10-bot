@@ -8,11 +8,11 @@ import { create31DaysObject } from "../utils/time";
 export const generateReportHtml = async (articleData: SKU[]): Promise<string> => {
   let dates = Object.keys(create31DaysObject()) as `${number}-${number}-${number}`[];
   const days = dates.slice(1, config.pdf.tableDays + 1).reverse();
-  console.log(days)
   let tables = ``
 
   if (articleData.length > 1) {
     const totalRanges = calculateTotalRanges(articleData, days, config.pdf.cols);
+    console.log(totalRanges)
     tables += generateTotalTable(articleData, days, totalRanges);
   }
 
@@ -20,7 +20,6 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
     const ranges = calculateRangesForSku(data, days, config.pdf.cols);
     const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
     const header = generateTableHeader(data);
-    console.log(ranges)
     const dayRows = generateDayRows(data, imgSrc, days, ranges);
     tables += generateTable(header, dayRows);
   }
