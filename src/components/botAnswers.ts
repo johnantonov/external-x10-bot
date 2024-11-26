@@ -34,8 +34,14 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
 
     if (isUser) {
       const type = user.type
-      const text = type === 'waitTax' ? texts.updateTax : texts.menu
-      await RediceService.setUserState(chat_id, rStates.waitTax)
+      let text = ''
+
+      if (type === 'waitTax') {
+        text = texts.updateTax
+        await RediceService.setUserState(chat_id, rStates.waitTax)
+      } else {
+        text = texts.menu
+      }
 
       if (!isNewMsg) {
         if (!menuId) {
