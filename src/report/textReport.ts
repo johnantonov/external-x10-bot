@@ -29,11 +29,11 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
     buysCountTotal += NumberOrZero(articleData.sales?.[date]?.infoBuysCount)
     marketingCostTotal += marketingCost
     
-    revTotal += NumberOrZero(articleData.other_metricks?.[date].revWithDrr);
-    krrrTotalArray.push(articleData?.other_metricks?.[date].krrr ?? 0)
-    margins.push(articleData?.other_metricks?.[date].margin ?? 0)
-    marginsWithDrr.push(articleData?.other_metricks?.[date].marginWithDrr ?? 0)
-    drr.push(articleData?.other_metricks?.[date].drr ?? 0)
+    revTotal += NumberOrZero(articleData.other_metricks?.[date]?.revWithDrr);
+    krrrTotalArray.push(articleData?.other_metricks?.[date]?.krrr ?? 0)
+    margins.push(articleData?.other_metricks?.[date]?.margin ?? 0)
+    marginsWithDrr.push(articleData?.other_metricks?.[date]?.marginWithDrr ?? 0)
+    drr.push(articleData?.other_metricks?.[date]?.drr ?? 0)
   })
 
   const krrrTotal = (krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1));
