@@ -15,5 +15,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+RUN chmod +x ./node_modules/.bin/tsc
+RUN npm run build
 
 CMD ["node", "dist/src/services/reportService.js"]
