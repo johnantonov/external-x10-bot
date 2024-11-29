@@ -19,7 +19,7 @@ services:
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
       - PGPORT=5432
-      - REPORT_SERVICE_HOST=http://localhost:3200/generate-report
+      - REPORT_SERVICE_HOST=http://external-x10Bot-report:3200/generate-report
     depends_on:
       - external-x10Bot-redis
       - external-x10Bot-postgres
