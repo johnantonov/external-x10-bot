@@ -132,7 +132,7 @@ export function isKey(text: string, state: string): Boolean {
   console.log(state)
 
   if (state === rStates.waitWbApiKey || state === rStates.waitNewKey) {
-    return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{50,}$/.test(text);
+    return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{100,}$/.test(text);
   }
 
   if (state.startsWith(rStates.waitTax)) {

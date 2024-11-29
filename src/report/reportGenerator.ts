@@ -1,6 +1,6 @@
 import { generateTable, generateTableHeader, generateDayRows, generateTotalTable, calculateRangesForSku, calculateTotalRanges } from "./htmlBuilder";
 import { fetchAndResizeImage } from "./imageProcessing";
-import { SKU } from "../dto/sku";
+import { SKU } from "../dto/sku&report";
 import { CSS } from "./CSS";
 import { config } from "../config/config";
 import { create31DaysObject } from "../utils/time";

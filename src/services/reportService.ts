@@ -6,7 +6,7 @@ import pool from '../../database/db';
 import { create31DaysObject, getXdaysAgoArr, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
-import { DateKey, MarketingObject, ObjectOther, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku';
+import { DateKey, MarketingObject, ObjectOther, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku&report';
 import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns } from '../utils/dataProcessing';
 import { formatError, NumberOrZero } from '../utils/string';
 import { updateConversions } from '../utils/conversions';

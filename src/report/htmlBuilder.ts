@@ -1,5 +1,5 @@
 import { config } from "../config/config";
-import { DateKey, SKU } from "../dto/sku";
+import { DateKey, SKU } from "../dto/sku&report";
 import { getSkuData } from "../utils/parse";
 import { formatNumber } from "../utils/string";
 import { getReportFormatDay } from "../utils/time";

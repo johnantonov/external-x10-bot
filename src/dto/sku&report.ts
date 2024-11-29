@@ -89,6 +89,17 @@ export type OtherData = {
   ctrPrk: number,
 }
 
-// test 190552356
+export interface TextReportData {
+  ordersSumTotal: 0,
+  ordersCountTotal: 0,
+  buysSumTotal: 0,
+  buysCountTotal: 0,
+  marketingCostTotal: 0,
+  revTotal: 0,
+  drr: number[],
+  margins: number[],
+  marginsWithDrr: number[],
+  krrrTotalArray: number[],
+}
 
 

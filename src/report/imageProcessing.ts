@@ -1,7 +1,7 @@
 import axios from "axios";
 import sharp from "sharp";
 import { getWbArticlePhoto } from "../utils/parse";
-import { article } from "../dto/sku";
+import { article } from "../dto/sku&report";
 import { config } from "../config/config";
 
 export const fetchAndResizeImage = async (article: article): Promise<string | null> => {

@@ -1,4 +1,4 @@
-import { DateKey } from "../dto/sku"
+import { DateKey } from "../dto/sku&report"
 
 export const config = {
   storagesForLogistics: ['Коледино', 'Казань', 'Тула'],
@@ -127,6 +127,7 @@ export const config = {
         { title: "Маржа",
            unit: ["%"], 
            colspan: 1, 
+           toFixed: 2, 
            headBg: '#d9ead3',
            condFormat: [false],
            class: [''],
@@ -155,6 +156,7 @@ export const config = {
         { title: "КРРР",
            unit: ["%"], 
            colspan: 1, 
+           toFixed: 2, 
            headBg: '#d9ead3',
            condFormat: [false],
            class: ['br'],

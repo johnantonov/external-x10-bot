@@ -1,20 +1,10 @@
-import { SKU } from "../dto/sku";
+import { SKU, TextReportData } from "../dto/sku&report";
 import { formatNumber, NumberOrZero } from "../utils/string";
 import { getYesterdayDate } from "../utils/time";
 
 export function createReportMessage(articles: SKU[], formatReportDate: string) {
   let message = ``;
-  let ordersSumTotal = 0;
-  let ordersCountTotal = 0;
-  let buysSumTotal = 0;
-  let buysCountTotal = 0;
-  let marketingCostTotal = 0;
-  let rev = 0;
-  let revTotal = 0;
-  let drr: number[] = [];
-  let margins: number[] = [];
-  let marginsWithDrr: number[] = [];
-  let krrrTotalArray: number[] = [];
+  const data = initReportData()
 
   const date = getYesterdayDate() as `${number}-${number}-${number}`;
 
@@ -23,33 +13,48 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
     const marketing = articleData?.marketing_cost || {};
     const marketingCost = NumberOrZero(marketing?.[date]?.cost)
 
-    ordersSumTotal += (stats?.ordersSum || 0)
-    ordersCountTotal += (stats.ordersCount || 0)
-    buysSumTotal += NumberOrZero(articleData.sales?.[date]?.infoBuysSum)
-    buysCountTotal += NumberOrZero(articleData.sales?.[date]?.infoBuysCount)
-    marketingCostTotal += marketingCost
+    data.ordersSumTotal += (stats?.ordersSum || 0)
+    data.ordersCountTotal += (stats.ordersCount || 0)
+    data.buysSumTotal += NumberOrZero(articleData.sales?.[date]?.infoBuysSum)
+    data.buysCountTotal += NumberOrZero(articleData.sales?.[date]?.infoBuysCount)
+    data.marketingCostTotal += marketingCost
     
-    revTotal += NumberOrZero(articleData.other_metricks?.[date]?.revWithDrr);
-    krrrTotalArray.push(articleData?.other_metricks?.[date]?.krrr ?? 0)
-    margins.push(articleData?.other_metricks?.[date]?.margin ?? 0)
-    marginsWithDrr.push(articleData?.other_metricks?.[date]?.marginWithDrr ?? 0)
-    drr.push(articleData?.other_metricks?.[date]?.drr ?? 0)
+    data.revTotal += NumberOrZero(articleData.other_metricks?.[date]?.revWithDrr);
+    data.krrrTotalArray.push(articleData?.other_metricks?.[date]?.krrr ?? 0)
+    data.margins.push(articleData?.other_metricks?.[date]?.margin ?? 0)
+    data.marginsWithDrr.push(articleData?.other_metricks?.[date]?.marginWithDrr ?? 0)
+    data.drr.push(articleData?.other_metricks?.[date]?.drr ?? 0)
   })
 
-  const krrrTotal = (krrrTotalArray.reduce((sum, num) => sum + num, 0) / (krrrTotalArray.length || 1));
-  const marginTotal = (margins.reduce((sum, num) => sum + num, 0) / (margins.length || 1));
-  const marginWithDrrTotal = (marginsWithDrr.reduce((sum, num) => sum + num, 0) / (marginsWithDrr.length || 1));
-  const drrTotal = (drr.reduce((sum, num) => sum + num, 0) / (drr.length || 1));
+  const krrrTotal = (data.krrrTotalArray.reduce((sum, num) => sum + num, 0) / (data.krrrTotalArray.length || 1));
+  const marginTotal = (data.margins.reduce((sum, num) => sum + num, 0) / (data.margins.length || 1));
+  const marginWithDrrTotal = (data.marginsWithDrr.reduce((sum, num) => sum + num, 0) / (data.marginsWithDrr.length || 1));
+  const drrTotal = (data.drr.reduce((sum, num) => sum + num, 0) / (data.drr.length || 1));
 
   message = `
-Заказы: ${formatNumber(ordersSumTotal)}₽, ${ordersCountTotal}шт
-Выкупы: ${formatNumber(buysSumTotal)}₽, ${formatNumber(buysCountTotal)}шт
-Реклама: ${formatNumber(marketingCostTotal)}₽
-ДРР: ${formatNumber(drrTotal)}%
-Маржа до ДРР: ${formatNumber(marginTotal)}%
-Маржа с ДРР: ${formatNumber(marginWithDrrTotal)}%
-КРРР: ${formatNumber(krrrTotal)}%
-<b>Прибыль с ДРР: ${formatNumber(revTotal)}₽</b>
+Заказы: ${formatNumber(data.ordersSumTotal)}₽, ${data.ordersCountTotal}шт
+Выкупы: ${formatNumber(data.buysSumTotal)}₽, ${formatNumber(data.buysCountTotal)}шт
+Реклама: ${formatNumber(data.marketingCostTotal)}₽
+ДРР: ${formatNumber(drrTotal, 2)}%
+Маржа до ДРР: ${formatNumber(marginTotal, 2)}%
+Маржа с ДРР: ${formatNumber(marginWithDrrTotal, 2)}%
+КРРР: ${formatNumber(krrrTotal, 2)}%
+<b>Прибыль с ДРР: ${formatNumber(data.revTotal, 2)}₽</b>
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
+}
+
+function initReportData(): TextReportData {
+  return {
+    ordersSumTotal: 0,
+    ordersCountTotal: 0,
+    buysSumTotal: 0,
+    buysCountTotal: 0,
+    marketingCostTotal: 0,
+    revTotal: 0,
+    drr: [],
+    margins: [],
+    marginsWithDrr: [],
+    krrrTotalArray: [],
+  }
 }

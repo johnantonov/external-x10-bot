@@ -1,6 +1,6 @@
 import { box_tariffs_db } from "../../database/models/box_tariffs";
 import { config } from "../config/config";
-import { article, DateKey, MarketingObject, ObjectOther, SKU } from "../dto/sku";
+import { article, DateKey, MarketingObject, ObjectOther, SKU } from "../dto/sku&report";
 import { BoxTariff } from "../dto/boxTariffs";
 import { create31DaysObject  } from "./time";
 import { parsePercent } from "./parse";
