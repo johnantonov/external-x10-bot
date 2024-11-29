@@ -27,7 +27,8 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
     if (!answer.result) {
       await MS.saveMessages(msgs);
       if (answer?.type) {
-        return MS.editMessage(chat_id, response.message_id, answer.text, mainOptions(answer.type)!)
+        await bot.deleteMessage(chat_id, response.message_id)
+        return bot.sendMessage(chat_id, answer.text, { reply_markup: mainOptions(answer.type)! });
       }
       return bot.editMessageText(answer.text, { chat_id, message_id: response.message_id });
     } else {
