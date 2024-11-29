@@ -114,6 +114,6 @@ export function getWbArticlePhoto(article: article) {
   }
 
   let imageUrl = "https://basket-" + basket + ".wbbasket.ru/vol" + s_id + "/part" + Math.floor(+article / 1000) + "/" + article + "/images/big/1.webp";
-  console.log('imageUrl', imageUrl)
+  // console.log('imageUrl', imageUrl)
   return imageUrl;
 }
