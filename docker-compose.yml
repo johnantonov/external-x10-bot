@@ -19,7 +19,7 @@ services:
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
       - PGPORT=5432
-      - REPORT_SERVICE_HOST=http://external-x10Bot-report:3001
+      - REPORT_SERVICE_HOST=http://localhost:3200/generate-report
     depends_on:
       - external-x10Bot-redis
       - external-x10Bot-postgres
@@ -45,9 +45,9 @@ services:
       dockerfile: reportService.Dockerfile 
     image: x10-external-bot-report
     ports:
-      - "${BASE_PORT}:${BASE_PORT}"
+      - "3200:3200"
     environment:
-      - PORT=${BASE_PORT}
+      - PORT=3200
     restart: always
 
 volumes:

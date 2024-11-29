@@ -11,11 +11,15 @@ RUN apt-get update && \
     libjpeg62-turbo && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY package*.json ./
+COPY package*.json ./ 
 RUN npm install
 
-COPY . .
-RUN chmod +x ./node_modules/.bin/tsc
+COPY . . 
+
+RUN rm -rf ./src/report
+RUN rm ./src/services/reportService.js
+
+RUN chmod +x ./node_modules/.bin/tsc 
 RUN npm run build
 
 ENV XDG_RUNTIME_DIR=/tmp/runtime
