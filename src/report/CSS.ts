@@ -15,7 +15,7 @@ export const CSS = (cols: number) => `
     * {
       border-collapse: collapse;
     }
-    body {
+    .body {
       font-family: ${fontFamily};
       font-size: ${fontSize}px;
     }
