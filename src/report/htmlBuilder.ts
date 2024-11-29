@@ -214,11 +214,11 @@ function generateCell(
     const { min, max, reverseColors } = range;
 
     if (reverseColors) {
-      // Инверсная логика (красный градиент)
+      // инверсная логика (красный градиент)
       backgroundColor = calculateColor(value, min, max, [255, 235, 235], [255, 90, 90]);
     } else {
-      // Позитивная логика (зелёный градиент)
-      backgroundColor = calculateColor(value, min, max, [235, 255, 235], [90, 255, 90]);
+      // основная логика (зелёный градиент)
+      backgroundColor = calculateColor(value, min, max, [224, 247, 224], [87, 187, 138]);
     }
   }
 
