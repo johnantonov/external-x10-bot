@@ -579,7 +579,7 @@ console.log('Report Service started!')
 reportService.startCronJob();
 
 const app = express();
-const PORT = process.env.REPORT_SERVICE_PORT || 3001;
+const PORT = process.env.BASE_PORT || 3200;
 
 app.post("/generate-report", async (req, res) => {
   const { chat_id } = req.body; 

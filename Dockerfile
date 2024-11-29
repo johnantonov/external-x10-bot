@@ -16,11 +16,12 @@ RUN npm install
 
 COPY . . 
 
+RUN rm ./src/services/reportService.ts
+
 RUN chmod +x ./node_modules/.bin/tsc 
 RUN npm run build
 
 RUN rm -rf ./src/report
-# RUN rm ./src/services/reportService.js
 
 
 ENV XDG_RUNTIME_DIR=/tmp/runtime
