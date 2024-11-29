@@ -79,7 +79,7 @@ export const CSS = (cols: number) => `
       font-weight: ${headFontStyle};
     }
     .footer_text {
-      font-size: ${config.pdf.titleFz-8}px !important;
+      font-size: ${config.pdf.titleFz-20}px !important;
     }
     .bl {
       border-left: ${specialBorder};
@@ -98,35 +98,6 @@ export const CSS = (cols: number) => `
       border-right: ${specialBorder};
       border-left: ${specialBorder};
       border-bottom: ${specialBorder};
-    }
-
-
-    .red {
-      background-color: #e67c73; 
-    }
-
-    .light-red {
-      background-color: #f3beba; 
-    }
-
-    .white {
-      background-color: white; 
-    }
-
-    .light-green-1 {
-      background-color: #d5eee2; 
-    }
-
-    .light-green-2 {
-      background-color: #abddc5; 
-    }
-
-    .light-green-3 {
-      background-color: #81cca8;
-    }
-
-    .green {
-      background-color: #57bb8a;
     }
   </style>
 `
