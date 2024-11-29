@@ -2,9 +2,13 @@ import axios from "axios";
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export async function requestReport(chat_id: string | number) {
+export async function requestReport(chat_id: string | number, loadingMsgId: number) {
   try {
-    const response = await axios.post(`http://external-x10Bot-report:${process.env.BASE_PORT}/generate-report`, { chat_id: chat_id });
+    const response = await axios.post(`http://external-x10Bot-report:${process.env.BASE_PORT}/generate-report`, { 
+      chat_id: chat_id,
+      loadingMsgId: loadingMsgId
+    });
+    
     return response.data;
   } catch (error) {
     console.error("Error сalling ReportService:", error);

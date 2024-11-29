@@ -497,6 +497,20 @@ export class ReportService {
     }
   }
 
+  async deleteMessage(chat_id: number, message_id: number): Promise<void> {
+    const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/deleteMessage`;
+  
+    try {
+      await axios.post(telegramApiUrl, {
+        chat_id: chat_id,
+        message_id: message_id,
+      });
+      console.log(`Report Service: Message ${message_id} deleted in chat_id: ${chat_id}`);
+    } catch (error) {
+      console.error(`Report Service: Failed to delete message ${message_id} in chat_id: ${chat_id}`, error);
+    }
+  }
+
   async processReport(articles: SKU[], yesterdayDate: string, chat_id: number) {
     const messageText = createReportMessage(articles, yesterdayDate)
     const htmlTable = await generateReportHtml(articles);
@@ -532,7 +546,7 @@ export class ReportService {
     }
   }
 
-  async runForUser(chat_id: number): Promise<void> {
+  async runForUser(chat_id: number, loadingMsgId: number): Promise<void> {
     try {
       await this.prepareReportData(chat_id)
       let articles;
@@ -542,9 +556,11 @@ export class ReportService {
       if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
           await this.processReport(articles, yesterdayDate, chat_id)
-        }
+          await this.deleteMessage(chat_id, loadingMsgId)
+        } 
       } else {
         this.sendMessage(chat_id, "Возникла ошибка при получении данных о товарах")
+        await this.deleteMessage(chat_id, loadingMsgId)
       }
     } catch (error) {
       console.error('Error running report for user: ', error);
@@ -582,9 +598,9 @@ app.use(express.json());
 const PORT = process.env.BASE_PORT || 3200;
 
 app.post("/generate-report", async (req, res) => {
-  const { chat_id } = req.body; 
+  const { chat_id, loadingMsgId } = req.body; 
   try {
-    const reportData = await reportService.runForUser(chat_id); 
+    const reportData = await reportService.runForUser(chat_id, loadingMsgId); 
     res.status(200).json({ success: true, data: reportData });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error run report service for user' });

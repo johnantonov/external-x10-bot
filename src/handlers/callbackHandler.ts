@@ -166,13 +166,13 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
           const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports);
       
           try {
-            const reportResponse = await requestReport(chat_id); 
+            requestReport(chat_id, loadingMsg.message_id); 
  
           } catch (error) {
             console.error("Failed to generate report:", error);
           }
       
-          await MS.deleteMessage(chat_id, loadingMsg.message_id);
+          // await MS.deleteMessage(chat_id, loadingMsg.message_id);
         } else {
           if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
         }
