@@ -12,9 +12,10 @@ export async function updateCommissions() {
 
     const data = commissionResponse.data.report;
     await commissions_db.upsertCommissions(data);
-
     console.log('Commissions updated successfully');
+    return true
   } catch (error) {
     console.error('Error getting commissions data: ', error);
+    return false
   }
 }

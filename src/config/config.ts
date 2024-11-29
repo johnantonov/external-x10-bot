@@ -24,7 +24,7 @@ export const config = {
     toleranceFormatting: 20,
 
     imgWidth: 300,
-    imgHeight: 360,
+    imgHeight: 400,
 
     get summaryColSpan() {
       let count = this.skuCol;

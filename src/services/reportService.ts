@@ -591,6 +591,23 @@ app.post("/generate-report", async (req, res) => {
   }
 });
 
+app.get("/prepare", async (req, res) => {
+  try {
+    const result = await reportService.prepareReportData(); 
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error prepare reports' });
+  }
+});
+app.get("/run", async (req, res) => {
+  try {
+    const result = await reportService.run()
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error run reprot service' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`ReportService is running on port ${PORT}`);
 });

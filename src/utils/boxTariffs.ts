@@ -30,7 +30,9 @@ export async function updateBoxTariffs() {
     await box_tariffs_db.upsertBoxTariffs(data);
 
     console.log('BoxTariffs updated successfully');
+    return true
   } catch (error) {
     console.error('Error getting BoxTariffs data: ', error);
+    return false
   }
 }

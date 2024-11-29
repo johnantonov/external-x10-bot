@@ -10,6 +10,7 @@ import { updateCommissions } from "../utils/comissions";
 import { articles_db } from "../../database/models/articles";
 import { updateBoxTariffs } from "../utils/boxTariffs";
 import { RediceService } from "../bot";
+import { requestPrepareReports, requestRunReportService } from "../utils/requestReport";
 
 dotenv.config();
 
@@ -49,19 +50,15 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     const action = command.split('__')[1]
     console.log('admin handler action: ', action)
 
-    // if (action === 'run_report_service') {
-    //   console.log('admin started report serivce')
-    //   if (reportService) {
-    //     reportService.run()
-    //   }
-    // }
+    if (action === 'run_report_service') {
+      console.log('admin started report serivce')
+      requestRunReportService();
+    }
 
-    // if (action === 'prepare_report_service') {
-    //   console.log('admin started preparing report serivce')
-    //   if (reportService) {
-    //     reportService.prepareReportData()
-    //   }
-    // }
+    if (action === 'prepare_report_service') {
+      console.log('admin started preparing report serivce')
+      requestPrepareReports()
+    }
 
     if (action.startsWith('clean_db')) {
       const db = action.split('db_')[1];
