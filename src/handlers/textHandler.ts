@@ -26,8 +26,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
 
     if (!answer.result) {
       await MS.saveMessages(msgs);
-      return bot.editMessageText(answer.text, { chat_id, message_id: response.message_id });
-
+      return MS.editMessage(chat_id, response.message_id, answer.text, mainOptions(answer?.type)!)
     } else {
       await RediceService.deleteUserState(chat_id);
       await MS.deleteOldAndNewMessages(chat_id, msgs);
