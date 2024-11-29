@@ -18,7 +18,6 @@ import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 import { generateReportHtml } from '../report/reportGenerator';
-import { getCosts } from '../utils/dataProcessing';
 import { createReportMessage } from '../report/textReport';
 import { User } from '../dto/user';
 import { config } from '../config/config';
