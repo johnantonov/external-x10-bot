@@ -19,9 +19,11 @@ services:
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
       - PGPORT=5432
+      - REPORT_SERVICE_HOST=http://external-x10Bot-report:3001
     depends_on:
       - external-x10Bot-redis
       - external-x10Bot-postgres
+      - external-x10Bot-report
     restart: always
 
   external-x10Bot-postgres:
@@ -35,6 +37,17 @@ services:
       - "5400:5432"
     volumes:
       - x10-external-bot_postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  external-x10Bot-report:
+    build:
+      context: .
+      dockerfile: reportService.Dockerfile 
+    image: x10-external-bot-report
+    ports:
+      - "${BASE_PORT}:${BASE_PORT}"
+    environment:
+      - PORT=${BASE_PORT}
     restart: always
 
 volumes:

@@ -22,6 +22,7 @@ import { getCosts } from '../utils/dataProcessing';
 import { createReportMessage } from '../report/textReport';
 import { User } from '../dto/user';
 import { config } from '../config/config';
+import express from "express";
 
 dotenv.config();
 
@@ -576,3 +577,20 @@ export class ReportService {
 export const reportService = new ReportService(pool);
 console.log('Report Service started!')
 reportService.startCronJob();
+
+const app = express();
+const PORT = process.env.REPORT_SERVICE_PORT || 3001;
+
+app.post("/generate-report", async (req, res) => {
+  const { chat_id } = req.body; 
+  try {
+    const reportData = await reportService.runForUser(chat_id); 
+    res.status(200).json({ success: true, data: reportData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error run report service for user' });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`ReportService is running on port ${PORT}`);
+});

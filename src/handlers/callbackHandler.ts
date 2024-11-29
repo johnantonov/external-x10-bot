@@ -9,7 +9,6 @@ import { users_db } from "../../database/models/users";
 import { getCurrentArticle, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
 import { isReportAvailable } from "../utils/time";
-import { reportService } from "../services/reportService";
 import { texts } from "../components/texts";
 import dotenv from 'dotenv';
 import { config } from "../config/config";
@@ -158,18 +157,25 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       }
       break;
 
-    case 'get all reports':
-      const accessAllReports = isReportAvailable(last_report_call)
-      if (accessAllReports) {
-        await users_db.updateLastReportCall(chat_id);
-        MS.deleteAllMessages(chat_id)
-        const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports)
-        let reportResponse = await reportService.runForUser(chat_id)
-        await MS.deleteMessage(chat_id, loadingMsg.message_id)
-      } else {
-        if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
-      }
-      break;
+      case 'get all reports':
+        const accessAllReports = isReportAvailable(last_report_call);
+        if (accessAllReports) {
+          await users_db.updateLastReportCall(chat_id);
+          MS.deleteAllMessages(chat_id);
+          const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports);
+      
+          try {
+            const reportResponse = await requestReport(chat_id); 
+ 
+          } catch (error) {
+            console.error("Failed to generate report:", error);
+          }
+      
+          await MS.deleteMessage(chat_id, loadingMsg.message_id);
+        } else {
+          if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
+        }
+        break;
 
     case 'change time':
       try {
