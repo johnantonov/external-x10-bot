@@ -33,7 +33,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     if (state === rStates.waitWbApiKey || state === rStates.waitNewKey) {
       try {
         const user = await users_db.getUserById(chat_id);
-        const isValidKey = checkAuth(text)
+        const isValidKey = await checkAuth(text)
 
         if (!isValidKey) {
           return new AwaitingAnswer({ result: false, text: texts.errorValidKey, type: user?.type });
