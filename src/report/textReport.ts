@@ -1,5 +1,5 @@
 import { SKU, TextReportData } from "../dto/sku&report";
-import { formatNumber, NumberOrZero } from "../utils/string";
+import { formatNumber, NumberOrZero } from "../utils/string&number";
 import { getYesterdayDate } from "../utils/time";
 
 export function createReportMessage(articles: SKU[], formatReportDate: string) {

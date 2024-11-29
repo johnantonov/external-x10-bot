@@ -8,7 +8,7 @@ import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { DateKey, MarketingObject, ObjectOther, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku&report';
 import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns } from '../utils/dataProcessing';
-import { formatError, NumberOrZero } from '../utils/string';
+import { formatError, NumberOrZero } from '../utils/string&number';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/buttons';
 import { conversions_db } from '../../database/models/conversions';

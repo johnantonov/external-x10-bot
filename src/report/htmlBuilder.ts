@@ -1,7 +1,7 @@
 import { config } from "../config/config";
 import { DateKey, SKU } from "../dto/sku&report";
 import { getSkuData } from "../utils/parse";
-import { formatNumber } from "../utils/string";
+import { formatNumber } from "../utils/string&number";
 import { getReportFormatDay } from "../utils/time";
 
 export const generateTable = (header: string, dayRows: string): string => `

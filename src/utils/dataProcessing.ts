@@ -4,7 +4,7 @@ import { article, DateKey, MarketingObject, ObjectOther, SKU } from "../dto/sku&
 import { BoxTariff } from "../dto/boxTariffs";
 import { create31DaysObject  } from "./time";
 import { parsePercent } from "./parse";
-import { NumberOrZero } from "./string";
+import { NumberOrZero } from "./string&number";
 
 export function processCampaigns(advertisements: Record<string, any>, userNmIds: article[], advertTypes: Record<string, any>) {
   const data: Record<string, any> = {}

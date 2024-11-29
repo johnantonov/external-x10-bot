@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import { texts } from "../components/texts";
 import { parsePercent, parseSum } from "../utils/parse";
 import { user_type } from "../dto/user";
+import { checkAuth } from "../utils/auth";
 
 dotenv.config();
 
@@ -32,6 +33,12 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     if (state === rStates.waitWbApiKey || state === rStates.waitNewKey) {
       try {
         const user = await users_db.getUserById(chat_id);
+        const isValidKey = checkAuth(text)
+
+        if (!isValidKey) {
+          return new AwaitingAnswer({ result: false, text: texts.errorValidKey, type: user?.type });
+        }
+
         const oldApiKey = user?.wb_api_key;
 
         if (oldApiKey) {
