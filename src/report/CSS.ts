@@ -6,7 +6,7 @@ const noBorder = `none !important`;
 const specialBorder = `0.1px dashed black`
 const usualPadding = 12
 const cellTextAlign = `center`
-const rowHeight = 25
+const rowHeight = 30
 const headFontStyle = 'bold'
 
 
@@ -79,7 +79,7 @@ export const CSS = (cols: number) => `
       font-weight: ${headFontStyle};
     }
     .footer_text {
-      font-size: ${config.pdf.titleFz+48}px !important;
+      font-size: ${config.pdf.titleFz+20}px !important;
     }
     .bl {
       border-left: ${specialBorder};
