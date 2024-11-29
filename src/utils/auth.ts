@@ -20,5 +20,6 @@ export async function checkAuth(key: string) {
     }
   } catch (e) {
     console.log('Error auth ' + key)
+    return false
   }
 }
