@@ -23,8 +23,8 @@ export const config = {
     baseFz: 26,
     toleranceFormatting: 20,
 
-    imgWidth: 300,
-    imgHeight: 400,
+    imgWidth: 240,
+    imgHeight: 320,
 
     get summaryColSpan() {
       let count = this.skuCol;
