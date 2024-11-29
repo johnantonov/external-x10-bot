@@ -3,7 +3,7 @@ export const migrations = [
     [],
     // -------- 1    
     [
-        `CREATE IF NOT EXISTS users (
+        `CREATE TABLE IF NOT EXISTS users (
             chat_id BIGINT PRIMARY KEY,
             username VARCHAR(255),
             wb_api_key VARCHAR,
@@ -14,7 +14,7 @@ export const migrations = [
             last_report_call TIMESTAMP
         );`,
 
-        `CREATE IF NOT EXISTS articles (
+        `CREATE TABLE IF NOT EXISTS articles (
             article VARCHAR NOT NULL,
             chat_id BIGINT NOT NULL,
             wb_api_key VARCHAR,
@@ -53,7 +53,7 @@ export const migrations = [
         FOR EACH ROW
         EXECUTE FUNCTION set_wb_api_key();`,
 
-        `CREATE IF NOT EXISTS conversions (
+        `CREATE TABLE IF NOT EXISTS conversions (
         date VARCHAR,
         category VARCHAR,
         subject_name VARCHAR,
@@ -63,7 +63,7 @@ export const migrations = [
         PRIMARY KEY (category, subject_name)
         );`,
 
-        `CREATE IF NOT EXISTS commissions (
+        `CREATE TABLE IF NOT EXISTS commissions (
         "parentName" VARCHAR,
         "subjectName" VARCHAR,
         "parentID" NUMERIC,
@@ -75,7 +75,7 @@ export const migrations = [
         PRIMARY KEY ("parentName", "subjectName")
         );`,
 
-        `CREATE IF NOT EXISTS box_tariffs (
+        `CREATE TABLE IF NOT EXISTS box_tariffs (
             "warehouseName" VARCHAR,
             "boxDeliveryAndStorageExpr" NUMERIC,
             "boxDeliveryBase" NUMERIC,
