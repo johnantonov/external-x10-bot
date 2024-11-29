@@ -209,40 +209,31 @@ function generateCell(
   const formattedValue = formatNumber(value, toFixedVal);
   const unittedValue = formatUnitValue(unit, formattedValue);
 
-  let conditionalClass = '';
+  let backgroundColor = "white";
   if (range) {
-    const { min, max, reverseColors = false } = range;
+    const { min, max, reverseColors } = range;
 
     if (reverseColors) {
-      // логика для инверсных значений (3 стадии) (например дрр где чем выше тем хуже)
-      const step = (max - min) / 5;
-      if (value === min) {
-        conditionalClass = 'white'
-      } else if (value === max) {
-        conditionalClass = 'red'; // самое большое
-      } else if (value >= max - step ) {
-        conditionalClass = 'light-red'; // чуть меньше максимума
-      } else {
-        conditionalClass = 'white'; // все остальные
-      }
+      // Инверсная логика (красный градиент)
+      backgroundColor = calculateColor(value, min, max, [255, 235, 235], [255, 90, 90]);
     } else {
-      // логика для обычных значений (5 стадий)
-      const step = (max - min) / 5;
-      if (value <= min + step) {
-        conditionalClass = 'white'; // самое маленькое
-      } else if (value <= min + step * 2) {
-        conditionalClass = 'light-green-1'; // 20-40%
-      } else if (value <= min + step * 3) {
-        conditionalClass = 'light-green-2'; // 40-60%
-      } else if (value === max) {
-        conditionalClass = 'green'; // 60-80%
-      } else {
-        conditionalClass = 'light-green-3'; // самое большое
-      }
+      // Позитивная логика (зелёный градиент)
+      backgroundColor = calculateColor(value, min, max, [235, 255, 235], [90, 255, 90]);
     }
   }
 
-  return `<td class="${className} ${conditionalClass}">${unittedValue}</td>`;
+  return `<td class="${className}" style="background-color: ${backgroundColor}">${unittedValue}</td>`;
+}
+
+function calculateColor(value: number, min: number, max: number, baseColor: number[], targetColor: number[]) {
+  const range = max - min;
+  const relativeValue = (value - min) / range; 
+
+  const r = Math.round(baseColor[0] + relativeValue * (targetColor[0] - baseColor[0]));
+  const g = Math.round(baseColor[1] + relativeValue * (targetColor[1] - baseColor[1]));
+  const b = Math.round(baseColor[2] + relativeValue * (targetColor[2] - baseColor[2]));
+
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 function formatUnitValue(unit: '%' | 'р.' | null, value: string | number) {

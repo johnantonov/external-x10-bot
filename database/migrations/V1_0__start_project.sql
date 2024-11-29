@@ -1,4 +1,4 @@
-CREATE UNLOGGED TABLE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS users (
     chat_id BIGINT PRIMARY KEY,
     username VARCHAR(255),
     wb_api_key VARCHAR,
@@ -9,7 +9,7 @@ CREATE UNLOGGED TABLE TABLE IF NOT EXISTS users (
     last_report_call TIMESTAMP,
 );
 
-CREATE UNLOGGED TABLE IF NOT EXISTS articles (
+CREATE IF NOT EXISTS articles (
     article VARCHAR NOT NULL,
     chat_id BIGINT NOT NULL,
     wb_api_key VARCHAR,
@@ -44,7 +44,7 @@ BEFORE INSERT ON articles
 FOR EACH ROW
 EXECUTE FUNCTION set_wb_api_key();
 
-CREATE UNLOGGED TABLE IF NOT EXISTS conversions (
+CREATE IF NOT EXISTS conversions (
   date VARCHAR,
   category VARCHAR,
   subject_name VARCHAR,
@@ -54,7 +54,7 @@ CREATE UNLOGGED TABLE IF NOT EXISTS conversions (
   PRIMARY KEY (category, subject_name)
 );
 
-CREATE UNLOGGED TABLE IF NOT EXISTS commissions (
+CREATE IF NOT EXISTS commissions (
   "parentName" VARCHAR,
   "subjectName" VARCHAR,
   "parentID" NUMERIC,
@@ -68,7 +68,7 @@ CREATE UNLOGGED TABLE IF NOT EXISTS commissions (
 
 ALTER TABLE articles RENAME COLUMN logisticsByBuys
 
-CREATE UNLOGGED TABLE IF NOT EXISTS box_tariffs (
+CREATE IF NOT EXISTS box_tariffs (
   "warehouseName" VARCHAR,
   "boxDeliveryAndStorageExpr" NUMERIC,
   "boxDeliveryBase" NUMERIC,
