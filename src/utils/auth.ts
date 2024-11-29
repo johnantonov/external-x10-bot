@@ -15,7 +15,7 @@ export async function checkAuth(key: string) {
 
     console.log(response.data)
 
-    if (response.data.status === 200) {
+    if (response.data.Status === 'OK') {
       return true
     } else {
       return false
