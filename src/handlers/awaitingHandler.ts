@@ -34,7 +34,6 @@ export async function awaitingHandler(data: UserMsg, state: string) {
       try {
         const user = await users_db.getUserById(chat_id);
         const isValidKey = await checkAuth(text)
-        console.log(isValidKey)
 
         if (!isValidKey) {
           return handleError(texts.errorValidKey, user?.type)
