@@ -78,6 +78,9 @@ export const CSS = (cols: number) => `
       text-align: ${cellTextAlign};
       font-weight: ${headFontStyle};
     }
+    .footer_text {
+      font-size: ${config.pdf.titleFz}
+    }
     .bl {
       border-left: ${specialBorder};
     }

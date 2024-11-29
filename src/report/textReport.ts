@@ -39,7 +39,7 @@ export function createReportMessage(articles: SKU[], formatReportDate: string) {
 Маржа до ДРР: ${formatNumber(marginTotal, 2)}%
 Маржа с ДРР: ${formatNumber(marginWithDrrTotal, 2)}%
 КРРР: ${formatNumber(krrrTotal, 2)}%
-<b>Прибыль с ДРР: ${formatNumber(data.revTotal, 2)}₽</b>
+<b>Прибыль с ДРР: ${formatNumber(data.revTotal)}₽</b>
   `
   return `<b>10X Отчет ${formatReportDate}</b>\n${message}`;
 }
