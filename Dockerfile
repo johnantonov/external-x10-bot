@@ -16,11 +16,12 @@ RUN npm install
 
 COPY . . 
 
+RUN chmod +x ./node_modules/.bin/tsc 
+RUN npm run build
+
 RUN rm -rf ./src/report
 RUN rm ./src/services/reportService.js
 
-RUN chmod +x ./node_modules/.bin/tsc 
-RUN npm run build
 
 ENV XDG_RUNTIME_DIR=/tmp/runtime
 RUN mkdir -p /tmp/runtime && chmod 700 /tmp/runtime
