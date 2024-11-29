@@ -1,6 +1,6 @@
 import axios from "axios";
 
-async function requestReport(chat_id: string) {
+export async function requestReport(chat_id: string | number) {
   try {
     const response = await axios.post(`http://localhost:${process.env.BASE_PORT}/generate-report`, { chat_id });
     return response.data;
