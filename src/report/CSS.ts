@@ -79,7 +79,7 @@ export const CSS = (cols: number) => `
       font-weight: ${headFontStyle};
     }
     .footer_text {
-      font-size: ${config.pdf.titleFz}
+      font-size: ${config.pdf.titleFz} !important;
     }
     .bl {
       border-left: ${specialBorder};
