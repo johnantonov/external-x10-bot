@@ -36,8 +36,10 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         const isValidKey = await checkAuth(text)
 
         if (!isValidKey) {
-          handleError(texts.errorValidKey, user?.type)
+          return handleError(texts.errorValidKey, user?.type)
         }
+
+        console.log(isValidKey)
 
         const oldApiKey = user?.wb_api_key;
 
@@ -157,7 +159,7 @@ export function isKey(text: string, state: string): Boolean {
 export function extractSidFromToken(token: string): string {
   try {
     const decoded: any = jwt.decode(token);
-    console.log(JSON.stringify(decoded))
+    // console.log(JSON.stringify(decoded))
     return decoded?.sid || '';
   } catch (e) {
     console.error('Ошибка декодирования JWT токена: ', e);
