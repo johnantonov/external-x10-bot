@@ -68,7 +68,7 @@ export const CSS = (cols: number) => `
       height: ${rowHeight};
     }
     th, td {
-      padding: 0px !important;
+      padding: ${usualPadding}px;
       text-align: ${cellTextAlign};
     }
     .header {
