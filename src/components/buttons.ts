@@ -33,7 +33,8 @@ export class Options {
       return buttons.map((row: InlineKeyboardButton[]) =>
         row.map((button: InlineKeyboardButton) => ({
           text: button.text,
-          callback_data: button.callback_data,
+          callback_data: button?.callback_data,
+          url: button?.url,
         }))
       );
     } catch (e) {
