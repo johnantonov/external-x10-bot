@@ -227,7 +227,7 @@ function generateCell(
   }
 
   let fzClass = '';
-  const valueLength = value.toString().length;
+  const valueLength = value?.toString()?.length ?? 0;
   if (valueLength > 11) {
     fzClass = 'shrink_fz_3';
   } else if (valueLength > 10) {
