@@ -231,11 +231,11 @@ function generateCell(
   
   if (!valueStr.includes('%')) {
     const valueLength = valueStr.length;
-    if (valueLength > 10) {
+    if (valueLength > 12) {
       fzClass = 'shrink_fz_3';
-    } else if (valueLength > 9) {
+    } else if (valueLength > 11) {
       fzClass = 'shrink_fz_2';
-    } else if (valueLength > 8) {
+    } else if (valueLength > 9) {
       fzClass = 'shrink_fz_1';
     }
   }
