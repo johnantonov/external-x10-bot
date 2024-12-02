@@ -73,8 +73,16 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       editData = createEditData(texts.sendKey, undefined, images.apiKey);
       break;
 
-    case 'test report':
-      editData = createEditData(texts.sendKey, undefined, images.apiKey);
+    case 'test report': 
+      const filePath = './public/documents/Тестовый отчет.pdf'; 
+      try {
+          // await bot.sendMessage(chatId, messageText);
+          await bot.sendDocument(chat_id, filePath, {
+            caption: config.pdf.testReportText, 
+          });
+        } catch (error) {
+          console.error('Error while sending test report', error);
+        }
       break;
 
     case 'change key':
