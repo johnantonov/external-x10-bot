@@ -217,6 +217,9 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       }
       break;
 
+    case 'fb':
+      break;  
+
     default:
       if (mainBtn) await bot.sendMessage(chat_id, texts.errorResponse, { reply_markup: mainBtn })
       console.error('Error processing callback')

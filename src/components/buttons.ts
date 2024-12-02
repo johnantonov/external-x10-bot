@@ -91,7 +91,7 @@ export const mainButtons = {
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
   testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
-  feedback: { text: '🛎 Обратная связь', callback_data: CallbackData.feedback },
+  feedback: { text: '🛎 Обратная связь', url: CallbackData.feedback },
 };
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
