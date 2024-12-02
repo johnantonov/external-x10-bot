@@ -79,6 +79,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
           // await bot.sendMessage(chatId, messageText);
           await bot.sendDocument(chat_id, filePath, {
             caption: config.pdf.testReportText, 
+            parse_mode: 'HTML',
           });
         } catch (error) {
           console.error('Error while sending test report', error);
