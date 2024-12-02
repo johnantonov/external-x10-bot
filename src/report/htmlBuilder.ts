@@ -213,7 +213,7 @@ function generateCell(
   if (range) {
     const { min, max, reverseColors } = range;
 
-    if (reverseColors) {
+    if (value < 0 || reverseColors) {
       // инверсная логика (красный градиент)
       backgroundColor = calculateColor(value, min, max, [255, 235, 235], [255, 90, 90]);
     } else {
