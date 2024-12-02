@@ -217,8 +217,9 @@ function generateCell(
       // инверсная логика (красный градиент)
       if (value < 0) {
         backgroundColor = calculateColor(value, min, max, [255, 90, 90], [255, 235, 235] );
+      } else {
+        backgroundColor = calculateColor(value, min, max, [255, 235, 235], [255, 90, 90]);
       }
-      backgroundColor = calculateColor(value, min, max, [255, 235, 235], [255, 90, 90]);
     } else {
       // основная логика (зелёный градиент)
       backgroundColor = calculateColor(value, min, max, [224, 247, 224], [87, 187, 138]);
