@@ -82,7 +82,7 @@ export const CSS = (cols: number) => `
       font-size: ${config.pdf.titleFz+16}px !important;
     }
     .arrow {
-      padding-left: 100px;
+      padding-left: 1000px;
     }
     .bl {
       border-left: ${specialBorder};
