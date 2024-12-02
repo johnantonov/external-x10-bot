@@ -227,13 +227,17 @@ function generateCell(
   }
 
   let fzClass = '';
-  const valueLength = value?.toString()?.length ?? 0;
-  if (valueLength > 11) {
-    fzClass = 'shrink_fz_3';
-  } else if (valueLength > 10) {
-    fzClass = 'shrink_fz_2';
-  } else if (valueLength > 9) {
-    fzClass = 'shrink_fz_1';
+  const valueStr = unittedValue?.toString() ?? '';
+  
+  if (!valueStr.includes('%')) {
+    const valueLength = valueStr.length;
+    if (valueLength > 10) {
+      fzClass = 'shrink_fz_3';
+    } else if (valueLength > 9) {
+      fzClass = 'shrink_fz_2';
+    } else if (valueLength > 8) {
+      fzClass = 'shrink_fz_1';
+    }
   }
 
   return `<td class="${className} ${fzClass}" style="background-color: ${backgroundColor}">${unittedValue}</td>`;
