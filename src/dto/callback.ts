@@ -16,4 +16,5 @@ export type CallbackAction =
   "all ready" | 
   "info" |
   "selfcost" |
+  "test report" |
   null;

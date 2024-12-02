@@ -96,8 +96,8 @@ export class ReportService {
           }
 
           let sizes = size[nm] || {};
-          let logistics: number = logisticsObj[nm].logistics || 0;
-          let storage: number = logisticsObj[nm].storage || 0;
+          let logistics: number = logisticsObj[nm]?.logistics || 0;
+          let storage: number = logisticsObj[nm]?.storage || 0;
           let info = report[nm]?.order_info || {};
           let percentBuys = percent_buys?.[nm] ?? null;
           let spp = report[nm]?.price_before_spp ?? null;

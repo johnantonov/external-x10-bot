@@ -77,6 +77,10 @@ export class CallbackProcessor {
       return "all ready";
     }
 
+    if (this.isTestReport()) {
+      return "test report";
+    }
+
     return null; // error
   }
 
@@ -138,5 +142,9 @@ export class CallbackProcessor {
 
   private isAllReadyToReport(): boolean {
     return this.userCallbackData === CallbackData.timeLater
+  }
+
+  private isTestReport(): boolean {
+    return this.userCallbackData === CallbackData.testReport
   }
 }

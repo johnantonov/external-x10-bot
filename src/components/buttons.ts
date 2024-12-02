@@ -63,6 +63,7 @@ export const CallbackData = {
   getAllReportNow: 'arn?',
   goArticle: 'ar?',
   deleteArticle: 'da?',
+  testReport: 'tr?',
 
   faq: 'faq',
   faq_1: 'faq_1',
@@ -88,6 +89,7 @@ export const mainButtons = {
   changeWbApiKey: { text: '🔑 Обновить ключ API', callback_data: CallbackData.changeWbApiKey },
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
+  testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
 };
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {

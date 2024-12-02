@@ -3,7 +3,10 @@ import { user_type } from "../dto/user";
 
 export function getStartedButton(type: user_type) {
   if (type === 'new') {
-    return new Options([[mainButtons.registrateUser]]).reply_markup; 
+    return new Options([
+      [mainButtons.registrateUser],
+      [mainButtons.testReport]
+    ]).reply_markup; 
   };
 
   if (type === 'waitSku') {

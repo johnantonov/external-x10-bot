@@ -215,7 +215,7 @@ function generateCell(
 
     if (value < 0 || reverseColors) {
       // инверсная логика (красный градиент)
-      if (value < 0) {
+      if (value < 0) { // в таком случае чем меньше число тем краснее
         backgroundColor = calculateColor(value, min, max, [255, 90, 90], [255, 235, 235] );
       } else {
         backgroundColor = calculateColor(value, min, max, [255, 235, 235], [255, 90, 90]);

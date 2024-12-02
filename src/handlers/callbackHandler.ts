@@ -73,6 +73,10 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       editData = createEditData(texts.sendKey, undefined, images.apiKey);
       break;
 
+    case 'test report':
+      editData = createEditData(texts.sendKey, undefined, images.apiKey);
+      break;
+
     case 'change key':
       await RS.setUserState(chat_id, rStates.waitNewKey, ttls.usual)
       editData = createEditData(texts.warningChangeKey, returnBtn, images.apiKey);
