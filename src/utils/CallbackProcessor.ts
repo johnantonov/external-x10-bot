@@ -81,6 +81,10 @@ export class CallbackProcessor {
       return "test report";
     }
 
+    if (this.isFb()) {
+      return "fb";
+    }
+
     return null; // error
   }
 
@@ -146,5 +150,9 @@ export class CallbackProcessor {
 
   private isTestReport(): boolean {
     return this.userCallbackData === CallbackData.testReport
+  }
+
+  private isFb(): boolean {
+    return this.userCallbackData === CallbackData.feedback
   }
 }

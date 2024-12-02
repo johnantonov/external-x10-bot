@@ -64,6 +64,7 @@ export const CallbackData = {
   goArticle: 'ar?',
   deleteArticle: 'da?',
   testReport: 'tr?',
+  feedback: 'https://t.me/+ZVISmofZZ_wwN2Ey',
 
   faq: 'faq',
   faq_1: 'faq_1',
@@ -90,6 +91,7 @@ export const mainButtons = {
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
   testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
+  feedback: { text: '🛎 Обратная связь', callback_data: CallbackData.feedback },
 };
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
@@ -138,7 +140,8 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.articlesMenu],
     [mainButtons.changeTime],
     [mainButtons.info],
-    [mainButtons.changeWbApiKey]
+    [mainButtons.changeWbApiKey],
+    [mainButtons.feedback]
   ];
 
   return new Options(menu).reply_markup;
