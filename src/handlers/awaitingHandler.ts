@@ -64,7 +64,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
 
     } else if (state.startsWith(rStates.waitSku)) {
       try {
-        const lines = text.split('\n'); 
+        const lines = text.split('\n');
         const newSku = [];
     
         for (const line of lines) {
@@ -92,7 +92,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         } 
     
         await users_db.updateType(chat_id, 'waitTax');
-        return new AwaitingAnswer({ result: true, text: texts.addedSku, type: 'waitTax' });
+        return new AwaitingAnswer({ result: true, text: texts.warningFirstAddSku(successAdded) + texts.addedSku, type: 'waitTax' });
       } catch (e) {
         console.error('Error processing add sku: ', e);
         return handleError(texts.error);

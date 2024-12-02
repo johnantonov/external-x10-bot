@@ -18,7 +18,7 @@ export const config = {
     totalRowColor: '#f3f3f3',
     title: `<a href="https://t.me/tenXsupport_bot"><span>10X</span><br><span>SYSTEM</span></a>`,
     titleFz: 44,
-    footerText: `Отчёт подготовлен ботом <a href="https://t.me/X10XTestBot">@bot_123</a> от команды 10X.<br>Получите подробный отчет по всем SKU вашего кабинета.<br> <b>Бесплатный доступ на 3 дня:</b> <a href="https://t.me/tenXsupport_bot">@tenXsupport_bot</a>`,
+    footerText: `Отчёт подготовлен ботом <a href="https://t.me/X10XTestBot">@bot_123</a> от команды 10X.<br><br>Получите подробный отчет по всем SKU вашего кабинета.<br>                    👇<br><b>Бесплатный доступ на 3 дня:</b> <a href="https://t.me/tenXsupport_bot">@tenXsupport_bot</a>`,
     ff: `Arial, sans-serif`,
     baseFz: 28,
     toleranceFormatting: 20,
