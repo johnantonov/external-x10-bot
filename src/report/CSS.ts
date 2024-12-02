@@ -81,6 +81,9 @@ export const CSS = (cols: number) => `
     .footer_text {
       font-size: ${config.pdf.titleFz+16}px !important;
     }
+    .arrow {
+      padding-left: 100px;
+    }
     .bl {
       border-left: ${specialBorder};
     }
