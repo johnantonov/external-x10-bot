@@ -42,7 +42,7 @@ export function parsePercent(input: string | number | undefined): number {
     return 0;
   }
 
-  if (num > 1) {
+  if (num >= 1) {
     return num / 100;
   }
 
