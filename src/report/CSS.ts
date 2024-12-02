@@ -25,6 +25,15 @@ export const CSS = (cols: number) => `
       line-height: 1.2 !important;
       text-align: center; 
     }
+    .shrink_fz_1 {
+      font-size: ${fontSize-2}px;
+    }
+    .shrink_fz_2 {
+      font-size: ${fontSize-4}px;
+    }
+    .shrink_fz_3 {
+      font-size: ${fontSize-6}px;
+    }
     .fz14 {
       font-size: 14px !important;
     }

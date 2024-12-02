@@ -226,7 +226,17 @@ function generateCell(
     }
   }
 
-  return `<td class="${className}" style="background-color: ${backgroundColor}">${unittedValue}</td>`;
+  let fzClass = '';
+  const valueLength = value.toString().length;
+  if (valueLength > 11) {
+    fzClass = 'shrink_fz_3';
+  } else if (valueLength > 10) {
+    fzClass = 'shrink_fz_2';
+  } else if (valueLength > 9) {
+    fzClass = 'shrink_fz_1';
+  }
+
+  return `<td class="${className} ${fzClass}" style="background-color: ${backgroundColor}">${unittedValue}</td>`;
 }
 
 function calculateColor(value: number, min: number, max: number, baseColor: number[], targetColor: number[]) {
