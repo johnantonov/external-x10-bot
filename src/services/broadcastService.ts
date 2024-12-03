@@ -5,14 +5,14 @@ import { bot } from "../bot";
 export class BroadcastService {
   static async sendMessageToAllUsers(text: string, options?: object) {
     try {
-      const ids = await users_db.getReportUsers();
+      const users = await users_db.getReportUsers();
 
-      if (!ids) {
+      if (!users || users.length === 0) {
         return console.log('there are no users for message');
       }
 
-      for (const chat_id of ids) {
-        await bot.sendMessage(chat_id, text, { ...options, disable_notification: true });
+      for (const user of users) {
+        await bot.sendMessage(user.chat_id, text, { ...options, disable_notification: true });
       }
     } catch (error) {
       console.error('Error sending message to all users: ', error);
@@ -21,9 +21,9 @@ export class BroadcastService {
 
   static async sendMessageToFilteredUsers(filter: string, text: string, options?: object) {
     try {
-      const ids = ((await pool.query(`SELECT chat_id FROM ${users_db.tableName} WHERE ${filter}`)).rows);
-      for (const chat_id of ids) {
-        await bot.sendMessage(chat_id, text, { ...options, disable_notification: true });
+      const users = ((await pool.query(`SELECT chat_id FROM ${users_db.tableName} WHERE ${filter}`)).rows);
+      for (const user of users) {
+        await bot.sendMessage(user.chat_id, text, { ...options, disable_notification: true });
       }
     } catch (error) {
       console.error('Error sending message to filtered users: ', error);
@@ -32,29 +32,41 @@ export class BroadcastService {
 
   static async sendMediaGroupToAllUsers(mediaGroup: any[], caption: string) {
     try {
-      const ids = await users_db.getReportUsers(); 
-      if (!ids) {
-        return console.log('Нет пользователей для отправки сообщений');
-      }
+      const users = await users_db.getReportUsers();
 
-      for (const chat_id of ids) {
-        await bot.sendMediaGroup(chat_id, mediaGroup);
+      if (!users || users.length === 0) {
+        return console.log('there are no users for message');
+      }
+  
+      const updatedMediaGroup = mediaGroup.map((file, index) => {
+        if (index === 0) {
+          return { ...file, caption }; 
+        }
+        return file; 
+      });
+  
+      for (const user of users) {
+        try {
+          await bot.sendMediaGroup(user.chat_id, updatedMediaGroup);
+        } catch (error) {
+          console.error(`Error sending message to ${user.chat_id}:`, error);
+        }
       }
     } catch (error) {
-      console.error('Ошибка при отправке группы медиафайлов всем пользователям: ', error);
+      console.error('Error sending mediagroup: ', error);
     }
   }
 
   static async sendPhotoToAllUsers(photo: string, caption?: string, options?: object) {
     try {
-      const ids = await users_db.getReportUsers();
+      const users = await users_db.getReportUsers();
 
-      if (!ids) {
+      if (!users) {
         return console.log('there are no users for photo');
       }
 
-      for (const chat_id of ids) {
-        await bot.sendPhoto(chat_id, photo, { caption, ...options, disable_notification: true });
+      for (const user of users) {
+        await bot.sendPhoto(user.chat_id, photo, { caption, ...options, disable_notification: true });
       }
     } catch (error) {
       console.error('Error sending photo to all users: ', error);
@@ -63,14 +75,14 @@ export class BroadcastService {
 
   static async sendVideoToAllUsers(video: string, caption?: string, options?: object) {
     try {
-      const ids = await users_db.getReportUsers();
+      const users = await users_db.getReportUsers();
 
-      if (!ids) {
+      if (!users) {
         return console.log('there are no users for video');
       }
 
-      for (const chat_id of ids) {
-        await bot.sendVideo(chat_id, video, { caption, ...options, disable_notification: true });
+      for (const user of users) {
+        await bot.sendVideo(user.chat_id, video, { caption, ...options, disable_notification: true });
       }
     } catch (error) {
       console.error('Error sending video to all users: ', error);
@@ -79,14 +91,14 @@ export class BroadcastService {
 
   static async sendPollToAllUsers(question: string, options: string[], optionsObject?: object) {
     try {
-      const ids = await users_db.getReportUsers();
+      const users = await users_db.getReportUsers();
 
-      if (!ids) {
+      if (!users) {
         return console.log('there are no users for poll');
       }
 
-      for (const chat_id of ids) {
-        await bot.sendPoll(chat_id, question, options, { ...optionsObject, disable_notification: true });
+      for (const user of users) {
+        await bot.sendPoll(user.chat_id, question, options, { ...optionsObject, disable_notification: true });
       }
     } catch (error) {
       console.error('Error sending poll to all users: ', error);
@@ -95,9 +107,9 @@ export class BroadcastService {
 
   static async forwardMessageToAllUsers(chatId: number, messageId: number) {
     try {
-      const ids = (await pool.query(`SELECT chat_id FROM ${users_db.tableName}`)).rows;
-      for (const chat_id of ids) {
-        await bot.forwardMessage(chat_id, chatId, messageId);
+      const users = (await pool.query(`SELECT chat_id FROM ${users_db.tableName}`)).rows;
+      for (const user of users) {
+        await bot.forwardMessage(user.chat_id, chatId, messageId);
       }
     } catch (error) {
       console.error('Error forwarding message to all users: ', error);
@@ -106,9 +118,9 @@ export class BroadcastService {
 
   static async forwardMessageToFilteredUsers(chatId: number, messageId: number, filter: string) {
     try {
-      const ids = (await pool.query(`SELECT chat_id FROM ${users_db.tableName} WHERE ${filter}`)).rows;
-      for (const chat_id of ids) {
-        await bot.forwardMessage(chat_id, chatId, messageId);
+      const users = (await pool.query(`SELECT chat_id FROM ${users_db.tableName} WHERE ${filter}`)).rows;
+      for (const user of users) {
+        await bot.forwardMessage(user.chat_id, chatId, messageId);
       }
     } catch (error) {
       console.error('Error forwarding message to filtered users: ', error);

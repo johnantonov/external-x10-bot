@@ -27,11 +27,54 @@ bot.on('callback_query', async (query: TelegramBot.CallbackQuery) => {
   return callbackHandler(query, bot, RediceService, MS);
 });
 
+const mediaGroupBuffer = new Map(); // хранилище для медиафайлов по chat_id
+const commandBuffer = new Map(); // хранилище для команд (текста) по chat_id
+
 bot.on('message', async (msg: TelegramBot.Message) => {
   const UserTextMessage = new UserMsg(msg);
-  const { chat_id, text, message_id } = UserTextMessage;
+  let { chat_id, text, message_id } = UserTextMessage;
+  const textMsg = text ? text : msg?.caption
 
-  if (!text) {
+  if (msg.photo || msg.video) {
+    if (!mediaGroupBuffer.has(chat_id)) {
+      mediaGroupBuffer.set(chat_id, []);
+    }
+    mediaGroupBuffer.get(chat_id).push(msg);
+
+    if (textMsg?.startsWith('/admin__')) {
+      commandBuffer.set(chat_id, textMsg);
+    }
+
+    setTimeout(async () => {
+      const mediaGroup = mediaGroupBuffer.get(chat_id);
+      const command = commandBuffer.get(chat_id); 
+
+      if (mediaGroup && command) {
+        const mediaGroupFormatted = mediaGroup.map((message: any) => {
+          if (message.photo) {
+            const largestPhoto = message.photo[message.photo.length - 1];
+            return {
+              type: 'photo',
+              media: largestPhoto.file_id,
+            };
+          } else if (message.video) {
+            return {
+              type: 'video',
+              media: message.video.file_id,
+            };
+          }
+        });
+
+        await handleAdminCommand(chat_id, msg, bot, mediaGroupFormatted);
+
+        mediaGroupBuffer.delete(chat_id);
+        commandBuffer.delete(chat_id);
+      }
+    }, 2000);
+    return;
+  }
+
+  if (!textMsg) {
     console.log('there are no text')
     return;
   };
@@ -39,12 +82,12 @@ bot.on('message', async (msg: TelegramBot.Message) => {
   const msgs: MessageMS[] = [new MessageMS({ chat_id, message_id, content: text })];
 
   
-  if (['/start', '/menu'].includes(text)) {
-    await handleMenuCommand(UserTextMessage, chat_id, text, msgs);
+  if (['/start', '/menu'].includes(textMsg)) {
+    await handleMenuCommand(UserTextMessage, chat_id, textMsg, msgs);
     return;
   }
   
-  if (text.startsWith('/admin__')) {
+  if (textMsg.startsWith('/admin__')) {
     return handleAdminCommand(chat_id, msg, bot)
   }
 

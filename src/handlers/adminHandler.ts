@@ -35,11 +35,11 @@ const helpInfo = `
 /admin__clear_last_report_time_all - очистка времени последнего отчета у всех
 `
 
-export async function handleAdminCommand(chat_id: number, msg: Message, bot: TelegramBot) {
+export async function handleAdminCommand(chat_id: number, msg: Message, bot: TelegramBot, mediaGroup?: any) {
   try {
 
     const adminChatIds = process.env.ADMIN_CHAT ? process.env.ADMIN_CHAT.split(',').map(Number) : [];
-    const command = msg.text
+    const command = msg?.text ? msg.text : msg?.caption
 
     if (!command) {
       return console.error(`There is no admin command`)
@@ -69,27 +69,10 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
         await bot.sendMessage(chat_id, 'Сообщение не может быть пустым.');
         return;
       }
-
-      const photos = msg.photo;
-      const video = msg.video;
-
       try {
-        if (photos && photos.length > 0) {
-          const mediaGroup = photos.map((photo) => ({
-            type: 'photo',
-            media: photo.file_id,
-            caption: message 
-          }));
-
+        if (mediaGroup) {
           await BroadcastService.sendMediaGroupToAllUsers(mediaGroup, message);
-        }
-  
-        if (video) {
-          const videoId = video.file_id;
-          await BroadcastService.sendVideoToAllUsers(videoId, message);
-        }
-  
-        if (!photos && !video) {
+        } else {
           await BroadcastService.sendMessageToAllUsers(message);
         }
   
@@ -99,6 +82,10 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
         await bot.sendMessage(chat_id, 'Произошла ошибка при отправке сообщения.');
       }
     }
+
+    // if (action.startsWith('create_poll')) {
+    //   await BroadcastService.sendPollToAllUsers('Опрос на тему...', ['123', '234'])
+    // }
 
     if (action === 'prepare_report_service') {
       console.log('admin started preparing report serivce')
