@@ -3,7 +3,7 @@ import { UserCallback } from "../dto/messages";
 import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
-import { createEditData, MessageService } from "../services/messageService";
+import { createEditData, MessageService } from "../services/messageManipulatorService";
 import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, returnMenu, yesNo } from "../components/buttons";
 import { users_db } from "../../database/models/users";
 import { getCurrentArticle, parseArticleData } from "../utils/parse";

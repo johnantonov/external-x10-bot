@@ -42,28 +42,40 @@ class UsersModel extends BaseModel<User> {
   }
 
   async clearLastReportTime(chat_id?: number) {
-    if (chat_id) {
-      await pool.query('UPDATE users SET last_report_call = null WHERE chat_id = $1', [chat_id]);
-    } else {
-      await pool.query('UPDATE users SET last_report_call = null');
+    try {
+      if (chat_id) {
+        await pool.query('UPDATE users SET last_report_call = null WHERE chat_id = $1', [chat_id]);
+      } else {
+        await pool.query('UPDATE users SET last_report_call = null');
+      }
+    } catch (e) {
+      console.error(`Error clearing report time for user: ${chat_id ? chat_id : 'all'} -- `, e)
     }
   }
 
   async updateLastReportCall(chat_id: number) {
-    const now = new Date();
-    await pool.query('UPDATE users SET last_report_call = $1 WHERE chat_id = $2', [now, chat_id]);
+    try {
+      const now = new Date();
+      await pool.query('UPDATE users SET last_report_call = $1 WHERE chat_id = $2', [now, chat_id]);
+    } catch (e) {
+      console.error(`Error updating report time for user: ${chat_id ? chat_id : 'all'} -- `, e)
+    }
   }
 
   async updateNotificationTime(chat_id: number, notification_time: number | string): Promise<void> {
-    const values = [notification_time, chat_id]
-
-    let query = `
-      UPDATE ${this.tableName}
-      SET notification_time = $1
-      WHERE chat_id = $2
-    `;
-
-    await this.pool.query(query, values);
+    try {
+      const values = [notification_time, chat_id]
+  
+      let query = `
+        UPDATE ${this.tableName}
+        SET notification_time = $1
+        WHERE chat_id = $2
+      `;
+  
+      await this.pool.query(query, values);      
+    } catch (e) {
+      console.error(`Error updating notification time for user: ${chat_id}`, e)
+    }
   }
 
 
@@ -99,18 +111,22 @@ class UsersModel extends BaseModel<User> {
   }
 
   async updateWbApiKey(chat_id: number, wb_api_key: string): Promise<void> {
-    const query = `
-      UPDATE ${this.tableName}
-      SET wb_api_key = $1
-      WHERE chat_id = $2
-    `;
-    const query2 = `
-      UPDATE articles 
-      SET wb_api_key = $1
-      WHERE chat_id = $2
-    `
-    await this.pool.query(query, [wb_api_key, chat_id]);
-    await this.pool.query(query2, [wb_api_key, chat_id]);
+    try {
+      const query = `
+        UPDATE ${this.tableName}
+        SET wb_api_key = $1
+        WHERE chat_id = $2
+      `;
+      const query2 = `
+        UPDATE articles 
+        SET wb_api_key = $1
+        WHERE chat_id = $2
+      `
+      await this.pool.query(query, [wb_api_key, chat_id]);
+      await this.pool.query(query2, [wb_api_key, chat_id]);
+    } catch (e) {
+      console.error('Error updating wb api key for user: ', chat_id, " -- ", e)
+    }
   }
 
   async updateType(chat_id: number, type: user_type, wb_api_key?: string | null): Promise<void> {
@@ -130,19 +146,28 @@ class UsersModel extends BaseModel<User> {
   }
 
   async getUserById(chat_id: number): Promise<User | null> {
-    const existingUser = await this.select({ chat_id });
-    if (existingUser.rows.length > 0) {
-      return existingUser.rows[0];
-    } else {
+    try {
+      const existingUser = await this.select({ chat_id });
+      if (existingUser.rows.length > 0) {
+        return existingUser.rows[0];
+      } else {
+        return null
+      }
+    } catch (e) {
+      console.error('Error getting user by id ', chat_id, " :", e)
       return null
     }
   }
 
   async getReportUsers() {
-    const query = `SELECT chat_id FROM ${this.tableName}`;
-
-    const res = await this.pool.query(query);
-    return res.rows
+    try {
+      const query = `SELECT chat_id FROM ${this.tableName}`;
+  
+      const res = await this.pool.query(query);
+      return res.rows
+    } catch (e) {
+      console.error('Error getting users: ', e)
+    }
   }
 }
 

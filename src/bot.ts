@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { setBotCommands } from './components/buttons';
 import { redis } from './redis';
 import { MessageMS, UserMsg } from './dto/messages';
-import { MessageService } from './services/messageService';
+import { MessageService } from './services/messageManipulatorService';
 import { callbackHandler } from './handlers/callbackHandler';
 import { handleAdminCommand } from './handlers/adminHandler';
 import { handleMenuCommand, handleUserState } from './handlers/textHandler';
@@ -45,7 +45,7 @@ bot.on('message', async (msg: TelegramBot.Message) => {
   }
   
   if (text.startsWith('/admin__')) {
-    return handleAdminCommand(chat_id, text, bot)
+    return handleAdminCommand(chat_id, msg, bot)
   }
 
   await handleUserState(chat_id, msgs, UserTextMessage);

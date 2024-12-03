@@ -1,4 +1,4 @@
-import TelegramBot from "node-telegram-bot-api"
+import TelegramBot, { Message } from "node-telegram-bot-api"
 // import { reportService } from "../services/reportService"
 import * as dotenv from 'dotenv';
 import pool from "../../database/db"
@@ -11,10 +11,12 @@ import { articles_db } from "../../database/models/articles";
 import { updateBoxTariffs } from "../utils/boxTariffs";
 import { RediceService } from "../bot";
 import { requestPrepareReports, requestRunReportService } from "../utils/requestReport";
+import { BroadcastService } from "../services/broadcastService";
 
 dotenv.config();
 
 const helpInfo = `
+/admin__send_all_message_{text msg} - отправка сообщения всем пользователям, можно прикрепить фото или видео
 /admin__run_report_service - запуск репорт сервиса на прошедший час
 /admin__check_state - проверить текущий юзер статус в редисе
 /admin__clear_state - очистить текущий юзер статус в редисе
@@ -33,10 +35,15 @@ const helpInfo = `
 /admin__clear_last_report_time_all - очистка времени последнего отчета у всех
 `
 
-export async function handleAdminCommand(chat_id: number, command: string, bot: TelegramBot) {
+export async function handleAdminCommand(chat_id: number, msg: Message, bot: TelegramBot) {
   try {
 
     const adminChatIds = process.env.ADMIN_CHAT ? process.env.ADMIN_CHAT.split(',').map(Number) : [];
+    const command = msg.text
+
+    if (!command) {
+      return console.error(`There is no admin command`)
+    }
 
     if (!process.env.ADMIN_CHAT) {
       return console.error(`Error to getting admins from the env`)
@@ -53,6 +60,44 @@ export async function handleAdminCommand(chat_id: number, command: string, bot: 
     if (action === 'run_report_service') {
       console.log('admin started report serivce')
       requestRunReportService();
+    }
+
+    if (action.startsWith('send_all_message')) {
+      const message = action.split('send_all_message_')[1];
+      
+      if (!message) {
+        await bot.sendMessage(chat_id, 'Сообщение не может быть пустым.');
+        return;
+      }
+
+      const photos = msg.photo;
+      const video = msg.video;
+
+      try {
+        if (photos && photos.length > 0) {
+          const mediaGroup = photos.map((photo) => ({
+            type: 'photo',
+            media: photo.file_id,
+            caption: message 
+          }));
+
+          await BroadcastService.sendMediaGroupToAllUsers(mediaGroup, message);
+        }
+  
+        if (video) {
+          const videoId = video.file_id;
+          await BroadcastService.sendVideoToAllUsers(videoId, message);
+        }
+  
+        if (!photos && !video) {
+          await BroadcastService.sendMessageToAllUsers(message);
+        }
+  
+        await bot.sendMessage(chat_id, 'Сообщение успешно отправлено всем пользователям.');
+      } catch (error) {
+        console.error('Error sending message to all users: ', error);
+        await bot.sendMessage(chat_id, 'Произошла ошибка при отправке сообщения.');
+      }
     }
 
     if (action === 'prepare_report_service') {
