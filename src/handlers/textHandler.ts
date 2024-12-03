@@ -19,7 +19,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
   const userState = await RediceService.getUserState(chat_id);
   
   if (userState) {
-    const response = await bot.sendMessage(chat_id, "Проверяем...⌛️");
+    const response = await bot.sendMessage(chat_id, "Проверяем...⌛️", { disable_notification: true });
     const answer: AwaitingAnswer = await awaitingHandler(userTextMessage, userState);
 
     msgs.push({ chat_id, message_id: response.message_id, special: 'menu' });
@@ -28,7 +28,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
       await MS.saveMessages(msgs);
       if (answer?.type) {
         await bot.deleteMessage(chat_id, response.message_id)
-        return bot.sendMessage(chat_id, answer.text, { reply_markup: mainOptions(answer.type)! });
+        return bot.sendMessage(chat_id, answer.text, { reply_markup: mainOptions(answer.type)!, disable_notification: true });
       }
       return bot.editMessageText(answer.text, { chat_id, message_id: response.message_id });
     } else {

@@ -62,7 +62,7 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
     }
   } catch (error) {
     console.error('error while processing the /start command', error);
-    return bot.sendMessage(msg.chat_id, texts.error);
+    return bot.sendMessage(msg.chat_id, texts.error, { disable_notification: true });
   }
 }
 
@@ -83,10 +83,11 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
       parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: keyboard || []
-      }
+      },
+      disable_notification: true,
     };
 
-    return bot.sendPhoto(chat_id, imagePath, { caption, ...options, parse_mode: 'HTML' });
+    return bot.sendPhoto(chat_id, imagePath, { caption, ...options, parse_mode: 'HTML', disable_notification: true });
   } catch (e) {
     return console.error('error in sendImageWithText: ', e, chat_id, imageName, caption, keyboard)
   }

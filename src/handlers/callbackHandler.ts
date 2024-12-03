@@ -80,7 +80,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
           await bot.sendDocument(chat_id, filePath, {
             caption: config.pdf.testReportText, 
             parse_mode: 'HTML',
-            reply_markup: mainOptions('new')!
+            reply_markup: mainOptions('new')!,
+            disable_notification: true
           });
         } catch (error) {
           console.error('Error while sending test report', error);
@@ -177,7 +178,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
         if (accessAllReports) {
           await users_db.updateLastReportCall(chat_id);
           MS.deleteAllMessages(chat_id);
-          const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports);
+          const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports, { disable_notification: true });
       
           try {
             requestReport(chat_id, loadingMsg.message_id); 
@@ -231,7 +232,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;  
 
     default:
-      if (mainBtn) await bot.sendMessage(chat_id, texts.errorResponse, { reply_markup: mainBtn })
+      if (mainBtn) await bot.sendMessage(chat_id, texts.errorResponse, { reply_markup: mainBtn, disable_notification: true })
       console.error('Error processing callback')
       break;
   }
