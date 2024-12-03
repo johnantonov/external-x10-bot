@@ -17,6 +17,7 @@ dotenv.config();
 
 const helpInfo = `
 /admin__send_all_message_{text msg} - отправка сообщения всем пользователям, можно прикрепить фото или видео
+/admin__forward_message - команда пересылки сообщения, нужно ответить на пересылаемое сообщение
 /admin__run_report_service - запуск репорт сервиса на прошедший час
 /admin__check_state - проверить текущий юзер статус в редисе
 /admin__clear_state - очистить текущий юзер статус в редисе
@@ -87,9 +88,30 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
     //   await BroadcastService.sendPollToAllUsers('Опрос на тему...', ['123', '234'])
     // }
 
+
+
     if (action === 'prepare_report_service') {
       console.log('admin started preparing report serivce')
       requestPrepareReports()
+    }
+
+    if (action === 'forward_message') {
+      try {
+        console.log('admin started preparing report serivce')
+  
+        if (!msg.reply_to_message) {
+          await bot.sendMessage(chat_id, 'Ответьте на сообщение, которое вы хотите переслать.');
+          return;
+        }
+  
+        const messageId = msg.reply_to_message.message_id;
+
+        await BroadcastService.forwardMessageToAllUsers(chat_id, messageId);
+        await bot.sendMessage(chat_id, 'Сообщение успешно переслано всем пользователям.');
+      } catch (error) {
+        console.error('Error forwarding message by admin: ', error);
+        await bot.sendMessage(chat_id, 'Произошла ошибка при пересылке сообщения.');
+      }
     }
 
     if (action.startsWith('clean_db')) {
