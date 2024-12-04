@@ -102,7 +102,7 @@ export class ReportService {
           let percentBuys = percent_buys?.[nm] ?? null;
           let spp = report[nm]?.price_before_spp ?? null;
           let vendor = report[nm]?.vendor ?? null;
-          let salesObj = sales[nm]
+          let salesObj = sales?.[nm] ?? {}
 
           let newInfoSku: Partial<SKU> = {
             order_info: info,
@@ -128,7 +128,7 @@ export class ReportService {
           await articles_db.updateFields(id, +nm, newInfoSku);
         }
 
-        console.log(`Report details for articles with chat ID ${id}`);
+        console.log(`Report data completed for articles with chat ID ${id}`);
       }
 
     } catch (e) {
