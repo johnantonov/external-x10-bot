@@ -17,7 +17,9 @@ dotenv.config();
 
 const helpInfo = `
 /admin__send_all_message_{text msg} - отправка сообщения всем пользователям, можно прикрепить фото или видео
-/admin__forward_message - команда пересылки сообщения, нужно ответить на пересылаемое сообщение
+/admin__send_filter_message_{text msg} - отправка сообщения отфильтрованным пользователям, можно прикрепить фото или видео
+/admin__forward_message - команда пересылки сообщения всем, нужно ответить на пересылаемое сообщение
+/admin__forward_filter_message - команда пересылки сообщения отфильтрованным, нужно ответить на пересылаемое сообщение
 /admin__run_report_service - запуск репорт сервиса на прошедший час
 /admin__check_state - проверить текущий юзер статус в редисе
 /admin__clear_state - очистить текущий юзер статус в редисе
@@ -84,6 +86,27 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       }
     }
 
+    if (action.startsWith('send_filter_message')) {
+      const message = action.split('send_filter_message_')[1];
+      
+      if (!message) {
+        await bot.sendMessage(chat_id, 'Сообщение не может быть пустым.');
+        return;
+      }
+      try {
+        if (mediaGroup) {
+          await BroadcastService.sendMediaGroupToFilteredUsers(mediaGroup, message);
+        } else {
+          await BroadcastService.sendMessageToFilteredUsers(message);
+        }
+  
+        await bot.sendMessage(chat_id, 'Сообщение успешно отправлено всем пользователям.');
+      } catch (error) {
+        console.error('Error sending message to all users: ', error);
+        await bot.sendMessage(chat_id, 'Произошла ошибка при отправке сообщения.');
+      }
+    }
+
     // if (action.startsWith('create_poll')) {
     //   await BroadcastService.sendPollToAllUsers('Опрос на тему...', ['123', '234'])
     // }
@@ -107,6 +130,25 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
         const messageId = msg.reply_to_message.message_id;
 
         await BroadcastService.forwardMessageToAllUsers(chat_id, messageId);
+        await bot.sendMessage(chat_id, 'Сообщение успешно переслано всем пользователям.');
+      } catch (error) {
+        console.error('Error forwarding message by admin: ', error);
+        await bot.sendMessage(chat_id, 'Произошла ошибка при пересылке сообщения.');
+      }
+    }
+
+    if (action === 'forward_filter_message') {
+      try {
+        console.log('admin started preparing report serivce')
+  
+        if (!msg.reply_to_message) {
+          await bot.sendMessage(chat_id, 'Ответьте на сообщение, которое вы хотите переслать.');
+          return;
+        }
+  
+        const messageId = msg.reply_to_message.message_id;
+
+        await BroadcastService.forwardMessageToFilteredUsers(chat_id, messageId);
         await bot.sendMessage(chat_id, 'Сообщение успешно переслано всем пользователям.');
       } catch (error) {
         console.error('Error forwarding message by admin: ', error);

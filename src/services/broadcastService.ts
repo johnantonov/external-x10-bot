@@ -19,11 +19,15 @@ export class BroadcastService {
     }
   }
 
-  static async sendMessageToFilteredUsers(filter: string, text: string, options?: object) {
+  static async sendMessageToFilteredUsers(text: string, options?: object, filter?: string) {
     try {
-      const users = ((await pool.query(`SELECT chat_id FROM ${users_db.tableName} WHERE ${filter}`)).rows);
+      const query = filter
+        ? `SELECT user_id FROM messageJobs WHERE filter = $1`
+        : `SELECT user_id FROM messageJobs`;
+      const users = (await pool.query(query, filter ? [filter] : [])).rows;
+      
       for (const user of users) {
-        await bot.sendMessage(user.chat_id, text, { ...options, disable_notification: true });
+        await bot.sendMessage(user.user_id, text, { ...options, disable_notification: true });
       }
     } catch (error) {
       console.error('Error sending message to filtered users: ', error);
@@ -54,6 +58,36 @@ export class BroadcastService {
       }
     } catch (error) {
       console.error('Error sending mediagroup: ', error);
+    }
+  }
+
+  static async sendMediaGroupToFilteredUsers(mediaGroup: any[], caption: string, filter?: string) {
+    try {
+      const query = filter
+        ? `SELECT user_id FROM messageJobs WHERE filter = $1`
+        : `SELECT user_id FROM messageJobs`;
+      const users = (await pool.query(query, filter ? [filter] : [])).rows;
+  
+      if (!users || users.length === 0) {
+        return console.log('No users for message');
+      }
+  
+      const updatedMediaGroup = mediaGroup.map((file, index) => {
+        if (index === 0) {
+          return { ...file, caption };
+        }
+        return file;
+      });
+  
+      for (const user of users) {
+        try {
+          await bot.sendMediaGroup(user.user_id, updatedMediaGroup);
+        } catch (error) {
+          console.error(`Error sending media group to ${user.user_id}:`, error);
+        }
+      }
+    } catch (error) {
+      console.error('Error sending media group: ', error);
     }
   }
 
@@ -116,11 +150,15 @@ export class BroadcastService {
     }
   }
 
-  static async forwardMessageToFilteredUsers(chatId: number, messageId: number, filter: string) {
+  static async forwardMessageToFilteredUsers(chatId: number, messageId: number, filter?: string) {
     try {
-      const users = (await pool.query(`SELECT chat_id FROM ${users_db.tableName} WHERE ${filter}`)).rows;
+      const query = filter
+        ? `SELECT user_id FROM messageJobs WHERE filter = $1`
+        : `SELECT user_id FROM messageJobs`;
+      const users = (await pool.query(query, filter ? [filter] : [])).rows;
+  
       for (const user of users) {
-        await bot.forwardMessage(user.chat_id, chatId, messageId);
+        await bot.forwardMessage(user.user_id, chatId, messageId);
       }
     } catch (error) {
       console.error('Error forwarding message to filtered users: ', error);

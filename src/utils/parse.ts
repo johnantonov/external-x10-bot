@@ -76,9 +76,10 @@ export const newArticleData = (data: SKUCallbackData): string => {
   return data.art + "?" + data.action
 }
 
-export function getWbArticlePhoto(article: article) {
+export function getWbArticlePhoto(article: number): string {
   let s_id = Math.floor(+article / 100000);
-  let basket;
+  let basket: string;
+
   if (s_id <= 143) {
     basket = "01";
   } else if (s_id <= 287) {
@@ -109,11 +110,16 @@ export function getWbArticlePhoto(article: article) {
     basket = "14";
   } else if (s_id <= 2405) {
     basket = "15";
+  } else if (s_id <= 2621) {
+    basket = "16"; 
+  } else if (s_id <= 2837) {
+    basket = "17"; 
   } else {
-    basket = "16"
+    basket = "18";
   }
 
-  let imageUrl = "https://basket-" + basket + ".wbbasket.ru/vol" + s_id + "/part" + Math.floor(+article / 1000) + "/" + article + "/images/big/1.webp";
-  // console.log('imageUrl', imageUrl)
+  let imageUrl = `https://basket-${basket}.wbbasket.ru/vol${s_id}/part${Math.floor(+article / 1000)}/${article}/images/big/1.webp`;
+  // console.log(imageUrl)
+  
   return imageUrl;
 }

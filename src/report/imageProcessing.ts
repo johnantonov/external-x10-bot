@@ -6,7 +6,7 @@ import { config } from "../config/config";
 
 export const fetchAndResizeImage = async (article: article): Promise<string | null> => {
   try {
-    const imgUrl = getWbArticlePhoto(article);
+    const imgUrl = getWbArticlePhoto(article as number);
     const response = await axios.get(imgUrl, { responseType: "arraybuffer" });
     const imgBuffer = Buffer.from(response.data, "binary");
 
