@@ -546,21 +546,23 @@ export class ReportService {
     }
   }
 
-  async runForUser(chat_id: number, loadingMsgId: number): Promise<void> {
+  async runForUser(chat_id: number, loadingMsgId: number, target_chat_id?: number): Promise<void> {
     try {
       await this.prepareReportData(chat_id)
       let articles;
       const yesterdayDate = getYesterdayDate('ru');
+      const targetChat = target_chat_id || chat_id;
 
       articles = (await articles_db.getAllSkuForUser(chat_id)).rows
+
       if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
-          await this.processReport(articles, yesterdayDate, chat_id)
-          await this.deleteMessage(chat_id, loadingMsgId)
+          await this.processReport(articles, yesterdayDate, targetChat) 
+          await this.deleteMessage(targetChat, loadingMsgId) 
         } 
       } else {
-        this.sendMessage(chat_id, "Возникла ошибка при получении данных о товарах")
-        await this.deleteMessage(chat_id, loadingMsgId)
+        this.sendMessage(targetChat, "Возникла ошибка при получении данных о товарах")
+        await this.deleteMessage(targetChat, loadingMsgId)
       }
     } catch (error) {
       console.error('Error running report for user: ', error);
@@ -577,7 +579,7 @@ export class ReportService {
       timezone: 'Europe/Moscow'
     });
 
-    cron.schedule('0 0 * * *', async () => {
+    cron.schedule('0 1 * * *', async () => {
       console.log('Running data preparing at 00:00:', new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }));
       await updateConversions();
       await updateCommissions();
@@ -601,6 +603,16 @@ app.post("/generate-report", async (req, res) => {
   const { chat_id, loadingMsgId } = req.body; 
   try {
     const reportData = await reportService.runForUser(chat_id, loadingMsgId); 
+    res.status(200).json({ success: true, data: reportData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error run report service for user' });
+  }
+});
+
+app.post("/admin_generate-report", async (req, res) => {
+  const { admin_chat_id, chat_id, loadingMsgId } = req.body; 
+  try {
+    const reportData = await reportService.runForUser(chat_id, loadingMsgId, admin_chat_id); 
     res.status(200).json({ success: true, data: reportData });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error run report service for user' });

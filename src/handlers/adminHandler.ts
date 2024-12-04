@@ -10,7 +10,7 @@ import { updateCommissions } from "../utils/comissions";
 import { articles_db } from "../../database/models/articles";
 import { updateBoxTariffs } from "../utils/boxTariffs";
 import { RediceService } from "../bot";
-import { requestPrepareReports, requestRunReportService } from "../utils/requestReport";
+import { adminRequestReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
 import { BroadcastService } from "../services/broadcastService";
 
 dotenv.config();
@@ -63,6 +63,18 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
     if (action === 'run_report_service') {
       console.log('admin started report serivce')
       requestRunReportService();
+    }
+
+    if (action.startsWith('get_report_for')) {
+      const user_chat_id = action.split('get_report_for_')[1];
+
+      if (!chat_id) {
+        await bot.sendMessage(chat_id, 'Ошибка разбора ID');
+        return;
+      }
+
+      const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
+      adminRequestReport(chat_id, user_chat_id, res.message_id)
     }
 
     if (action.startsWith('send_all_message')) {

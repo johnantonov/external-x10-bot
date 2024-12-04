@@ -33,3 +33,17 @@ export async function requestRunReportService() {
     return null
   }
 }
+export async function adminRequestReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number) {
+  try {
+    const response = await axios.post(`http://external-x10Bot-report:${process.env.BASE_PORT}/admin_generate-report`, { 
+      admin_chat_id: admin_chat_id,
+      chat_id: chat_id,
+      loadingMsgId: loadingMsgId
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Error сalling ReportService:", error);
+    return null
+  }
+}
