@@ -20,22 +20,28 @@ const helpInfo = `
 /admin__send_filter_message_{text msg} - отправка сообщения отфильтрованным пользователям, можно прикрепить фото или видео
 /admin__forward_message - команда пересылки сообщения всем, нужно ответить на пересылаемое сообщение
 /admin__forward_filter_message - команда пересылки сообщения отфильтрованным, нужно ответить на пересылаемое сообщение
+
 /admin__run_report_service - запуск репорт сервиса на прошедший час
+/admin__prepare_report_service - запуск подготовки данных для отчета
+/admin__get_report_for_{id} - получить отчет поользователя
+
+/admin__my_id - получить свой tg id
 /admin__check_state - проверить текущий юзер статус в редисе
 /admin__clear_state - очистить текущий юзер статус в редисе
-/admin__prepare_report_service - запуск подготовки данных для отчета
-/admin__clean_db_{tableName} - очистить таблицу в базе данных
-/admin__delete_user_{id} - удалить пользователя из таблицы users
-/admin__my_id - получить свой tg id
-/admin__get_article_{id}_{article} - получить свой tg id
-/admin__help - команды
+/admin__get_article_{id}_{article} - получить данные по артикулу
+
 /admin__send_all_data - отправить всю базу данных в Google Sheets
 /admin__get_mp_conversions - обновить базу конверсий
 /admin__get_mp_commissions - обновить базу комиссий
 /admin__get_mp_tariffs - обновить базу тарифов коробов
 /admin__db_migrate_{N} - запуск N-миграции БД
+/admin__clean_db_{tableName} - очистить таблицу в базе данных
+/admin__delete_user_{id} - удалить пользователя из таблицы users
+
 /admin__clear_last_report_time_{id} - очистка времени последнего отчета
 /admin__clear_last_report_time_all - очистка времени последнего отчета у всех
+
+/admin__help - команды
 `
 
 export async function handleAdminCommand(chat_id: number, msg: Message, bot: TelegramBot, mediaGroup?: any) {
