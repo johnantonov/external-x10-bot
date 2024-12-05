@@ -572,14 +572,14 @@ export class ReportService {
   // Schedule the report service to run every hour from 4 AM to 11 PM
   // at 00 start to getting adv info
   startCronJob() {
-    cron.schedule('0 4-23 * * *', async () => {
+    cron.schedule('0 5-23 * * *', async () => {
       console.log('Running report service at:', new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }));
       await this.run();
     }, {
       timezone: 'Europe/Moscow'
     });
 
-    cron.schedule('0 1 * * *', async () => {
+    cron.schedule('0 3 * * *', async () => {
       console.log('Running data preparing at 00:00:', new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }));
       await updateConversions();
       await updateCommissions();

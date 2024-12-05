@@ -144,6 +144,7 @@ export function getCosts(data: Partial<SKU>, sku: SKU, date: DateKey): number {
 
 export function calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku: SKU, marketing: MarketingObject): ObjectOther {
   let res: ObjectOther = {}
+  console.log(JSON.stringify(data))
 
   dates.forEach(date => {
     if (data.order_info?.[date]) {
@@ -155,12 +156,6 @@ export function calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku:
       const revWithoutDrr = buysSum - otherCosts
       const revWithDrr = revWithoutDrr - marketingCost
       const krrr = revWithDrr / revWithoutDrr * 100
-
-      // console.log(date)
-      // console.log('ordersSum: ',ordersSum)
-      // console.log('buysSum: ',buysSum)
-      // console.log('marketingCost: ',marketingCost)
-      // console.log('otherCosts: ',otherCosts)
 
       res[date] = {
         revWithoutDrr: revWithoutDrr,
