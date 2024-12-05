@@ -95,14 +95,14 @@ export class ReportService {
             await articles_db.processMarketingCost(id, +nm, advRes[nm]);
           }
 
-          let sizes = size[nm] || {};
+          let sizes = size?.[nm] || {};
           let logistics: number = logisticsObj[nm]?.logistics || 0;
           let storage: number = logisticsObj[nm]?.storage || 0;
           let info = report[nm]?.order_info || {};
           let percentBuys = percent_buys?.[nm] ?? null;
           let spp = report[nm]?.price_before_spp ?? null;
           let vendor = report[nm]?.vendor ?? null;
-          let salesObj = sales?.[nm] ?? {}
+          let salesObj = sales?.[nm] ?? {};
 
           let newInfoSku: Partial<SKU> = {
             order_info: info,
@@ -119,7 +119,7 @@ export class ReportService {
           let other_metricks: ObjectOther = {}
 
           if (currentSku) {
-            other_metricks = calculateOtherMetrics(dates, newInfoSku, currentSku, advRes[nm])
+            other_metricks = calculateOtherMetrics(dates, newInfoSku, currentSku, advRes?.[nm] ?? null)
           } else {
             console.error('Could not find SKU while calculating metrics: ', currentSku, " ", id)
           }
