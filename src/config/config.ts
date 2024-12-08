@@ -6,7 +6,7 @@ export const config = {
   turnover: 30,
   returnLogistics: 50,
 
-  maxSku: 100,
+  maxSku: 5,
   reportStopTime: 0,
 
   pdf: {
