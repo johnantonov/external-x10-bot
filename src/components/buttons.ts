@@ -93,7 +93,7 @@ export const mainButtons = {
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
   testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
-  stockReport: { text: '⚡️ Экспресс-отчет', callback_data: CallbackData.stockReport },
+  stockReport: { text: '📦 Отчёт по остаткам', callback_data: CallbackData.stockReport },
   feedback: { text: '🛎 Обратная связь', url: CallbackData.feedback },
 };
 
