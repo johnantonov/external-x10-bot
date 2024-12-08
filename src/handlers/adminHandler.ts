@@ -84,8 +84,8 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       adminRequestReport(chat_id, user_chat_id, res.message_id)
     }
 
-    if (action.startsWith('admin__get_express_report_for')) {
-      const user_chat_id = action.split('admin__get_express_report_for_')[1];
+    if (action.startsWith('get_express_report_for')) {
+      const user_chat_id = action.split('get_express_report_for_')[1];
 
       if (!chat_id) {
         await bot.sendMessage(chat_id, 'Ошибка разбора ID');
