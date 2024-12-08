@@ -10,7 +10,7 @@ import { updateCommissions } from "../utils/comissions";
 import { articles_db } from "../../database/models/articles";
 import { updateBoxTariffs } from "../utils/boxTariffs";
 import { RediceService } from "../bot";
-import { adminRequestReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
+import { adminRequestReport, adminRequestStockReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
 import { BroadcastService } from "../services/broadcastService";
 
 dotenv.config();
@@ -23,7 +23,8 @@ const helpInfo = `
 
 /admin__run_report_service - запуск репорт сервиса на прошедший час
 /admin__prepare_report_service - запуск подготовки данных для отчета
-/admin__get_report_for_{id} - получить отчет поользователя
+/admin__get_report_for_{id} - получить отчет пользователя
+/admin__get_express_report_for_{id} - получить краткий отчет пользователя на сейчас
 
 /admin__my_id - получить свой tg id
 /admin__check_state - проверить текущий юзер статус в редисе
@@ -81,6 +82,18 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
 
       const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
       adminRequestReport(chat_id, user_chat_id, res.message_id)
+    }
+
+    if (action.startsWith('admin__get_express_report_for')) {
+      const user_chat_id = action.split('admin__get_express_report_for_')[1];
+
+      if (!chat_id) {
+        await bot.sendMessage(chat_id, 'Ошибка разбора ID');
+        return;
+      }
+
+      const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
+      adminRequestStockReport(chat_id, user_chat_id, res.message_id)
     }
 
     if (action.startsWith('send_all_message')) {

@@ -1,6 +1,7 @@
 import { SKU, TextReportData } from "../dto/sku&report";
+import { calculateRevByOne } from "../utils/dataProcessing";
 import { formatNumber, NumberOrZero } from "../utils/string&number";
-import { getYesterdayDate } from "../utils/time";
+import { getTodayDate, getYesterdayDate } from "../utils/time";
 
 export function createReportMessage(articles: SKU[], formatReportDate: string) {
   let message = ``;
@@ -56,5 +57,35 @@ function initReportData(): TextReportData {
     margins: [],
     marginsWithDrr: [],
     krrrTotalArray: [],
+  }
+}
+
+export function createStockReportText(data: SKU[]) {
+  const total = initTotalStockReportData();
+  const today = getTodayDate() as `${number}-${number}-${number}`;
+
+  let message = '<b>Итого:</b>\n';
+  let articlesTexts = ''
+
+  data.forEach(sku => {
+    const stockCount = sku.order_info?.stock
+    const stockSum = stockCount * sku.self_cost; 
+    const rev = calculateRevByOne(sku) * stockCount
+
+    total.stockSum += stockSum; 
+    total.stockCount += stockCount; 
+    total.rev += rev; 
+
+    articlesTexts += `\n\n<b>${sku.article}\n${sku.vendor_code}</b>\nОстатки: ${stockCount} шт, ${formatNumber(stockSum)}₽\nПотенц. Прибыль: ${formatNumber(rev)}₽`;
+  })
+
+  return message + `Остатки: ${total.stockCount} шт, ${formatNumber(total.stockSum)}₽\nПотенц. Прибыль: ${formatNumber(total.rev)}₽` + articlesTexts
+}
+
+function initTotalStockReportData() {
+  return {
+    stockCount: 0,
+    stockSum: 0,
+    rev: 0,
   }
 }

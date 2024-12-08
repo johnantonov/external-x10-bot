@@ -13,13 +13,14 @@ class UsersModel extends BaseModel<User> {
     this.tableName = 'users'; 
   }
 
-  async processUserRequest(chat_id: number, newUsername: string | undefined): Promise<[user_type | null, number | null]> {
+  async processUserRequest(chat_id: number, newUsername: string | undefined)
+  : Promise<[user_type | null, User['last_report_call'] | null,  User['last_sec_report_call'] | null]> {
     try {
       const userResult = await this.select({ chat_id });
 
       if (userResult.rows.length === 0) {
         console.error(`User with chat_id ${chat_id} not found`);
-        return [null, null];
+        return [null, null, null];
       }
 
       const user = userResult.rows[0];
@@ -34,10 +35,10 @@ class UsersModel extends BaseModel<User> {
         await this.pool.query(query, [newUsername, chat_id]);
       }
 
-      return [user.type, user.last_report_call];
+      return [user.type, user.last_report_call, user.last_sec_report_call];
     } catch (error) {
       console.error(`Error while updating username: ${error}`);
-      return [null, null];
+      return [null, null, null];
     }
   }
 
@@ -53,10 +54,14 @@ class UsersModel extends BaseModel<User> {
     }
   }
 
-  async updateLastReportCall(chat_id: number) {
+  async updateLastReportCall(chat_id: number, reportType: 'last_report_call' | 'last_sec_report_call' = 'last_report_call') {
     try {
       const now = new Date();
-      await pool.query('UPDATE users SET last_report_call = $1 WHERE chat_id = $2', [now, chat_id]);
+      if (reportType === 'last_sec_report_call') {
+        await pool.query('UPDATE users SET last_report_call = $1 WHERE chat_id = $2', [now, chat_id]);
+      } else {
+        await pool.query('UPDATE users SET last_sec_report_call = $1 WHERE chat_id = $2', [now, chat_id]);
+      }
     } catch (e) {
       console.error(`Error updating report time for user: ${chat_id ? chat_id : 'all'} -- `, e)
     }

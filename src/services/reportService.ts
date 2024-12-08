@@ -18,7 +18,7 @@ import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 import { generateReportHtml } from '../report/reportGenerator';
-import { createReportMessage } from '../report/textReport';
+import { createReportMessage, createStockReportText } from '../report/textReport';
 import { User } from '../dto/user';
 import { config } from '../config/config';
 import express from "express";
@@ -312,13 +312,17 @@ export class ReportService {
           if (!result[el.nmID].order_info) result[el.nmID].order_info = {};
 
           const conversData = el.statistics.selectedPeriod.conversions;
+          const stockData = el.stocks;
           const ordersCount = el.statistics.selectedPeriod.ordersCount;
+          const ordersSum = el.statistics.selectedPeriod.ordersSumRub;
           const categoryName = el.object.name;
 
           const conversions = await conversions_db.getConversion(categoryName)
           const commission = await commissions_db.getCommission(categoryName)
 
           result[el.nmID].order_info.addToCartPercent = conversData.addToCartPercent;
+          result[el.nmID].order_info.stock = stockData.stocksMp + stockData.stocksWb;
+          result[el.nmID].order_info.pricePerOne = ordersSum / ordersCount;
           result[el.nmID].order_info.cartToOrderPercent = conversData.cartToOrderPercent;
           result[el.nmID].order_info.buyoutsPercent = conversData.buyoutsPercent;
           result[el.nmID].order_info.ordersCount30 = ordersCount;
@@ -521,6 +525,13 @@ export class ReportService {
     }
   }
 
+  async processStockReport(articles: SKU[], chat_id: number) {
+    const messageText = createStockReportText(articles)
+    if (messageText) {
+      await this.sendMessage(chat_id, messageText)
+    }
+  }
+
   async run(): Promise<void | null> {
     try {
       const currentHour = new Date().getHours() + 3;
@@ -558,6 +569,28 @@ export class ReportService {
       if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
           await this.processReport(articles, yesterdayDate, targetChat) 
+          await this.deleteMessage(targetChat, loadingMsgId) 
+        } 
+      } else {
+        this.sendMessage(targetChat, "Возникла ошибка при получении данных о товарах")
+        await this.deleteMessage(targetChat, loadingMsgId)
+      }
+    } catch (error) {
+      console.error('Error running report for user: ', error);
+    }
+  }
+
+  async runStockReportForUser(chat_id: number, loadingMsgId: number, target_chat_id?: number): Promise<void> {
+    try {
+      await this.prepareReportData(chat_id)
+      let articles;
+      const targetChat = target_chat_id || chat_id;
+
+      articles = (await articles_db.getAllSkuForUser(chat_id)).rows
+
+      if (articles.length > 0) {
+        if (articles[0] && articles[0].wb_api_key) {
+          await this.processStockReport(articles, targetChat) 
           await this.deleteMessage(targetChat, loadingMsgId) 
         } 
       } else {
@@ -609,10 +642,30 @@ app.post("/generate-report", async (req, res) => {
   }
 });
 
-app.post("/admin_generate-report", async (req, res) => {
+app.post("/admin-generate-report", async (req, res) => {
   const { admin_chat_id, chat_id, loadingMsgId } = req.body; 
   try {
     const reportData = await reportService.runForUser(chat_id, loadingMsgId, admin_chat_id); 
+    res.status(200).json({ success: true, data: reportData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error run report service for user' });
+  }
+});
+
+app.post("/generate-stock-report", async (req, res) => {
+  const { chat_id, loadingMsgId } = req.body; 
+  try {
+    const reportData = await reportService.runStockReportForUser(chat_id, loadingMsgId); 
+    res.status(200).json({ success: true, data: reportData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error run report service for user' });
+  }
+});
+
+app.post("/admin-generate-stock-report", async (req, res) => {
+  const { admin_chat_id, chat_id, loadingMsgId } = req.body; 
+  try {
+    const reportData = await reportService.runStockReportForUser(chat_id, loadingMsgId, admin_chat_id); 
     res.status(200).json({ success: true, data: reportData });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error run report service for user' });

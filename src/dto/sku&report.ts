@@ -59,6 +59,8 @@ export type Metrics = {
   commission: number;
   cart_to_order: number;
   click_to_cart: number;
+  stock: number;
+  pricePerOne: number;
   ordersCount30: number;
   buyoutsPercent: number;
   fullConversion: string;

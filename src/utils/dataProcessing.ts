@@ -173,3 +173,26 @@ export function calculateOtherMetrics(dates: DateKey[], data: Partial<SKU>, sku:
 
   return res as ObjectOther
 }
+
+export function calculateRevByOne(sku: SKU): number {
+  try {
+    const tax = sku?.tax;
+    const acquiring = config.acquiring || 0.015;
+    const commission = parsePercent(sku.order_info?.commission);
+    const buysSum = sku.order_info.pricePerOne
+  
+    const selfCost = NumberOrZero(sku?.self_cost);
+    const taxCost = buysSum * tax;
+    const acquiringCost = buysSum * acquiring;
+    const commissionCost = buysSum * commission;
+    const storageCost = NumberOrZero(sku?.storage) * config.turnover;
+
+    const logisticsBase = (config.returnLogistics / (NumberOrZero(sku?.percent_buys) / 100) - config.returnLogistics) + (NumberOrZero(sku?.logistics) / (NumberOrZero(sku?.percent_buys) / 100))
+    const logisticsCost = Math.ceil(logisticsBase)
+  
+    return buysSum - (selfCost + taxCost + acquiringCost + commissionCost + storageCost + logisticsCost)
+  } catch (e) {
+    console.error('error calculating rev by one, id: ' + sku.chat_id, ", sku: " + sku.article)
+    return 0
+  }
+}

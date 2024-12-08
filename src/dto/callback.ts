@@ -18,4 +18,5 @@ export type CallbackAction =
   "selfcost" |
   "test report" |
   "fb" |
+  "stock report" | 
   null;

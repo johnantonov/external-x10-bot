@@ -111,7 +111,7 @@ export function getReportFormatDay(day: string) {
 /**
  * проверяет доступен ли пользователю отчет
  */
-export function isReportAvailable(lastTime: User['last_report_call']) {
+export function isReportAvailable(lastTime: User['last_report_call'] | User['last_sec_report_call']) {
   if (!lastTime) {
     return true
   }

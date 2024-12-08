@@ -65,6 +65,7 @@ export const CallbackData = {
   goArticle: 'ar?',
   deleteArticle: 'da?',
   testReport: 'tr?',
+  stockReport: 'sr?',
   feedback: 'https://t.me/+ZVISmofZZ_wwN2Ey',
 
   faq: 'faq',
@@ -92,6 +93,7 @@ export const mainButtons = {
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
   testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
+  stockReport: { text: '⚡️ Экспресс-отчет', callback_data: CallbackData.stockReport },
   feedback: { text: '🛎 Обратная связь', url: CallbackData.feedback },
 };
 
@@ -138,6 +140,7 @@ export const mainOptions = (type?: user_type) => {
 
   const menu: Array<Array<any>> = [
     [mainButtons.getAllReportNow],
+    [mainButtons.stockReport],
     [mainButtons.articlesMenu],
     [mainButtons.changeTime],
     [mainButtons.info],

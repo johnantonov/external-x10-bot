@@ -16,7 +16,7 @@ import { images } from "../dto/images";
 import { btn } from "../utils/buttons";
 import { getFaqData } from "../utils/faq";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
-import { requestReport } from "../utils/requestReport";
+import { requestReport, requestStockReport } from "../utils/requestReport";
 
 dotenv.config();
 
@@ -40,7 +40,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   }
 
   const { chat_id, userCallbackData, message_id, username } = userCallback;
-  const [type, last_report_call] = await users_db.processUserRequest(chat_id, username)
+  const [type, last_report_call, last_sec_report_call] = await users_db.processUserRequest(chat_id, username)
   const returnBtn = returnMenu(true);
   const mainBtn = mainOptions(type ?? 'new')
   const action = new CallbackProcessor(userCallbackData, type).getAction();
@@ -225,6 +225,26 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       } catch(e) {
         editData = createEditData(texts.errorAddLater, returnBtn);
         console.error("Error processing new selfcost: ", e)
+      }
+      break;
+
+    case 'stock report': 
+      const accessStockReport = isReportAvailable(last_sec_report_call);
+      if (accessStockReport) {
+        await users_db.updateLastReportCall(chat_id, 'last_sec_report_call');
+        MS.deleteAllMessages(chat_id);
+        const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports, { disable_notification: true });
+    
+        try {
+          requestStockReport(chat_id, loadingMsg.message_id); 
+
+        } catch (error) {
+          console.error("Failed to generate report:", error);
+        }
+    
+        // await MS.deleteMessage(chat_id, loadingMsg.message_id);
+      } else {
+        if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
       }
       break;
 
