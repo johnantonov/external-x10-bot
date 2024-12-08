@@ -19,7 +19,7 @@ export const config = {
     title: `<a href="https://t.me/tenXsupport_bot"><span>10X</span><br><span>SYSTEM</span></a>`,
     titleFz: 44,
     footerText: `Отчёт подготовлен ботом <a href="https://t.me/tenX_otchet_bot">@tenX_otchet_bot</a> от команды 10X.<br><br>Получите подробный отчет по всем SKU вашего кабинета.<br><span class="arrow">⬇️</span><br><b>Бесплатный доступ на 3 дня:</b> <a href="https://t.me/tenXsupport_bot">@tenXsupport_bot</a>`,
-    testReportText: `<b>10X Отчет 01.12.2024</b>\n\nЗаказы: 811 214₽, 633шт\nВыкупы: 552 353₽, 432шт\nРеклама: 23 321₽\nДРР: 2.80%\nМаржа до ДРР: 27.09%\nМаржа с ДРР: 23.73%\nКРРР: 68.62%\n<b>Прибыль с ДРР: 206 420₽</b>`,
+    testReportText: `<b>10X Отчет 07.12.2024</b>\n\nЗаказы: 195 799₽, 164шт\nВыкупы: 147 716₽, 125шт\nРеклама: 9 392₽\nДРР: 5.76%\nМаржа до ДРР: 22.01%\nМаржа с ДРР: 15.29%\nКРРР: 66.89%\n<b>Прибыль с ДРР: 31 121₽</b>`,
 
     ff: `Arial, sans-serif`,
     baseFz: 28,
