@@ -65,22 +65,22 @@ export class ReportService {
         if (!wb_api_key) {
           console.log(`No recent campaigns found for article with chat ID: ${id}`);
           continue;
-        }
+        };
 
-        const advertIds = await this.getCampaigns(wb_api_key, id)
-        const nms = articles.map(a => +a.article)
+        const advertIds = await this.getCampaigns(wb_api_key, id);
+        const nms = articles.map(a => +a.article);
 
-        console.log(`articles for ${id}: ${JSON.stringify(nms)}`)
+        console.log(`articles for ${id}: ${JSON.stringify(nms)}`);
 
         let advertDetailsResponse;
         if (advertIds) {
-          advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds)
-        }
+          advertDetailsResponse = await this.getAdvertDetails(wb_api_key, advertIds);
+        };
 
         let advRes: any;
         if (advertDetailsResponse) {
-          advRes = processCampaigns(advertDetailsResponse, nms, advertIds)
-        }
+          advRes = processCampaigns(advertDetailsResponse, nms, advertIds);
+        };
 
         const dates = Object.keys(create31DaysObject()) as DateKey[]
 
@@ -93,7 +93,7 @@ export class ReportService {
         for (const nm of nms) {
           if (advRes && advRes.hasOwnProperty(nm)) {
             await articles_db.processMarketingCost(id, +nm, advRes[nm]);
-          }
+          };
 
           let sizes = size?.[nm] || {};
           let logistics: number = logisticsObj[nm]?.logistics || 0;
@@ -630,7 +630,7 @@ reportService.startCronJob();
 
 const app = express();
 app.use(express.json());
-const PORT = process.env.BASE_PORT || 3200;
+const PORT = process.env.BASE_PORT || 3300;
 
 app.post("/generate-report", async (req, res) => {
   const { chat_id, loadingMsgId } = req.body; 

@@ -2,7 +2,7 @@ services:
   external-x10Bot-redis:
     image: redis:latest
     ports:
-      - "6300:6379"
+      - "6400:6379"
     volumes:
       - x10-external-bot_redis_data:/data
     restart: always
@@ -19,7 +19,7 @@ services:
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
       - PGPORT=5432
-      - REPORT_SERVICE_HOST=http://external-x10Bot-report:3200/generate-report
+      - REPORT_SERVICE_HOST=http://external-x10Bot-report:3300/generate-report
     depends_on:
       - external-x10Bot-redis
       - external-x10Bot-postgres
@@ -34,7 +34,7 @@ services:
       - POSTGRES_PASSWORD=${PGPASS}
       - POSTGRES_DB=${PGNAME}
     ports:
-      - "5400:5432"
+      - "5500:5432"
     volumes:
       - x10-external-bot_postgres_data:/var/lib/postgresql/data
     restart: always
@@ -45,9 +45,9 @@ services:
       dockerfile: reportService.Dockerfile 
     image: x10-external-bot-report
     ports:
-      - "3200:3200"
+      - "3300:3300"
     environment:
-      - PORT=3200
+      - PORT=3300
     restart: always
 
 volumes:
