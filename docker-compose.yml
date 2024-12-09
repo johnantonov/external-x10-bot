@@ -1,6 +1,7 @@
 services:
   prod-x10-redis:
     image: redis:latest
+    container_name: prod-x10-redis
     ports:
       - "6400:6379"
     volumes:
@@ -10,6 +11,7 @@ services:
   prod-x10-app:
     build: .
     image: prod-x10-app
+    container_name: prod-x10-app
     working_dir: /usr/src/app
     environment:
       - REDIS_HOST=prod-x10-redis
@@ -44,6 +46,7 @@ services:
       context: .
       dockerfile: reportService.Dockerfile 
     image: prod-x10-reporter
+    container_name: prod-x10-reporter
     ports:
       - "3300:3300"
     environment:
