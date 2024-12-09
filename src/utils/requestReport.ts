@@ -4,7 +4,7 @@ dotenv.config();
 
 export async function requestReport(chat_id: string | number, loadingMsgId: number) {
   try {
-    const response = await axios.post(`http://external-x10Bot-report:${process.env.BASE_PORT}/generate-report`, { 
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-report`, { 
       chat_id: chat_id,
       loadingMsgId: loadingMsgId
     });
@@ -17,7 +17,7 @@ export async function requestReport(chat_id: string | number, loadingMsgId: numb
 }
 export async function requestStockReport(chat_id: string | number, loadingMsgId: number) {
   try {
-    const response = await axios.post(`http://external-x10Bot-report:${process.env.BASE_PORT}/generate-stock-report`, { 
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-stock-report`, { 
       chat_id: chat_id,
       loadingMsgId: loadingMsgId
     });
@@ -30,7 +30,7 @@ export async function requestStockReport(chat_id: string | number, loadingMsgId:
 }
 export async function adminRequestStockReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number) {
   try {
-    const response = await axios.post(`http://external-x10Bot-report:${process.env.BASE_PORT}/admin-generate-stock-report`, { 
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/admin-generate-stock-report`, { 
       admin_chat_id: admin_chat_id,
       chat_id: chat_id,
       loadingMsgId: loadingMsgId
@@ -44,7 +44,7 @@ export async function adminRequestStockReport(admin_chat_id: string | number, ch
 }
 export async function requestPrepareReports() {
   try {
-    const response = await axios.get(`http://external-x10Bot-report:${process.env.BASE_PORT}/prepare`);
+    const response = await axios.get(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/prepare`);
     return response.data;
   } catch (error) {
     console.error("Error сalling ReportService:", error);
@@ -53,7 +53,7 @@ export async function requestPrepareReports() {
 }
 export async function requestRunReportService() {
   try {
-    const response = await axios.get(`http://external-x10Bot-report:${process.env.BASE_PORT}/run`);
+    const response = await axios.get(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/run`);
     return response.data;
   } catch (error) {
     console.error("Error сalling ReportService:", error);
@@ -62,7 +62,7 @@ export async function requestRunReportService() {
 }
 export async function adminRequestReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number) {
   try {
-    const response = await axios.post(`http://external-x10Bot-report:${process.env.BASE_PORT}/admin-generate-report`, { 
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/admin-generate-report`, { 
       admin_chat_id: admin_chat_id,
       chat_id: chat_id,
       loadingMsgId: loadingMsgId
