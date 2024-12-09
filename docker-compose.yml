@@ -16,7 +16,7 @@ services:
     environment:
       - REDIS_HOST=prod-x10-redis
       - REDIS_PORT=6379
-      - PGHOST=prod-x10-postgres
+      - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
