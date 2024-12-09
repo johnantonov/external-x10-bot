@@ -21,7 +21,8 @@ services:
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
       - PGPORT=5432
-      - REPORT_SERVICE_HOST=http://prod-x10-reporter:3300/generate-report
+      - REPORT_SERVICE_HOST=${REPORT_SERVICE_HOST}
+      - BASE_PORT=${BASE_PORT}  
     depends_on:
       - prod-x10-redis
       - prod-x10-postgres
