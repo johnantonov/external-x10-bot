@@ -1,34 +1,34 @@
 services:
-  external-x10Bot-redis:
+  prod-x10-redis:
     image: redis:latest
     ports:
       - "6400:6379"
     volumes:
-      - x10-external-bot_redis_data:/data
+      - prod-x10_redis_data:/data
     restart: always
 
-  external-x10Bot-app:
+  prod-x10-app:
     build: .
-    image: x10-external-bot-app
+    image: prod-x10-app
     working_dir: /usr/src/app
     environment:
-      - REDIS_HOST=external-x10Bot-redis
+      - REDIS_HOST=prod-x10-redis
       - REDIS_PORT=6379
-      - PGHOST=external-x10Bot-postgres
+      - PGHOST=prod-x10-postgres
       - PGUSER=${PGUSER}
       - PGNAME=${PGNAME}
       - PGPASS=${PGPASS}
       - PGPORT=5432
-      - REPORT_SERVICE_HOST=http://external-x10Bot-report:3300/generate-report
+      - REPORT_SERVICE_HOST=http://prod-x10-reporter:3300/generate-report
     depends_on:
-      - external-x10Bot-redis
-      - external-x10Bot-postgres
-      - external-x10Bot-report
+      - prod-x10-redis
+      - prod-x10-postgres
+      - prod-x10-reporter
     restart: always
 
-  external-x10Bot-postgres:
+  prod-x10-postgres:
     image: postgres:15-alpine
-    container_name: external-x10Bot-postgres
+    container_name: prod-x10-postgres
     environment:
       - POSTGRES_USER=${PGUSER}
       - POSTGRES_PASSWORD=${PGPASS}
@@ -36,14 +36,14 @@ services:
     ports:
       - "5500:5432"
     volumes:
-      - x10-external-bot_postgres_data:/var/lib/postgresql/data
+      - prod-x10_postgres_data:/var/lib/postgresql/data
     restart: always
 
-  external-x10Bot-report:
+  prod-x10-reporter:
     build:
       context: .
       dockerfile: reportService.Dockerfile 
-    image: x10-external-bot-report
+    image: prod-x10-reporter
     ports:
       - "3300:3300"
     environment:
@@ -51,5 +51,5 @@ services:
     restart: always
 
 volumes:
-  x10-external-bot_redis_data:
-  x10-external-bot_postgres_data:
+  prod-x10_redis_data:
+  prod-x10_postgres_data:
