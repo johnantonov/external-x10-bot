@@ -11,7 +11,8 @@ export const migrations = [
             tax DECIMAL,
             notification_time NUMERIC,
             added_at TIMESTAMP DEFAULT NOW(),
-            last_report_call TIMESTAMP
+            last_report_call TIMESTAMP,
+            last_sec_report_call TIMESTAMP
         );`,
 
         `CREATE TABLE IF NOT EXISTS articles (
@@ -88,9 +89,7 @@ export const migrations = [
         `CREATE TABLE messageJobs (
             user_id BIGINT NOT NULL PRIMARY KEY, 
             filter VARCHAR(255)
-        );`,
-
-        `ALTER TABLE users ADD COLUMN last_sec_report_call TIMESTAMP`
+        );`
     ],
 
 ];
