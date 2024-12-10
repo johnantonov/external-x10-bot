@@ -138,11 +138,12 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       }
     }
 
-    // if (action.startsWith('create_poll')) {
-    //   await BroadcastService.sendPollToAllUsers('Опрос на тему...', ['123', '234'])
-    // }
-
-
+    if (action === ('get_stats')) {
+      await bot.sendMessage(chat_id, `
+        Всего пользователей: ${(await users_db.getAllUsers())?.length}
+        Пользователей с wb_api_key: ${(await users_db.getReportUsers())?.length}
+        `);
+    }
 
     if (action === 'prepare_report_service') {
       console.log('admin started preparing report serivce')

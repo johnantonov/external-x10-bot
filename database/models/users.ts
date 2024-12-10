@@ -164,9 +164,20 @@ class UsersModel extends BaseModel<User> {
     }
   }
 
-  async getReportUsers() {
+  async getAllUsers() {
     try {
       const query = `SELECT chat_id FROM ${this.tableName}`;
+  
+      const res = await this.pool.query(query);
+      return res.rows
+    } catch (e) {
+      console.error('Error getting users: ', e)
+    }
+  }
+
+  async getReportUsers() {
+    try {
+      const query = `SELECT chat_id FROM ${this.tableName} WHERE wb_api_key IS NOT NULL`;
   
       const res = await this.pool.query(query);
       return res.rows

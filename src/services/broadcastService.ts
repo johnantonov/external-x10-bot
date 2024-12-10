@@ -6,7 +6,7 @@ import { mainOptions } from "../components/buttons";
 export class BroadcastService {
   static async sendMessageToAllUsers(text: string, options?: object) {
     try {
-      const users = await users_db.getReportUsers();
+      const users = await users_db.getAllUsers();
 
       if (!users || users.length === 0) {
         return console.log('there are no users for message');
@@ -37,7 +37,7 @@ export class BroadcastService {
 
   static async sendMediaGroupToAllUsers(mediaGroup: any[], caption: string) {
     try {
-      const users = await users_db.getReportUsers();
+      const users = await users_db.getAllUsers();
 
       if (!users || users.length === 0) {
         return console.log('there are no users for message');
@@ -94,7 +94,7 @@ export class BroadcastService {
 
   static async sendPhotoToAllUsers(photo: string, caption?: string, options?: object) {
     try {
-      const users = await users_db.getReportUsers();
+      const users = await users_db.getAllUsers();
 
       if (!users) {
         return console.log('there are no users for photo');
@@ -110,7 +110,7 @@ export class BroadcastService {
 
   static async sendVideoToAllUsers(video: string, caption?: string, options?: object) {
     try {
-      const users = await users_db.getReportUsers();
+      const users = await users_db.getAllUsers();
 
       if (!users) {
         return console.log('there are no users for video');
@@ -126,7 +126,7 @@ export class BroadcastService {
 
   static async sendPollToAllUsers(question: string, options: string[], optionsObject?: object) {
     try {
-      const users = await users_db.getReportUsers();
+      const users = await users_db.getAllUsers();
 
       if (!users) {
         return console.log('there are no users for poll');
