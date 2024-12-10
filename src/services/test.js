@@ -100,10 +100,3 @@ async function test(nmIDs) {
 }
 
 test()
-
-// INSERT INTO users (chat_id, username, type)
-// SELECT
-//     user_id,
-//     CASE WHEN username = 'N' THEN NULL ELSE username END,
-//     'new'
-// FROM temp_users

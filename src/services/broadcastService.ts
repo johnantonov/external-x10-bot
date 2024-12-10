@@ -28,7 +28,7 @@ export class BroadcastService {
       }
 
       console.log('BroadcastService: successfully sent '+count+' messages, blocked: '+ blocked)
-      console.log('Blocked ids: '+JSON.stringify(blockedIds))
+      console.log('Blocked ids: '+blockedIds)
     } catch (error) {
       console.error('Error sending message to all users: ', error);
     }
