@@ -1,20 +1,24 @@
 services:
   prod-x10-redis:
     image: redis:latest
-    container_name: prod-x10-redis
+    container_name: ${REDIS_CONTAINER}
     ports:
-      - "6400:6379"
+      - "${REDISEXTERNALPORT}:6379"  
     volumes:
-      - prod-x10_redis_data:/data
+      - ${REDISVOL}:/data
+    environment:
+      - REDIS_CONTAINER=${REDIS_CONTAINER}
+      - REDISEXTERNALPORT=${REDISEXTERNALPORT} 
+      - REDISVOL=${REDISVOL}
     restart: always
 
   prod-x10-app:
     build: .
-    image: prod-x10-app
-    container_name: prod-x10-app
+    image: ${APP_CONTAINER}
+    container_name: ${APP_CONTAINER}
     working_dir: /usr/src/app
     environment:
-      - REDIS_HOST=prod-x10-redis
+      - REDIS_HOST=${REDIS_CONTAINER}
       - REDIS_PORT=6379
       - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
@@ -22,38 +26,54 @@ services:
       - PGPASS=${PGPASS}
       - PGPORT=5432
       - REPORT_SERVICE_HOST=${REPORT_SERVICE_HOST}
-      - BASE_PORT=${BASE_PORT}  
+      - BASE_PORT=${BASE_PORT}
+      - PGEXPORT=${PGEXTERNALPORT}
+      - PG_CONTAINER=${PG_CONTAINER}
+      - PORT=${BASE_PORT}
+      - RS=${REPORT_SERVICE_HOST}
+      - REDIS_CONTAINER=${REDIS_CONTAINER}
+      - APP_CONTAINER=${APP_CONTAINER}
+      - POSTGRESVOL=${POSTGRESVOL}
     depends_on:
-      - prod-x10-redis
-      - prod-x10-postgres
+      - prod-x10-redis   
+      - prod-x10-postgres 
       - prod-x10-reporter
+      #- prod-x10-redis  # для тестового бота
+      #- prod-x10-postgres # для тестового бота
+      #- prod-x10-reporter # для тестового бота
     restart: always
 
   prod-x10-postgres:
     image: postgres:15-alpine
-    container_name: prod-x10-postgres
+    container_name: ${PG_CONTAINER}
     environment:
       - POSTGRES_USER=${PGUSER}
       - POSTGRES_PASSWORD=${PGPASS}
       - POSTGRES_DB=${PGNAME}
+      - PGEXPORT=${PGEXTERNALPORT}
+      - PG_CONTAINER=${PG_CONTAINER}
+      - POSTGRESVOL=${POSTGRESVOL}
     ports:
-      - "5500:5432"
+      - "${PGEXTERNALPORT}:5432"  
     volumes:
-      - prod-x10_postgres_data:/var/lib/postgresql/data
+      - ${POSTGRESVOL}:/var/lib/postgresql/data
     restart: always
 
   prod-x10-reporter:
     build:
       context: .
       dockerfile: reportService.Dockerfile 
-    image: prod-x10-reporter
-    container_name: prod-x10-reporter
+    image: ${REPORT_SERVICE_HOST}
+    container_name: ${REPORT_SERVICE_HOST}
     ports:
-      - "3300:3300"
+      - "${BASE_PORT}:${BASE_PORT}"
     environment:
-      - PORT=3300
+      - PORT=${BASE_PORT}
+      - RS=${REPORT_SERVICE_HOST}
     restart: always
 
 volumes:
-  prod-x10_redis_data:
-  prod-x10_postgres_data:
+  prod-x10_redis_data: 
+  prod-x10_postgres_data: 
+  #prod-x10_redis_data: # для тестового бота
+  #prod-x10_postgres_data: # для тестового бота
