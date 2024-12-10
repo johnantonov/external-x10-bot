@@ -23,7 +23,7 @@ export class BroadcastService {
         } catch {
           blocked++
           blockedIds.push(user.chat_id)
-          console.error('BroadcastService: user '+ user?.chat_id + " blocked bot!")
+          // console.error('BroadcastService: user '+ user?.chat_id + " blocked bot!")
         }
       }
 
