@@ -1,6 +1,7 @@
 import pool from "../../database/db";
 import { users_db } from "../../database/models/users";
 import { bot } from "../bot";
+import { mainOptions } from "../components/buttons";
 
 export class BroadcastService {
   static async sendMessageToAllUsers(text: string, options?: object) {
@@ -25,9 +26,9 @@ export class BroadcastService {
         ? `SELECT user_id FROM messageJobs WHERE filter = $1`
         : `SELECT user_id FROM messageJobs`;
       const users = (await pool.query(query, filter ? [filter] : [])).rows;
-      
+
       for (const user of users) {
-        await bot.sendMessage(user.user_id, text, { ...options, disable_notification: true });
+        await bot.sendMessage(user.user_id, text, { reply_markup: mainOptions('new')!, disable_notification: true });
       }
     } catch (error) {
       console.error('Error sending message to filtered users: ', error);
