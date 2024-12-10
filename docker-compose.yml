@@ -1,5 +1,6 @@
 services:
-  prod-x10-redis:
+  # prod-x10-redis:
+  test-x10-redis:
     image: redis:latest
     container_name: ${REDIS_CONTAINER}
     ports:
@@ -12,7 +13,8 @@ services:
       - REDISVOL=${REDISVOL}
     restart: always
 
-  prod-x10-app:
+  # prod-x10-app:
+  test-x10-app:
     build: .
     image: ${APP_CONTAINER}
     container_name: ${APP_CONTAINER}
@@ -43,7 +45,8 @@ services:
       - test-x10-reporter # для тестового бота
     restart: always
 
-  prod-x10-postgres:
+  # prod-x10-postgres:
+  test-x10-postgres:
     image: postgres:15-alpine
     container_name: ${PG_CONTAINER}
     environment:
@@ -59,7 +62,8 @@ services:
       - ${POSTGRESVOL}:/var/lib/postgresql/data
     restart: always
 
-  prod-x10-reporter:
+  # prod-x10-reporter:
+  test-x10-reporter:
     build:
       context: .
       dockerfile: reportService.Dockerfile 
