@@ -13,17 +13,22 @@ export class BroadcastService {
       }
 
       let count = 0
+      let blocked = 0
+      let blockedIds = [];
 
       for (const user of users) {
         try {
           await bot.sendMessage(user.chat_id, text, { reply_markup: mainOptions('new')!, disable_notification: true, parse_mode: 'HTML' });
           count++
         } catch {
+          blocked++
+          blockedIds.push(user.chat_id)
           console.error('BroadcastService: user '+ user?.chat_id + " blocked bot!")
         }
       }
 
-      console.log('BroadcastService: successfully sent '+count+' messages')
+      console.log('BroadcastService: successfully sent '+count+' messages, blocked: '+ blocked)
+      console.log('Blocked ids: '+JSON.stringify(blockedIds))
     } catch (error) {
       console.error('Error sending message to all users: ', error);
     }

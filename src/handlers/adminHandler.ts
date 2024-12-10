@@ -139,10 +139,7 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
     }
 
     if (action === ('get_stats')) {
-      await bot.sendMessage(chat_id, `
-        Всего пользователей: ${(await users_db.getAllUsers())?.length}
-        Пользователей с wb_api_key: ${(await users_db.getReportUsers())?.length}
-        `);
+      await bot.sendMessage(chat_id, `Всего пользователей: ${(await users_db.getAllUsers())?.length}\nПользователей с wb_api_key: ${(await users_db.getReportUsers())?.length}`);
     }
 
     if (action === 'prepare_report_service') {
