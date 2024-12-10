@@ -35,12 +35,12 @@ services:
       - APP_CONTAINER=${APP_CONTAINER}
       - POSTGRESVOL=${POSTGRESVOL}
     depends_on:
-      - prod-x10-redis   
-      - prod-x10-postgres 
-      - prod-x10-reporter
-      #- prod-x10-redis  # для тестового бота
-      #- prod-x10-postgres # для тестового бота
-      #- prod-x10-reporter # для тестового бота
+      # - prod-x10-redis   
+      # - prod-x10-postgres 
+      # - prod-x10-reporter
+      - test-x10-redis  # для тестового бота
+      - test-x10-postgres # для тестового бота
+      - test-x10-reporter # для тестового бота
     restart: always
 
   prod-x10-postgres:
@@ -73,7 +73,7 @@ services:
     restart: always
 
 volumes:
-  prod-x10_redis_data: 
-  prod-x10_postgres_data: 
-  #prod-x10_redis_data: # для тестового бота
-  #prod-x10_postgres_data: # для тестового бота
+  # prod-x10_redis_data: 
+  # prod-x10_postgres_data: 
+  x10-external-bot_redis_data: # для тестового бота
+  x10-external-bot_postgres_data:  # для тестового бота

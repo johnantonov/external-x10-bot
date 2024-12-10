@@ -630,7 +630,7 @@ reportService.startCronJob();
 
 const app = express();
 app.use(express.json());
-const PORT = process.env.BASE_PORT || 3300;
+const PORT = process.env.BASE_PORT;
 
 app.post("/generate-report", async (req, res) => {
   const { chat_id, loadingMsgId } = req.body; 
