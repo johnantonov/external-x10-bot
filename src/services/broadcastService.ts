@@ -13,7 +13,7 @@ export class BroadcastService {
       }
 
       for (const user of users) {
-        await bot.sendMessage(user.chat_id, text, { ...options, disable_notification: true });
+        await bot.sendMessage(user.chat_id, text, { reply_markup: mainOptions('new')!, disable_notification: true, parse_mode: 'HTML' });
       }
     } catch (error) {
       console.error('Error sending message to all users: ', error);
