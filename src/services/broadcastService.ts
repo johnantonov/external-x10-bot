@@ -12,9 +12,18 @@ export class BroadcastService {
         return console.log('there are no users for message');
       }
 
+      let count = 0
+
       for (const user of users) {
-        await bot.sendMessage(user.chat_id, text, { reply_markup: mainOptions('new')!, disable_notification: true, parse_mode: 'HTML' });
+        try {
+          await bot.sendMessage(user.chat_id, text, { reply_markup: mainOptions('new')!, disable_notification: true, parse_mode: 'HTML' });
+          count++
+        } catch {
+          console.error('BroadcastService: user '+ user?.chat_id + " blocked bot!")
+        }
       }
+
+      console.log('BroadcastService: successfully sent '+count+' messages')
     } catch (error) {
       console.error('Error sending message to all users: ', error);
     }
