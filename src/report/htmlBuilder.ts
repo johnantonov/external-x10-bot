@@ -5,7 +5,7 @@ import { formatNumber } from "../utils/string&number";
 import { getReportFormatDay } from "../utils/time";
 
 export const generateTable = (header: string, dayRows: string, tableNumber: number): string => `
-  <table class="${tableNumber % 8 === 0 ? 'end_sheet' : ''}">
+  <table class="${tableNumber % 7 === 0 ? 'end_sheet' : ''}">
     <thead>${header}</thead>
     <tbody class="br">${dayRows}</tbody>
   </table>
