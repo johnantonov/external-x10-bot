@@ -153,7 +153,7 @@ class UsersModel extends BaseModel<User> {
   
       await this.update('chat_id', chat_id, updateData, ['chat_id']);
     } catch {
-      console.error(`Ошибка при обновлении типа пользователя: `,chat_id, " ", type)
+      console.error(`Error while updating user type: `,chat_id, " ", type)
     }
   }
 
