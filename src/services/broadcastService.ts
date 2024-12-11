@@ -2,6 +2,7 @@ import pool from "../../database/db";
 import { users_db } from "../../database/models/users";
 import { bot } from "../bot";
 import { mainOptions } from "../components/buttons";
+import { formatError } from "../utils/string&number";
 
 export class BroadcastService {
   static async sendMessageToAllUsers(text: string, options?: object) {
@@ -54,11 +55,12 @@ export class BroadcastService {
           });
   
           await pool.query(`UPDATE messageJobs SET filter = 1 WHERE user_id = $1`, [user.user_id]);
-        } catch (sendError) {
+          count++
+        } catch (e) {
           blocked++
           await pool.query(`UPDATE messageJobs SET filter = 0 WHERE user_id = $1`, [user.user_id]);
+          formatError(e, `Error sending message to user ${user.user_id}`)
           blockedIds.push(user.chat_id)
-          console.error(`Error sending message to user ${user.user_id}: `, sendError);
         }
       }
 
