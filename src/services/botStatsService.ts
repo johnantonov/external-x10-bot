@@ -12,19 +12,22 @@ export async function sendBotStats() {
     if (env.MODE === 'test') {
       const statsData: BotStatsPayload = {
         action: 'base_stats',
-        data: [
-          (await users_db.getAllUsers())?.length || 0,  
-          (await users_db.getReportUsers())?.length || 0,
-          env.MODE
-        ]
+        data: {
+          "users_count": (await users_db.getAllUsers())?.length || 0,
+          "users_with_key_count": (await users_db.getReportUsers())?.length || 0,
+          "mode": env.MODE
+        }
       };
   
-      const response = await axios.post(env.STATS_WEB_APP_URL!, statsData, { headers: { 'Content-Type': 'application/json' }})
-      const res = response.data
-      console.log('Response from stats web app: ', JSON.stringify(res))
+      const response = await axios.post(env.STATS_WEB_APP_URL!, statsData, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const res = response.data;
+      console.log('Response from stats web app: ', JSON.stringify(res));
     }
   } catch (e) {
-    console.error('Error sending bot base stats')
+    console.error('Error sending bot base stats', e);
   }
 }
 
