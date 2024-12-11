@@ -14,6 +14,7 @@ export class User {
   last_sec_report_call: number | null;
   tax: number | null;
   success_refs: number | null;
+  from_ref: number | null;
 
   [key: string]: any;
 
@@ -29,5 +30,6 @@ export class User {
     this.last_sec_report_call = null
     this.tax = data.tax
     this.success_refs = null
+    this.from_ref = null
   }
 }

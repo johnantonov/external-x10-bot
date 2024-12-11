@@ -19,7 +19,13 @@ import { rStates, ttls } from "../redis";
  * @returns {Promise<void>}
  */
 
-export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/menu' | '/start', isNewMsg: boolean = true, menuId?: number) {
+export async function handleStartMenu(
+  msg: UserMsg | UserCallback, 
+  command: '/menu' | '/start', 
+  isNewMsg: boolean = true, 
+  menuId?: number, 
+  ref?: number) 
+{
   try {
     const users = await users_db.select({ chat_id: msg.chat_id });
     const isUser = users.rows.length > 0;
@@ -56,7 +62,7 @@ export async function handleStartMenu(msg: UserMsg | UserCallback, command: '/me
         await sendNewMenu(chat_id, img, text, type)
       }
     } else {
-      await users_db.insert({ chat_id: chat_id, username: msg.username, type: 'new' });
+      await users_db.insert({ chat_id: chat_id, username: msg.username, type: 'new', from_ref: ref || null });
       await sendNewMenu(chat_id, img, texts.start, 'new')
       console.log('insert new user into db: ', chat_id, " ", msg.username)
     }

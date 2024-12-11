@@ -81,7 +81,22 @@ bot.on('message', async (msg: TelegramBot.Message) => {
 
   const msgs: MessageMS[] = [new MessageMS({ chat_id, message_id, content: text })];
 
-  
+  if (textMsg.startsWith('/start=')) {
+    try {
+      const referralId = +textMsg.split('=')[1];
+      if (referralId) {
+        console.log(`User started with referral ID: ${referralId}`);
+        await handleMenuCommand(UserTextMessage, chat_id, textMsg, msgs, referralId);
+        return;
+      } else {
+        await handleMenuCommand(UserTextMessage, chat_id, textMsg, msgs);
+        return console.log('Referral ID is missing or invalid');
+      }
+    } catch (e) {
+      console.error('Error while parsing ref-code: ', e)
+    }
+  }
+
   if (['/start', '/menu'].includes(textMsg)) {
     await handleMenuCommand(UserTextMessage, chat_id, textMsg, msgs);
     return;
