@@ -14,7 +14,8 @@ export async function sendBotStats() {
         action: 'base_stats',
         data: [
           (await users_db.getAllUsers())?.length || 0,  
-          (await users_db.getReportUsers())?.length || 0
+          (await users_db.getReportUsers())?.length || 0,
+          env.MODE
         ]
       };
   
