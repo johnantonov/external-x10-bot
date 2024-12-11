@@ -50,9 +50,8 @@ export const CSS = (cols: number) => `
       margin-bottom: 10px;
       border-collapse: collapse;
     }
-      
+
     .end_sheet {
-      margin-bottom: 20px !important;
       page-break-after: always;
     }
     
