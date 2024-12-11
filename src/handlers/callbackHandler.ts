@@ -249,7 +249,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'ref':
-      bot.sendMessage(chat_id, createUserRefText(chat_id, success_refs))
+      if (mainBtn) editData = createEditData(createUserRefText(chat_id, success_refs), mainBtn);
       break;
 
     case 'fb':

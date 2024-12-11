@@ -11,8 +11,11 @@ export const migrations = [
             tax DECIMAL,
             notification_time NUMERIC,
             added_at TIMESTAMP DEFAULT NOW(),
+            api_reg_at TIMESTAMP, 
+            last_sec_report_call TIMESTAMP, 
             last_report_call TIMESTAMP,
-            last_sec_report_call TIMESTAMP
+            success_refs NUMERIC,
+            from_ref NUMERIC
         );`,
 
         `CREATE TABLE IF NOT EXISTS articles (
@@ -91,10 +94,5 @@ export const migrations = [
             filter VARCHAR(255)
         );`
     ],
-    [
-        `ALTER TABLE users ADD COLUMN api_reg_at TIMESTAMP;`,
-        `ALTER TABLE users ADD COLUMN success_refs NUMERIC;`,
-        'ALTER TABLE users ADD COLUMN from_ref NUMERIC'
-    ]
 
 ];
