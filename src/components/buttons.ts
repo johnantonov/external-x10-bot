@@ -147,7 +147,7 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.changeTime],
     [mainButtons.info],
     [mainButtons.changeWbApiKey],
-    [mainButtons.ref],
+    // [mainButtons.ref],
     [mainButtons.feedback]
   ];
 
