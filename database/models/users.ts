@@ -55,6 +55,10 @@ class UsersModel extends BaseModel<User> {
     }
   }
 
+  async updateSuccessRefs(chat_id: number) {
+    return
+  }
+
   async updateLastReportCall(chat_id: number, reportType: 'last_report_call' | 'last_sec_report_call' = 'last_report_call') {
     try {
       const now = new Date();
