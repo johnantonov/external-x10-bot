@@ -93,8 +93,8 @@ export const migrations = [
     ],
     [
         `ALTER TABLE users ADD COLUMN api_reg_at TIMESTAMP;`,
-        `ALTER TABLE users ADD COLUMN success_refs NUMERIC;`
-    ],
-    ['ALTER TABLE users ADD COLUMN from_ref NUMERIC']
+        `ALTER TABLE users ADD COLUMN success_refs NUMERIC;`,
+        'ALTER TABLE users ADD COLUMN from_ref NUMERIC'
+    ]
 
 ];
