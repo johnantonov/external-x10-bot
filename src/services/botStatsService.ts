@@ -9,13 +9,13 @@ const env = process.env
 
 export async function sendBotStats() {
   try {
-    if (env.MODE === 'test') {
+    // if (env.MODE === 'test') {
       const statsData: BotStatsPayload = {
         action: 'base_stats',
         data: {
           "users_count": (await users_db.getAllUsers())?.length || 0,
           "users_with_key_count": (await users_db.getReportUsers())?.length || 0,
-          "mode": env.MODE
+          "mode": env.MODE!
         }
       };
   
@@ -25,7 +25,7 @@ export async function sendBotStats() {
       
       const res = response.data;
       console.log('Response from stats web app: ', JSON.stringify(res));
-    }
+    // }
   } catch (e) {
     console.error('Error sending bot base stats', e);
   }

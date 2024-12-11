@@ -17,6 +17,7 @@ import { btn } from "../utils/buttons";
 import { getFaqData } from "../utils/faq";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
 import { requestReport, requestStockReport } from "../utils/requestReport";
+import { createUserRefText } from "../utils/ref";
 
 dotenv.config();
 
@@ -40,7 +41,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   }
 
   const { chat_id, userCallbackData, message_id, username } = userCallback;
-  const [type, last_report_call, last_sec_report_call] = await users_db.processUserRequest(chat_id, username)
+  const [type, last_report_call, last_sec_report_call, success_refs] = await users_db.processUserRequest(chat_id, username)
   const returnBtn = returnMenu(true);
   const mainBtn = mainOptions(type ?? 'new')
   const action = new CallbackProcessor(userCallbackData, type).getAction();
@@ -237,7 +238,6 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
     
         try {
           requestStockReport(chat_id, loadingMsg.message_id); 
-
         } catch (error) {
           console.error("Failed to generate report:", error);
         }
@@ -246,6 +246,10 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       } else {
         if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
       }
+      break;
+
+    case 'ref':
+      bot.sendMessage(chat_id, createUserRefText(chat_id, success_refs))
       break;
 
     case 'fb':

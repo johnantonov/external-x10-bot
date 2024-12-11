@@ -19,4 +19,5 @@ export type CallbackAction =
   "test report" |
   "fb" |
   "stock report" | 
+  "ref" | 
   null;

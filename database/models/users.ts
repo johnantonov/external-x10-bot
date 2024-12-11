@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
 import pool from "../db";
 import { User, user_type } from "../../src/dto/user";
+import { formatDateForTimestamp } from "../../src/utils/time";
 dotenv.config();
 
 class UsersModel extends BaseModel<User> {
@@ -14,13 +15,13 @@ class UsersModel extends BaseModel<User> {
   }
 
   async processUserRequest(chat_id: number, newUsername: string | undefined)
-  : Promise<[user_type | null, User['last_report_call'] | null,  User['last_sec_report_call'] | null]> {
+  : Promise<[user_type | null, User['last_report_call'] | null,  User['last_sec_report_call'] | null, User['success_refs']]> {
     try {
       const userResult = await this.select({ chat_id });
 
       if (userResult.rows.length === 0) {
         console.error(`User with chat_id ${chat_id} not found`);
-        return [null, null, null];
+        return [null, null, null, null];
       }
 
       const user = userResult.rows[0];
@@ -35,10 +36,10 @@ class UsersModel extends BaseModel<User> {
         await this.pool.query(query, [newUsername, chat_id]);
       }
 
-      return [user.type, user.last_report_call, user.last_sec_report_call];
+      return [user.type, user.last_report_call, user.last_sec_report_call, user.success_refs];
     } catch (error) {
       console.error(`Error while updating username: ${error}`);
-      return [null, null, null];
+      return [null, null, null, null];
     }
   }
 
@@ -140,8 +141,10 @@ class UsersModel extends BaseModel<User> {
         type: type,
       };
   
+      // отрабатывает только когда пользователь впервые добавляет wb key
       if (wb_api_key) {
         updateData.wb_api_key = wb_api_key
+        updateData.api_reg_at = formatDateForTimestamp(new Date());
       }
   
       await this.update('chat_id', chat_id, updateData, ['chat_id']);

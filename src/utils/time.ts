@@ -123,3 +123,17 @@ export function isReportAvailable(lastTime: User['last_report_call'] | User['las
   return timeDiffMinutes >= config.reportStopTime;
 }
 
+export function formatDateForTimestamp(date: Date): string {
+  const pad = (num: number) => num.toString().padStart(2, '0');
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1); 
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+  const milliseconds = date.getMilliseconds().toString().padStart(3, '0'); 
+
+  const microseconds = (date.getMilliseconds() * 1000).toString().padStart(6, '0'); 
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${microseconds}`;
+}

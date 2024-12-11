@@ -66,6 +66,7 @@ export const CallbackData = {
   deleteArticle: 'da?',
   testReport: 'tr?',
   stockReport: 'sr?',
+  ref: 'ref?',
   feedback: 'https://t.me/+ZVISmofZZ_wwN2Ey',
 
   faq: 'faq',
@@ -94,6 +95,7 @@ export const mainButtons = {
   articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
   testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
   stockReport: { text: '📦 Отчёт по остаткам', callback_data: CallbackData.stockReport },
+  ref: { text: '➕ Увеличить количество SKU', callback_data: CallbackData.ref},
   feedback: { text: '🛎 Обратная связь', url: CallbackData.feedback },
 };
 
@@ -145,6 +147,7 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.changeTime],
     [mainButtons.info],
     [mainButtons.changeWbApiKey],
+    // [mainButtons.ref],
     [mainButtons.feedback]
   ];
 

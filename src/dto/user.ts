@@ -9,9 +9,11 @@ export class User {
   type: user_type;
   notification_time: number | null;
   added_at: string;
+  api_reg_at: string | null;
   last_report_call: number | null;
   last_sec_report_call: number | null;
   tax: number | null;
+  success_refs: number | null;
 
   [key: string]: any;
 
@@ -22,8 +24,10 @@ export class User {
     this.type = data.text;
     this.notification_time = null
     this.added_at = `${new Date()}`
+    this.api_reg_at = null
     this.last_report_call = null
     this.last_sec_report_call = null
     this.tax = data.tax
+    this.success_refs = null
   }
 }

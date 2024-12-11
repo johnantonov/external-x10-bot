@@ -95,3 +95,7 @@ CREATE TABLE messageJobs (
   filter VARCHAR(255)
 );
 ALTER TABLE users ADD COLUMN last_sec_report_call TIMESTAMP
+
+ALTER TABLE users ADD COLUMN api_reg_at TIMESTAMP
+
+ALTER TABLE users ADD COLUMN success_refs NUMERIC

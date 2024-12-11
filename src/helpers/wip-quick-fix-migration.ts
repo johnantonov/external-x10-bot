@@ -91,5 +91,9 @@ export const migrations = [
             filter VARCHAR(255)
         );`
     ],
+    [
+        `ALTER TABLE users ADD COLUMN api_reg_at TIMESTAMP;`,
+        `ALTER TABLE users ADD COLUMN success_refs NUMERIC;`
+    ]
 
 ];

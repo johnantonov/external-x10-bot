@@ -89,6 +89,10 @@ export class CallbackProcessor {
       return "stock report";
     }
 
+    if (this.isRefMenu()) {
+      return "ref";
+    }
+
     return null; // error
   }
 
@@ -162,5 +166,9 @@ export class CallbackProcessor {
 
   private isStockReport(): boolean {
     return this.userCallbackData === CallbackData.stockReport
+  }
+
+  private isRefMenu(): boolean {
+    return this.userCallbackData === CallbackData.ref
   }
 }
