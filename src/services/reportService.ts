@@ -413,36 +413,40 @@ export class ReportService {
   }
 
   async getSales(nmIDs: article[], dateFrom: string, wb_api_key: string) {
-    const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFrom=' + dateFrom
-  
-    const headers = {
-      'Authorization': wb_api_key, 
-      'Content-Type': 'application/json',
-    }
-  
-    const salesResponse = await axios.get(salesUrl, {
-      headers: headers
-    });
-  
-    const result: Record<article, SalesObject> = {};
-    nmIDs.forEach(nm => result[nm] = {})
-  
-    salesResponse.data.forEach((sale: Record<string, any>) => {
-      if (nmIDs.includes(sale.nmId)) {
-        const date = sale.date.split('T')[0]
-        if (!result[sale.nmId][date]) {
-          result[sale.nmId][date] = {
-            infoBuysCount: 1,
-            infoBuysSum: sale.priceWithDisc
-          }
-        } else {
-          result[sale.nmId][date].infoBuysCount += 1
-          result[sale.nmId][date].infoBuysSum += sale.priceWithDisc
-        }
+    try {
+      const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFrom=' + dateFrom
+    
+      const headers = {
+        'Authorization': wb_api_key, 
+        'Content-Type': 'application/json',
       }
-    });
-  
-    return result
+    
+      const salesResponse = await axios.get(salesUrl, {
+        headers: headers
+      });
+    
+      const result: Record<article, SalesObject> = {};
+      nmIDs.forEach(nm => result[nm] = {})
+    
+      salesResponse.data.forEach((sale: Record<string, any>) => {
+        if (nmIDs.includes(sale.nmId)) {
+          const date = sale.date.split('T')[0]
+          if (!result[sale.nmId][date]) {
+            result[sale.nmId][date] = {
+              infoBuysCount: 1,
+              infoBuysSum: sale.priceWithDisc
+            }
+          } else {
+            result[sale.nmId][date].infoBuysCount += 1
+            result[sale.nmId][date].infoBuysSum += sale.priceWithDisc
+          }
+        }
+      });
+      return result
+    } catch (e) {
+      formatError(e, 'Error fetching sales')
+
+    }
   }
 
   // Send message to user
