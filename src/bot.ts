@@ -83,9 +83,9 @@ bot.on('message', async (msg: TelegramBot.Message) => {
 
   const msgs: MessageMS[] = [new MessageMS({ chat_id, message_id, content: text })];
 
-  if (textMsg.startsWith('/start=')) {
+  if (textMsg.startsWith('/start ')) {
     try {
-      const referralId = +textMsg.split('=')[1];
+      const referralId = +textMsg.split(' ')[1];
       if (referralId) {
         console.log(`User started with referral ID: ${referralId}`);
         await handleMenuCommand(UserTextMessage, chat_id, textMsg, msgs, referralId);
