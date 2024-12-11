@@ -15,12 +15,15 @@ export const generateReportHtml = async (articleData: SKU[]): Promise<string> =>
     tables += generateTotalTable(articleData, days, totalRanges);
   }
 
+  let tableNumber = 1
+
   for (const data of articleData) {
     const ranges = calculateRangesForSku(data, days, config.pdf.cols);
     const imgSrc = data.article ? await fetchAndResizeImage(data.article) : null;
     const header = generateTableHeader(data);
     const dayRows = generateDayRows(data, imgSrc, days, ranges);
-    tables += generateTable(header, dayRows);
+    tableNumber += 1
+    tables += generateTable(header, dayRows, tableNumber);
   }
 
   return `

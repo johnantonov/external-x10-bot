@@ -4,8 +4,8 @@ import { getSkuData } from "../utils/parse";
 import { formatNumber } from "../utils/string&number";
 import { getReportFormatDay } from "../utils/time";
 
-export const generateTable = (header: string, dayRows: string): string => `
-  <table>
+export const generateTable = (header: string, dayRows: string, tableNumber: number): string => `
+  <table class="${tableNumber % 8 === 0 ? 'end_sheet' : ''}">
     <thead>${header}</thead>
     <tbody class="br">${dayRows}</tbody>
   </table>

@@ -50,6 +50,9 @@ export const CSS = (cols: number) => `
       margin-bottom: 10px;
       border-collapse: collapse;
     }
+    .end_sheet {
+      margin-bottom: 200px !important
+    }
     
     .table-wrapper:not(:last-child) {
       margin-bottom: 100px; 
