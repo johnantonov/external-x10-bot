@@ -12,6 +12,7 @@ import { updateBoxTariffs } from "../utils/boxTariffs";
 import { RediceService } from "../bot";
 import { adminRequestReport, adminRequestStockReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
 import { BroadcastService } from "../services/broadcastService";
+import { sendBotStats } from "../services/botStatsService";
 
 dotenv.config();
 
@@ -41,6 +42,10 @@ const helpInfo = `
 
 /admin__clear_last_report_time_{id} - очистка времени последнего отчета
 /admin__clear_last_report_time_all - очистка времени последнего отчета у всех
+
+<b>СТАТИСТИКА</b>
+/admin__send_base_stats_to_webapp - отправка основной статистики вебапп
+/admin__get_stats - вывод основной статистики в чат
 
 /admin__help - команды
 `
@@ -138,10 +143,17 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       }
     }
 
-    if (action === ('get_stats')) {
+    // STATISTICS
+    if (action === 'send_base_stats_to_webapp') {
+      console.log('admin started sending stats to webapp')
+      sendBotStats()
+    }
+
+    if (action === 'get_stats') {
       await bot.sendMessage(chat_id, `Всего пользователей: ${(await users_db.getAllUsers())?.length}\nПользователей с wb_api_key: ${(await users_db.getReportUsers())?.length}`);
     }
 
+    // ---------------
     if (action === 'prepare_report_service') {
       console.log('admin started preparing report serivce')
       requestPrepareReports()
@@ -216,7 +228,7 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
     }
 
     if (action.startsWith('help')) {
-      await bot.sendMessage(chat_id, helpInfo)
+      await bot.sendMessage(chat_id, helpInfo, { parse_mode: "HTML" })
     }
 
     // work in progress, now all migrations are added to the folder sql migrations and helpers/wip 
