@@ -51,7 +51,7 @@ export const CSS = (cols: number) => `
       border-collapse: collapse;
     }
     .end_sheet {
-      margin-bottom: 200px !important
+      padding-bottom: 200px !important
     }
     
     .table-wrapper:not(:last-child) {
