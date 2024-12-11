@@ -39,7 +39,7 @@ export class BroadcastService {
 
   static async sendMessageToFilteredUsers(text: string, options?: object, filter?: string) {
     try {
-      const query = `SELECT user_id FROM messageJobs WHERE filter IS NULL LIMIT 500`
+      const query = `SELECT user_id FROM messageJobs WHERE filter IS NULL LIMIT 1000`
       const users = (await pool.query(query)).rows;
 
       let count = 0
@@ -60,7 +60,7 @@ export class BroadcastService {
           blocked++
           await pool.query(`UPDATE messageJobs SET filter = 0 WHERE user_id = $1`, [user.user_id]);
           formatError(e, `Error sending message to user ${user.user_id}`)
-          blockedIds.push(user.chat_id)
+          blockedIds.push(user.user_id);
         }
       }
 
