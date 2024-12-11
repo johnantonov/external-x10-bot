@@ -38,18 +38,52 @@ export class BroadcastService {
 
   static async sendMessageToFilteredUsers(text: string, options?: object, filter?: string) {
     try {
-      const query = filter
-        ? `SELECT user_id FROM messageJobs WHERE filter = $1`
-        : `SELECT user_id FROM messageJobs`;
-      const users = (await pool.query(query, filter ? [filter] : [])).rows;
+      const query = `SELECT user_id FROM messageJobs WHERE filter IS NULL LIMIT 500`
+      const users = (await pool.query(query)).rows;
 
+      let count = 0
+      let blocked = 0
+      let blockedIds = [];
+  
       for (const user of users) {
-        await bot.sendMessage(user.user_id, text, { reply_markup: mainOptions('new')!, disable_notification: true, parse_mode: 'HTML' });
+        try {
+          await bot.sendMessage(user.user_id, text, { 
+            reply_markup: mainOptions('new')!, 
+            disable_notification: true, 
+            parse_mode: 'HTML' 
+          });
+  
+          await pool.query(`UPDATE messageJobs SET filter = 1 WHERE user_id = $1`, [user.user_id]);
+        } catch (sendError) {
+          blocked++
+          await pool.query(`UPDATE messageJobs SET filter = 0 WHERE user_id = $1`, [user.user_id]);
+          blockedIds.push(user.chat_id)
+          console.error(`Error sending message to user ${user.user_id}: `, sendError);
+        }
       }
+
+      console.log('BroadcastService: successfully sent '+count+' messages, blocked: '+ blocked)
+      console.log('Blocked ids: '+blockedIds)
     } catch (error) {
       console.error('Error sending message to filtered users: ', error);
     }
   }
+
+
+  // static async sendMessageToFilteredUsers(text: string, options?: object, filter?: string) {
+  //   try {
+  //     const query = filter
+  //       ? `SELECT user_id FROM messageJobs WHERE filter = $1`
+  //       : `SELECT user_id FROM messageJobs`;
+  //     const users = (await pool.query(query, filter ? [filter] : [])).rows;
+
+  //     for (const user of users) {
+  //       await bot.sendMessage(user.user_id, text, { reply_markup: mainOptions('new')!, disable_notification: true, parse_mode: 'HTML' });
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sending message to filtered users: ', error);
+  //   }
+  // }
 
   static async sendMediaGroupToAllUsers(mediaGroup: any[], caption: string) {
     try {
