@@ -12,6 +12,8 @@ export class BroadcastService {
         return console.log('there are no users for message');
       }
 
+      console.log('Waiting message ' + users.length + ' users')
+
       let count = 0
       let blocked = 0
       let blockedIds = [];
