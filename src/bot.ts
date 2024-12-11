@@ -35,8 +35,6 @@ bot.on('message', async (msg: TelegramBot.Message) => {
   let { chat_id, text, message_id } = UserTextMessage;
   const textMsg = text ? text : msg?.caption
 
-  console.log(textMsg)
-
   if (msg.photo || msg.video) {
     if (!mediaGroupBuffer.has(chat_id)) {
       mediaGroupBuffer.set(chat_id, []);
