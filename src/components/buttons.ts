@@ -153,7 +153,7 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.articlesMenu],
     [mainButtons.changeTime],
     [mainButtons.info],
-    // [mainButtons.ref],
+    [mainButtons.ref],
     [mainButtons.feedback]
     // [mainButtons.stockReport, mainButtons.ordersReport],
     // [mainButtons.changeTime],
