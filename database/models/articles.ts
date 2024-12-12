@@ -285,6 +285,30 @@ class ArticlesModel extends BaseModel<SKU> {
 
     await this.pool.query(query, [...values, chat_id, article]);
   }
+
+  async upsertArticleFromJson(data: any): Promise<void> {
+    try {
+      const columns = Object.keys(data); 
+      const values = Object.values(data);
+    
+      const placeholders = values.map((_, index) => `$${index + 1}`).join(', ');
+    
+      const updateClause = columns
+        .map((col) => `${col} = EXCLUDED.${col}`)
+        .join(', ');
+  
+      const query = `
+        INSERT INTO ${this.tableName} (${columns.join(', ')})
+        VALUES (${placeholders})
+        ON CONFLICT (chat_id, article) 
+        DO UPDATE SET ${updateClause};
+      `;
+    
+      await this.pool.query(query, values);
+    } catch (e) {
+      console.error('Error in upsertArticleFromJson:', e);
+    }
+  }
 }
 
 export const articles_db = new ArticlesModel(pool);
