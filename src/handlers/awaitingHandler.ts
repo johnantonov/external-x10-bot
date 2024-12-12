@@ -138,7 +138,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
     } else if (state.startsWith(rStates.waitDateForOrders)) {
       try {
         const date = parseDate(text)
-        if (!date) return handleError(texts.errorParseDate + texts.getOrdersReportText, 'registered')
+        if (!date) return handleError(texts.errorParseDate + texts.getOrdersReportText)
         return new AwaitingAnswer({ result: true, text: texts.loadingReports, type: 'registered', data: date });
       } catch (e) {
         console.error('Error processing orders report in awaiting handler: ', e)
