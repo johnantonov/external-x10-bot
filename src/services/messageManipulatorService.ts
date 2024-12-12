@@ -200,6 +200,7 @@ import FormData from 'form-data';
 import { mainOptions, Options } from '../components/buttons';
 import { images } from '../dto/images';
 import { users_db } from '../../database/models/users';
+import { formatError } from '../utils/string&number';
 
 
 /**
@@ -250,7 +251,7 @@ async function editMessageMedia(
 
     return response;
   } catch (error) {
-    console.error('Error editing media:', error);
+    formatError(error, 'Error editing media:')
     return null;
   }
 }
