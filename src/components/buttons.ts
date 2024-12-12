@@ -70,6 +70,7 @@ export const CallbackData = {
   ordersReport: 'orr?',
   ordersReportToday: 'orr?today',
   ordersReportYesterday: 'orr?yesterday',
+  ordersReportDate: 'orr?date',
   feedback: 'https://t.me/+ZVISmofZZ_wwN2Ey',
 
   faq: 'faq',
@@ -99,8 +100,9 @@ export const mainButtons = {
   testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
   stockReport: { text: '📦 Отчёт по остаткам', callback_data: CallbackData.stockReport },
   ordersReport: { text: '🛒 Заказы за день', callback_data: CallbackData.ordersReport},
-  // ordersReportToday: { text: 'Заказы за сегодня', callback_data: CallbackData.ordersReportToday},
-  // ordersReportYesterday: { text: 'Заказы за вчера', callback_data: CallbackData.ordersReportYesterday},
+  ordersReportToday: { text: 'Заказы за сегодня', callback_data: CallbackData.ordersReportToday},
+  ordersReportYesterday: { text: 'Заказы за вчера', callback_data: CallbackData.ordersReportYesterday},
+  ordersReportDate: { text: 'Заказы за дату', callback_data: CallbackData.ordersReportDate},
   ref: { text: '➕ Увеличить количество SKU', callback_data: CallbackData.ref},
   feedback: { text: '🛎 Обратная связь', url: CallbackData.feedback },
 };
@@ -164,15 +166,16 @@ export const mainOptions = (type?: user_type) => {
   return new Options(menu).reply_markup;
 };
 
-// export const ordersReportMenu = () => {
-//   const menu: Array<Array<any>> = [
-//     [mainButtons.ordersReportToday],
-//     [mainButtons.ordersReportYesterday],
-//     [mainButtons.menuAndEdit]
-//   ];
+export const ordersReportMenu = () => {
+  const menu: Array<Array<any>> = [
+    [mainButtons.ordersReportToday],
+    [mainButtons.ordersReportYesterday],
+    [mainButtons.ordersReportDate],
+    [mainButtons.menuAndEdit]
+  ];
 
-//   return new Options(menu).reply_markup; 
-// }
+  return new Options(menu).reply_markup; 
+}
 
 /**
  * returns article menu
