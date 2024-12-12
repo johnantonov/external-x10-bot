@@ -20,5 +20,5 @@ export type CallbackAction =
   "fb" |
   "stock report" | 
   "ref" | 
-  "orders report"
+  "orders report" |
   null;

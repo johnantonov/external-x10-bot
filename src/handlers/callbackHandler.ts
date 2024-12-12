@@ -16,7 +16,7 @@ import { images } from "../dto/images";
 import { btn } from "../utils/buttons";
 import { getFaqData } from "../utils/faq";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
-import { requestReport, requestStockReport } from "../utils/requestReport";
+import { requestOrdersReport, requestReport, requestStockReport } from "../utils/requestReport";
 import { createUserRefText } from "../utils/ref";
 
 dotenv.config();
@@ -246,6 +246,26 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       } else {
         if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
       }
+      break;
+
+    case 'orders report': 
+      // const accessOrdersReport = isReportAvailable(last_sec_report_call);
+      // if (accessStockReport) {
+        // await users_db.updateLastReportCall(chat_id, 'last_sec_report_call');
+        MS.deleteAllMessages(chat_id);
+        const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports, { disable_notification: true });
+    
+        try {
+          requestOrdersReport(chat_id, loadingMsg.message_id); 
+        } catch (error) {
+          console.error("Failed to generate report:", error);
+          if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
+        }
+    
+        // await MS.deleteMessage(chat_id, loadingMsg.message_id);
+      // } else {
+      //   if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
+      // }
       break;
 
     case 'ref':
