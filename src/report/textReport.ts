@@ -103,7 +103,6 @@ function initTotalStockReportData() {
 
 export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | 'today') {
   let total = 0
-
   let articlesTexts = '';
 
   const nms = Object.keys(data)
@@ -126,6 +125,41 @@ export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | '
 
   articles.forEach(article => {
     articlesTexts += `\n<b>- ${article.subject}</b> ${article.vendor_code}: ${article.ordersCount}`;
+  });
+
+  let message = `<b>Заказы за ${date === 'today' ? 'сегодня' : 'вчера'}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
+  return message + articlesTexts;
+}
+
+export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | 'today') {
+  let total = 0;
+  let articlesTexts = '';
+
+  const groupedArticles: { [subject: string]: Array<{ vendor_code: string, ordersCount: number }> } = {};
+
+  Object.keys(data).forEach(sku => {
+    total += data[sku]?.orders;
+    const ordersCount = data[sku]?.orders;
+    const vendor_code = data[sku]?.vendor_code;
+    const subject = data[sku]?.subject;
+
+    if (!groupedArticles[subject]) {
+      groupedArticles[subject] = [];
+    }
+
+    groupedArticles[subject].push({ vendor_code, ordersCount });
+  });
+
+  const sortedSubjects = Object.keys(groupedArticles).sort((a, b) => 
+    a.localeCompare(b, ['ru', 'en'], { sensitivity: 'base' })
+  );
+
+  sortedSubjects.forEach(subject => {
+    articlesTexts += `\n<b>- ${subject}</b>\n`; 
+
+    groupedArticles[subject].forEach(article => {
+      articlesTexts += `   ${article.vendor_code}: ${article.ordersCount}\n`;
+    });
   });
 
   let message = `<b>Заказы за ${date === 'today' ? 'сегодня' : 'вчера'}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
