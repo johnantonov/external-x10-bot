@@ -2,8 +2,9 @@ import { users_db } from "./models/users";
 
 export async function upsertUsersFromJson(usersData: any) {
   for (const userData of usersData) {
-    const uniqueColumns = ['chat_id'];
-    await users_db.update('chat_id', userData.chat_id, userData, uniqueColumns);
+    return 0
+    // const uniqueColumns = ['chat_id'];
+    // await users_db.update('chat_id', userData.chat_id, userData, uniqueColumns);
   }
 }
 
