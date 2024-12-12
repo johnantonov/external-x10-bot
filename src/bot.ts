@@ -16,7 +16,7 @@ if (!token) {
 };
 
 export const bot = new TelegramBot(token, { polling: true });
-bot.getUpdates({ offset: -1 });
+// bot.getUpdates({ offset: -1 });
 export const RediceService = new redis();
 export const MS = new MessageService(bot, RediceService.getClient());
 
