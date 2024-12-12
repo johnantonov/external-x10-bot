@@ -148,17 +148,17 @@ export const mainOptions = (type?: user_type) => {
 
   const menu: Array<Array<any>> = [
     [mainButtons.getAllReportNow],
-    // [mainButtons.stockReport],
-    // [mainButtons.ordersReport],
-    // [mainButtons.articlesMenu],
-    // [mainButtons.changeTime],
-    // [mainButtons.info],
-    // [mainButtons.ref],
-    // [mainButtons.feedback]
-    [mainButtons.stockReport, mainButtons.ordersReport],
+    [mainButtons.stockReport],
+    [mainButtons.ordersReport],
+    [mainButtons.articlesMenu],
     [mainButtons.changeTime],
-    [mainButtons.changeWbApiKey, mainButtons.articlesMenu],
-    [mainButtons.feedback, mainButtons.info]
+    [mainButtons.info],
+    [mainButtons.ref],
+    [mainButtons.feedback]
+    // [mainButtons.stockReport, mainButtons.ordersReport],
+    // [mainButtons.changeTime],
+    // [mainButtons.changeWbApiKey, mainButtons.articlesMenu],
+    // [mainButtons.feedback, mainButtons.info]
   ];
 
   return new Options(menu).reply_markup;
