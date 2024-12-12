@@ -132,6 +132,6 @@ export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | '
     });
   });
 
-  let message = `<b>Заказы за ${date === 'today' ? 'сегодня' : 'вчера'}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
+  let message = `<b>Заказы за ${date === 'today' ? 'сегодня' : 'вчера'}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}\n`;
   return message + articlesTexts;
 }
