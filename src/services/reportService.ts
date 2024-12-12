@@ -729,7 +729,7 @@ app.get("/run", async (req, res) => {
   }
 });
 
-app.get("/generate-orders-report", async (req, res) => {
+app.post("/generate-orders-report", async (req, res) => {
   const { chat_id, loadingMsgId } = req.body; 
   try {
     const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId); 

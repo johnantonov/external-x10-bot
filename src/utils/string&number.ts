@@ -32,3 +32,22 @@ export function NumberOrZero(input: any, isRound: boolean = false, method?: 'up'
     return 0
   }
 }
+
+export function getCorrectWordEnd(total: number): string {
+  const lastDigit = total % 10;
+  const lastTwoDigits = total % 100;
+
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    return 'заказов'; // 11-14
+  }
+
+  if (lastDigit === 1) {
+    return 'заказ'; // 1, 21, 31, 101 и т.д.
+  }
+
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return 'заказа'; // 2-4, 22-24 и т.д.
+  }
+
+  return 'заказов'; // 0, 5-9, 10, 11-14, 20, 25-30 и т.д.
+}

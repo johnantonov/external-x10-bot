@@ -1,6 +1,6 @@
 import { OrdersObject, SKU, TextReportData } from "../dto/sku&report";
 import { calculateRevByOne } from "../utils/dataProcessing";
-import { formatNumber, NumberOrZero } from "../utils/string&number";
+import { formatNumber, getCorrectWordEnd, NumberOrZero } from "../utils/string&number";
 import { getTodayDate, getYesterdayDate } from "../utils/time";
 
 export function createReportMessage(articles: SKU[], formatReportDate: string) {
@@ -128,6 +128,6 @@ export function createOrdersReportText(data: OrdersObject) {
     articlesTexts += `\n\n<b>- ${article.subject}</b> ${article.vendor_code}: ${article.ordersCount}`;
   });
 
-  let message = `Заказы с ${getTodayDate()}<b>Итого: ${total} заказов</b>\n`;
+  let message = `<b>Заказы с ${getTodayDate()}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
   return message + articlesTexts;
 }
