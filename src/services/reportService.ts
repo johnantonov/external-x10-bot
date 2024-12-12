@@ -613,6 +613,10 @@ export class ReportService {
       const targetChat = target_chat_id || chat_id;
       const dateFrom = getTodayDate();
 
+      console.log(wb_api_key)
+      console.log(targetChat)
+      console.log(dateFrom)
+
       try {
         const ordersResponse = await axios.get(config.urls.ordersReport + dateFrom, {
           headers: {
