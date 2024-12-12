@@ -252,7 +252,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
         const ordersCallback = userCallbackData.split('?')
 
         if (!ordersCallback[1]) {
-          editData = createEditData(texts.errorGetSkuAgain, ordersReportMenu());
+          editData = createEditData(" ", ordersReportMenu());
         } else {
           MS.deleteAllMessages(chat_id);
           const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports, { disable_notification: true });
