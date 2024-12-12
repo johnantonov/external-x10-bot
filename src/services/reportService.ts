@@ -618,7 +618,7 @@ export class ReportService {
       console.log(dateFrom)
 
       try {
-        const ordersResponse = await axios.get(config.urls.ordersReport + dateFrom, {
+        const ordersResponse = await axios.get(config.urls.ordersReport + '?dateFrom=' + dateFrom, {
           headers: {
             'Authorization': wb_api_key,
             'Content-Type': 'application/json'
