@@ -20,7 +20,7 @@ export function getYesterdayDate(local: 'en' | 'ru' = 'en'): DateKey | string  {
   return formattedDate;
 }
 
-export function getTodayDate() {
+export function getTodayDate(): DateKey {
   const timeZone = 'Europe/Moscow';
 
   const now = new Date();
@@ -29,7 +29,7 @@ export function getTodayDate() {
 
   const formattedDate = format(yesterday, 'yyyy-MM-dd');
 
-  return formattedDate;
+  return formattedDate as DateKey;
 }
 
 /**

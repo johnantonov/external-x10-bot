@@ -1,6 +1,6 @@
 import { box_tariffs_db } from "../../database/models/box_tariffs";
 import { config } from "../config/config";
-import { article, DateKey, MarketingObject, ObjectOther, SKU } from "../dto/sku&report";
+import { article, DateKey, MarketingObject, ObjectOther, OrdersObject, SalesObject, SKU } from "../dto/sku&report";
 import { BoxTariff } from "../dto/boxTariffs";
 import { create31DaysObject  } from "./time";
 import { parsePercent } from "./parse";
@@ -195,4 +195,46 @@ export function calculateRevByOne(sku: SKU): number {
     console.error('error calculating rev by one, id: ' + sku.chat_id, ", sku: " + sku.article)
     return 0
   }
+}
+
+export function processingOrdersReport(ordersResponse: Record<string, any>, dateFrom: DateKey) {
+  const result: OrdersObject = {};
+
+  ordersResponse.data.forEach((order: Record<string, any>) => {
+    const date = order.date.split('T')[0]
+    const article = order.nmId as article
+
+    if (date === dateFrom) {
+      if (!result[article]) {
+        result[article] = 1
+      } else {
+        result[article] += 1
+      }
+
+    }
+  });
+
+  return result;
+}
+
+export function processingSalesData(salesResponse: Record<string, any>, nmIDs: article[]) {
+  const result: Record<article, SalesObject> = {};
+  nmIDs.forEach(nm => result[nm] = {})
+
+  salesResponse.data.forEach((sale: Record<string, any>) => {
+    if (nmIDs.includes(sale.nmId)) {
+      const date = sale.date.split('T')[0]
+      if (!result[sale.nmId][date]) {
+        result[sale.nmId][date] = {
+          infoBuysCount: 1,
+          infoBuysSum: sale.priceWithDisc
+        }
+      } else {
+        result[sale.nmId][date].infoBuysCount += 1
+        result[sale.nmId][date].infoBuysSum += sale.priceWithDisc
+      }
+    }
+  });
+
+  return result;
 }

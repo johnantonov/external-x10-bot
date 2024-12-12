@@ -9,6 +9,10 @@ export const config = {
   maxSku: 10,
   reportStopTime: 0,
 
+  urls: {
+   ordersReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/orders'
+  },
+
   pdf: {
     tableDays: 5,
     skuCol: 3,

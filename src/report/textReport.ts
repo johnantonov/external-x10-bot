@@ -1,4 +1,4 @@
-import { SKU, TextReportData } from "../dto/sku&report";
+import { OrdersObject, SKU, TextReportData } from "../dto/sku&report";
 import { calculateRevByOne } from "../utils/dataProcessing";
 import { formatNumber, NumberOrZero } from "../utils/string&number";
 import { getTodayDate, getYesterdayDate } from "../utils/time";
@@ -99,4 +99,39 @@ function initTotalStockReportData() {
     stockSum: 0,
     rev: 0,
   }
+}
+
+export function createOrdersReportText(data: OrdersObject) {
+  // const total = initTotalStockReportData();
+
+  return 'test'
+
+  // let message = '<b>Итого:</b>\n';
+  // let articlesTexts = '';
+
+  // const articles = data.map(sku => {
+  //   const stockCount = sku.order_info?.stock || 0;
+  //   const stockSum = stockCount * sku.self_cost;
+  //   const rev = calculateRevByOne(sku) * stockCount;
+
+  //   total.stockSum += stockSum;
+  //   total.stockCount += stockCount;
+  //   total.rev += rev;
+
+  //   return {
+  //     article: sku.article,
+  //     vendor_code: sku.vendor_code,
+  //     stockCount,
+  //     stockSum,
+  //     rev
+  //   };
+  // });
+
+  // articles.sort((a, b) => b.rev - a.rev);
+
+  // articles.forEach(article => {
+  //   articlesTexts += `\n\n<b>${article.article}\n${article.vendor_code}</b>\nОстатки: ${article.stockCount} шт, ${formatNumber(article.stockSum)}₽\nПотенц. Прибыль: ${formatNumber(article.rev)}₽`;
+  // });
+
+  // return message + `Остатки: ${total.stockCount} шт, ${formatNumber(total.stockSum)}₽\nПотенц. Прибыль: ${formatNumber(total.rev)}₽` + articlesTexts;
 }

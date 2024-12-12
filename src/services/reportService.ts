@@ -3,11 +3,11 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 import cron from 'node-cron';
 import pool from '../../database/db';
-import { create31DaysObject, getXdaysAgoArr, getYesterdayDate } from '../utils/time';
+import { create31DaysObject, getTodayDate, getXdaysAgoArr, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
-import { DateKey, MarketingObject, ObjectOther, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku&report';
-import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns } from '../utils/dataProcessing';
+import { DateKey, MarketingObject, ObjectOther, OrdersObject, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku&report';
+import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns, processingOrdersReport, processingSalesData } from '../utils/dataProcessing';
 import { formatError, NumberOrZero } from '../utils/string&number';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/buttons';
@@ -18,10 +18,11 @@ import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 import { generateReportHtml } from '../report/reportGenerator';
-import { createReportMessage, createStockReportText } from '../report/textReport';
+import { createOrdersReportText, createReportMessage, createStockReportText } from '../report/textReport';
 import { User } from '../dto/user';
 import { config } from '../config/config';
 import express from "express";
+import { texts } from '../components/texts';
 
 dotenv.config();
 
@@ -424,24 +425,8 @@ export class ReportService {
       const salesResponse = await axios.get(salesUrl, {
         headers: headers
       });
-    
-      const result: Record<article, SalesObject> = {};
-      nmIDs.forEach(nm => result[nm] = {})
-    
-      salesResponse.data.forEach((sale: Record<string, any>) => {
-        if (nmIDs.includes(sale.nmId)) {
-          const date = sale.date.split('T')[0]
-          if (!result[sale.nmId][date]) {
-            result[sale.nmId][date] = {
-              infoBuysCount: 1,
-              infoBuysSum: sale.priceWithDisc
-            }
-          } else {
-            result[sale.nmId][date].infoBuysCount += 1
-            result[sale.nmId][date].infoBuysSum += sale.priceWithDisc
-          }
-        }
-      });
+
+      const result = processingSalesData(salesResponse, nmIDs)
       return result
     } catch (e) {
       formatError(e, 'Error fetching sales')
@@ -530,11 +515,27 @@ export class ReportService {
   }
 
   async processStockReport(articles: SKU[], chat_id: number) {
-    const messageText = createStockReportText(articles)
-    if (messageText) {
-      await this.sendMessage(chat_id, messageText)
+    try {
+      const messageText = createStockReportText(articles)
+      if (messageText) {
+        await this.sendMessage(chat_id, messageText)
+      }
+    } catch (e) {
+      console.error('Error processStockReport: ', e)
     }
   }
+
+  async processOrdersReport(ordersObj: OrdersObject, chat_id: number) {
+    try {
+      const messageText = createOrdersReportText(ordersObj)
+      if (messageText) {
+        await this.sendMessage(chat_id, messageText)
+      }
+    } catch (e) {
+      console.error('Error processOrdersReport: ', e)
+    }
+  }
+
 
   async run(): Promise<void | null> {
     try {
@@ -576,7 +577,7 @@ export class ReportService {
           await this.deleteMessage(targetChat, loadingMsgId) 
         } 
       } else {
-        this.sendMessage(targetChat, "Возникла ошибка при получении данных о товарах")
+        this.sendMessage(targetChat, texts.reportErrorGettingData)
         await this.deleteMessage(targetChat, loadingMsgId)
       }
     } catch (error) {
@@ -598,11 +599,40 @@ export class ReportService {
           await this.deleteMessage(targetChat, loadingMsgId) 
         } 
       } else {
-        this.sendMessage(targetChat, "Возникла ошибка при получении данных о товарах")
+        this.sendMessage(targetChat, texts.reportErrorGettingData)
         await this.deleteMessage(targetChat, loadingMsgId)
       }
     } catch (error) {
-      console.error('Error running report for user: ', error);
+      console.error('Error running stock report for user: ', error);
+    }
+  }
+
+  async runOrdersReportForUser(chat_id: number, loadingMsgId: number, target_chat_id?: number): Promise<void> {
+    try {
+      const wb_api_key = (await users_db.getUserById(chat_id))?.wb_api_key
+      const targetChat = target_chat_id || chat_id;
+      const dateFrom = getTodayDate();
+
+      try {
+        const ordersResponse = await axios.get(config.urls.ordersReport + dateFrom, {
+          headers: {
+            'Authorization': wb_api_key,
+            'Content-Type': 'application/json'
+          }
+        })
+
+        const logData = ordersResponse.data
+        console.log(JSON.stringify(logData))
+
+        let orders = processingOrdersReport(ordersResponse, dateFrom);
+        await this.processOrdersReport(orders, targetChat)
+        await this.deleteMessage(targetChat, loadingMsgId) 
+      } catch {
+        this.sendMessage(targetChat, texts.reportErrorGettingData)
+        await this.deleteMessage(targetChat, loadingMsgId)
+      }
+    } catch (error) {
+      console.error('Error running orders report for user: ', error);
     }
   }
 
@@ -684,12 +714,33 @@ app.get("/prepare", async (req, res) => {
     res.status(500).json({ success: false, message: 'Error prepare reports' });
   }
 });
+
 app.get("/run", async (req, res) => {
   try {
     const result = await reportService.run()
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error run reprot service' });
+  }
+});
+
+app.get("/generate-orders-report", async (req, res) => {
+  const { chat_id, loadingMsgId } = req.body; 
+  try {
+    const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId); 
+    res.status(200).json({ success: true, data: reportData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error run report service for user' });
+  }
+});
+
+app.post("/admin-generate-orders-report", async (req, res) => {
+  const { admin_chat_id, chat_id, loadingMsgId } = req.body; 
+  try {
+    const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId, admin_chat_id); 
+    res.status(200).json({ success: true, data: reportData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error run report service for user' });
   }
 });
 

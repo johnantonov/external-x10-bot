@@ -2,19 +2,8 @@ import axios from "axios";
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export async function requestReport(chat_id: string | number, loadingMsgId: number) {
-  try {
-    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-report`, { 
-      chat_id: chat_id,
-      loadingMsgId: loadingMsgId
-    });
-    
-    return response.data;
-  } catch (error) {
-    console.error("Error сalling ReportService:", error);
-    return null
-  }
-}
+// *************************************
+// ОТЧЕТЫ ПО СКЛАДУ
 export async function requestStockReport(chat_id: string | number, loadingMsgId: number) {
   try {
     const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-stock-report`, { 
@@ -42,6 +31,40 @@ export async function adminRequestStockReport(admin_chat_id: string | number, ch
     return null
   }
 }
+
+// *************************************
+// ОТЧЕТЫ ПО ЗАКАЗАМ
+export async function requestOrdersReport(chat_id: string | number, loadingMsgId: number) {
+  try {
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-stock-report`, { 
+      chat_id: chat_id,
+      loadingMsgId: loadingMsgId
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Error сalling ReportService:", error);
+    return null
+  }
+}
+
+export async function adminRequestOrdersReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number) {
+  try {
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/admin-generate-stock-report`, { 
+      admin_chat_id: admin_chat_id,
+      chat_id: chat_id,
+      loadingMsgId: loadingMsgId
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Error сalling ReportService:", error);
+    return null
+  }
+}
+
+// *************************************
+// ПОДГОТОВКА ОСНОВНОГО ОТЧЕТА И ОТПРАВКА
 export async function requestPrepareReports() {
   try {
     const response = await axios.get(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/prepare`);
@@ -51,6 +74,21 @@ export async function requestPrepareReports() {
     return null
   }
 }
+
+export async function requestReport(chat_id: string | number, loadingMsgId: number) {
+  try {
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-report`, { 
+      chat_id: chat_id,
+      loadingMsgId: loadingMsgId
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Error сalling ReportService:", error);
+    return null
+  }
+}
+
 export async function requestRunReportService() {
   try {
     const response = await axios.get(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/run`);
@@ -60,6 +98,7 @@ export async function requestRunReportService() {
     return null
   }
 }
+
 export async function adminRequestReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number) {
   try {
     const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/admin-generate-report`, { 

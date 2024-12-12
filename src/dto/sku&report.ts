@@ -47,6 +47,8 @@ export type SalesData = {
   infoBuysSum: number;
 }
 
+export type OrdersObject = Record<article, number>;
+
 export type DayData = {
   buysSum: number;
   buysCount: number;

@@ -10,22 +10,26 @@ import { updateCommissions } from "../utils/comissions";
 import { articles_db } from "../../database/models/articles";
 import { updateBoxTariffs } from "../utils/boxTariffs";
 import { RediceService } from "../bot";
-import { adminRequestReport, adminRequestStockReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
+import { adminRequestOrdersReport, adminRequestReport, adminRequestStockReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
 import { BroadcastService } from "../services/broadcastService";
 import { sendBotStats } from "../services/botStatsService";
 
 dotenv.config();
 
 const helpInfo = `
+/admin__help - команды
+
 /admin__send_all_message_{text msg} - отправка сообщения всем пользователям, можно прикрепить фото или видео
 /admin__send_filter_message_{text msg} - отправка сообщения отфильтрованным пользователям, можно прикрепить фото или видео
 /admin__forward_message - команда пересылки сообщения всем, нужно ответить на пересылаемое сообщение
 /admin__forward_filter_message - команда пересылки сообщения отфильтрованным, нужно ответить на пересылаемое сообщение
 
+<b>📂 ОТЧЕТЫ</b>
 /admin__run_report_service - запуск репорт сервиса на прошедший час
 /admin__prepare_report_service - запуск подготовки данных для отчета
 /admin__get_report_for_{id} - получить отчет пользователя
-/admin__get_express_report_for_{id} - получить краткий отчет пользователя на сейчас
+/admin__get_stock_report_for_{id} - получить отчет по складам пользователя на сейчас
+/admin__get_orders_report_for_{id} - получить отчет по заказам пользователя на сейчас
 
 /admin__my_id - получить свой tg id
 /admin__check_state - проверить текущий юзер статус в редисе
@@ -46,8 +50,6 @@ const helpInfo = `
 <b>📊 СТАТИСТИКА</b>
 /admin__send_base_stats_to_webapp - отправка основной статистики вебапп
 /admin__get_stats - вывод основной статистики в чат
-
-/admin__help - команды
 `
 
 export async function handleAdminCommand(chat_id: number, msg: Message, bot: TelegramBot, mediaGroup?: any) {
@@ -89,8 +91,8 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       adminRequestReport(chat_id, user_chat_id, res.message_id)
     }
 
-    if (action.startsWith('get_express_report_for')) {
-      const user_chat_id = action.split('get_express_report_for_')[1];
+    if (action.startsWith('get_stock_report_for')) {
+      const user_chat_id = action.split('get_stock_report_for_')[1];
 
       if (!chat_id) {
         await bot.sendMessage(chat_id, 'Ошибка разбора ID');
@@ -99,6 +101,18 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
 
       const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
       adminRequestStockReport(chat_id, user_chat_id, res.message_id)
+    }
+    
+    if (action.startsWith('get_orders_report_for_')) {
+      const user_chat_id = action.split('get_orders_report_for_')[1];
+
+      if (!chat_id) {
+        await bot.sendMessage(chat_id, 'Ошибка разбора ID');
+        return;
+      }
+
+      const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
+      adminRequestOrdersReport(chat_id, user_chat_id, res.message_id)
     }
 
     if (action.startsWith('send_all_message')) {
