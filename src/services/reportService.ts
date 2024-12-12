@@ -631,7 +631,8 @@ export class ReportService {
         let orders = processingOrdersReport(ordersResponse, dateFrom);
         await this.processOrdersReport(orders, targetChat)
         await this.deleteMessage(targetChat, loadingMsgId) 
-      } catch {
+      } catch (error) {
+        console.error('Error running orders report for user: ', error);
         this.sendMessage(targetChat, texts.reportErrorGettingData)
         await this.deleteMessage(targetChat, loadingMsgId)
       }
