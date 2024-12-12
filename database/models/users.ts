@@ -62,6 +62,7 @@ class UsersModel extends BaseModel<User> {
       `;
   
       await this.pool.query(query, values);
+      console.log('success: '+ query)
     } catch (e) {
       console.error('Error in upsertUser:', e);
     }
