@@ -101,35 +101,35 @@ function initTotalStockReportData() {
   }
 }
 
-export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | 'today') {
-  let total = 0
-  let articlesTexts = '';
+// export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | 'today') {
+//   let total = 0
+//   let articlesTexts = '';
 
-  const nms = Object.keys(data)
+//   const nms = Object.keys(data)
 
-  const articles = nms.map(sku => {
-    total += data[sku]?.orders;
-    const ordersCount = data[sku]?.orders;
-    const vendor_code = data[sku]?.vendor_code;
-    const subject = data[sku]?.subject;
+//   const articles = nms.map(sku => {
+//     total += data[sku]?.orders;
+//     const ordersCount = data[sku]?.orders;
+//     const vendor_code = data[sku]?.vendor_code;
+//     const subject = data[sku]?.subject;
 
-    return {
-      article: sku,
-      vendor_code: vendor_code,
-      ordersCount: ordersCount,
-      subject: subject
-    }
-  })
+//     return {
+//       article: sku,
+//       vendor_code: vendor_code,
+//       ordersCount: ordersCount,
+//       subject: subject
+//     }
+//   })
 
-  articles.sort((a, b) => a.subject.localeCompare(b.subject, ['ru', 'en'], { sensitivity: 'base' }));
+//   articles.sort((a, b) => a.subject.localeCompare(b.subject, ['ru', 'en'], { sensitivity: 'base' }));
 
-  articles.forEach(article => {
-    articlesTexts += `\n<b>- ${article.subject}</b> ${article.vendor_code}: ${article.ordersCount}`;
-  });
+//   articles.forEach(article => {
+//     articlesTexts += `\n<b>- ${article.subject}</b> ${article.vendor_code}: ${article.ordersCount}`;
+//   });
 
-  let message = `<b>Заказы за ${date === 'today' ? 'сегодня' : 'вчера'}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
-  return message + articlesTexts;
-}
+//   let message = `<b>Заказы за ${date === 'today' ? 'сегодня' : 'вчера'}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
+//   return message + articlesTexts;
+// }
 
 export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | 'today') {
   let total = 0;
