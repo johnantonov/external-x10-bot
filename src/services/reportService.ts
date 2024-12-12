@@ -525,9 +525,9 @@ export class ReportService {
     }
   }
 
-  async processOrdersReport(ordersObj: OrdersObject, chat_id: number) {
+  async processOrdersReport(ordersObj: OrdersObject, chat_id: number, date: 'yesterday' | 'today') {
     try {
-      const messageText = createOrdersReportText(ordersObj)
+      const messageText = createOrdersReportText(ordersObj, date)
       if (messageText) {
         await this.sendMessage(chat_id, messageText)
       }
@@ -607,15 +607,21 @@ export class ReportService {
     }
   }
 
-  async runOrdersReportForUser(chat_id: number, loadingMsgId: number, target_chat_id?: number): Promise<void> {
+  async runOrdersReportForUser(chat_id: number, loadingMsgId: number, target_chat_id: number, date: 'today' | 'yesterday'): Promise<void> {
     try {
       const wb_api_key = (await users_db.getUserById(chat_id))?.wb_api_key
       const targetChat = target_chat_id || chat_id;
-      const dateFrom = getTodayDate();
+      let dateFrom;
 
-      console.log(wb_api_key)
-      console.log(targetChat)
-      console.log(dateFrom)
+      if (date === 'today') {
+        dateFrom = getTodayDate();
+      } else if (date === 'yesterday') {
+        dateFrom = getYesterdayDate() as DateKey
+      } else {
+        console.error('Error running orders report for user: parsing day');
+        this.sendMessage(targetChat, texts.reportErrorGettingData)
+        return this.deleteMessage(targetChat, loadingMsgId)
+      }
 
       try {
         const ordersResponse = await axios.get(config.urls.ordersReport + '?dateFrom=' + dateFrom, {
@@ -625,11 +631,8 @@ export class ReportService {
           }
         })
 
-        const logData = ordersResponse.data
-        console.log(JSON.stringify(logData))
-
         let orders = processingOrdersReport(ordersResponse, dateFrom);
-        await this.processOrdersReport(orders, targetChat)
+        await this.processOrdersReport(orders, targetChat, date)
         await this.deleteMessage(targetChat, loadingMsgId) 
       } catch (error) {
         console.error('Error running orders report for user: ', error);
@@ -730,9 +733,9 @@ app.get("/run", async (req, res) => {
 });
 
 app.post("/generate-orders-report", async (req, res) => {
-  const { chat_id, loadingMsgId } = req.body; 
+  const { chat_id, loadingMsgId, date } = req.body; 
   try {
-    const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId); 
+    const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId, chat_id, date); 
     res.status(200).json({ success: true, data: reportData });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error run report service for user' });
@@ -740,9 +743,9 @@ app.post("/generate-orders-report", async (req, res) => {
 });
 
 app.post("/admin-generate-orders-report", async (req, res) => {
-  const { admin_chat_id, chat_id, loadingMsgId } = req.body; 
+  const { admin_chat_id, chat_id, loadingMsgId, date } = req.body; 
   try {
-    const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId, admin_chat_id); 
+    const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId, admin_chat_id, date); 
     res.status(200).json({ success: true, data: reportData });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error run report service for user' });

@@ -173,7 +173,7 @@ export class CallbackProcessor {
   }
 
   private isOrdersReport(): boolean {
-    return this.userCallbackData === CallbackData.ordersReport
+    return this.userCallbackData.startsWith(CallbackData.ordersReport as string)
   }
 
   private isRefMenu(): boolean {

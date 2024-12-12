@@ -101,7 +101,7 @@ function initTotalStockReportData() {
   }
 }
 
-export function createOrdersReportText(data: OrdersObject) {
+export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | 'today') {
   let total = 0
 
   let articlesTexts = '';
@@ -128,6 +128,6 @@ export function createOrdersReportText(data: OrdersObject) {
     articlesTexts += `\n\n<b>- ${article.subject}</b> ${article.vendor_code}: ${article.ordersCount}`;
   });
 
-  let message = `<b>Заказы с ${getTodayDate()}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
+  let message = `<b>Заказы за ${date === 'today' ? 'сегодня' : 'вчера'}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
   return message + articlesTexts;
 }

@@ -34,11 +34,12 @@ export async function adminRequestStockReport(admin_chat_id: string | number, ch
 
 // *************************************
 // ОТЧЕТЫ ПО ЗАКАЗАМ
-export async function requestOrdersReport(chat_id: string | number, loadingMsgId: number) {
+export async function requestOrdersReport(chat_id: string | number, loadingMsgId: number, date: 'today' | 'yesterday') {
   try {
     const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-orders-report`, { 
       chat_id: chat_id,
-      loadingMsgId: loadingMsgId
+      loadingMsgId: loadingMsgId,
+      date: date
     });
     
     return response.data;
@@ -48,12 +49,13 @@ export async function requestOrdersReport(chat_id: string | number, loadingMsgId
   }
 }
 
-export async function adminRequestOrdersReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number) {
+export async function adminRequestOrdersReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number, date: 'today' | 'yesterday') {
   try {
     const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/admin-generate-orders-report`, { 
       admin_chat_id: admin_chat_id,
       chat_id: chat_id,
-      loadingMsgId: loadingMsgId
+      loadingMsgId: loadingMsgId, 
+      date: date
     });
     
     return response.data;
