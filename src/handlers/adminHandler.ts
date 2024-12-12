@@ -8,6 +8,7 @@ import axios from "axios";
 import { updateConversions } from "../utils/conversions";
 import { updateCommissions } from "../utils/comissions";
 import { articles_db } from "../../database/models/articles";
+import { startImport } from "../../database/import";
 import { updateBoxTariffs } from "../utils/boxTariffs";
 import { RediceService } from "../bot";
 import { adminRequestOrdersReport, adminRequestReport, adminRequestStockReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
@@ -341,6 +342,12 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       const msg = await articles_db.getArticle(+id, article)
 
       await bot.sendMessage(chat_id, `${JSON.stringify(msg)}`)
+    }
+
+    // ! TECH
+    if (action.startsWith('start_import')) {
+      console.log('import started by admin')
+      startImport()
     }
 
   } catch (e) {
