@@ -122,10 +122,10 @@ export function createOrdersReportText(data: OrdersObject, date: 'yesterday' | '
     }
   })
 
-  articles.sort((a, b) => b.ordersCount - a.ordersCount);
+  articles.sort((a, b) => a.subject.localeCompare(b.subject, ['ru', 'en'], { sensitivity: 'base' }));
 
   articles.forEach(article => {
-    articlesTexts += `\n\n<b>- ${article.subject}</b> ${article.vendor_code}: ${article.ordersCount}`;
+    articlesTexts += `\n<b>- ${article.subject}</b> ${article.vendor_code}: ${article.ordersCount}`;
   });
 
   let message = `<b>Заказы за ${date === 'today' ? 'сегодня' : 'вчера'}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}`;
