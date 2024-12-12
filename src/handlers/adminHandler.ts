@@ -14,6 +14,7 @@ import { RediceService } from "../bot";
 import { adminRequestOrdersReport, adminRequestReport, adminRequestStockReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
 import { BroadcastService } from "../services/broadcastService";
 import { sendBotStats } from "../services/botStatsService";
+import { DateKey } from "../dto/sku&report";
 
 dotenv.config();
 
@@ -30,8 +31,7 @@ const helpInfo = `
 /admin__prepare_report_service - запуск подготовки данных для отчета
 /admin__get_report_for_{id} - получить отчет пользователя
 /admin__get_stock_report_for_{id} - получить отчет по складам пользователя на сейчас
-/admin__get_today_orders_report_for_{id} - получить отчет по заказам пользователя на сейчас
-/admin__get_yesterday_orders_report_for_{id} - получить отчет по заказам пользователя на сейчас
+/admin__get_orders_report_for_{id}_date_{date (yyyy-mm-dd)} - получить отчет по заказам пользователя за дату
 
 /admin__my_id - получить свой tg id
 /admin__check_state - проверить текущий юзер статус в редисе
@@ -104,9 +104,9 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
       adminRequestStockReport(chat_id, user_chat_id, res.message_id)
     }
-    
     if (action.startsWith('get_today_orders_report_for_')) {
-      const user_chat_id = action.split('get_orders_report_for_')[1];
+      const splittedPart = action.split('get_orders_report_for_')[1];
+      const [user_chat_id, date] = splittedPart.split('_date_')
 
       if (!chat_id) {
         await bot.sendMessage(chat_id, 'Ошибка разбора ID');
@@ -114,19 +114,7 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       }
 
       const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
-      adminRequestOrdersReport(chat_id, user_chat_id, res.message_id, 'today')
-    }
-
-    if (action.startsWith('get_yesterday_orders_report_for_')) {
-      const user_chat_id = action.split('get_orders_report_for_')[1];
-
-      if (!chat_id) {
-        await bot.sendMessage(chat_id, 'Ошибка разбора ID');
-        return;
-      }
-
-      const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
-      adminRequestOrdersReport(chat_id, user_chat_id, res.message_id, 'yesterday')
+      adminRequestOrdersReport(chat_id, user_chat_id, res.message_id, date as DateKey)
     }
 
     if (action.startsWith('send_all_message')) {
