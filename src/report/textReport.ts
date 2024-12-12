@@ -102,36 +102,32 @@ function initTotalStockReportData() {
 }
 
 export function createOrdersReportText(data: OrdersObject) {
-  // const total = initTotalStockReportData();
+  let total = 0
 
-  return 'test'
+  let articlesTexts = '';
 
-  // let message = '<b>Итого:</b>\n';
-  // let articlesTexts = '';
+  const nms = Object.keys(data)
 
-  // const articles = data.map(sku => {
-  //   const stockCount = sku.order_info?.stock || 0;
-  //   const stockSum = stockCount * sku.self_cost;
-  //   const rev = calculateRevByOne(sku) * stockCount;
+  const articles = nms.map(sku => {
+    total += data[sku]?.orders;
+    const ordersCount = data[sku]?.orders;
+    const vendor_code = data[sku]?.vendor_code;
+    const subject = data[sku]?.subject;
 
-  //   total.stockSum += stockSum;
-  //   total.stockCount += stockCount;
-  //   total.rev += rev;
+    return {
+      article: sku,
+      vendor_code: vendor_code,
+      ordersCount: ordersCount,
+      subject: subject
+    }
+  })
 
-  //   return {
-  //     article: sku.article,
-  //     vendor_code: sku.vendor_code,
-  //     stockCount,
-  //     stockSum,
-  //     rev
-  //   };
-  // });
+  articles.sort((a, b) => b.ordersCount - a.ordersCount);
 
-  // articles.sort((a, b) => b.rev - a.rev);
+  articles.forEach(article => {
+    articlesTexts += `\n\n<b>- ${article.subject}</b> ${article.vendor_code}: ${article.ordersCount}`;
+  });
 
-  // articles.forEach(article => {
-  //   articlesTexts += `\n\n<b>${article.article}\n${article.vendor_code}</b>\nОстатки: ${article.stockCount} шт, ${formatNumber(article.stockSum)}₽\nПотенц. Прибыль: ${formatNumber(article.rev)}₽`;
-  // });
-
-  // return message + `Остатки: ${total.stockCount} шт, ${formatNumber(total.stockSum)}₽\nПотенц. Прибыль: ${formatNumber(total.rev)}₽` + articlesTexts;
+  let message = `Заказы с ${getTodayDate()}<b>Итого: ${total} заказов</b>\n`;
+  return message + articlesTexts;
 }

@@ -145,7 +145,7 @@ export const mainOptions = (type?: user_type) => {
   const menu: Array<Array<any>> = [
     [mainButtons.getAllReportNow],
     [mainButtons.stockReport],
-    // [mainButtons.ordersReport],
+    [mainButtons.ordersReport],
     [mainButtons.articlesMenu],
     [mainButtons.changeTime],
     [mainButtons.info],

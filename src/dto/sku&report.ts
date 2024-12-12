@@ -47,7 +47,12 @@ export type SalesData = {
   infoBuysSum: number;
 }
 
-export type OrdersObject = Record<article, number>;
+export type OrdersObject = Record<article, OrdersData>;
+export type OrdersData = {
+  orders: number;
+  vendor_code: string;
+  subject: string;
+}
 
 export type DayData = {
   buysSum: number;

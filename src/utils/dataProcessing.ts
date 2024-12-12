@@ -203,12 +203,14 @@ export function processingOrdersReport(ordersResponse: Record<string, any>, date
   ordersResponse.data.forEach((order: Record<string, any>) => {
     const date = order.date.split('T')[0]
     const article = order.nmId as article
+    const vendorCode = order.supplierArticle
+    const subject = order.subject
 
     if (date === dateFrom) {
       if (!result[article]) {
-        result[article] = 1
+        result[article] = { vendor_code: vendorCode, subject: subject, orders: 1 }
       } else {
-        result[article] += 1
+        result[article].orders += 1 
       }
 
     }
