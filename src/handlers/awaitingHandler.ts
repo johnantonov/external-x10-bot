@@ -6,9 +6,10 @@ import dotenv from 'dotenv';
 import { articles_db } from "../../database/models/articles";
 import jwt from 'jsonwebtoken'; 
 import { texts } from "../components/texts";
-import { parsePercent, parseSum } from "../utils/parse";
+import { parseDate, parsePercent, parseSum } from "../utils/parse";
 import { user_type } from "../dto/user";
 import { checkAuth } from "../utils/auth";
+import { requestOrdersReport } from "../utils/requestReport";
 
 dotenv.config();
 
@@ -120,6 +121,8 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.error('Error processing add tax: ', e)
         return handleError(texts.error);
       }
+ 
+      // обработка ситуации когда мы ждем от пользователя ввода себестоимости
     } else if (state.startsWith(rStates.waitSelfCost)) {
       try {
         const article = state.split('?')[1]
@@ -128,6 +131,17 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         return new AwaitingAnswer({ result: true, text: texts.addedSelfcost, type: 'registered' });
       } catch (e) {
         console.error('Error processing update self cost: ', e)
+        return handleError(texts.error);
+      }
+
+    // обработка ситуации когда мы ждем от пользователя ввода даты для отчета
+    } else if (state.startsWith(rStates.waitDateForOrders)) {
+      try {
+        const date = parseDate(text)
+        if (!date) return handleError(texts.errorParseDate + texts.getOrdersReportText)
+        return new AwaitingAnswer({ result: true, text: texts.loadingReports, type: 'registered', data: date });
+      } catch (e) {
+        console.error('Error processing orders report in awaiting handler: ', e)
         return handleError(texts.error);
       }
     }

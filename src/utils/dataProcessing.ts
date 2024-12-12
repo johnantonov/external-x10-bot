@@ -197,7 +197,7 @@ export function calculateRevByOne(sku: SKU): number {
   }
 }
 
-export function processingOrdersReport(ordersResponse: Record<string, any>, dateFrom: DateKey) {
+export function processOrdersReportData(ordersResponse: Record<string, any>, dateFrom: DateKey) {
   const result: OrdersObject = {};
 
   ordersResponse.data.forEach((order: Record<string, any>) => {

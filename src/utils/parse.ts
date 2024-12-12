@@ -1,5 +1,5 @@
 import { resolve } from "path"
-import { article, SKU, SKUCallbackData } from "../dto/sku&report"
+import { article, DateKey, SKU, SKUCallbackData } from "../dto/sku&report"
 
 export const getPath = (imageName: string) => {
   return resolve(__dirname, `../../../public/messageImages/${imageName}`)
@@ -70,6 +70,45 @@ export const parseArticleData = (data: string): SKUCallbackData => {
     art: newData[1],
     action: newData[2],
   }
+}
+
+export function parseDate(input: string): DateKey | null {
+  const dateRegex = /^(\d{2}|\d{4})[./-](\d{2})[./-](\d{2}|\d{4})$/;
+
+  const match = input.match(dateRegex);
+  if (!match) {
+    return null; 
+  }
+
+  let day, month, year;
+
+  if (match[1].length === 4) {
+    year = match[1];
+    month = match[2];
+    day = match[3];
+  } else if (match[3].length === 4) {
+    day = match[1];
+    month = match[2];
+    year = match[3];
+  } else {
+    day = match[1];
+    month = match[2];
+    year = `20${match[3]}`; 
+  }
+
+  day = day.padStart(2, '0');
+  month = month.padStart(2, '0');
+
+  return `${year}-${month}-${day}` as DateKey;
+
+  // TEST
+  // console.log(parseDate("10-12-2024"));
+  // console.log(parseDate("2024-12-10"));
+  // console.log(parseDate("10.12.24"));
+  // console.log(parseDate("10.12.2024"));  
+  // console.log(parseDate("10/12/24"));
+  // console.log(parseDate("10/12/2024"));
+  // console.log(parseDate("2024/12/10"));
 }
 
 export const newArticleData = (data: SKUCallbackData): string => {

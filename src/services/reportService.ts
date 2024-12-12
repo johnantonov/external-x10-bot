@@ -7,7 +7,7 @@ import { create31DaysObject, getTodayDate, getXdaysAgoArr, getYesterdayDate } fr
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
 import { DateKey, MarketingObject, ObjectOther, OrdersObject, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku&report';
-import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns, processingOrdersReport, processingSalesData } from '../utils/dataProcessing';
+import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns, processingSalesData, processOrdersReportData } from '../utils/dataProcessing';
 import { formatError, NumberOrZero } from '../utils/string&number';
 import { updateConversions } from '../utils/conversions';
 import { returnNewMenu } from '../components/buttons';
@@ -525,7 +525,7 @@ export class ReportService {
     }
   }
 
-  async processOrdersReport(ordersObj: OrdersObject, chat_id: number, date: 'yesterday' | 'today') {
+  async processOrdersReport(ordersObj: OrdersObject, chat_id: number, date: DateKey) {
     try {
       const messageText = createOrdersReportText(ordersObj, date)
       if (messageText) {
@@ -607,31 +607,20 @@ export class ReportService {
     }
   }
 
-  async runOrdersReportForUser(chat_id: number, loadingMsgId: number, target_chat_id: number, date: 'today' | 'yesterday'): Promise<void> {
+  async runOrdersReportForUser(chat_id: number, loadingMsgId: number, target_chat_id: number, date: DateKey): Promise<void> {
     try {
       const wb_api_key = (await users_db.getUserById(chat_id))?.wb_api_key
       const targetChat = target_chat_id || chat_id;
-      let dateFrom;
-
-      if (date === 'today') {
-        dateFrom = getTodayDate();
-      } else if (date === 'yesterday') {
-        dateFrom = getYesterdayDate() as DateKey
-      } else {
-        console.error('Error running orders report for user: parsing day');
-        this.sendMessage(targetChat, texts.reportErrorGettingData)
-        return this.deleteMessage(targetChat, loadingMsgId)
-      }
 
       try {
-        const ordersResponse = await axios.get(config.urls.ordersReport + '?dateFrom=' + dateFrom, {
+        const ordersResponse = await axios.get(config.urls.ordersReport + '&dateFrom=' + date, {
           headers: {
             'Authorization': wb_api_key,
             'Content-Type': 'application/json'
           }
         })
 
-        let orders = processingOrdersReport(ordersResponse, dateFrom);
+        let orders = processOrdersReportData(ordersResponse, date);
         await this.processOrdersReport(orders, targetChat, date)
         await this.deleteMessage(targetChat, loadingMsgId) 
       } catch (error) {

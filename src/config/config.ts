@@ -10,7 +10,7 @@ export const config = {
   reportStopTime: 0,
 
   urls: {
-   ordersReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/orders'
+   ordersReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/orders?flag=1'
   },
 
   pdf: {

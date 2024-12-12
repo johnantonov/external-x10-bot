@@ -4,7 +4,7 @@ import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import { createEditData, MessageService } from "../services/messageManipulatorService";
-import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, ordersReportMenu, returnMenu, yesNo } from "../components/buttons";
+import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, returnMenu, yesNo } from "../components/buttons";
 import { users_db } from "../../database/models/users";
 import { getCurrentArticle, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
@@ -249,21 +249,27 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'orders report': 
-        const ordersCallback = userCallbackData.split('?')
+      try {
+        await RediceService.setUserState(chat_id, rStates.waitDateForOrders, ttls.usual)
+        editData = createEditData(texts.getOrdersReportText, returnBtn);
+      } catch (e) {
+        console.error('Error in interface of orders report')
+      }
 
-        if (!ordersCallback[1]) {
-          editData = createEditData(" ", ordersReportMenu());
-        } else {
-          MS.deleteAllMessages(chat_id);
-          const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports, { disable_notification: true });
+        // const ordersCallback = userCallbackData.split('?')
+        // if (!ordersCallback[1]) {
+        //   editData = createEditData(" ", ordersReportMenu());
+        // } else {
+        //   MS.deleteAllMessages(chat_id);
+        //   const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports, { disable_notification: true });
       
-          try {
-            requestOrdersReport(chat_id, loadingMsg.message_id, ordersCallback[1] as "today" | "yesterday"); 
-          } catch (error) {
-            console.error("Failed to generate report:", error);
-            if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
-          }
-        }
+        //   try {
+        //     requestOrdersReport(chat_id, loadingMsg.message_id, ordersCallback[1] as "today" | "yesterday"); 
+        //   } catch (error) {
+        //     console.error("Failed to generate report:", error);
+        //     if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
+        //   }
+        // }
       break;
 
     case 'ref':
