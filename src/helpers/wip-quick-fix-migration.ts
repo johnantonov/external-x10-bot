@@ -89,9 +89,15 @@ export const migrations = [
             PRIMARY KEY ("warehouseName")
         );`,
 
-        `CREATE TABLE messageJobs (
+        `CREATE TABLE IF NOT EXISTS messageJobs (
             user_id BIGINT NOT NULL PRIMARY KEY, 
             filter VARCHAR(255)
+        );`,
+
+        `CREATE TABLE IF NOT EXISTS sids (
+            sid VARCHAR PRIMARY KEY,
+            added_at TIMESTAMP DEFAULT NOW(),
+            added_by BIGINT
         );`
     ],
 

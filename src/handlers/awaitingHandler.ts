@@ -1,6 +1,7 @@
 import { AwaitingAnswer, UserMsg } from "../dto/messages";
 import { rStates } from "../redis";
 import { users_db } from "../../database/models/users";
+import { sids_db } from "../../database/models/sids";
 import dotenv from 'dotenv';
 import { articles_db } from "../../database/models/articles";
 import jwt from 'jsonwebtoken'; 
@@ -45,6 +46,8 @@ export async function awaitingHandler(data: UserMsg, state: string) {
           const oldSid = extractSidFromToken(oldApiKey);
           const newSid = extractSidFromToken(text);
 
+          await sids_db.isUniqueSid(newSid); // проверяем есть ли у нас в бд этот sid и добавляем его если нет
+
           if (newSid === oldSid) {
             await users_db.updateWbApiKey(chat_id, text);
             return new AwaitingAnswer({ result: true, text: texts.updatedWbKey, type: user?.type });
@@ -54,6 +57,13 @@ export async function awaitingHandler(data: UserMsg, state: string) {
             return new AwaitingAnswer({ result: true, text: texts.updatedWbKeyAndDeleted, type: user?.type });
           }
         } else { // если это новый пользователь, то ведем его - выставляем состояние ожидания SKU и расходов
+          const sid = extractSidFromToken(text);
+          const isUniqueSid = await sids_db.isUniqueSid(sid, user?.from_ref); // добавляем новый сид и проверяем его уникальность
+          
+          if (user?.from_ref && isUniqueSid) {
+            await users_db.updateSuccessRefs(user.from_ref)
+          }
+
           await users_db.updateType(chat_id, 'waitSku', text);
           return new AwaitingAnswer({ result: true, text: texts.addedNewKey, type: 'waitSku' });
         }
@@ -154,7 +164,6 @@ export function isKey(text: string, state: string): Boolean {
 export function extractSidFromToken(token: string): string {
   try {
     const decoded: any = jwt.decode(token);
-    // console.log(JSON.stringify(decoded))
     return decoded?.sid || '';
   } catch (e) {
     console.error('Ошибка декодирования JWT токена: ', e);

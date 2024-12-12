@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import pool from "../db";
 import { User, user_type } from "../../src/dto/user";
 import { formatDateForTimestamp } from "../../src/utils/time";
+import { Sid } from "../../src/dto/sids";
 dotenv.config();
 
 class UsersModel extends BaseModel<User> {
@@ -80,8 +81,17 @@ class UsersModel extends BaseModel<User> {
     }
   }
 
-  async updateSuccessRefs(chat_id: number) {
-    return
+  async updateSuccessRefs(chat_id: number): Promise<void> {
+    try {
+      const query = `
+        UPDATE users
+        SET success_refs = COALESCE(success_refs, 0) + 1
+        WHERE chat_id = $1
+      `;
+      await this.pool.query(query, [chat_id]);
+    } catch (e) {
+      console.error(`Error updating success_refs for user with chat_id: ${chat_id} -- `, e);
+    }
   }
 
   async updateLastReportCall(chat_id: number, reportType: 'last_report_call' | 'last_sec_report_call' = 'last_report_call') {
@@ -164,7 +174,7 @@ class UsersModel extends BaseModel<User> {
     }
   }
 
-  async updateType(chat_id: number, type: user_type, wb_api_key?: string | null): Promise<void> {
+  async updateType(chat_id: number, type: user_type, wb_api_key?: string | null, refData?: { sid: Sid['sid'], from_ref: User['from_ref'] }): Promise<void> {
     try {
       const updateData: Partial<User> = {
         type: type,
@@ -174,6 +184,11 @@ class UsersModel extends BaseModel<User> {
       if (wb_api_key) {
         updateData.wb_api_key = wb_api_key
         updateData.api_reg_at = formatDateForTimestamp(new Date());
+      }
+
+      // отрабатывает только когда пользователь имеет реферальный при регистрации, и указанный сид уникален, а также впервые добавляет wb key
+      if (refData) {
+        
       }
   
       await this.update('chat_id', chat_id, updateData, ['chat_id']);
