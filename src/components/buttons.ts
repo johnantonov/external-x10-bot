@@ -165,7 +165,7 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.changeTime],
     [mainButtons.info],
     // [mainButtons.ref],
-    [mainButtons.feedback]
+    // [mainButtons.feedback]
     // [mainButtons.stockReport, mainButtons.ordersReport],
     // [mainButtons.changeTime],
     // [mainButtons.changeWbApiKey, mainButtons.articlesMenu],
@@ -173,8 +173,10 @@ export const mainOptions = (type?: user_type) => {
   ];
 
   if (process.env.MODE === 'test') {
-    menu.splice(6, 0, [mainButtons.ref]);
+    menu.push([mainButtons.ref])
   }
+
+  menu.push([mainButtons.feedback])
 
   return new Options(menu).reply_markup;
 };
