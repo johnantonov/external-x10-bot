@@ -124,9 +124,10 @@ export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: D
     a.localeCompare(b, ['ru', 'en'], { sensitivity: 'base' })
   );
 
-  const rootWord = reportType === 'orders' ? 'заказ' : 'выкуп';
+  const rootWord = reportType === 'orders' ? 'заказ' : reportType === 'sales' ? 'выкуп' : 'возврат';
   const correctWord = getCorrectWordEnd(total, rootWord);
-  let currentMessage = `<b>${reportType === 'orders' ? "Заказы" : "Выкупы"} за ${date}</b>\nИтого: ${total} ${correctWord}\n`;
+
+  let currentMessage = `<b>${reportType === 'orders' ? 'Заказы' : reportType === 'sales' ? 'Выкупы' : 'Возвраты'} за ${date}</b>\nИтого: ${total} ${correctWord}\n`;
 
   sortedSubjects.forEach(subject => {
     const subjectHeader = `\n<b>- ${subject}</b>\n`; 

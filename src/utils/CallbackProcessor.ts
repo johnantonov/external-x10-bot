@@ -174,7 +174,9 @@ export class CallbackProcessor {
 
   private isOrdersOrSalesReport(): boolean {
     const cb = this.userCallbackData
-    return cb.startsWith(CallbackData.ordersReport as string) || cb.startsWith(CallbackData.salesReport as string)
+    return cb.startsWith(CallbackData.ordersReport as string) 
+    || cb.startsWith(CallbackData.salesReport as string)
+    || cb.startsWith(CallbackData.returnsReport as string)
   }
 
   private isRefMenu(): boolean {

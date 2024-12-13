@@ -78,6 +78,10 @@ export const CallbackData = {
   salesReportToday: 'sales?today',
   salesReportYesterday: 'sales?yesterday',
   salesReportDate: 'sales?date',
+  returnsReport: 'returns?',
+  returnsReportToday: 'returns?today',
+  returnsReportYesterday: 'returns?yesterday',
+  returnsReportDate: 'returns?date',
   feedback: 'https://t.me/+ZVISmofZZ_wwN2Ey',
 
   faq: 'faq',
@@ -92,30 +96,34 @@ export const mainButtons = {
   returnMain: { text: '🔙 Вернуться в главное меню', callback_data: CallbackData.returnMain },
   returnNewMenu: { text: '↩️ Меню', callback_data: CallbackData.returnNewMenu },
   returnFaq: { text: '↩️ FAQ', callback_data: CallbackData.faq },
-  getAllReportNow: { text: '📂 Сформировать отчет', callback_data: CallbackData.getAllReportNow },
+  getAllReportNow: { text: '📂 Отчет ТОП 10', callback_data: CallbackData.getAllReportNow },
   newSku: { text: '➕ Добавить SKU', callback_data: CallbackData.newSku },
   newTax: { text: '💸 Изменить % налога', callback_data: CallbackData.editTax },
   menu: { text: '↩️ Меню', callback_data: CallbackData.menu },
-  info: { text: 'ℹ️ Информация', callback_data: CallbackData.faq },
+  info: { text: 'ℹ️ Инфо', callback_data: CallbackData.faq },
   menuAndEdit: { text: '↩️ Меню', callback_data: CallbackData.menuAndEdit },
-  changeTime: { text: '🕘 Настроить расписание отчетов', callback_data: CallbackData.changeTime },
+  changeTime: { text: '🕘 Расписание', callback_data: CallbackData.changeTime },
   chooseTime: { text: '🕘 Выбрать время', callback_data: CallbackData.chooseTime },
   timeLater: { text: '➡️ Настроить позже', callback_data: CallbackData.timeLater },
   changeWbApiKey: { text: '🔑 Обновить ключ API', callback_data: CallbackData.changeWbApiKey },
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
-  articlesMenu: { text: '🔢 Артикулы', callback_data: CallbackData.articlesMenu },
+  articlesMenu: { text: '🔢 Артикулы ТОП 10', callback_data: CallbackData.articlesMenu },
   testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
-  stockReport: { text: '📦 Отчёт по остаткам', callback_data: CallbackData.stockReport },
-  ordersReport: { text: '🛒 Заказы за день', callback_data: CallbackData.ordersReport},
+  stockReport: { text: '📦 Остатки ТОП 10', callback_data: CallbackData.stockReport },
+  ordersReport: { text: '🛒 Заказы', callback_data: CallbackData.ordersReport},
   ordersReportToday: { text: 'Заказы за сегодня', callback_data: CallbackData.ordersReportToday},
   ordersReportYesterday: { text: 'Заказы за вчера', callback_data: CallbackData.ordersReportYesterday},
   ordersReportDate: { text: 'Заказы за дату', callback_data: CallbackData.ordersReportDate},
-  salesReport: { text: '💸 Выкупы за день', callback_data: CallbackData.salesReport},
+  salesReport: { text: '💸 Выкупы', callback_data: CallbackData.salesReport},
   salesReportToday: { text: 'Выкупы за сегодня', callback_data: CallbackData.salesReportToday},
   salesReportYesterday: { text: 'Выкупы за вчера', callback_data: CallbackData.salesReportYesterday},
   salesReportDate: { text: 'Выкупы за дату', callback_data: CallbackData.salesReportDate},
-  ref: { text: '➕ Увеличить количество SKU', callback_data: CallbackData.ref},
-  feedback: { text: '🛎 Обратная связь', url: CallbackData.feedback },
+  returnsReport: { text: '◀️ Возвраты', callback_data: CallbackData.returnsReport},
+  returnsReportToday: { text: 'Возвраты за сегодня', callback_data: CallbackData.returnsReportToday},
+  returnsReportYesterday: { text: 'Возвраты за вчера', callback_data: CallbackData.returnsReportYesterday},
+  returnsReportDate: { text: 'Возвраты за дату', callback_data: CallbackData.returnsReportDate},
+  ref: { text: '👤 Реф. программа', callback_data: CallbackData.ref},
+  feedback: { text: '🛎 Поддержка', url: CallbackData.feedback },
 };
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
@@ -160,28 +168,20 @@ export const mainOptions = (type?: user_type) => {
   }
 
   let menu: Array<Array<any>> = [
-    [mainButtons.getAllReportNow],
-    [mainButtons.stockReport],
-    [mainButtons.ordersReport],
-    // [mainButtons.salesReport],
-    [mainButtons.articlesMenu],
-    [mainButtons.changeTime],
-    [mainButtons.info],
-    // [mainButtons.ref],
-    [mainButtons.feedback]
+    [mainButtons.getAllReportNow, mainButtons.stockReport],
+    [mainButtons.articlesMenu, mainButtons.changeTime],
+    [mainButtons.ordersReport, mainButtons.salesReport, mainButtons.returnsReport],
+    [mainButtons.ref],
+    [mainButtons.info, mainButtons.feedback],
   ];
 
   if (process.env.MODE === 'test') {
     menu = [
-      [mainButtons.getAllReportNow],
-      [mainButtons.stockReport],
-      [mainButtons.ordersReport],
-      [mainButtons.salesReport],
-      [mainButtons.articlesMenu],
-      [mainButtons.changeTime],
-      [mainButtons.info],
+      [mainButtons.getAllReportNow, mainButtons.stockReport],
+      [mainButtons.articlesMenu, mainButtons.changeTime],
+      [mainButtons.ordersReport, mainButtons.salesReport, mainButtons.returnsReport],
       [mainButtons.ref],
-      [mainButtons.feedback]
+      [mainButtons.info, mainButtons.feedback],
     ];
   }
 
@@ -204,6 +204,17 @@ export const salesReportMenu = () => {
     [mainButtons.salesReportToday],
     [mainButtons.salesReportYesterday],
     [mainButtons.salesReportDate],
+    [mainButtons.menuAndEdit]
+  ];
+
+  return new Options(menu).reply_markup; 
+}
+
+export const returnsReportMenu = () => {
+  const menu: Array<Array<any>> = [
+    [mainButtons.returnsReportToday],
+    [mainButtons.returnsReportYesterday],
+    [mainButtons.returnsReportDate],
     [mainButtons.menuAndEdit]
   ];
 

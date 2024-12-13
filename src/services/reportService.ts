@@ -629,7 +629,7 @@ export class ReportService {
           }
         })
 
-        let orders = processOrdersSalesReportData(ordersResponse, date);
+        let orders = processOrdersSalesReportData(ordersResponse, date, reportType);
         await this.processOrdersOrSalesReport(orders, targetChat, date, reportType)
         await this.deleteMessage(targetChat, loadingMsgId) 
       } catch (error) {

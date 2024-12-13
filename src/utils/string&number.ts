@@ -33,7 +33,7 @@ export function NumberOrZero(input: any, isRound: boolean = false, method?: 'up'
   }
 }
 
-export function getCorrectWordEnd(total: number, rootWord: 'заказ' | 'выкуп' = 'заказ'): string {
+export function getCorrectWordEnd(total: number, rootWord: 'заказ' | 'выкуп' | 'возврат' = 'заказ'): string {
   const lastDigit = total % 10;
   const lastTwoDigits = total % 100;
 

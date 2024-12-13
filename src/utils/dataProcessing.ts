@@ -1,6 +1,6 @@
 import { box_tariffs_db } from "../../database/models/box_tariffs";
 import { config } from "../config/config";
-import { article, DateKey, MarketingObject, ObjectOther, OrdersOrSalesObject, SalesObject, SKU } from "../dto/sku&report";
+import { article, DateKey, MarketingObject, ObjectOther, OrdersOrSalesObject, OrdersSalesReportType, SalesObject, SKU } from "../dto/sku&report";
 import { BoxTariff } from "../dto/boxTariffs";
 import { create31DaysObject  } from "./time";
 import { parsePercent } from "./parse";
@@ -197,8 +197,15 @@ export function calculateRevByOne(sku: SKU): number {
   }
 }
 
-export function processOrdersSalesReportData(ordersResponse: Record<string, any>, dateFrom: DateKey) {
+export function processOrdersSalesReportData(ordersResponse: Record<string, any>, dateFrom: DateKey, reportType: OrdersSalesReportType) {
   const result: OrdersOrSalesObject = {};
+  let check = (num: any) => true; 
+
+  if (reportType === 'returns') {
+    check = (num: any) => { if (num < 0) { return true } return false }
+  } else if (reportType === 'sales') {
+    check = (num: any) => { if (num > 0) { return true } return false }
+  }
 
   ordersResponse.data.forEach((order: Record<string, any>) => {
     const date = order.date.split('T')[0]
@@ -210,7 +217,7 @@ export function processOrdersSalesReportData(ordersResponse: Record<string, any>
       if (!result[article]) {
         result[article] = { vendor_code: vendorCode, subject: subject, orders: 1 }
       } else {
-        result[article].orders += 1 
+        if (check(order.finishedPrice)) result[article].orders += 1 
       }
 
     }

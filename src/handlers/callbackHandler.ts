@@ -4,7 +4,7 @@ import { redis, rStates, ttls } from "../redis";
 import { handleStartMenu } from "../components/botAnswers";
 import { RediceService } from "../bot";
 import { createEditData, MessageService } from "../services/messageManipulatorService";
-import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, ordersReportMenu, returnMenu, salesReportMenu, yesNo } from "../components/buttons";
+import { articleOptions, CallbackData, generateArticlesButtons, generateReportTimeButtons, mainOptions, Options, ordersReportMenu, returnMenu, returnsReportMenu, salesReportMenu, yesNo } from "../components/buttons";
 import { users_db } from "../../database/models/users";
 import { getCurrentArticle, parseArticleData } from "../utils/parse";
 import { articles_db } from "../../database/models/articles";
@@ -253,9 +253,9 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       try {
         const ordersCallback = userCallbackData.split('?')
         const reportType = ordersCallback[0] as OrdersSalesReportType
-        
+
         if (!ordersCallback[1]) {
-          const reportMenu = reportType === 'orders' ? ordersReportMenu() : salesReportMenu()
+          const reportMenu = reportType === 'orders' ? ordersReportMenu() : reportType === 'sales' ? salesReportMenu() : returnsReportMenu()
           editData = createEditData(" ", reportMenu);
         } else if (ordersCallback[1] === 'today' || ordersCallback[1] === 'yesterday') {
           MS.deleteAllMessages(chat_id);

@@ -111,4 +111,4 @@ export interface TextReportData {
   krrrTotalArray: number[],
 }
 
-export type OrdersSalesReportType = 'orders' | 'sales'
+export type OrdersSalesReportType = 'orders' | 'sales' | 'returns'

@@ -21,12 +21,12 @@ export class BroadcastService {
 
       for (const user of users) {
         try {
-          await bot.sendMessage(user.chat_id, text, { reply_markup: mainOptions('new')!, disable_notification: true, parse_mode: 'HTML' });
+          await bot.sendMessage(user.chat_id, text, { parse_mode: 'HTML' });
           count++
-        } catch {
+        } catch (e) {
           blocked++
           blockedIds.push(user.chat_id)
-          // console.error('BroadcastService: user '+ user?.chat_id + " blocked bot!")
+          formatError(e, `Error sending message to user ${user.user_id}`)
         }
       }
 
@@ -50,7 +50,6 @@ export class BroadcastService {
         try {
           await bot.sendMessage(user.user_id, text, { 
             reply_markup: mainOptions('new')!, 
-            disable_notification: true, 
             parse_mode: 'HTML' 
           });
   

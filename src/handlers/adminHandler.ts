@@ -31,8 +31,9 @@ const helpInfo = `
 /admin__prepare_report_service - запуск подготовки данных для отчета
 /admin__get_report_for_{id} - получить отчет пользователя
 /admin__get_stock_report_for_{id} - получить отчет по складам пользователя на сейчас
-/admin__get_orders_report_for_{id}_date_{date (yyyy-mm-dd)} - получить отчет по заказам пользователя за дату
-/admin__get_sales_report_for_{id}_date_{date (yyyy-mm-dd)} - получить отчет по выкупам пользователя за дату
+/admin__get_orders_report_for_{id}_date_{date (yyyy-mm-dd)} - получить отчет по заказам за дату
+/admin__get_sales_report_for_{id}_date_{date (yyyy-mm-dd)} - получить отчет по выкупам за дату
+/admin__get_returns_report_for_{id}_date_{date (yyyy-mm-dd)} - получить отчет по возвратам за дату
 
 /admin__my_id - получить свой tg id
 /admin__check_state - проверить текущий юзер статус в редисе
@@ -132,26 +133,39 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       adminRequestOrdersOrSalesReport(chat_id, user_chat_id, res.message_id, date as DateKey, 'sales')
     }
 
-    if (action.startsWith('send_all_message')) {
-      const message = action.split('send_all_message_')[1];
-      
-      if (!message) {
-        await bot.sendMessage(chat_id, 'Сообщение не может быть пустым.');
+    if (action.startsWith('get_returns_report_for')) {
+      const splittedPart = action.split('get_returns_report_for_')[1];
+      const [user_chat_id, date] = splittedPart.split('_date_')
+
+      if (!chat_id) {
+        await bot.sendMessage(chat_id, 'Ошибка разбора ID');
         return;
       }
-      try {
-        if (mediaGroup) {
-          await BroadcastService.sendMediaGroupToAllUsers(mediaGroup, message);
-        } else {
-          await BroadcastService.sendMessageToAllUsers(message);
-        }
-  
-        await bot.sendMessage(chat_id, 'Сообщение успешно отправлено всем пользователям.');
-      } catch (error) {
-        console.error('Error sending message to all users: ', error);
-        await bot.sendMessage(chat_id, 'Произошла ошибка при отправке сообщения.');
-      }
+
+      const res = await bot.sendMessage(chat_id, 'Подготовка отчета пользователя ' + user_chat_id);
+      adminRequestOrdersOrSalesReport(chat_id, user_chat_id, res.message_id, date as DateKey, 'returns')
     }
+
+    // if (action.startsWith('send_all_message')) {
+    //   const message = action.split('send_all_message_')[1];
+      
+    //   if (!message) {
+    //     await bot.sendMessage(chat_id, 'Сообщение не может быть пустым.');
+    //     return;
+    //   }
+    //   try {
+    //     if (mediaGroup) {
+    //       await BroadcastService.sendMediaGroupToAllUsers(mediaGroup, message);
+    //     } else {
+    //       await BroadcastService.sendMessageToAllUsers(message);
+    //     }
+  
+    //     await bot.sendMessage(chat_id, 'Сообщение успешно отправлено всем пользователям.');
+    //   } catch (error) {
+    //     console.error('Error sending message to all users: ', error);
+    //     await bot.sendMessage(chat_id, 'Произошла ошибка при отправке сообщения.');
+    //   }
+    // }
 
     if (action.startsWith('send_filter_message')) {
       const message = action.split('send_filter_message_')[1];

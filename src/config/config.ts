@@ -11,7 +11,8 @@ export const config = {
 
   urls: {
    ordersReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/orders',
-   salesReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/sales'
+   salesReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/sales',
+   returnsReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/sales'
 },
 
   pdf: {
