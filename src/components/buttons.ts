@@ -168,18 +168,12 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.changeTime],
     [mainButtons.info],
     // [mainButtons.ref],
-    // [mainButtons.feedback]
+    [mainButtons.feedback]
     // [mainButtons.stockReport, mainButtons.ordersReport],
     // [mainButtons.changeTime],
     // [mainButtons.changeWbApiKey, mainButtons.articlesMenu],
     // [mainButtons.feedback, mainButtons.info]
   ];
-
-  if (process.env.MODE === 'test') {
-    menu.push([mainButtons.ref])
-  }
-
-  menu.push([mainButtons.feedback])
 
   return new Options(menu).reply_markup;
 };
