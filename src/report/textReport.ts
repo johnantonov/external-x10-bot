@@ -60,7 +60,39 @@ function initReportData(): TextReportData {
   }
 }
 
-// 
+// export function createStockReportText(data: SKU[]) {
+//   const total = initTotalStockReportData();
+
+//   let message = '<b>Итого:</b>\n';
+//   let articlesTexts = '';
+
+//   const articles = data.map(sku => {
+//     const stockCount = sku.order_info?.stock || 0;
+//     const stockSum = stockCount * sku.self_cost;
+//     const rev = calculateRevByOne(sku) * stockCount;
+
+//     total.stockSum += stockSum;
+//     total.stockCount += stockCount;
+//     total.rev += rev;
+
+//     return {
+//       article: sku.article,
+//       vendor_code: sku.vendor_code,
+//       stockCount,
+//       stockSum,
+//       rev
+//     };
+//   });
+
+//   articles.sort((a, b) => b.rev - a.rev);
+
+//   articles.forEach(article => {
+//     articlesTexts += `\n\n<b>${article.article}\n${article.vendor_code}</b>\nОстатки: ${article.stockCount} шт, ${formatNumber(article.stockSum)}₽\nПотенц. Прибыль: ${formatNumber(article.rev)}₽`;
+//   });
+
+//   return message + `Остатки: ${total.stockCount} шт, ${formatNumber(total.stockSum)}₽\nПотенц. Прибыль: ${formatNumber(total.rev)}₽` + articlesTexts;
+// }
+
 export function createStockReportText(data: SKU[], chat_id: number) {
   const total = initTotalStockReportData();
   let message = '<b>Итого:</b>\n';
@@ -112,11 +144,60 @@ function initTotalStockReportData() {
   }
 }
 
-// export function createOrdersOrSa
+// export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: DateKey, reportType: OrdersSalesReportType) {
+//   let total = 0;
+//   const messages = []; 
+
+//   const groupedArticles: { [subject: string]: Array<{ vendor_code: string, ordersCount: number }> } = {};
+
+//   Object.keys(data).forEach(sku => {
+//     total += data[sku]?.orders;
+//     const ordersCount = data[sku]?.orders;
+//     const vendor_code = data[sku]?.vendor_code;
+//     const subject = data[sku]?.subject;
+
+//     if (!groupedArticles[subject]) {
+//       groupedArticles[subject] = [];
+//     }
+
+//     groupedArticles[subject].push({ vendor_code, ordersCount });
+//   });
+
+//   const sortedSubjects = Object.keys(groupedArticles).sort((a, b) => 
+//     a.localeCompare(b, ['ru', 'en'], { sensitivity: 'base' })
+//   );
+
+//   const rootWord = reportType === 'orders' ? 'заказ' : reportType === 'sales' ? 'выкуп' : 'возврат';
+//   const correctWord = getCorrectWordEnd(total, rootWord);
+
+//   let currentMessage = `<b>${reportType === 'orders' ? 'Заказы' : reportType === 'sales' ? 'Выкупы' : 'Возвраты'} за ${date}</b>\nИтого: ${total} ${correctWord}\n`;
+
+//   sortedSubjects.forEach(subject => {
+//     const subjectHeader = `\n<b>- ${subject}</b>\n`; 
+//     let subjectText = '';
+
+//     groupedArticles[subject].forEach(article => {
+//       subjectText += `   ${article.vendor_code}: ${article.ordersCount}\n`;
+//     });
+
+//     if ((currentMessage.length + subjectHeader.length + subjectText.length) > 4000) {
+//       messages.push(currentMessage.trim());
+//       currentMessage = '';
+//     }
+
+//     currentMessage += subjectHeader + subjectText;
+//   });
+
+//   if (currentMessage.trim().length > 0) {
+//     messages.push(currentMessage.trim());
+//   }
+
+//   return messages;
+// }
+
 export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: DateKey, reportType: OrdersSalesReportType, chat_id: number) {
   let total = 0;
   const messages = []; 
-
   let articleCounter = 1;
 
   const groupedArticles: { [subject: string]: Array<{ vendor_code: string, ordersCount: number }> } = {};
@@ -125,21 +206,18 @@ export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: D
     total += data[sku]?.orders;
     let vendor_code = data[sku]?.vendor_code;
     const subject = data[sku]?.subject;
+    const originalOrdersCount = data[sku]?.orders; 
 
-    // Подменяем vendor_code и article, если chat_id совпадает
     if (chat_id === 150462912 || chat_id === 6043879539) {
       vendor_code = `Артикул_${articleCounter}`;
-      sku = String(articleCounter).padStart(6, '0'); // 000001, 000002 и т.д.
       articleCounter++;
     }
-
-    const ordersCount = data[sku]?.orders;
 
     if (!groupedArticles[subject]) {
       groupedArticles[subject] = [];
     }
 
-    groupedArticles[subject].push({ vendor_code, ordersCount });
+    groupedArticles[subject].push({ vendor_code, ordersCount: originalOrdersCount });
   });
 
   const sortedSubjects = Object.keys(groupedArticles).sort((a, b) => 
