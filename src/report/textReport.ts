@@ -60,11 +60,13 @@ function initReportData(): TextReportData {
   }
 }
 
-export function createStockReportText(data: SKU[]) {
+// 
+export function createStockReportText(data: SKU[], chat_id: number) {
   const total = initTotalStockReportData();
-
   let message = '<b>Итого:</b>\n';
   let articlesTexts = '';
+
+  let articleCounter = 1;
 
   const articles = data.map(sku => {
     const stockCount = sku.order_info?.stock || 0;
@@ -75,9 +77,18 @@ export function createStockReportText(data: SKU[]) {
     total.stockCount += stockCount;
     total.rev += rev;
 
+    let article = sku.article;
+    let vendor_code = sku.vendor_code;
+
+    if (chat_id === 150462912 || chat_id === 6043879539) {
+      article = String(articleCounter).padStart(6, '0'); // 000001, 000002 и тд
+      vendor_code = `Артикул_${articleCounter}`;
+      articleCounter++;
+    }
+
     return {
-      article: sku.article,
-      vendor_code: sku.vendor_code,
+      article,
+      vendor_code,
       stockCount,
       stockSum,
       rev
@@ -101,17 +112,28 @@ function initTotalStockReportData() {
   }
 }
 
-export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: DateKey, reportType: OrdersSalesReportType) {
+// export function createOrdersOrSa
+export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: DateKey, reportType: OrdersSalesReportType, chat_id: number) {
   let total = 0;
   const messages = []; 
+
+  let articleCounter = 1;
 
   const groupedArticles: { [subject: string]: Array<{ vendor_code: string, ordersCount: number }> } = {};
 
   Object.keys(data).forEach(sku => {
     total += data[sku]?.orders;
-    const ordersCount = data[sku]?.orders;
-    const vendor_code = data[sku]?.vendor_code;
+    let vendor_code = data[sku]?.vendor_code;
     const subject = data[sku]?.subject;
+
+    // Подменяем vendor_code и article, если chat_id совпадает
+    if (chat_id === 150462912 || chat_id === 6043879539) {
+      vendor_code = `Артикул_${articleCounter}`;
+      sku = String(articleCounter).padStart(6, '0'); // 000001, 000002 и т.д.
+      articleCounter++;
+    }
+
+    const ordersCount = data[sku]?.orders;
 
     if (!groupedArticles[subject]) {
       groupedArticles[subject] = [];

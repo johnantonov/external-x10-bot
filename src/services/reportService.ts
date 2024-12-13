@@ -508,9 +508,13 @@ export class ReportService {
     if (chat_id === 150462912 || chat_id === 6043879539) {
       const filePath = './public/documents/Тестовый отчет.pdf'; 
       try {
+        const options = returnNewMenu();
+        const replyMarkup = JSON.stringify(options); 
+
         const formData = new FormData();
         formData.append('document', createReadStream(filePath));
         formData.append('chat_id', chat_id);
+        formData.append('reply_markup', replyMarkup);
         formData.append('caption', config.pdf.testReportText);
         formData.append('parse_mode', 'HTML');
         formData.append('disable_notification', 'true');
@@ -537,7 +541,8 @@ export class ReportService {
 
   async processStockReport(articles: SKU[], chat_id: number) {
     try {
-      const messageText = createStockReportText(articles)
+      // const messageText = createStockReportText(articles)
+      const messageText = createStockReportText(articles, chat_id)
       if (messageText) {
         await this.sendMessage(chat_id, messageText)
       }
@@ -548,7 +553,8 @@ export class ReportService {
 
   async processOrdersOrSalesReport(salesObj: OrdersOrSalesObject, chat_id: number, date: DateKey, reportType: OrdersSalesReportType) {
     try {
-      const messageTexts = createOrdersOrSalesReportText(salesObj, date, reportType);
+      // const messageTexts = createOrdersOrSalesReportText(salesObj, date, reportType);
+      const messageTexts = createOrdersOrSalesReportText(salesObj, date, reportType, chat_id);
       
       if (messageTexts?.length > 0) {
         for (const text of messageTexts) {
