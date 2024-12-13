@@ -132,6 +132,9 @@ export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: D
     });
   });
 
-  let message = `<b>${reportType === 'orders' ? "Заказы" : "Выкупы"} за ${date}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}\n`;
+  const rootWord = reportType === 'orders' ? 'заказ' : 'выкуп'
+  const correctWord = getCorrectWordEnd(total, rootWord)
+
+  let message = `<b>${reportType === 'orders' ? "Заказы" : "Выкупы"} за ${date}</b>\nИтого: ${total} ${correctWord}\n`;
   return message + articlesTexts;
 }

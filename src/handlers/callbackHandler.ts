@@ -253,9 +253,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       try {
         const ordersCallback = userCallbackData.split('?')
         const reportType = ordersCallback[0] as OrdersSalesReportType
-
-        console.log('reportType: '+reportType)
-
+        
         if (!ordersCallback[1]) {
           const reportMenu = reportType === 'orders' ? ordersReportMenu() : salesReportMenu()
           editData = createEditData(" ", reportMenu);
