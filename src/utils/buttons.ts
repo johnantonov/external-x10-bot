@@ -1,6 +1,7 @@
 import { faqButtons, mainButtons, Options } from "../components/buttons";
 import { user_type } from "../dto/user";
 
+
 export function getStartedButton(type: user_type) {
   if (type === 'new') {
     return new Options([

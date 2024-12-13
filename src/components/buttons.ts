@@ -4,6 +4,9 @@ import { article, SKU, SKUCallbackData } from "../dto/sku&report";
 import { articles_db } from "../../database/models/articles";
 import { newArticleData } from "../utils/parse";
 import { getStartedButton } from "../utils/buttons";
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 /**
  * set bot commands (using when bot starting)
