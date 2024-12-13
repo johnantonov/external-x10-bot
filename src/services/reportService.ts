@@ -23,6 +23,7 @@ import { User } from '../dto/user';
 import { config } from '../config/config';
 import express from "express";
 import { texts } from '../components/texts';
+import { createReadStream } from 'fs';
 
 dotenv.config();
 
@@ -453,7 +454,6 @@ export class ReportService {
   }
 
   async sendPdfToTelegram(chat_id: number, pdfBuffer: Buffer, yesterdayDate: string, caption: string): Promise<void> {
-    const telegramApiUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`;
     const options = returnNewMenu();
     const replyMarkup = JSON.stringify(options); 
   
@@ -465,7 +465,7 @@ export class ReportService {
     formData.append('parse_mode', 'HTML'); 
   
     try {
-      const response = await axios.post(telegramApiUrl, formData, {
+      const response = await axios.post(config.urls.tgSendDoc, formData, {
         headers: {
           ...formData.getHeaders(),
         },
@@ -505,12 +505,33 @@ export class ReportService {
   }
 
   async processReport(articles: SKU[], yesterdayDate: string, chat_id: number) {
-    const messageText = createReportMessage(articles, yesterdayDate)
-    const htmlTable = await generateReportHtml(articles);
-    const pdfBuffer = await generatePdfFromHtml(htmlTable);
-    if (pdfBuffer && messageText) {
-      const formatYesterdayDate = yesterdayDate.slice(0, 5)
-      await this.sendPdfToTelegram(chat_id, pdfBuffer, formatYesterdayDate, messageText);
+    if (chat_id === 150462912 || chat_id === 6043879539) {
+      const filePath = './public/documents/Тестовый отчет.pdf'; 
+      try {
+        const formData = new FormData();
+        formData.append('document', createReadStream(filePath));
+        formData.append('chat_id', chat_id);
+        formData.append('caption', config.pdf.testReportText);
+        formData.append('parse_mode', 'HTML');
+        formData.append('disable_notification', 'true');
+        
+        const response = await axios.post(config.urls.tgSendDoc, formData, {
+          headers: {
+            ...formData.getHeaders(), 
+          },
+        });
+  
+      } catch (error) {
+        console.error('Error while sending test report', error);
+      }
+    } else {
+      const messageText = createReportMessage(articles, yesterdayDate)
+      const htmlTable = await generateReportHtml(articles);
+      const pdfBuffer = await generatePdfFromHtml(htmlTable);
+      if (pdfBuffer && messageText) {
+        const formatYesterdayDate = yesterdayDate.slice(0, 5)
+        await this.sendPdfToTelegram(chat_id, pdfBuffer, formatYesterdayDate, messageText);
+      }
     }
   }
 
