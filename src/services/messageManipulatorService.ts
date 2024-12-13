@@ -75,7 +75,7 @@ export class MessageService {
       try {
         await this.bot.deleteMessage(chat_id, msg.message_id);
       } catch (error) {
-        console.error(`Error during delete message ${msg.message_id}:`, error);
+        formatError(error, `Error during delete message ${msg.message_id} for ${chat_id}:`)
       }
     });
     await Promise.all(deletePromises);
@@ -122,7 +122,7 @@ export class MessageService {
           }
           await this.bot.deleteMessage(chat_id, message.message_id);
         } catch (error) {
-          console.error(`Error during delete message ${message.message_id}:`, error);
+          formatError(error, `Error during delete message ${message.message_id} for ${chat_id}:`)
         }
       });
       await Promise.all(deletePromises);
