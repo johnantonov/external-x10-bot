@@ -103,7 +103,7 @@ function initTotalStockReportData() {
 
 export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: DateKey, reportType: OrdersSalesReportType) {
   let total = 0;
-  let articlesTexts = '';
+  const messages = []; 
 
   const groupedArticles: { [subject: string]: Array<{ vendor_code: string, ordersCount: number }> } = {};
 
@@ -124,17 +124,29 @@ export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: D
     a.localeCompare(b, ['ru', 'en'], { sensitivity: 'base' })
   );
 
+  const rootWord = reportType === 'orders' ? 'заказ' : 'выкуп';
+  const correctWord = getCorrectWordEnd(total, rootWord);
+  let currentMessage = `<b>${reportType === 'orders' ? "Заказы" : "Выкупы"} за ${date}</b>\nИтого: ${total} ${correctWord}\n`;
+
   sortedSubjects.forEach(subject => {
-    articlesTexts += `\n<b>- ${subject}</b>\n`; 
+    const subjectHeader = `\n<b>- ${subject}</b>\n`; 
+    let subjectText = '';
 
     groupedArticles[subject].forEach(article => {
-      articlesTexts += `   ${article.vendor_code}: ${article.ordersCount}\n`;
+      subjectText += `   ${article.vendor_code}: ${article.ordersCount}\n`;
     });
+
+    if ((currentMessage.length + subjectHeader.length + subjectText.length) > 4000) {
+      messages.push(currentMessage.trim());
+      currentMessage = '';
+    }
+
+    currentMessage += subjectHeader + subjectText;
   });
 
-  const rootWord = reportType === 'orders' ? 'заказ' : 'выкуп'
-  const correctWord = getCorrectWordEnd(total, rootWord)
+  if (currentMessage.trim().length > 0) {
+    messages.push(currentMessage.trim());
+  }
 
-  let message = `<b>${reportType === 'orders' ? "Заказы" : "Выкупы"} за ${date}</b>\nИтого: ${total} ${correctWord}\n`;
-  return message + articlesTexts;
+  return messages;
 }

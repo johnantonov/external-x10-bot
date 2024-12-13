@@ -527,12 +527,15 @@ export class ReportService {
 
   async processOrdersOrSalesReport(salesObj: OrdersOrSalesObject, chat_id: number, date: DateKey, reportType: OrdersSalesReportType) {
     try {
-      const messageText = createOrdersOrSalesReportText(salesObj, date, reportType)
-      if (messageText) {
-        await this.sendMessage(chat_id, messageText)
+      const messageTexts = createOrdersOrSalesReportText(salesObj, date, reportType);
+      
+      if (messageTexts?.length > 0) {
+        for (const text of messageTexts) {
+          await this.sendMessage(chat_id, text);
+        }
       }
     } catch (e) {
-      console.error('Error processOrdersSalesReport: ', e)
+      console.error('Error processOrdersSalesReport: ', e);
     }
   }
 
