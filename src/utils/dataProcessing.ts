@@ -215,12 +215,12 @@ export function processOrdersSalesReportData(ordersResponse: Record<string, any>
 
     if (date === dateFrom) {
       if (!result[article]) {
-        result[article] = { vendor_code: vendorCode, subject: subject, orders: 0 }
-      } 
-
-      if (check(order.finishedPrice)) {
-        result[article].orders += 1;
+        if (check(order.finishedPrice)) result[article] = { vendor_code: vendorCode, subject: subject, orders: 1 }
+      } else {
+        if (check(order.finishedPrice)) result[article].orders += 1;
       }
+
+
     }
   });
 
