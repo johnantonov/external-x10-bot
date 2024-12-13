@@ -139,7 +139,6 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         const date = parseDate(text)
         if (!date) return handleError(texts.errorParseDate + texts.getOrdersReportText)
         const reportType = rStates.waitDateForOrdersOrSalesReport.split('?')[1]
-        console.log('reportType: '+ reportType)
         return new AwaitingAnswer({ 
           result: true, 
           text: texts.loadingReports, 
