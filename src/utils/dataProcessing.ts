@@ -202,9 +202,9 @@ export function processOrdersSalesReportData(ordersResponse: Record<string, any>
   let check = (num: any) => true; 
 
   if (reportType === 'returns') {
-    check = (num: any) => { if (num < 0) { return true } return false }
+    check = (num: number) => num < 0;
   } else if (reportType === 'sales') {
-    check = (num: any) => { if (num > 0) { return true } return false }
+    check = (num: number) => num > 0;
   }
 
   ordersResponse.data.forEach((order: Record<string, any>) => {
@@ -215,11 +215,12 @@ export function processOrdersSalesReportData(ordersResponse: Record<string, any>
 
     if (date === dateFrom) {
       if (!result[article]) {
-        result[article] = { vendor_code: vendorCode, subject: subject, orders: 1 }
-      } else {
-        if (check(order.finishedPrice)) result[article].orders += 1 
-      }
+        result[article] = { vendor_code: vendorCode, subject: subject, orders: 0 }
+      } 
 
+      if (check(order.finishedPrice)) {
+        result[article].orders += 1;
+      }
     }
   });
 

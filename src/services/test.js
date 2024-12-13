@@ -20,10 +20,10 @@ const advertIds = `[{"id":18361701,"dates":["2024-11-06","2024-11-05","2024-11-0
 // }
 
 async function test(nmIDs) {    
-  const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFrom=2024-11-13'
+  const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFrom=2024-12-12&flag=1'
 
   const headers = {
-    'Authorization': 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQxMTE4djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTc0OTcwMjEyNiwiaWQiOiIwMTkzYjY4Ny0xNTdhLTc5NjUtYjAyNi1iY2E5ZmM2Y2FjMzgiLCJpaWQiOjQ2Njg1OTM4LCJvaWQiOjEyNzkxNywicyI6MTA3Mzc0OTc1OCwic2lkIjoiOTI5NDM0NGQtMmNjYi00YWFhLTlkZTEtYWY4ZDVhNDhiNjUxIiwidCI6ZmFsc2UsInVpZCI6NDY2ODU5Mzh9.THvMLamGQYMD7iEv04fmEc-B-ObymGi_-4NjepvGk_uJSkgz8NiV_oopYa5bjrcYfBKrOe6tzDNfCUiswpViVQ', 
+    'Authorization': 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQxMDE2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTc0NjMwOTIyOSwiaWQiOiIwMTkyZWM0Yi05NTU5LTdjNjEtOWY5Ny1jZGFhN2E3NjQwODciLCJpaWQiOjQ2ODIwNDgsIm9pZCI6MzE1MDQzLCJzIjoxMDczNzQ5NzU4LCJzaWQiOiJlZDE3YTVjNC1lZjZlLTQzNWYtYjUwOS00ZGU3NjkyZjhkMjUiLCJ0IjpmYWxzZSwidWlkIjo0NjgyMDQ4fQ.uQCMJwM2VQSIRByiMWYvmIyg9iB2IbNeA_NW0vl3GzmQn-dr2vkSE69InFLdup5N4piVndT4jcwrEww8zNnMHg', 
     'Content-Type': 'application/json',
   }
 
@@ -33,25 +33,34 @@ async function test(nmIDs) {
     headers: headers
   });
 
-  const result = {};
+  // const logData = salesResponse.data
+  // console.log(JSON.stringify(sum))
 
   salesResponse.data.forEach((order) => {
-    const article = order.nmId
-    const vendorCode = order.supplierArticle
-    const subject = order.subject
-    const finishedPrice = order.finishedPrice
-
-      if (!result[article]) {
-        result[article] = { vendor_code: vendorCode, subject: subject, orders: 0 }
-      } else {
-        result[article].orders += finishedPrice
-      }
-
-      sum += finishedPrice
-  });
+    if (order.finishedPrice < 0) sum += 1
+  })
 
   console.log(sum)
-  console.log(JSON.stringify(result))
+
+  // const result = {};
+
+  // salesResponse.data.forEach((order) => {
+  //   const article = order.nmId
+  //   const vendorCode = order.supplierArticle
+  //   const subject = order.subject
+  //   const finishedPrice = order.finishedPrice
+
+  //     if (!result[article]) {
+  //       result[article] = { vendor_code: vendorCode, subject: subject, orders: 0 }
+  //     } else {
+  //       result[article].orders += finishedPrice
+  //     }
+
+  //     sum += finishedPrice
+  // });
+
+  // console.log(sum)
+  // console.log(JSON.stringify(result))
 }
 
 // async function test(nmIDs) {    
