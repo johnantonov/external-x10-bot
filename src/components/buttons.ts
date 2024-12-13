@@ -159,21 +159,31 @@ export const mainOptions = (type?: user_type) => {
     return getStartedButton(type)
   }
 
-  const menu: Array<Array<any>> = [
+  let menu: Array<Array<any>> = [
     [mainButtons.getAllReportNow],
     [mainButtons.stockReport],
     [mainButtons.ordersReport],
-    [mainButtons.salesReport],
+    // [mainButtons.salesReport],
     [mainButtons.articlesMenu],
     [mainButtons.changeTime],
     [mainButtons.info],
     // [mainButtons.ref],
     [mainButtons.feedback]
-    // [mainButtons.stockReport, mainButtons.ordersReport],
-    // [mainButtons.changeTime],
-    // [mainButtons.changeWbApiKey, mainButtons.articlesMenu],
-    // [mainButtons.feedback, mainButtons.info]
   ];
+
+  if (process.env.MODE === 'test') {
+    menu = [
+      [mainButtons.getAllReportNow],
+      [mainButtons.stockReport],
+      [mainButtons.ordersReport],
+      [mainButtons.salesReport],
+      [mainButtons.articlesMenu],
+      [mainButtons.changeTime],
+      [mainButtons.info],
+      [mainButtons.ref],
+      [mainButtons.feedback]
+    ];
+  }
 
   return new Options(menu).reply_markup;
 };
