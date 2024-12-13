@@ -6,10 +6,10 @@ import pool from '../../database/db';
 import { create31DaysObject, getTodayDate, getXdaysAgoArr, getYesterdayDate } from '../utils/time';
 import { users_db } from '../../database/models/users';
 import { articles_db } from '../../database/models/articles';
-import { DateKey, MarketingObject, ObjectOther, OrdersObject, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku&report';
-import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns, processingSalesData, processOrdersReportData } from '../utils/dataProcessing';
+import { DateKey, MarketingObject, ObjectOther, OrdersOrSalesObject, OrdersSalesReportType, OtherData, SKU, SalesObject, StatsObject, article} from '../dto/sku&report';
+import { calculateLogisticsStorage, calculateOtherMetrics, extractBuyoutsPercentFromCards, processCampaigns, processingSalesData, processOrdersSalesReportData} from '../utils/dataProcessing';
 import { formatError, NumberOrZero } from '../utils/string&number';
-import { updateConversions } from '../utils/conversions';
+import { updateConversions } from '../utils/conversions'; 
 import { returnNewMenu } from '../components/buttons';
 import { conversions_db } from '../../database/models/conversions';
 import { updateCommissions } from '../utils/comissions';
@@ -18,7 +18,7 @@ import { generatePdfFromHtml } from '../utils/htmlToPdf';
 import FormData from 'form-data';
 import { updateBoxTariffs } from '../utils/boxTariffs';
 import { generateReportHtml } from '../report/reportGenerator';
-import { createOrdersReportText, createReportMessage, createStockReportText } from '../report/textReport';
+import { createOrdersOrSalesReportText, createReportMessage, createStockReportText } from '../report/textReport';
 import { User } from '../dto/user';
 import { config } from '../config/config';
 import express from "express";
@@ -415,7 +415,7 @@ export class ReportService {
 
   async getSales(nmIDs: article[], dateFrom: string, wb_api_key: string) {
     try {
-      const salesUrl = 'https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFrom=' + dateFrom
+      const salesUrl = config.urls.salesReport + '?dateFrom=' + dateFrom
     
       const headers = {
         'Authorization': wb_api_key, 
@@ -525,17 +525,16 @@ export class ReportService {
     }
   }
 
-  async processOrdersReport(ordersObj: OrdersObject, chat_id: number, date: DateKey) {
+  async processOrdersOrSalesReport(salesObj: OrdersOrSalesObject, chat_id: number, date: DateKey, reportType: OrdersSalesReportType) {
     try {
-      const messageText = createOrdersReportText(ordersObj, date)
+      const messageText = createOrdersOrSalesReportText(salesObj, date, reportType)
       if (messageText) {
         await this.sendMessage(chat_id, messageText)
       }
     } catch (e) {
-      console.error('Error processOrdersReport: ', e)
+      console.error('Error processOrdersSalesReport: ', e)
     }
   }
-
 
   async run(): Promise<void | null> {
     try {
@@ -607,24 +606,31 @@ export class ReportService {
     }
   }
 
-  async runOrdersReportForUser(chat_id: number, loadingMsgId: number, target_chat_id: number, date: DateKey): Promise<void> {
+  async runOrdersOrSalesReportForUser(
+    chat_id: number, 
+    loadingMsgId: number, 
+    target_chat_id: number, 
+    date: DateKey, 
+    reportType: OrdersSalesReportType): Promise<void> {
+
     try {
       const wb_api_key = (await users_db.getUserById(chat_id))?.wb_api_key
       const targetChat = target_chat_id || chat_id;
+      const url = reportType === 'orders' ? config.urls.ordersReport : config.urls.salesReport
 
       try {
-        const ordersResponse = await axios.get(config.urls.ordersReport + '&dateFrom=' + date, {
+        const ordersResponse = await axios.get(url + '?flag=1&dateFrom=' + date, {
           headers: {
             'Authorization': wb_api_key,
             'Content-Type': 'application/json'
           }
         })
 
-        let orders = processOrdersReportData(ordersResponse, date);
-        await this.processOrdersReport(orders, targetChat, date)
+        let orders = processOrdersSalesReportData(ordersResponse, date);
+        await this.processOrdersOrSalesReport(orders, targetChat, date, reportType)
         await this.deleteMessage(targetChat, loadingMsgId) 
       } catch (error) {
-        console.error('Error running orders report for user: ', error);
+        console.error('Error running ' + reportType + ' report for user: ', error);
         this.sendMessage(targetChat, texts.reportErrorGettingData)
         await this.deleteMessage(targetChat, loadingMsgId)
       }
@@ -721,20 +727,20 @@ app.get("/run", async (req, res) => {
   }
 });
 
-app.post("/generate-orders-report", async (req, res) => {
-  const { chat_id, loadingMsgId, date } = req.body; 
+app.post("/generate-orders-sales-report", async (req, res) => {
+  const { chat_id, loadingMsgId, date, reportType } = req.body; 
   try {
-    const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId, chat_id, date); 
+    const reportData = await reportService.runOrdersOrSalesReportForUser(chat_id, loadingMsgId, chat_id, date, reportType); 
     res.status(200).json({ success: true, data: reportData });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error run report service for user' });
   }
 });
 
-app.post("/admin-generate-orders-report", async (req, res) => {
-  const { admin_chat_id, chat_id, loadingMsgId, date } = req.body; 
+app.post("/admin-generate-orders-sales-report", async (req, res) => {
+  const { admin_chat_id, chat_id, loadingMsgId, date, reportType } = req.body; 
   try {
-    const reportData = await reportService.runOrdersReportForUser(chat_id, loadingMsgId, admin_chat_id, date); 
+    const reportData = await reportService.runOrdersOrSalesReportForUser(chat_id, loadingMsgId, admin_chat_id, date, reportType); 
     res.status(200).json({ success: true, data: reportData });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error run report service for user' });

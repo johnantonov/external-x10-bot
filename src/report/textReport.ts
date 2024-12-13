@@ -1,4 +1,4 @@
-import { DateKey, OrdersObject, SKU, TextReportData } from "../dto/sku&report";
+import { DateKey, OrdersOrSalesObject, OrdersSalesReportType, SKU, TextReportData } from "../dto/sku&report";
 import { calculateRevByOne } from "../utils/dataProcessing";
 import { formatNumber, getCorrectWordEnd, NumberOrZero } from "../utils/string&number";
 import { getTodayDate, getYesterdayDate } from "../utils/time";
@@ -101,7 +101,7 @@ function initTotalStockReportData() {
   }
 }
 
-export function createOrdersReportText(data: OrdersObject, date: DateKey) {
+export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: DateKey, reportType: OrdersSalesReportType) {
   let total = 0;
   let articlesTexts = '';
 
@@ -132,6 +132,6 @@ export function createOrdersReportText(data: OrdersObject, date: DateKey) {
     });
   });
 
-  let message = `<b>Заказы за ${date}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}\n`;
+  let message = `<b>${reportType === 'orders' ? "Заказы" : "Выкупы"} за ${date}</b>\nИтого: ${total} ${getCorrectWordEnd(total)}\n`;
   return message + articlesTexts;
 }

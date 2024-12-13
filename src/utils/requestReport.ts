@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as dotenv from 'dotenv';
-import { DateKey } from "../dto/sku&report";
+import { DateKey, OrdersSalesReportType } from "../dto/sku&report";
 dotenv.config();
 
 // *************************************
@@ -35,12 +35,13 @@ export async function adminRequestStockReport(admin_chat_id: string | number, ch
 
 // *************************************
 // ОТЧЕТЫ ПО ЗАКАЗАМ
-export async function requestOrdersReport(chat_id: string | number, loadingMsgId: number, date: DateKey) {
+export async function requestOrdersOrSalesReport(chat_id: string | number, loadingMsgId: number, date: DateKey, reportType: OrdersSalesReportType) {
   try {
-    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-orders-report`, { 
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/generate-orders-sales-report`, { 
       chat_id: chat_id,
       loadingMsgId: loadingMsgId,
-      date: date
+      date: date,
+      reportType: reportType
     });
     
     return response.data;
@@ -50,13 +51,14 @@ export async function requestOrdersReport(chat_id: string | number, loadingMsgId
   }
 }
 
-export async function adminRequestOrdersReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number, date: DateKey) {
+export async function adminRequestOrdersOrSalesReport(admin_chat_id: string | number, chat_id: string | number, loadingMsgId: number, date: DateKey, reportType: OrdersSalesReportType) {
   try {
-    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/admin-generate-orders-report`, { 
+    const response = await axios.post(`http://${process.env.REPORT_SERVICE_HOST}:${process.env.BASE_PORT}/admin-generate-orders-sales-report`, { 
       admin_chat_id: admin_chat_id,
       chat_id: chat_id,
       loadingMsgId: loadingMsgId, 
-      date: date
+      date: date,
+      reportType: reportType
     });
     
     return response.data;

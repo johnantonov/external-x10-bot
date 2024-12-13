@@ -47,8 +47,8 @@ export type SalesData = {
   infoBuysSum: number;
 }
 
-export type OrdersObject = Record<article, OrdersData>;
-export type OrdersData = {
+export type OrdersOrSalesObject = Record<article, OrdersOrSalesData>;
+export type OrdersOrSalesData = {
   orders: number;
   vendor_code: string;
   subject: string;
@@ -111,4 +111,4 @@ export interface TextReportData {
   krrrTotalArray: number[],
 }
 
-
+export type OrdersSalesReportType = 'orders' | 'sales'

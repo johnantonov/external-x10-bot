@@ -93,8 +93,8 @@ export class CallbackProcessor {
       return "ref";
     }
 
-    if (this.isOrdersReport()) {
-      return "orders report";
+    if (this.isOrdersOrSalesReport()) {
+      return "orders | sales report";
     }
 
     return null; // error
@@ -172,8 +172,9 @@ export class CallbackProcessor {
     return this.userCallbackData === CallbackData.stockReport
   }
 
-  private isOrdersReport(): boolean {
-    return this.userCallbackData.startsWith(CallbackData.ordersReport as string)
+  private isOrdersOrSalesReport(): boolean {
+    const cb = this.userCallbackData
+    return cb.startsWith(CallbackData.ordersReport as string) || cb.startsWith(CallbackData.salesReport as string)
   }
 
   private isRefMenu(): boolean {

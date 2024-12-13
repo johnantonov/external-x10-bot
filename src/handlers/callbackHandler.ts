@@ -16,9 +16,9 @@ import { images } from "../dto/images";
 import { btn } from "../utils/buttons";
 import { getFaqData } from "../utils/faq";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
-import { requestOrdersReport, requestReport, requestStockReport } from "../utils/requestReport";
+import { requestOrdersOrSalesReport, requestReport, requestStockReport } from "../utils/requestReport";
 import { createUserRefText } from "../utils/ref";
-import { DateKey } from "../dto/sku&report";
+import { DateKey, OrdersSalesReportType } from "../dto/sku&report";
 
 dotenv.config();
 
@@ -249,9 +249,10 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       }
       break;
 
-    case 'orders report': 
+    case 'orders | sales report': 
       try {
         const ordersCallback = userCallbackData.split('?')
+        const reportType = ordersCallback[0] as OrdersSalesReportType
 
         if (!ordersCallback[1]) {
           editData = createEditData(" ", ordersReportMenu());
@@ -260,13 +261,13 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
           const loadingMsg = await bot.sendMessage(chat_id, texts.loadingReports, { disable_notification: true });
           try {
             const ordersReportDate = ordersCallback[1] === 'today' ? getTodayDate() : getYesterdayDate() as DateKey
-            requestOrdersReport(chat_id, loadingMsg.message_id, ordersReportDate);
+            requestOrdersOrSalesReport(chat_id, loadingMsg.message_id, ordersReportDate, reportType);
           } catch (error) {
             console.error("Failed to generate report:", error);
             if (mainBtn) editData = createEditData(texts.errorGetSkuAgain, mainBtn);
           }
         } else if (ordersCallback[1] === 'date') {
-          await RediceService.setUserState(chat_id, rStates.waitDateForOrders, ttls.usual)
+          await RediceService.setUserState(chat_id, rStates.waitDateForOrdersOrSalesReport + '?' + reportType, ttls.usual)
           editData = createEditData(texts.getOrdersReportText, returnBtn);
         }
       } catch (e) {

@@ -1,6 +1,6 @@
 import { box_tariffs_db } from "../../database/models/box_tariffs";
 import { config } from "../config/config";
-import { article, DateKey, MarketingObject, ObjectOther, OrdersObject, SalesObject, SKU } from "../dto/sku&report";
+import { article, DateKey, MarketingObject, ObjectOther, OrdersOrSalesObject, SalesObject, SKU } from "../dto/sku&report";
 import { BoxTariff } from "../dto/boxTariffs";
 import { create31DaysObject  } from "./time";
 import { parsePercent } from "./parse";
@@ -197,8 +197,8 @@ export function calculateRevByOne(sku: SKU): number {
   }
 }
 
-export function processOrdersReportData(ordersResponse: Record<string, any>, dateFrom: DateKey) {
-  const result: OrdersObject = {};
+export function processOrdersSalesReportData(ordersResponse: Record<string, any>, dateFrom: DateKey) {
+  const result: OrdersOrSalesObject = {};
 
   ordersResponse.data.forEach((order: Record<string, any>) => {
     const date = order.date.split('T')[0]

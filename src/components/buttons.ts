@@ -67,10 +67,14 @@ export const CallbackData = {
   testReport: 'tr?',
   stockReport: 'sr?',
   ref: 'ref?',
-  ordersReport: 'orr?',
-  ordersReportToday: 'orr?today',
-  ordersReportYesterday: 'orr?yesterday',
-  ordersReportDate: 'orr?date',
+  ordersReport: 'orders?',
+  ordersReportToday: 'orders?today',
+  ordersReportYesterday: 'orders?yesterday',
+  ordersReportDate: 'orders?date',
+  salesReport: 'sales?',
+  salesReportToday: 'sales?today',
+  salesReportYesterday: 'sales?yesterday',
+  salesReportDate: 'sales?date',
   feedback: 'https://t.me/+ZVISmofZZ_wwN2Ey',
 
   faq: 'faq',
@@ -103,6 +107,10 @@ export const mainButtons = {
   ordersReportToday: { text: 'Заказы за сегодня', callback_data: CallbackData.ordersReportToday},
   ordersReportYesterday: { text: 'Заказы за вчера', callback_data: CallbackData.ordersReportYesterday},
   ordersReportDate: { text: 'Заказы за дату', callback_data: CallbackData.ordersReportDate},
+  salesReport: { text: '💸 Выкупы за день', callback_data: CallbackData.salesReport},
+  salesReportToday: { text: 'Выкупы за сегодня', callback_data: CallbackData.salesReportToday},
+  salesReportYesterday: { text: 'Выкупы за вчера', callback_data: CallbackData.salesReportYesterday},
+  salesReportDate: { text: 'Выкупы за дату', callback_data: CallbackData.salesReportDate},
   ref: { text: '➕ Увеличить количество SKU', callback_data: CallbackData.ref},
   feedback: { text: '🛎 Обратная связь', url: CallbackData.feedback },
 };
@@ -152,6 +160,7 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.getAllReportNow],
     [mainButtons.stockReport],
     [mainButtons.ordersReport],
+    [mainButtons.salesReport],
     [mainButtons.articlesMenu],
     [mainButtons.changeTime],
     [mainButtons.info],
@@ -163,6 +172,10 @@ export const mainOptions = (type?: user_type) => {
     // [mainButtons.feedback, mainButtons.info]
   ];
 
+  if (process.env.MODE === 'test') {
+    menu.splice(6, 0, [mainButtons.ref]);
+  }
+
   return new Options(menu).reply_markup;
 };
 
@@ -171,6 +184,17 @@ export const ordersReportMenu = () => {
     [mainButtons.ordersReportToday],
     [mainButtons.ordersReportYesterday],
     [mainButtons.ordersReportDate],
+    [mainButtons.menuAndEdit]
+  ];
+
+  return new Options(menu).reply_markup; 
+}
+
+export const salesReportMenu = () => {
+  const menu: Array<Array<any>> = [
+    [mainButtons.salesReportToday],
+    [mainButtons.salesReportYesterday],
+    [mainButtons.salesReportDate],
     [mainButtons.menuAndEdit]
   ];
 
