@@ -8,6 +8,7 @@ export const config = {
   acquiring: 0.015,
   turnover: 30,
   returnLogistics: 50,
+  mainBotUrl: 'https://t.me/tenXsupport_bot',
 
   maxSku: 10,
   reportStopTime: 0,

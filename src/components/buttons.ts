@@ -5,6 +5,7 @@ import { articles_db } from "../../database/models/articles";
 import { newArticleData } from "../utils/parse";
 import { getStartedButton } from "../utils/buttons";
 import * as dotenv from 'dotenv';
+import { config } from "../config/config";
 
 dotenv.config();
 
@@ -83,6 +84,8 @@ export const CallbackData = {
   returnsReportYesterday: 'returns?yesterday',
   returnsReportDate: 'returns?date',
   feedback: 'https://t.me/+ZVISmofZZ_wwN2Ey',
+  botV1: 'https://t.me/prostowb_bot',
+  full10XBot: config.mainBotUrl,
 
   faq: 'faq',
   faq_1: 'faq_1',
@@ -124,6 +127,8 @@ export const mainButtons = {
   returnsReportDate: { text: 'Возвраты за дату', callback_data: CallbackData.returnsReportDate},
   ref: { text: '👤 Реф. программа', callback_data: CallbackData.ref},
   feedback: { text: '🛎 Поддержка', url: CallbackData.feedback },
+  botV1: { text: '🤖 Бот v1', url: CallbackData.botV1 },
+  full10XBot: { text: '📈 Полный доступ 10Х ', url: CallbackData.full10XBot },
 };
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
@@ -173,6 +178,7 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.ordersReport, mainButtons.salesReport, mainButtons.returnsReport],
     [mainButtons.changeWbApiKey],
     // [mainButtons.ref],
+    [mainButtons.botV1, mainButtons.full10XBot],
     [mainButtons.info, mainButtons.feedback],
   ];
 
