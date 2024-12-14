@@ -108,7 +108,7 @@ export const mainButtons = {
   changeTime: { text: '🕘 Расписание', callback_data: CallbackData.changeTime },
   chooseTime: { text: '🕘 Выбрать время', callback_data: CallbackData.chooseTime },
   timeLater: { text: '➡️ Настроить позже', callback_data: CallbackData.timeLater },
-  changeWbApiKey: { text: '🔑 Обновить ключ API', callback_data: CallbackData.changeWbApiKey },
+  changeWbApiKey: { text: '🔑 API ключ', callback_data: CallbackData.changeWbApiKey },
   registrateUser: { text: '🔑 Подключить бота к кабинету', callback_data: CallbackData.registrateUser },
   articlesMenu: { text: '🔢 Артикулы ТОП 10', callback_data: CallbackData.articlesMenu },
   testReport: { text: '📂 Тестовый отчет', callback_data: CallbackData.testReport },
