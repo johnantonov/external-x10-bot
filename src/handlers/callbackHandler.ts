@@ -76,10 +76,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'test report': 
-      const filePath = './public/documents/Тестовый отчет.pdf'; 
       try {
-          // await bot.sendMessage(chatId, messageText);
-          await bot.sendDocument(chat_id, filePath, {
+          await bot.sendDocument(chat_id, config.pdf.test_pdf_id, {
             caption: config.pdf.testReportText, 
             parse_mode: 'HTML',
             reply_markup: mainOptions('new')!,

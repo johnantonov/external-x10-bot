@@ -21,6 +21,7 @@ export const config = {
 },
 
   pdf: {
+    test_pdf_id: 'BQACAgIAAxkDBVVB22dhKEjzNFFgKTjgxqbVw9iowsU3AAK-ZwACF_wIS74j6dHS5WhrNgQ',
     tableDays: 5,
     skuCol: 3,
     photoColspan: 2,
