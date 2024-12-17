@@ -61,8 +61,8 @@ export class BroadcastService {
               // disable_notification: false
             });
           
-            const log = JSON.stringify(res)
-            console.log(res)
+            // const log = JSON.stringify(res)
+            // console.log(res)
   
           await pool.query(`UPDATE messageJobs SET filter = 1 WHERE user_id = $1`, [user.user_id]);
           count++
