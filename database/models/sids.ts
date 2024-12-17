@@ -27,6 +27,31 @@ class SidsModel extends BaseModel<Sid> {
       return true
     }
   }
+
+  async upsertSidFromJson(data: any): Promise<void> {
+    try {
+      const columns = Object.keys(data); 
+      const values = Object.values(data);
+    
+      const placeholders = values.map((_, index) => `$${index + 1}`).join(', ');
+    
+      const updateClause = columns
+        .map((col) => `${col} = EXCLUDED.${col}`)
+        .join(', ');
+  
+      const query = `
+        INSERT INTO ${this.tableName} (${columns.join(', ')})
+        VALUES (${placeholders})
+        ON CONFLICT (sid) 
+        DO UPDATE SET ${updateClause};
+      `;
+    
+      await this.pool.query(query, values);
+      console.log('success: '+ query)
+    } catch (e) {
+      console.error('Error in upsertArticleFromJson:', e);
+    }
+  }
 }
 
 export const sids_db = new SidsModel(pool);

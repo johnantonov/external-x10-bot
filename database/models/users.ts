@@ -58,7 +58,7 @@ class UsersModel extends BaseModel<User> {
       const query = `
         INSERT INTO ${this.tableName} (${columns.join(', ')})
         VALUES (${placeholders})
-        ON CONFLICT (chat_id) -- Указываем уникальный ключ
+        ON CONFLICT (chat_id) 
         DO UPDATE SET ${updateClause};
       `;
   
