@@ -505,7 +505,7 @@ export class ReportService {
   }
 
   async processReport(articles: SKU[], yesterdayDate: string, chat_id: number) {
-    if (chat_id === 150462912 || chat_id === 6043879539) {
+    if (chat_id === 150462912 ) {
       const filePath = './public/documents/Тестовый отчет.pdf'; 
       try {
         const options = returnNewMenu();
