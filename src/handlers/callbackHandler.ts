@@ -76,19 +76,13 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'test report': 
-      const filePath = './public/documents/Тестовый отчет.pdf'; 
       try {
-          // await bot.sendMessage(chatId, messageText);
-          const res = await bot.sendDocument(chat_id, filePath, {
+          const res = await bot.sendDocument(chat_id, config.pdf.test_pdf_id, {
             caption: config.pdf.testReportText, 
             parse_mode: 'HTML',
             reply_markup: mainOptions('new')!,
             disable_notification: true
           });
-
-          const log = JSON.stringify(res)
-          console.log(log)
-
         } catch (error) {
           console.error('Error while sending test report', error);
         }
