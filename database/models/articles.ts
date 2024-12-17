@@ -305,6 +305,7 @@ class ArticlesModel extends BaseModel<SKU> {
       `;
     
       await this.pool.query(query, values);
+      console.log('success: '+ query)
     } catch (e) {
       console.error('Error in upsertArticleFromJson:', e);
     }
