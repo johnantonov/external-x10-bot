@@ -54,7 +54,7 @@ export class BroadcastService {
             parse_mode: 'HTML' 
           });
             const filePath = './public/documents/Тестовый отчет.pdf'; 
-            const res = await bot.sendDocument(user.user_id, filePath, {
+            const res = await bot.sendDocument(user.user_id, 'BQACAgIAAxkDBVVA_2dhEOIB2Eiq_jHrBXUbFRt2zUTBAAI2ZQACCAgJS_kSkEKrzHy4NgQ', {
               caption: config.pdf.testReportText, 
               parse_mode: 'HTML',
               // reply_markup: mainOptions('new')!,
