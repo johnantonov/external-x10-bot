@@ -2,6 +2,7 @@ import pool from "../../database/db";
 import { users_db } from "../../database/models/users";
 import { bot } from "../bot";
 import { mainOptions } from "../components/buttons";
+import { config } from "../config/config";
 import { formatError } from "../utils/string&number";
 
 export class BroadcastService {
@@ -39,7 +40,7 @@ export class BroadcastService {
 
   static async sendMessageToFilteredUsers(text: string, options?: object, filter?: string) {
     try {
-      const query = `SELECT user_id FROM messageJobs WHERE filter IS NULL LIMIT 1000`
+      const query = `SELECT user_id FROM messageJobs WHERE filter IS NULL LIMIT 2000`
       const users = (await pool.query(query)).rows;
 
       let count = 0
@@ -49,9 +50,17 @@ export class BroadcastService {
       for (const user of users) {
         try {
           await bot.sendMessage(user.user_id, text, { 
-            reply_markup: mainOptions('new')!, 
+            // reply_markup: mainOptions('new')!, 
             parse_mode: 'HTML' 
           });
+            const filePath = './public/documents/Тестовый отчет.pdf'; 
+            await bot.sendDocument(user.user_id, filePath, {
+              caption: config.pdf.testReportText, 
+              parse_mode: 'HTML',
+              // reply_markup: mainOptions('new')!,
+              // disable_notification: false
+            });
+          
   
           await pool.query(`UPDATE messageJobs SET filter = 1 WHERE user_id = $1`, [user.user_id]);
           count++

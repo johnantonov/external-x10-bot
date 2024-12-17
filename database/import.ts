@@ -1,6 +1,6 @@
 import { users_db } from "./models/users";
 import { articles_db } from "./models/articles";
-import { sid_db } from "./models/articles";
+import { sids_db } from "./models/sids";
 
 
 export async function startImport() {
@@ -8,7 +8,7 @@ export async function startImport() {
   console.log('length:', importData.length)
 
   for (const data of importData) {
-    await sid_db.upsertSidFromJson(data);
+    await sids_db.upsertSidFromJson(data);
   }
 }
 
