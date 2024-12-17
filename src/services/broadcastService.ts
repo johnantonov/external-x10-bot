@@ -53,7 +53,7 @@ export class BroadcastService {
             // reply_markup: mainOptions('new')!, 
             parse_mode: 'HTML' 
           });
-          const res = await bot.sendDocument(user.user_id, config.pdf.test_pdf_id, {
+          const res = await bot.sendDocument(user.user_id, './public/documents/Тестовый отчет.pdf', {
             caption: config.pdf.testReportText, 
             parse_mode: 'HTML',
             // reply_markup: mainOptions('new')!,
