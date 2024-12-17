@@ -88,5 +88,8 @@ volumes:
   # production_x10_postgres_data:
   # prod-x10_redis_data: 
   # prod-x10_postgres_data: 
-  x10-external-bot_redis_data: # для тестового бота
-  x10-external-bot_postgres_data:  # для тестового бота
+
+  test_x10-external-bot_postgres_data:
+  test_x10-external-bot_redis_data:
+  # x10-external-bot_redis_data: # для тестового бота
+  # x10-external-bot_postgres_data:  # для тестового бота
