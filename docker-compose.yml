@@ -1,5 +1,5 @@
 services:
-  PRODUCTION-X10-REDIS:
+  production-x10-redis:
   # prod-x10-redis:
   # test-x10-redis:
     image: redis:latest
@@ -14,7 +14,7 @@ services:
       - REDISVOL=${REDISVOL}
     restart: always
 
-  PRODUCTION-X10-APP:
+  production-x10-app:
   # prod-x10-app:
   # test-x10-app:
     build: .
@@ -39,9 +39,9 @@ services:
       - APP_CONTAINER=${APP_CONTAINER}
       - POSTGRESVOL=${POSTGRESVOL}
     depends_on:
-        - PRODUCTION-X10-REDIS
-        - PRODUCTION-X10-POSTGRES
-        - PRODUCTION-X10-REPORTER
+        - production-x10-redis
+        - production-x10-postgres
+        - production-x10-reporter
       # - prod-x10-redis   
       # - prod-x10-postgres 
       # - prod-x10-reporter
@@ -50,7 +50,7 @@ services:
       # - test-x10-reporter # для тестового бота
     restart: always
 
-  PRODUCTION-X10-POSTGRES:
+  production-x10-postgres:
   # prod-x10-postgres:
   # test-x10-postgres:
     image: postgres:15-alpine
@@ -68,7 +68,7 @@ services:
       - ${POSTGRESVOL}:/var/lib/postgresql/data
     restart: always
 
-  PRODUCTION-X10-REPORTER:
+  production-x10-reporter:
   # prod-x10-reporter:
   # test-x10-reporter:
     build:
