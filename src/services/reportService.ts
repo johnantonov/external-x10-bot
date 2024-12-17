@@ -474,7 +474,7 @@ export class ReportService {
     } catch (error: any) {
       const code = error.response?.data?.error_code || error.code || error.status || 'Unknown Error';
       const msg = code === 400 ? error.response?.data?.description || error.message : error;
-      console.error(`Failed to send PDF to chat_id: ${chat_id}. Error:`, msg);
+      console.error(`Failed to send PDF to chat_id: ${chat_id}. Error ${code}:`, msg);
     }
   }
 
