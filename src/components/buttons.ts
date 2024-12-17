@@ -127,8 +127,7 @@ export const mainButtons = {
   returnsReportDate: { text: 'Возвраты за дату', callback_data: CallbackData.returnsReportDate},
   ref: { text: '👤 Реф. программа', callback_data: CallbackData.ref},
   feedback: { text: '🛎 Поддержка', url: CallbackData.feedback },
-  botV1: { text: '🤖 Бот v1', url: CallbackData.botV1 },
-  full10XBot: { text: '📈 Полный доступ 10Х ', url: CallbackData.full10XBot },
+  full10XBot: { text: '📈 Система 10X | 🛎 Поддержка', url: CallbackData.full10XBot },
 };
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
@@ -176,10 +175,10 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.getAllReportNow, mainButtons.stockReport],
     [mainButtons.articlesMenu, mainButtons.changeTime],
     [mainButtons.ordersReport, mainButtons.salesReport, mainButtons.returnsReport],
-    [mainButtons.changeWbApiKey, mainButtons.botV1],
+    [mainButtons.changeWbApiKey],
     // [mainButtons.ref],
     [mainButtons.full10XBot],
-    [mainButtons.info, mainButtons.feedback],
+    [mainButtons.info]
   ];
 
   if (process.env.MODE === 'test') {
@@ -187,10 +186,10 @@ export const mainOptions = (type?: user_type) => {
       [mainButtons.getAllReportNow, mainButtons.stockReport],
       [mainButtons.articlesMenu, mainButtons.changeTime],
       [mainButtons.ordersReport, mainButtons.salesReport, mainButtons.returnsReport],
-      [mainButtons.changeWbApiKey, mainButtons.botV1],
+      [mainButtons.changeWbApiKey],
       // [mainButtons.ref],
       [mainButtons.full10XBot],
-      [mainButtons.info, mainButtons.feedback],
+      [mainButtons.info]
     ];
   }
 

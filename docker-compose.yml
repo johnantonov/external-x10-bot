@@ -1,6 +1,6 @@
 services:
-  # production-x10-redis:
-  prod-x10-redis:
+  production-x10-redis:
+  # prod-x10-redis:
   # test-x10-redis:
     image: redis:latest
     container_name: ${REDIS_CONTAINER}
@@ -14,8 +14,8 @@ services:
       - REDISVOL=${REDISVOL}
     restart: always
 
-  # production-x10-app:
-  prod-x10-app:
+  production-x10-app:
+  # prod-x10-app:
   # test-x10-app:
     build: .
     image: ${APP_CONTAINER}
@@ -39,19 +39,19 @@ services:
       - APP_CONTAINER=${APP_CONTAINER}
       - POSTGRESVOL=${POSTGRESVOL}
     depends_on:
-        # - production-x10-redis
-        # - production-x10-postgres
-        # - production-x10-reporter
-      - prod-x10-redis   
-      - prod-x10-postgres 
-      - prod-x10-reporter
+        - production-x10-redis
+        - production-x10-postgres
+        - production-x10-reporter
+      # - prod-x10-redis   
+      # - prod-x10-postgres 
+      # - prod-x10-reporter
       # - test-x10-redis  # для тестового бота
       # - test-x10-postgres # для тестового бота
       # - test-x10-reporter # для тестового бота
     restart: always
 
-  # production-x10-postgres:
-  prod-x10-postgres:
+  production-x10-postgres:
+  # prod-x10-postgres:
   # test-x10-postgres:
     image: postgres:15-alpine
     container_name: ${PG_CONTAINER}
@@ -68,8 +68,8 @@ services:
       - ${POSTGRESVOL}:/var/lib/postgresql/data
     restart: always
 
-  # production-x10-reporter:
-  prod-x10-reporter:
+  production-x10-reporter:
+  # prod-x10-reporter:
   # test-x10-reporter:
     build:
       context: .
@@ -84,9 +84,9 @@ services:
     restart: always
 
 volumes:
-  # production_x10_redis_data:
-  # production_x10_postgres_data:
-  prod-x10_redis_data: 
-  prod-x10_postgres_data: 
+  production_x10_redis_data:
+  production_x10_postgres_data:
+  # prod-x10_redis_data: 
+  # prod-x10_postgres_data: 
   # x10-external-bot_redis_data: # для тестового бота
   # x10-external-bot_postgres_data:  # для тестового бота
