@@ -54,15 +54,15 @@ export class BroadcastService {
             parse_mode: 'HTML' 
           });
             const filePath = './public/documents/Тестовый отчет.pdf'; 
-            const res = await bot.sendDocument(user.user_id, 'BQACAgIAAxkDBVVA_2dhEOIB2Eiq_jHrBXUbFRt2zUTBAAI2ZQACCAgJS_kSkEKrzHy4NgQ', {
+            const res = await bot.sendDocument(user.user_id, filePath, {
               caption: config.pdf.testReportText, 
               parse_mode: 'HTML',
               // reply_markup: mainOptions('new')!,
               // disable_notification: false
             });
           
-            // const log = JSON.stringify(res)
-            // console.log(res)
+            const log = JSON.stringify(res)
+            console.log(res)
   
           await pool.query(`UPDATE messageJobs SET filter = 1 WHERE user_id = $1`, [user.user_id]);
           count++
