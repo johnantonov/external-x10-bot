@@ -39,9 +39,9 @@ services:
       - APP_CONTAINER=${APP_CONTAINER}
       - POSTGRESVOL=${POSTGRESVOL}
     depends_on:
-        - PRODUCTION-X10-REDIS:
-        - PRODUCTION-X10-POSTGRES:
-        - PRODUCTION-X10-REPORTER:
+        - PRODUCTION-X10-REDIS
+        - PRODUCTION-X10-POSTGRES
+        - PRODUCTION-X10-REPORTER
       # - prod-x10-redis   
       # - prod-x10-postgres 
       # - prod-x10-reporter
