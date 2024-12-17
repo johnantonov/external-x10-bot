@@ -6,6 +6,7 @@ import { newArticleData } from "../utils/parse";
 import { getStartedButton } from "../utils/buttons";
 import * as dotenv from 'dotenv';
 import { config } from "../config/config";
+import * as moment from 'moment';
 
 dotenv.config();
 
@@ -228,6 +229,39 @@ export const returnsReportMenu = () => {
 
   return new Options(menu).reply_markup; 
 }
+
+// export const createCalendar = (year: number, month: number) => {
+//     const currentDate = moment.isMoment([year, month]);
+//     const daysInMonth = currentDate.daysInMonth();
+//     const inlineKeyboard: TelegramBot.InlineKeyboardButton[][] = [];
+
+//     // Название месяца и навигационные кнопки
+//     inlineKeyboard.push([
+//         { text: '<<', callback_data: `prev_${year}_${month}` },
+//         { text: currentDate.format('MMMM YYYY'), callback_data: 'ignore' },
+//         { text: '>>', callback_data: `next_${year}_${month}` },
+//     ]);
+
+//     // Заголовки дней недели
+//     const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+//     inlineKeyboard.push(weekDays.map(day => ({ text: day, callback_data: 'ignore' })));
+
+//     // Генерация чисел дней
+//     let row: TelegramBot.InlineKeyboardButton[] = [];
+//     for (let day = 1; day <= daysInMonth; day++) {
+//         row.push({ text: day.toString(), callback_data: `day_${year}_${month}_${day}` });
+//         if (row.length === 7 || day === daysInMonth) {
+//             inlineKeyboard.push(row);
+//             row = [];
+//         }
+//     }
+
+//     return {
+//         reply_markup: {
+//             inline_keyboard: inlineKeyboard
+//         }
+//     };
+// }
 
 /**
  * returns article menu
