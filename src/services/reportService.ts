@@ -472,7 +472,9 @@ export class ReportService {
       });
       console.log(`PDF sent to chat_id: ${chat_id}`);
     } catch (error: any) {
-      console.error(`Failed to send PDF to chat_id: ${chat_id}. Error:`, error);
+      const code = error.data.error_code
+      const msg = code === 400 ? error.message : error
+      console.error(`Failed to send PDF to chat_id: ${chat_id}. Error:`, msg);
     }
   }
 
