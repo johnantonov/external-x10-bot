@@ -223,17 +223,18 @@ async function editMessageMedia(
   try {
     const form = new FormData();
 
-    form.append('media', JSON.stringify({
+    const isFileId = !fs.existsSync(mediaPath); // проверяем, существует ли путь к файлу
+    const media = {
       type: 'photo',
-      media: 'attach://photo',
+      media: isFileId ? mediaPath : 'attach://photo',
       caption: caption || "",
-      parse_mode: 'HTML'
-    }));
+      parse_mode: 'HTML',
+    };
 
-    if (mediaPath.length > 30) { // если ID то передаем id, если нет то передаем файл
-      form.append('photo', mediaPath);
-    } else {
-      form.append('photo', fs.createReadStream(mediaPath));
+    form.append('media', JSON.stringify(media));
+
+    if (!isFileId) {
+      form.append('photo', fs.createReadStream(mediaPath)); // если это файл, добавляем его в форму с именем "photo"
     }
 
     form.append('chat_id', chat_id);
@@ -247,15 +248,13 @@ async function editMessageMedia(
       `https://api.telegram.org/bot${botToken}/editMessageMedia`,
       form,
       {
-        headers: {
-          ...form.getHeaders(),
-        },
-      }
+        headers: form.getHeaders(),
+      },
     );
 
-    return response;
+    return response.data;
   } catch (error) {
-    formatError(error, 'Error editing media:')
+    console.error('Error editing media:', error);
     return null;
   }
 }
