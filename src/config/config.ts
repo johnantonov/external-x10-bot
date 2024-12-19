@@ -22,10 +22,10 @@ export const config = {
   },
 
   images: {
-   menu: 'AgACAgIAAxkDAAMGZ2ENdux4rAUTbl66qCWWjr1mq48AAkzlMRsl9AhL_0Wr4fJi4wUBAAMCAAN3AAM2BA',
-   hello: 'AgACAgIAAxkDAAMUZ2EWAT8P2YCMebbXMLB05j9vh9oAAs_hMRu4HAlLHHkLcLUFaTsBAAMCAAN3AAM2BA',
+   menu: 'AgACAgIAAxkBAAIDymdj-LxNehMdZhftr_PON1n58xSvAALV6zEb6V4hS6mzahygq0y7AQADAgADeQADNgQ',
+   hello: 'AgACAgIAAxkBAAIDz2dj-NAy6Y0bnSfIQA5RcTLpmRvOAALX6zEb6V4hS4AulqlN8FTwAQADAgADeQADNgQ',
    editProducts: null,
-   apiKey: null,
+   apiKey: 'AgACAgIAAxkBAAID2mdj-uM3gmlhkKmYtCZaHuJ4tCAJAALf6zEb6V4hS5iWQLC5nWoYAQADAgADeQADNgQ',
    settings: null,
   }, 
 
