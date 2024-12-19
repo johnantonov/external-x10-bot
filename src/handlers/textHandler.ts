@@ -58,7 +58,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
         newBtns = mainOptions(answer.type)?.inline_keyboard
       }
 
-      const successResponse = await sendImageWithText(bot, chat_id, 'menu.jpg', answer.text, newBtns);
+      const successResponse = await sendImageWithText(bot, chat_id, 'menu', answer.text, newBtns);
       if (successResponse) {
         await MS.saveMessage({ chat_id, message_id: successResponse.message_id, special: "menu" });
       }

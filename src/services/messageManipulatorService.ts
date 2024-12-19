@@ -13,7 +13,7 @@ dotenv.config();
  * @param {TelegramBot.InlineKeyboardButton[][]} Options - new buttons
  * @param {string} image - string of img name and extension
  */
-export function createEditData(text: string, options?: Options['reply_markup'], image?: string) {
+export function createEditData(text: string, options?: Options['reply_markup'], image?: ImagesKeys) {
   return { text, options, image };
 }
 
@@ -148,7 +148,7 @@ export class MessageService {
     message_id: number,
     newText?: string,
     newReplyMarkup?: Options['reply_markup'],
-    media?: string,
+    media?: ImagesKeys,
   ) {
 
     try {
@@ -177,7 +177,7 @@ export class MessageService {
         newText = undefined
       }
 
-      const imagePath = media ? getPath(media) : getPath(images.hello)
+      const imagePath = media ? getPath(media) : getPath('hello')
       const user = await users_db.getUserById(chat_id as number);
 
       if (user) {
@@ -198,7 +198,7 @@ export class MessageService {
 import fs from 'fs';
 import FormData from 'form-data';
 import { mainOptions, Options } from '../components/buttons';
-import { images } from '../dto/images';
+import { images, ImagesKeys } from '../dto/images';
 import { users_db } from '../../database/models/users';
 import { formatError } from '../utils/string&number';
 

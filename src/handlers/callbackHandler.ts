@@ -12,7 +12,7 @@ import { getTodayDate, getYesterdayDate, isReportAvailable } from "../utils/time
 import { texts } from "../components/texts";
 import dotenv from 'dotenv';
 import { config } from "../config/config";
-import { images } from "../dto/images";
+import { images, ImagesKeys } from "../dto/images";
 import { btn } from "../utils/buttons";
 import { getFaqData } from "../utils/faq";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
@@ -50,7 +50,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   const callbackObj = parseArticleData(userCallbackData)
 
   let articleMenu;
-  let editData: { text: string; options?: Options['reply_markup']; image?: string } | null = null;
+  let editData: { text: string; options?: Options['reply_markup']; image?: ImagesKeys } | null = null;
 
   switch (action) {
     case 'menu':
@@ -72,7 +72,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'new user':
       await RS.setUserState(chat_id, rStates.waitWbApiKey, ttls.day)
-      editData = createEditData(texts.sendKey, undefined, images.apiKey);
+      editData = createEditData(texts.sendKey, undefined, 'apiKey');
       break;
 
     case 'test report': 
@@ -90,7 +90,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
 
     case 'change key':
       await RS.setUserState(chat_id, rStates.waitNewKey, ttls.usual)
-      editData = createEditData(texts.warningChangeKey, returnBtn, images.apiKey);
+      editData = createEditData(texts.warningChangeKey, returnBtn, 'apiKey');
       break;
 
     case 'articles':
