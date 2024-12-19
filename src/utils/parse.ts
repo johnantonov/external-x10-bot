@@ -4,16 +4,16 @@ import { images, ImagesKeys } from "../dto/images"
 import { config } from "../config/config"
 
 export const getPath = (imageKey: ImagesKeys, isPath?: boolean) => {
-  const imageId: string | null = config.images?.[imageKey]
+  // const imageId: string | null = config.images?.[imageKey]
 
-  if (!imageId || isPath) {
+  // if (!imageId || isPath) {
     const imageName = images[imageKey]
-    console.log(2)
+  //   console.log(2)
     return resolve(__dirname, `../../../public/messageImages/${imageName}`)
-  }
+  // }
 
-  console.log(1)
-  return imageId
+  // console.log(1)
+  // return imageId
 }
 
 export function getSkuData(sku: any, path: string): number {
