@@ -94,9 +94,6 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
     };
 
     const answer = await bot.sendPhoto(chat_id, imagePath, { caption, ...options, parse_mode: 'HTML', disable_notification: true });
-    const log = JSON.stringify(answer)
-    console.log(log)
-
     return answer
   } catch (e) {
     return console.error('error in sendImageWithText: ', e, chat_id, imageKey, caption, keyboard)
