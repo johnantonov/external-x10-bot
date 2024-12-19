@@ -81,7 +81,7 @@ bot.on('message', async (msg: TelegramBot.Message) => {
 
   const msgs: MessageMS[] = [new MessageMS({ chat_id, message_id, content: text })];
 
-  if (textMsg.startsWith('/start ')) {
+  if (textMsg.startsWith('/start ')) { // пропуск " " для реф
     try {
       const referralId = +textMsg.split(' ')[1];
       if (referralId) {
@@ -103,6 +103,7 @@ bot.on('message', async (msg: TelegramBot.Message) => {
   }
   
   if (textMsg.startsWith('/admin__')) {
+    console.log(JSON.stringify(msg))
     return handleAdminCommand(chat_id, msg, bot)
   }
 
