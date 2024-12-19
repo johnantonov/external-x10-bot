@@ -13,7 +13,7 @@ import { updateBoxTariffs } from "../utils/boxTariffs";
 import { RediceService } from "../bot";
 import { adminRequestOrdersOrSalesReport, adminRequestReport, adminRequestStockReport, requestPrepareReports, requestRunReportService } from "../utils/requestReport";
 import { BroadcastService } from "../services/broadcastService";
-import { sendBotStats } from "../services/botStatsService";
+import { getFactUsers, sendBotStats } from "../services/botStatsService";
 import { DateKey } from "../dto/sku&report";
 import { getPath } from "../utils/parse";
 import { ImagesKeys } from "../dto/images";
@@ -50,6 +50,9 @@ const helpInfo = `
 <b>📊 СТАТИСТИКА</b>
 /admin__send_base_stats_to_webapp - отправка основной статистики вебапп
 /admin__get_stats - вывод основной статистики в чат
+
+/admin__get_fact_users -❗️проверить через рассылку сколько фактических пользователей
+
 
 <b>⚙️</b>
 /admin__my_id - получить свой tg id
@@ -364,6 +367,11 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
       const msg = await articles_db.getArticle(+id, article)
 
       await bot.sendMessage(chat_id, `${JSON.stringify(msg)}`)
+    }
+
+    if (action === 'get_fact_users') {
+      const result = await getFactUsers()
+      await bot.sendMessage(chat_id, result)
     }
 
     // ! TECH
