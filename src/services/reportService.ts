@@ -471,6 +471,7 @@ export class ReportService {
         },
       });
       console.log(`PDF sent to chat_id: ${chat_id}`);
+      await users_db.updateIsActive(chat_id)
     } catch (error: any) {
       const code = error.response?.data?.error_code || error.code || error.status || 'Unknown Error';
       const msg = code === 400 ? error.response?.data?.description || error.message : error;

@@ -27,15 +27,13 @@ class UsersModel extends BaseModel<User> {
 
       const user = userResult.rows[0];
 
-      if (newUsername) {
-        const query = `
+        const updQuery = `
           UPDATE ${this.tableName}
-          SET username = $1
+          SET username = $1, is_active = true, last_action = NOW()
           WHERE chat_id = $2
         `;
 
-        await this.pool.query(query, [newUsername, chat_id]);
-      }
+        await this.pool.query(updQuery, [newUsername, chat_id]);
 
       return [user.type, user.last_report_call, user.last_sec_report_call, user.success_refs];
     } catch (error) {
@@ -91,6 +89,19 @@ class UsersModel extends BaseModel<User> {
       await this.pool.query(query, [chat_id]);
     } catch (e) {
       console.error(`Error updating success_refs for user with chat_id: ${chat_id} -- `, e);
+    }
+  }
+
+  async updateIsActive(chat_id: number): Promise<void> {
+    try {
+      const query = `
+        UPDATE users
+        SET is_active = true, last_action = NOW()
+        WHERE chat_id = $1
+      `;
+      await this.pool.query(query, [chat_id]);
+    } catch (e) {
+      console.error(`Error updating is_active for user with chat_id: ${chat_id} -- `, e);
     }
   }
 
@@ -230,6 +241,36 @@ class UsersModel extends BaseModel<User> {
       return res.rows
     } catch (e) {
       console.error('Error getting users: ', e)
+    }
+  }
+
+  async getBaseStats() {
+    try {
+      // обновляем is_active для пользователей, у которых прошло больше суток с последнего действия
+      const updateQuery = `
+        UPDATE ${this.tableName}
+        SET is_active = false
+        WHERE last_action < NOW() - INTERVAL '1 day'
+      `;
+      await this.pool.query(updateQuery);
+  
+      // выполняем основной запрос для подсчёта статистики
+      const statsQuery = `
+        SELECT 
+          COUNT(*) AS total_users,
+          COUNT(*) FILTER (WHERE is_active = true) AS active_users,
+          COUNT(*) FILTER (WHERE wb_api_key IS NOT NULL) AS users_with_api_key
+        FROM ${this.tableName}
+      `;
+      const res = await this.pool.query(statsQuery);
+  
+      return {
+        users_count: res.rows[0].total_users || 0,
+        active_users: res.rows[0].active_users || 0,
+        users_with_key_count: res.rows[0].users_with_api_key || 0
+      };
+    } catch (e) {
+      console.error('Error getting users base stats: ', e);
     }
   }
 }

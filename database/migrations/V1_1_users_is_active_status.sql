@@ -1,0 +1,4 @@
+ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT false; 
+
+ALTER TABLE users ADD COLUMN last_action TIMESTAMP; 
+

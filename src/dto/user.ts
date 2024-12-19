@@ -15,6 +15,8 @@ export class User {
   tax: number | null;
   success_refs: number | null;
   from_ref: number | null;
+  is_active: boolean;
+  last_action: number | null;
 
   [key: string]: any;
 
@@ -31,5 +33,7 @@ export class User {
     this.tax = data.tax
     this.success_refs = null
     this.from_ref = null
+    this.is_active = false
+    this.last_action = null
   }
 }

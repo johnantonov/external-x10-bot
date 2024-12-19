@@ -1,9 +1,10 @@
+import { ImagesKeys } from "../dto/images";
 import { DateKey } from "../dto/sku&report"
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export const config = {
+export const config: { [key: string]: any, images: { [K in ImagesKeys]: string | null } } = {
   storagesForLogistics: ['Коледино', 'Казань', 'Тула'],
   acquiring: 0.015,
   turnover: 30,
@@ -18,7 +19,14 @@ export const config = {
    salesReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/sales',
    returnsReport: 'https://statistics-api.wildberries.ru/api/v1/supplier/sales',
    tgSendDoc: `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendDocument`
-},
+  },
+
+  images: {
+   menu: null,
+   hello: null,
+   editProducts: null,
+   apiKey: null,
+  }, 
 
   pdf: {
    //  test_pdf_id: 'BQACAgIAAxkDBVVB22dhKEjzNFFgKTjgxqbVw9iowsU3AAK-ZwACF_wIS74j6dHS5WhrNgQ',
@@ -43,7 +51,7 @@ export const config = {
 
     get summaryColSpan() {
       let count = this.skuCol;
-      this.cols.forEach(col => count += col.colspan);
+      this.cols.forEach((col: any) => count += col.colspan);
       return count;
     },
 

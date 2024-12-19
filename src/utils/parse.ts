@@ -1,8 +1,17 @@
 import { resolve } from "path"
 import { article, DateKey, SKU, SKUCallbackData } from "../dto/sku&report"
+import { images, ImagesKeys } from "../dto/images"
+import { config } from "../config/config"
 
-export const getPath = (imageName: string) => {
-  return resolve(__dirname, `../../../public/messageImages/${imageName}`)
+export const getPath = (imageKey: ImagesKeys) => {
+  const imageId: string | null = config.images?.[imageKey]
+
+  if (!imageId) {
+    const imageName = images[imageKey]
+    return resolve(__dirname, `../../../public/messageImages/${imageName}`)
+  }
+
+  return imageId
 }
 
 export function getSkuData(sku: any, path: string): number {

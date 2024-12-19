@@ -6,7 +6,7 @@ import { mainOptions } from "./buttons";
 import { bot, MS, RediceService } from "../bot";
 import { getPath } from "../utils/parse";
 import { user_type } from "../dto/user";
-import { images } from "../dto/images";
+import { images, ImagesKeys } from "../dto/images";
 import { texts } from "./texts";
 import { rStates, ttls } from "../redis";
 
@@ -36,7 +36,7 @@ export async function handleStartMenu(
       return console.error('handleStartMenu: error to get chat id:', msg, command, isNewMsg, menuId)
     }
 
-    const img = command === '/menu' ? images.menu : images.hello;
+    const img = command === '/menu' ? 'menu' : 'hello';
 
     if (isUser) {
       const type = user.type
@@ -81,9 +81,9 @@ export async function handleStartMenu(
  * @param {SendMessageOptions} [keyboard] 
  * @returns {Promise<Message>} 
  */
-export async function sendImageWithText(bot: TelegramBot, chat_id: number, imageName: string, caption?: string, keyboard?: InlineKeyboardButton[][]): Promise<Message | void> {
+export async function sendImageWithText(bot: TelegramBot, chat_id: number, imageKey: ImagesKeys, caption?: string, keyboard?: InlineKeyboardButton[][]): Promise<Message | void> {
   try {
-    const imagePath = getPath(imageName);
+    const imagePath = getPath(imageKey);
 
     const options: SendMessageOptions = {
       parse_mode: 'HTML',
@@ -93,9 +93,13 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
       disable_notification: true,
     };
 
-    return bot.sendPhoto(chat_id, imagePath, { caption, ...options, parse_mode: 'HTML', disable_notification: true });
+    const answer = bot.sendPhoto(chat_id, imagePath, { caption, ...options, parse_mode: 'HTML', disable_notification: true });
+    const log = JSON.stringify(answer)
+    console.log(log)
+
+    return answer
   } catch (e) {
-    return console.error('error in sendImageWithText: ', e, chat_id, imageName, caption, keyboard)
+    return console.error('error in sendImageWithText: ', e, chat_id, imageKey, caption, keyboard)
   }
 };
 
@@ -107,7 +111,7 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
  * @param {user_type} userType - the type of user (used to determine button options)
  * @returns {Promise<void>}
  */
-export async function sendNewMenu(chat_id: number, img: string, caption: string, userType: user_type) {
+export async function sendNewMenu(chat_id: number, img: ImagesKeys, caption: string, userType: user_type) {
   const keyboard = mainOptions(userType)?.inline_keyboard
   const newMenu = await sendImageWithText(bot, chat_id, img, caption, keyboard);
   if (newMenu) {

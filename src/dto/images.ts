@@ -4,3 +4,5 @@ export const images = {
   hello: 'hello.jpg',
   apiKey: 'apikey.jpg'
 }
+
+export type ImagesKeys = keyof typeof images;
