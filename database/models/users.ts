@@ -250,7 +250,7 @@ class UsersModel extends BaseModel<User> {
       const updateQuery = `
         UPDATE ${this.tableName}
         SET is_active = false
-        WHERE last_action < NOW() - INTERVAL '1 day'
+        WHERE is_active = true AND last_action < NOW() - INTERVAL '1 day'
       `;
       await this.pool.query(updateQuery);
   
