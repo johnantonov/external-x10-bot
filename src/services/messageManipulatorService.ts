@@ -230,7 +230,11 @@ async function editMessageMedia(
       parse_mode: 'HTML'
     }));
 
-    form.append('photo', fs.createReadStream(mediaPath));
+    if (mediaPath.length > 30) { // если ID то передаем id, если нет то передаем файл
+      form.append('photo', mediaPath);
+    } else {
+      form.append('photo', fs.createReadStream(mediaPath));
+    }
 
     form.append('chat_id', chat_id);
     form.append('message_id', message_id);
