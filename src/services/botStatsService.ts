@@ -43,14 +43,14 @@ export async function getFactUsers() {
 
   for (const user of users) {
     try {
-      const message = await bot.sendMessage(user.chat_id, '.', {
+      const message = await bot.sendMessage(user.user_id, '.', {
         disable_notification: true,
       });
 
-      await bot.deleteMessage(user.chat_id, message.message_id);
-      successfulUsers.push(user.chat_id);
+      await bot.deleteMessage(user.user_id, message.message_id);
+      successfulUsers.push(user.user_id);
     } catch (error) {
-      failedUsers.push(user.chat_id);
+      failedUsers.push(user.user_id);
     }
   }
 
