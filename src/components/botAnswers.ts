@@ -93,7 +93,7 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
       disable_notification: true,
     };
 
-    const answer = bot.sendPhoto(chat_id, imagePath, { caption, ...options, parse_mode: 'HTML', disable_notification: true });
+    const answer = await bot.sendPhoto(chat_id, imagePath, { caption, ...options, parse_mode: 'HTML', disable_notification: true });
     const log = JSON.stringify(answer)
     console.log(log)
 
