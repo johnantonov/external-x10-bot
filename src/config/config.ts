@@ -22,10 +22,11 @@ export const config = {
   },
 
   images: {
-   menu: null,
-   hello: null,
+   menu: 'AgACAgIAAxkDAAMGZ2ENdux4rAUTbl66qCWWjr1mq48AAkzlMRsl9AhL_0Wr4fJi4wUBAAMCAAN3AAM2BA',
+   hello: 'AgACAgIAAxkDAAMUZ2EWAT8P2YCMebbXMLB05j9vh9oAAs_hMRu4HAlLHHkLcLUFaTsBAAMCAAN3AAM2BA',
    editProducts: null,
    apiKey: null,
+   settings: null,
   }, 
 
   pdf: {

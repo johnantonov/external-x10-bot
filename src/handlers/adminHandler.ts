@@ -1,4 +1,4 @@
-import TelegramBot, { Message } from "node-telegram-bot-api"
+import TelegramBot, { Message, SendMessageOptions } from "node-telegram-bot-api"
 // import { reportService } from "../services/reportService"
 import * as dotenv from 'dotenv';
 import pool from "../../database/db"
@@ -15,6 +15,8 @@ import { adminRequestOrdersOrSalesReport, adminRequestReport, adminRequestStockR
 import { BroadcastService } from "../services/broadcastService";
 import { sendBotStats } from "../services/botStatsService";
 import { DateKey } from "../dto/sku&report";
+import { getPath } from "../utils/parse";
+import { ImagesKeys } from "../dto/images";
 
 dotenv.config();
 
@@ -58,6 +60,7 @@ const helpInfo = `
 <b>❗️ TECH</b>
 /admin__start_import - начать заготовленный импорт
 /admin__run_report_service - запуск репорт сервиса на прошедший час
+/admin__get_image_{type} - выслать фото, в отчет вывести лог message
 `
 
 export async function handleAdminCommand(chat_id: number, msg: Message, bot: TelegramBot, mediaGroup?: any) {
@@ -341,6 +344,15 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
 
     if (action.startsWith('my_id')) {
       await bot.sendMessage(chat_id, `${chat_id}`);
+    }
+
+    if (action.startsWith('get_image')) {
+      const imagePath = action.split('image_')[1] as ImagesKeys;
+      const path = getPath(imagePath, true)
+
+      const answer = await bot.sendPhoto(chat_id, imagePath, { parse_mode: 'HTML', disable_notification: true });
+      const log = JSON.stringify(answer)
+      console.log(log)
     }
 
 

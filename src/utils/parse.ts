@@ -3,10 +3,10 @@ import { article, DateKey, SKU, SKUCallbackData } from "../dto/sku&report"
 import { images, ImagesKeys } from "../dto/images"
 import { config } from "../config/config"
 
-export const getPath = (imageKey: ImagesKeys) => {
+export const getPath = (imageKey: ImagesKeys, isPath?: boolean) => {
   const imageId: string | null = config.images?.[imageKey]
 
-  if (!imageId) {
+  if (!imageId || isPath) {
     const imageName = images[imageKey]
     return resolve(__dirname, `../../../public/messageImages/${imageName}`)
   }
