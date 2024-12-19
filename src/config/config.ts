@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export const config: { [key: string]: any, images: { [K in ImagesKeys]: string | null } } = {
+export const config = {
   storagesForLogistics: ['Коледино', 'Казань', 'Тула'],
   acquiring: 0.015,
   turnover: 30,
