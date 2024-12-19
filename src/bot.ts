@@ -42,6 +42,7 @@ bot.on('message', async (msg: TelegramBot.Message) => {
     mediaGroupBuffer.get(chat_id).push(msg);
 
     if (textMsg?.startsWith('/admin__')) {
+      console.log(JSON.stringify(msg))
       commandBuffer.set(chat_id, textMsg);
     }
 
