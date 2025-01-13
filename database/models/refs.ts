@@ -32,7 +32,7 @@ class RefsModel extends BaseModel<Ref> {
       const query = `
         UPDATE ${this.tableName}
         SET success_refs = COALESCE(success_refs, 0) + 1
-        WHERE ref = $1 LIMIT 1
+        WHERE ref = $1
       `;
       await this.pool.query(query, [ref]);
     } catch (e) {
@@ -46,7 +46,7 @@ class RefsModel extends BaseModel<Ref> {
       const query = `
         UPDATE ${this.tableName}
         SET clicks = COALESCE(clicks, 0) + 1
-        WHERE ref = $1 LIMIT 1
+        WHERE ref = $1
       `;
       await this.pool.query(query, [ref]);
     } catch (e) {
