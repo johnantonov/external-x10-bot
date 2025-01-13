@@ -30,6 +30,14 @@ export const config = {
    settings: null,
   }, 
 
+  test_images: {
+   menu: 'AgACAgIAAxkBAAIH2WeFOs1xl5Khg98hSf8KaLRDQSSwAAJa6DEbFLYwSJGCvnCUhxaWAQADAgADeQADNgQ',
+   hello: 'AgACAgIAAxkBAAIH22eFO2QEAzlJbglGAAFoNFE5VoTdfwACaugxGxS2MEhG16dgC9mCwgEAAwIAA3kAAzYE',
+   editProducts: null,
+   apiKey: 'AgACAgIAAxkBAAIH3GeFO4Y5pma99YiJDSDdWnN--Gy-AAJ26DEbFLYwSJf74XpU8W0UAQADAgADeQADNgQ',
+   settings: null,
+  },
+
   pdf: {
    //  test_pdf_id: 'BQACAgIAAxkDBVVB22dhKEjzNFFgKTjgxqbVw9iowsU3AAK-ZwACF_wIS74j6dHS5WhrNgQ',
     test_pdf_id: 'BQACAgIAAxkDAAMxZ2Et2b0RMXOB_Mf86C55zCacsoQAAutaAALUTwlLNEmtx6lHWfA2BA',

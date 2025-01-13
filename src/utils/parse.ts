@@ -2,10 +2,16 @@ import { resolve } from "path"
 import { article, DateKey, SKU, SKUCallbackData } from "../dto/sku&report"
 import { images, ImagesKeys } from "../dto/images"
 import { config } from "../config/config"
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 // возвращает file_id или file_path на сервере
 export const getPath = (imageKey: ImagesKeys, isPath?: boolean) => {
-  const imageId: string | null = config.images?.[imageKey]
+  let imageId: string | null = config.images?.[imageKey]
+
+  if (process.env.MODE === 'test') {
+    imageId = config.test_images?.[imageKey]
+  }
 
   if (!imageId || isPath) {
     const imageName = images[imageKey]
