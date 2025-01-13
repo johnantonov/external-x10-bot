@@ -14,7 +14,7 @@ export class User {
   last_sec_report_call: number | null;
   tax: number | null;
   success_refs: number | null;
-  from_ref: number | null;
+  from_ref: string | null;
   is_active: boolean;
   last_action: number | null;
 

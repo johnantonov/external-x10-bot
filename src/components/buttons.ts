@@ -188,7 +188,7 @@ export const mainOptions = (type?: user_type) => {
       [mainButtons.articlesMenu, mainButtons.changeTime],
       [mainButtons.ordersReport, mainButtons.salesReport, mainButtons.returnsReport],
       [mainButtons.changeWbApiKey],
-      // [mainButtons.ref],
+      [mainButtons.ref],
       [mainButtons.full10XBot],
       [mainButtons.info]
     ];

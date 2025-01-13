@@ -5,10 +5,11 @@ import { UserCallback, UserMsg } from "../dto/messages";
 import { mainOptions } from "./buttons";
 import { bot, MS, RediceService } from "../bot";
 import { getPath } from "../utils/parse";
-import { user_type } from "../dto/user";
+import { User, user_type } from "../dto/user";
 import { images, ImagesKeys } from "../dto/images";
 import { texts } from "./texts";
 import { rStates, ttls } from "../redis";
+import { refs_db } from "../../database/models/refs";
 
 /**
  * handles the /start or /menu commands and manages menu rendering
@@ -24,7 +25,7 @@ export async function handleStartMenu(
   command: '/menu' | '/start', 
   isNewMsg: boolean = true, 
   menuId?: number, 
-  ref?: number) 
+  ref?: User['from_ref']) 
 {
   try {
     const users = await users_db.select({ chat_id: msg.chat_id });
@@ -63,6 +64,7 @@ export async function handleStartMenu(
       }
     } else {
       await users_db.insert({ chat_id: chat_id, username: msg.username, type: 'new', from_ref: ref || null });
+      if (ref) await refs_db.updateClicks(ref)
       await sendNewMenu(chat_id, img, texts.start, 'new')
       console.log('insert new user into db: ', chat_id, " ", msg.username)
     }

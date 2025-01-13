@@ -1,10 +1,15 @@
-export const createUserRefText = (chat_id: number | string, refCounts: number | null) => {
-  return `
-<b>Реферальная программа</b>
+import { refs_db } from "../../database/models/refs";
+import { RediceService } from "../bot";
+import { texts } from "../components/texts";
+import { User } from "../dto/user";
+import { rStates } from "../redis";
 
-Ваша реферальная ссылка: 
-https://t.me/${process.env.BOT_USERNAME}?start=${chat_id}
-
-Приглашенных пользователей: ${ refCounts ? refCounts : 0 }
-  `;
-}
+export const processUserRef = async (chat_id: number, from_ref?: User['from_ref']) => {
+  const ref = await refs_db.checkRef(chat_id);
+  if (ref?.ref) {
+    return texts.getRefInfoText(ref.ref, ref.success_refs, ref.clicks);
+  } else {
+    await RediceService.setUserState(chat_id, rStates.waitRef);
+    return texts.getNewRefText(from_ref);
+  }
+};

@@ -112,11 +112,11 @@ export function createStockReportText(data: SKU[], chat_id: number) {
     let article = sku.article;
     let vendor_code = sku.vendor_code;
 
-    if (chat_id === 150462912 || chat_id === 6043879539) {
-      article = String(articleCounter).padStart(6, '0'); // 000001, 000002 и тд
-      vendor_code = `Артикул_${articleCounter}`;
-      articleCounter++;
-    }
+    // if (chat_id === 150462912 || chat_id === 6043879539) {
+    //   article = String(articleCounter).padStart(6, '0'); // 000001, 000002 и тд
+    //   vendor_code = `Артикул_${articleCounter}`;
+    //   articleCounter++;
+    // }
 
     return {
       article,
@@ -208,10 +208,10 @@ export function createOrdersOrSalesReportText(data: OrdersOrSalesObject, date: D
     const subject = data[sku]?.subject;
     const originalOrdersCount = data[sku]?.orders; 
 
-    if (chat_id === 150462912 || chat_id === 6043879539) {
-      vendor_code = `Артикул_${articleCounter}`;
-      articleCounter++;
-    }
+    // if (chat_id === 150462912 || chat_id === 6043879539) {
+    //   vendor_code = `Артикул_${articleCounter}`;
+    //   articleCounter++;
+    // }
 
     if (!groupedArticles[subject]) {
       groupedArticles[subject] = [];

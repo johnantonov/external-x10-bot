@@ -50,6 +50,7 @@ export class ReportService {
       }
 
       console.log('list of users waiting report:', userIds.map((user: User) => user.chat_id).join(' '))
+      
       for (const chat_id of userIds) {
         const id = chat_id.chat_id
 
@@ -65,7 +66,7 @@ export class ReportService {
         const { wb_api_key } = articles[0] ?? null
 
         if (!wb_api_key) {
-          console.log(`No recent campaigns found for article with chat ID: ${id}`);
+          console.log(`No wb api key: ${id}`);
           continue;
         };
 
@@ -507,39 +508,39 @@ export class ReportService {
     }
   }
 
-  async processReport(articles: SKU[], yesterdayDate: string, chat_id: number) {
-    if (chat_id === 150462912 ) {
-      const filePath = './public/documents/Тестовый отчет.pdf'; 
-      try {
-        const options = returnNewMenu();
-        const replyMarkup = JSON.stringify(options); 
+  async processReport(articles: SKU[], yesterdayDate: string, chat_id: number, ref: User['from_ref']) {
+    // if (chat_id === 150462912 ) {
+    //   const filePath = './public/documents/Тестовый отчет.pdf'; 
+    //   try {
+    //     const options = returnNewMenu();
+    //     const replyMarkup = JSON.stringify(options); 
 
-        const formData = new FormData();
-        formData.append('document', createReadStream(filePath));
-        formData.append('chat_id', chat_id);
-        formData.append('reply_markup', replyMarkup);
-        formData.append('caption', config.pdf.testReportText);
-        formData.append('parse_mode', 'HTML');
-        formData.append('disable_notification', 'true');
+    //     const formData = new FormData();
+    //     formData.append('document', createReadStream(filePath));
+    //     formData.append('chat_id', chat_id);
+    //     formData.append('reply_markup', replyMarkup);
+    //     formData.append('caption', config.pdf.testReportText);
+    //     formData.append('parse_mode', 'HTML');
+    //     formData.append('disable_notification', 'true');
         
-        const response = await axios.post(config.urls.tgSendDoc, formData, {
-          headers: {
-            ...formData.getHeaders(), 
-          },
-        });
+    //     const response = await axios.post(config.urls.tgSendDoc, formData, {
+    //       headers: {
+    //         ...formData.getHeaders(), 
+    //       },
+    //     });
   
-      } catch (error) {
-        console.error('Error while sending test report', error);
-      }
-    } else {
+    //   } catch (error) {
+    //     console.error('Error while sending test report', error);
+    //   }
+    // } else {
       const messageText = createReportMessage(articles, yesterdayDate)
-      const htmlTable = await generateReportHtml(articles);
+      const htmlTable = await generateReportHtml(articles, ref);
       const pdfBuffer = await generatePdfFromHtml(htmlTable);
       if (pdfBuffer && messageText) {
         const formatYesterdayDate = yesterdayDate.slice(0, 5)
         await this.sendPdfToTelegram(chat_id, pdfBuffer, formatYesterdayDate, messageText);
       }
-    }
+    // }
   }
 
   async processStockReport(articles: SKU[], chat_id: number) {
@@ -581,7 +582,8 @@ export class ReportService {
       if (ids.length > 0) {
         for (const chat_id of ids) {
           if (usersData[chat_id][0] && usersData[chat_id][0].wb_api_key) {
-            await this.processReport(usersData[chat_id], yesterdayDate, +chat_id)
+            const ref = await users_db.getFromRef(+chat_id)
+            await this.processReport(usersData[chat_id], yesterdayDate, +chat_id, ref)
           } else {
             console.log('There are no articles for ' + chat_id)
           }
@@ -605,7 +607,8 @@ export class ReportService {
 
       if (articles.length > 0) {
         if (articles[0] && articles[0].wb_api_key) {
-          await this.processReport(articles, yesterdayDate, targetChat) 
+          const ref = await users_db.getFromRef(chat_id)
+          await this.processReport(articles, yesterdayDate, targetChat, ref) 
           await this.deleteMessage(targetChat, loadingMsgId) 
         } 
       } else {

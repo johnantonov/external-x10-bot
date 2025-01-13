@@ -7,8 +7,9 @@ import { articles_db } from "../../database/models/articles";
 import jwt from 'jsonwebtoken'; 
 import { texts } from "../components/texts";
 import { parseDate, parsePercent, parseSum } from "../utils/parse";
-import { user_type } from "../dto/user";
+import { User, user_type } from "../dto/user";
 import { checkAuth } from "../utils/auth";
+import { refs_db } from "../../database/models/refs";
 
 dotenv.config();
 
@@ -61,7 +62,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
           const isUniqueSid = await sids_db.isUniqueSid(sid, user?.from_ref); // добавляем новый сид и проверяем его уникальность
           
           if (user?.from_ref && isUniqueSid) {
-            await users_db.updateSuccessRefs(user.from_ref)
+            await refs_db.updateSuccessRefs(user.from_ref)
           }
 
           await users_db.updateType(chat_id, 'waitSku', text);
@@ -149,6 +150,15 @@ export async function awaitingHandler(data: UserMsg, state: string) {
         console.error('Error processing orders report in awaiting handler: ', e)
         return handleError(texts.error);
       }
+    } else if (state === rStates.waitRef) {
+      try {
+        const ref = text.split('/').pop() ;
+        await refs_db.insert({ chat_id, ref })
+        return new AwaitingAnswer({ result: true, text: texts.successRefConnectionText(ref as User['from_ref'], process.env.BOT_USERNAME!), type: 'registered' });
+      } catch (e) {
+        console.error('Error processing ref program in awaiting handler: ', e)
+        return handleError(texts.error);
+      }
     }
 
     return handleError(texts.errorDoAgain);
@@ -170,6 +180,10 @@ export function isKey(text: string, state: string): Boolean {
 
   if (state.startsWith(rStates.waitTax)) {
     return /^(\d+([.,]\d+)?|[.,]?\d+)$/.test(text);
+  }
+
+  if (state === rStates.waitRef) {
+    return text.startsWith('https://')
   }
 
   return true;

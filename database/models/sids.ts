@@ -23,7 +23,7 @@ class SidsModel extends BaseModel<Sid> {
       return false
     } else {
       console.log('unique sid: ' + sid)
-      await this.insert({ sid: sid, added_by: from_ref })
+      await this.insert({ sid: sid, added_with_ref: from_ref })
       return true
     }
   }

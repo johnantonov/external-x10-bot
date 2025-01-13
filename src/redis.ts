@@ -38,7 +38,8 @@ export const rStates = {
   waitSku: 'awaiting_sku',
   waitSkuOldUser: 'awaiting_sku_old',
   waitNewKey: 'awaiting_new_key',
-  waitDateForOrdersOrSalesReport: 'waitDateForOrdersSales'
+  waitDateForOrdersOrSalesReport: 'waitDateForOrdersSales',
+  waitRef: 'waitRef',
 }
 
 export const ttls = {

@@ -17,7 +17,7 @@ import { btn } from "../utils/buttons";
 import { getFaqData } from "../utils/faq";
 import { CallbackProcessor } from "../utils/CallbackProcessor";
 import { requestOrdersOrSalesReport, requestReport, requestStockReport } from "../utils/requestReport";
-import { createUserRefText } from "../utils/ref";
+import { processUserRef } from "../utils/ref";
 import { DateKey, OrdersSalesReportType } from "../dto/sku&report";
 
 dotenv.config();
@@ -42,7 +42,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   }
 
   const { chat_id, userCallbackData, message_id, username } = userCallback;
-  const [type, last_report_call, last_sec_report_call, success_refs] = await users_db.processUserRequest(chat_id, username)
+  const [type, last_report_call, last_sec_report_call, from_ref] = await users_db.processUserRequest(chat_id, username)
   const returnBtn = returnMenu(true);
   const mainBtn = mainOptions(type ?? 'new')
   const action = new CallbackProcessor(userCallbackData, type).getAction();
@@ -275,7 +275,8 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
       break;
 
     case 'ref':
-      editData = createEditData(createUserRefText(chat_id, success_refs), returnBtn);
+      const refText = await processUserRef(chat_id, from_ref)
+      editData = createEditData(refText, returnBtn);
       break;
 
     case 'fb':

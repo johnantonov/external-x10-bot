@@ -16,7 +16,7 @@ class UsersModel extends BaseModel<User> {
   }
 
   async processUserRequest(chat_id: number, newUsername: string | undefined)
-  : Promise<[user_type | null, User['last_report_call'] | null,  User['last_sec_report_call'] | null, User['success_refs']]> {
+  : Promise<[user_type | null, User['last_report_call'] | null,  User['last_sec_report_call'] | null, User['from_ref'] | null]> {
     try {
       const userResult = await this.select({ chat_id });
 
@@ -35,7 +35,7 @@ class UsersModel extends BaseModel<User> {
 
         await this.pool.query(updQuery, [newUsername, chat_id]);
 
-      return [user.type, user.last_report_call, user.last_sec_report_call, user.success_refs];
+      return [user.type, user.last_report_call, user.last_sec_report_call, user.from_ref];
     } catch (error) {
       console.error(`Error while updating username: ${error}`);
       return [null, null, null, null];
@@ -76,19 +76,6 @@ class UsersModel extends BaseModel<User> {
       }
     } catch (e) {
       console.error(`Error clearing report time for user: ${chat_id ? chat_id : 'all'} -- `, e)
-    }
-  }
-
-  async updateSuccessRefs(chat_id: number): Promise<void> {
-    try {
-      const query = `
-        UPDATE users
-        SET success_refs = COALESCE(success_refs, 0) + 1
-        WHERE chat_id = $1
-      `;
-      await this.pool.query(query, [chat_id]);
-    } catch (e) {
-      console.error(`Error updating success_refs for user with chat_id: ${chat_id} -- `, e);
     }
   }
 
@@ -228,6 +215,17 @@ class UsersModel extends BaseModel<User> {
   
       const res = await this.pool.query(query);
       return res.rows
+    } catch (e) {
+      console.error('Error getting users: ', e)
+    }
+  }
+
+  async getFromRef(chat_id: number) {
+    try {
+      const query = `SELECT from_ref FROM ${this.tableName} WHERE chat_id = $1`;
+  
+      const res = await this.pool.query(query, [chat_id]);
+      return res.rows[0].from_ref
     } catch (e) {
       console.error('Error getting users: ', e)
     }
