@@ -69,7 +69,10 @@ export const texts = {
 
   reportErrorGettingData: "Возникла ошибка при получении данных о товарах",
 
-  getNewRefText: (from_ref?: User['from_ref']) => `Зайдите в ${from_ref && `<a href="https://cp.puzzlebot.top/${from_ref}">`}@tenXsupport_bot${from_ref && `</a>`}, нажмите "Реферальная программа", сгенерируйте вашу реф. ссылку и отправьте ее мне:`,
+  getNewRefText: (from_ref?: User['from_ref']) => {
+    const botLink = from_ref ? `<a href="https://cp.puzzlebot.top/${from_ref}">@tenXsupport_bot</a>` : '@tenXsupport_bot';
+    return `Зайдите в ${botLink}, нажмите "Реферальная программа", сгенерируйте вашу реф. ссылку и отправьте ее мне:`;
+  },
   getRefInfoText: (ref: User['from_ref'], refCounts: number | null, clicks: number | null) => `Новые пользователи: ${clicks || 0}\nДобавлено уникальных кабинетов: ${refCounts || 0}`,
   successRefConnectionText: (ref: User['from_ref'], botUsername: string) => `Отлично, вы подключились!\n\nВот ваши итоговые ссылки на продукты:\n"Бесплатный БОТ с отчетом (при переходе по этим ссылкам и добавлении уникальных кабинетов \n1) на ваш баланс будут начислятся такието бонусы, \n2) а также если пользователь купит систему, то + деньги)\nhttps://t.me/${botUsername}?start=${ref} 1\n\nСистема 10Х\nСсылка если решите порекомендовать систему напрямую: https://cp.puzzlebot.top/${ref}`,
 
