@@ -22,7 +22,6 @@ class RefsModel extends BaseModel<Ref> {
       console.log('there is no ref for : ' + chat_id)
       return null
     } else {
-      console.log('ref for: ' + chat_id)
       return result.rows[0]
     }
   }
@@ -42,6 +41,7 @@ class RefsModel extends BaseModel<Ref> {
   }
 
   async updateClicks(ref: User['from_ref']): Promise<void> {
+    console.log(ref)
     try {
       const query = `
         UPDATE ${this.tableName}
