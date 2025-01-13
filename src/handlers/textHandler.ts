@@ -4,11 +4,12 @@ import { handleStartMenu, sendImageWithText } from "../components/botAnswers";
 import { articleOptions, mainOptions } from "../components/buttons";
 import { texts } from "../components/texts";
 import { AwaitingAnswer, MessageMS, UserMsg } from "../dto/messages";
+import { User } from "../dto/user";
 import { rStates, ttls } from "../redis";
 import { requestOrdersOrSalesReport } from "../utils/requestReport";
 import { awaitingHandler } from "./awaitingHandler";
 
-export async function handleMenuCommand(UserMsg: UserMsg, chat_id: number, text: string, msgs: MessageMS[], ref?: number) {
+export async function handleMenuCommand(UserMsg: UserMsg, chat_id: number, text: string, msgs: MessageMS[], ref?: User['from_ref']) {
   await RediceService.deleteUserState(chat_id);
   const menu = await MS.getSpecialMsg(chat_id, 'menu');
   if (text === '/menu') {
