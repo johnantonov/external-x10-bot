@@ -7,6 +7,7 @@ import { MessageService } from './services/messageManipulatorService';
 import { callbackHandler } from './handlers/callbackHandler';
 import { handleAdminCommand } from './handlers/adminHandler';
 import { handleMenuCommand, handleUserState } from './handlers/textHandler';
+import { User } from './dto/user';
 
 dotenv.config();
 const token = process.env.TELEGRAM_TOKEN;
@@ -84,7 +85,7 @@ bot.on('message', async (msg: TelegramBot.Message) => {
 
   if (textMsg.startsWith('/start ')) { // пропуск " " для реф
     try {
-      const referralId = +textMsg.split(' ')[1];
+      const referralId = textMsg.split(' ')[1];
       if (referralId) {
         console.log(`User started with referral ID: ${referralId}`);
         await handleMenuCommand(UserTextMessage, chat_id, textMsg, msgs, referralId);
