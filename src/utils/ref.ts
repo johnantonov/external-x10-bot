@@ -6,7 +6,6 @@ import { rStates } from "../redis";
 
 export const processUserRef = async (chat_id: number, from_ref?: User['from_ref']) => {
   const ref = await refs_db.checkRef(chat_id);
-console.log(ref)
 
   if (ref?.ref) {
     return texts.getRefInfoText(ref.ref, ref.success_refs, ref.clicks);
