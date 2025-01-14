@@ -18,13 +18,11 @@ class RefsModel extends BaseModel<Ref> {
 
     const result = await this.pool.query(query, [chat_id]);
 
-    console.log(result)
-
     if (result?.rows?.length > 0) {
+      return result.rows[0]
+    } else {
       console.log('there is no ref for : ' + chat_id)
       return null
-    } else {
-      return result.rows[0]
     }
   }
 
