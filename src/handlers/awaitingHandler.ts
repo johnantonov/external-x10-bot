@@ -154,7 +154,7 @@ export async function awaitingHandler(data: UserMsg, state: string) {
       try {
         const ref = text.split('/').pop() ;
         await refs_db.insert({ chat_id, ref })
-        return new AwaitingAnswer({ result: true, text: texts.successRefConnectionText(ref as User['from_ref'], process.env.BOT_USERNAME!), type: 'registered' });
+        return new AwaitingAnswer({ result: true, text: texts.successRefConnectionText(ref as User['from_ref']), type: 'registered' });
       } catch (e) {
         console.error('Error processing ref program in awaiting handler: ', e)
         return handleError(texts.error);
