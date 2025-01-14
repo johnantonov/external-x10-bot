@@ -1,7 +1,7 @@
 import pool from "../../database/db";
 import { users_db } from "../../database/models/users";
 import { bot } from "../bot";
-import { mainOptions } from "../components/buttons";
+// import { mainOptions } from "../components/buttons";
 import { config } from "../config/config";
 import { formatError } from "../utils/string&number";
 

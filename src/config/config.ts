@@ -11,6 +11,7 @@ export const config = {
   turnover: 30,
   returnLogistics: 50,
   mainBotUrl: 'https://t.me/tenXsupport_bot',
+  mainRefPart: 'https://cp.puzzlebot.top/',
 
   maxSku: 10,
   reportStopTime: 0,

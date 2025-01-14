@@ -220,7 +220,7 @@ class UsersModel extends BaseModel<User> {
     }
   }
 
-  async getFromRef(chat_id: number) {
+  async getFromRef(chat_id: number): Promise<User['from_ref'] | null> {
     try {
       const query = `SELECT from_ref FROM ${this.tableName} WHERE chat_id = $1`;
   
@@ -228,6 +228,7 @@ class UsersModel extends BaseModel<User> {
       return res.rows[0].from_ref
     } catch (e) {
       console.error('Error getting users: ', e)
+      return null
     }
   }
 

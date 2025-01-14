@@ -1,4 +1,5 @@
 import { articles_db } from "../../database/models/articles";
+import { users_db } from "../../database/models/users";
 import { bot, MS, RediceService } from "../bot";
 import { handleStartMenu, sendImageWithText } from "../components/botAnswers";
 import { articleOptions, mainOptions } from "../components/buttons";
@@ -24,6 +25,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
   if (userState) {
     const response = await bot.sendMessage(chat_id, "Проверяем...⌛️", { disable_notification: true });
     const answer: AwaitingAnswer = await awaitingHandler(userTextMessage, userState);
+    const ref = await users_db.getFromRef(chat_id)
 
     msgs.push({ chat_id, message_id: response.message_id, special: 'menu' });
 
@@ -31,7 +33,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
       await MS.saveMessages(msgs);
       if (answer?.type) {
         await bot.deleteMessage(chat_id, response.message_id)
-        return bot.sendMessage(chat_id, answer.text, { reply_markup: mainOptions(answer.type)!, disable_notification: true });
+        return bot.sendMessage(chat_id, answer.text, { reply_markup: mainOptions(answer.type, ref)!, disable_notification: true });
       }
       return bot.editMessageText(answer.text, { chat_id, message_id: response.message_id });
     } else {
@@ -42,7 +44,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
 
       if (answer.type === 'waitTax') {
         await RediceService.setUserState(chat_id, 'waitTax', ttls.day)
-        newBtns = mainOptions(answer.type)?.inline_keyboard
+        newBtns = mainOptions(answer.type, ref)?.inline_keyboard
 
       } else if (userState === rStates.waitSelfCost) {
         const article = await articles_db.getArticle(chat_id, userState?.split('?')[1])
@@ -56,7 +58,7 @@ export async function handleUserState(chat_id: number, msgs: MessageMS[], userTe
         } 
 
       } else {
-        newBtns = mainOptions(answer.type)?.inline_keyboard
+        newBtns = mainOptions(answer.type, ref)?.inline_keyboard
       }
 
       const successResponse = await sendImageWithText(bot, chat_id, 'menu', answer.text, newBtns);

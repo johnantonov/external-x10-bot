@@ -1,5 +1,5 @@
 import TelegramBot, { CallbackQuery, InlineKeyboardButton } from "node-telegram-bot-api";
-import { user_type } from "../dto/user";
+import { User, user_type } from "../dto/user";
 import { article, SKU, SKUCallbackData } from "../dto/sku&report";
 import { articles_db } from "../../database/models/articles";
 import { newArticleData } from "../utils/parse";
@@ -128,7 +128,11 @@ export const mainButtons = {
   returnsReportDate: { text: 'Возвраты за дату', callback_data: CallbackData.returnsReportDate},
   ref: { text: '👤 Реф. программа', callback_data: CallbackData.ref},
   feedback: { text: '🛎 Поддержка', url: CallbackData.feedback },
-  full10XBot: { text: '📈 Система 10X | 🛎 Поддержка', url: CallbackData.full10XBot },
+  full10XBot: (ref?: User['from_ref']) => { 
+    return { 
+      text: '📈 Система 10X | 🛎 Поддержка', 
+      url: ref ? config.mainRefPart + ref : CallbackData.full10XBot } 
+  },
 };
 
 export const articleButtons: Record<string, ((article: any) => TelegramBot.InlineKeyboardButton)> = {
@@ -167,7 +171,7 @@ export const returnFaq = () => {
  * @param {boolean} waitReport - if user wait all reports change btn to loading text
  * @param {boolean} type - current type of user
  */
-export const mainOptions = (type?: user_type) => {
+export const mainOptions = (type?: user_type, ref?: User['from_ref']) => {
   if (type && type !== 'registered') {
     return getStartedButton(type)
   }
@@ -178,7 +182,7 @@ export const mainOptions = (type?: user_type) => {
     [mainButtons.ordersReport, mainButtons.salesReport, mainButtons.returnsReport],
     [mainButtons.changeWbApiKey],
     // [mainButtons.ref],
-    [mainButtons.full10XBot],
+    [mainButtons.full10XBot(ref)],
     [mainButtons.info]
   ];
 
@@ -189,7 +193,7 @@ export const mainOptions = (type?: user_type) => {
       [mainButtons.ordersReport, mainButtons.salesReport, mainButtons.returnsReport],
       [mainButtons.changeWbApiKey],
       [mainButtons.ref],
-      [mainButtons.full10XBot],
+      [mainButtons.full10XBot(ref)],
       [mainButtons.info]
     ];
   }

@@ -44,7 +44,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
   const { chat_id, userCallbackData, message_id, username } = userCallback;
   const [type, last_report_call, last_sec_report_call, from_ref] = await users_db.processUserRequest(chat_id, username)
   const returnBtn = returnMenu(true);
-  const mainBtn = mainOptions(type ?? 'new')
+  const mainBtn = mainOptions(type ?? 'new', from_ref)
   const action = new CallbackProcessor(userCallbackData, type).getAction();
   const currentArticle = getCurrentArticle(userCallbackData);
   const callbackObj = parseArticleData(userCallbackData)
@@ -80,7 +80,7 @@ export async function callbackHandler(query: TelegramBot.CallbackQuery, bot: Tel
           const res = await bot.sendDocument(chat_id, config.pdf.test_pdf_id, {
             caption: config.pdf.testReportText, 
             parse_mode: 'HTML',
-            reply_markup: mainOptions('new')!,
+            reply_markup: mainOptions('new', from_ref)!,
             disable_notification: true
           });
         } catch (error) {

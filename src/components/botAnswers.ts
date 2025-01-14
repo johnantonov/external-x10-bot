@@ -52,20 +52,20 @@ export async function handleStartMenu(
 
       if (!isNewMsg) {
         if (!menuId) {
-          await sendNewMenu(chat_id, img, text, type)
+          await sendNewMenu(chat_id, img, text, type, ref)
           return console.error('handleStartMenu: error to get menu id:', msg, command, isNewMsg, menuId)
         }
-        const editedBtn = mainOptions(type);
+        const editedBtn = mainOptions(type, ref);
         if (editedBtn) {
           return MS.editMessage(chat_id, menuId, text, editedBtn, img)
         }
       } else {
-        await sendNewMenu(chat_id, img, text, type)
+        await sendNewMenu(chat_id, img, text, type, ref)
       }
     } else {
       await users_db.insert({ chat_id: chat_id, username: msg.username, type: 'new', from_ref: ref || null });
       if (ref) await refs_db.updateClicks(ref)
-      await sendNewMenu(chat_id, img, texts.start, 'new')
+      await sendNewMenu(chat_id, img, texts.start, 'new', ref)
       console.log('insert new user into db: ', chat_id, " ", msg.username)
     }
   } catch (error) {
@@ -110,8 +110,8 @@ export async function sendImageWithText(bot: TelegramBot, chat_id: number, image
  * @param {user_type} userType - the type of user (used to determine button options)
  * @returns {Promise<void>}
  */
-export async function sendNewMenu(chat_id: number, img: ImagesKeys, caption: string, userType: user_type) {
-  const keyboard = mainOptions(userType)?.inline_keyboard
+export async function sendNewMenu(chat_id: number, img: ImagesKeys, caption: string, userType: user_type, ref?: User['from_ref']) {
+  const keyboard = mainOptions(userType, ref)?.inline_keyboard
   const newMenu = await sendImageWithText(bot, chat_id, img, caption, keyboard);
   if (newMenu) {
     await MS.deleteAllMessages(chat_id)
