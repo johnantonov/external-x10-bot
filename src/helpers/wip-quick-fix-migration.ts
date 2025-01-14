@@ -114,7 +114,7 @@ export const migrations = [
             success_refs BIGINT
         );`,
 
-        'ALTER TABLE refs DROP COLUMN success_refs;', 
+        'ALTER TABLE users DROP COLUMN success_refs;', 
 
         'ALTER TABLE sids DROP COLUMN added_by;',
 
@@ -126,7 +126,9 @@ export const migrations = [
 
         'ALTER TABLE users DROP COLUMN from_ref;',
 
-        'ALTER TABLE users ADD COLUMN from_ref VARCHAR(255);'
+        'ALTER TABLE users ADD COLUMN from_ref VARCHAR(255);',
+
+        'ALTER TABLE refs ADD COLUMN success_refs BIGINT;'
 
     ]
 

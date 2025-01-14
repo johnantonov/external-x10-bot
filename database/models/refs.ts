@@ -41,7 +41,6 @@ class RefsModel extends BaseModel<Ref> {
   }
 
   async updateClicks(ref: User['from_ref']): Promise<void> {
-    console.log(ref)
     try {
       const query = `
         UPDATE ${this.tableName}
