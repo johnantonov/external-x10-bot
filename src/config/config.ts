@@ -47,9 +47,9 @@ export const config = {
     dayColspan: 1,
     headerRowspan: 2,
     totalRowColor: '#f3f3f3',
-    title: (ref: User['from_ref']) => `<a href="https://cp.puzzlebot.top/${ref}"><span>10X</span><br><span>SYSTEM</span></a>`,
+    title: (ref: User['from_ref']) => `${ref ? `<a href="https://cp.puzzlebot.top/${ref}` : `<a href="https://t.me/tenXsupport_bot"`}"><span>10X</span><br><span>SYSTEM</span></a>`,
     titleFz: 44,
-    footerText: (ref: User['from_ref']) => `Отчёт подготовлен ботом <a href="https://t.me/${process.env.BOT_USERNAME}=${ref}">@${process.env.BOT_USERNAME}</a> от команды 10X.<br><br>Получите подробный отчет по всем SKU вашего кабинета.<br><span class="arrow">⬇️</span><br><b>Бесплатный доступ на 3 дня:</b> <a href="https://t.me/tenXsupport_bot">@tenXsupport_bot</a>`,
+    footerText: (ref: User['from_ref']) => `Отчёт подготовлен ботом <a href="https://t.me/${process.env.BOT_USERNAME}?start=${ref}">@${process.env.BOT_USERNAME}</a> от команды 10X.<br><br>Получите подробный отчет по всем SKU вашего кабинета.<br><span class="arrow">⬇️</span><br><b>Бесплатный доступ на 3 дня:</b> ${ref ? `<a href="https://cp.puzzlebot.top/${ref}` : `<a href="https://t.me/tenXsupport_bot"`}">@tenXsupport_bot</a>`,
     testReportText: `<b>10X Отчет 09.12.2024</b>\n\nЗаказы: 210 502₽, 172шт\nВыкупы: 145 843₽, 121шт\nРеклама: 9 448₽\nДРР: 5.32%\nМаржа до ДРР: 26.72%\nМаржа с ДРР: 20.50%\nКРРР: 75.44%\n<b>Прибыль с ДРР: 45 002₽</b>`,
 
     ff: `Arial, sans-serif`,
