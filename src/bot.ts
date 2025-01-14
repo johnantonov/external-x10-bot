@@ -8,6 +8,7 @@ import { callbackHandler } from './handlers/callbackHandler';
 import { handleAdminCommand } from './handlers/adminHandler';
 import { handleMenuCommand, handleUserState } from './handlers/textHandler';
 import { User } from './dto/user';
+import { users_db } from '../database/models/users';
 
 dotenv.config();
 const token = process.env.TELEGRAM_TOKEN;
@@ -100,7 +101,8 @@ bot.on('message', async (msg: TelegramBot.Message) => {
   }
 
   if (['/start', '/menu'].includes(textMsg)) {
-    await handleMenuCommand(UserTextMessage, chat_id, textMsg, msgs);
+    const ref = await users_db.getFromRef(chat_id);
+    await handleMenuCommand(UserTextMessage, chat_id, textMsg, msgs, ref);
     return;
   }
   
