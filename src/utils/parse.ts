@@ -15,11 +15,9 @@ export const getPath = (imageKey: ImagesKeys, isPath?: boolean) => {
 
   if (!imageId || isPath) {
     const imageName = images[imageKey]
-  //   console.log(2)
     return resolve(__dirname, `../../../public/messageImages/${imageName}`)
   }
 
-  // console.log(1)
   return imageId
 }
 

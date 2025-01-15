@@ -5,6 +5,7 @@ import { users_db } from '../../database/models/users';
 import { BotStatsPayload } from '../dto/stats';
 import pool from '../../database/db';
 import { bot } from '../bot';
+import { getRefProgramStats } from '../utils/ref';
 
 dotenv.config()
 const env = process.env
@@ -13,22 +14,30 @@ export async function sendBotStats() {
   try {
     const stats = await users_db.getBaseStats()
 
-      const statsData: BotStatsPayload = {
-        action: 'base_stats',
-        data: {
-          "users_count": stats?.users_count,
-          "users_with_key_count": stats?.users_with_key_count,
-          "active_users": stats?.active_users,
-          "mode": env.MODE!
-        }
-      };
-  
-      const response = await axios.post(env.STATS_WEB_APP_URL!, statsData, {
-        headers: { 'Content-Type': 'application/json' }
-      });
+    const baseStatsData: BotStatsPayload = {
+      action: 'base_stats',
+      data: {
+        "users_count": stats?.users_count,
+        "users_with_key_count": stats?.users_with_key_count,
+        "active_users": stats?.active_users,
+        "mode": env.MODE!
+      }
+    };
+    const refStatsData = await getRefProgramStats();
+
+    const response = await axios.post(env.STATS_WEB_APP_URL!, baseStatsData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
       
-      const res = response.data;
-      console.log('Response from stats web app: ', JSON.stringify(res));
+    const res = response.data;
+    console.log('Response from stats web app: ', JSON.stringify(res));
+
+    const response2 = await axios.post(env.STATS_WEB_APP_URL!, refStatsData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+      
+    const res2 = response2.data;
+    console.log('Response from stats web app: ', JSON.stringify(res2));
   } catch (e) {
     console.error('Error sending bot base stats', e);
   }
