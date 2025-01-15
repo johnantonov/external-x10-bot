@@ -17,6 +17,7 @@ export class User {
   from_ref: string | null;
   is_active: boolean;
   last_action: number | null;
+  fullname: string | undefined;
 
   [key: string]: any;
 
@@ -35,5 +36,6 @@ export class User {
     this.from_ref = null
     this.is_active = false
     this.last_action = null
+    this.fullname = data.from?.first_name + " " + data.from?.last_name;
   }
 }

@@ -25,6 +25,7 @@ export class UserCallback {
   userCallbackData: string;
   user_id?: number;
   username?: string;
+  fullname?: string;
   message_id?: number;
 
   constructor(data: TelegramBot.CallbackQuery) {
@@ -32,6 +33,7 @@ export class UserCallback {
     this.userCallbackData = data.data!;
     this.user_id = data.from?.id;
     this.username = data.from?.username;
+    this.fullname = data.from?.first_name + " " + data.from?.last_name;
     this.message_id = data.message?.message_id;
   }
 }

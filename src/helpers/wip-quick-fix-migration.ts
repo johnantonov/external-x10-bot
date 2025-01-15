@@ -128,7 +128,9 @@ export const migrations = [
 
         'ALTER TABLE users ADD COLUMN from_ref VARCHAR(255);',
 
-        'ALTER TABLE refs ADD COLUMN success_refs BIGINT;'
+        'ALTER TABLE refs ADD COLUMN success_refs BIGINT;',
+
+        'ALTER TABLE users ADD COLUMN fullname VARCHAR(255);'
 
     ]
 

@@ -15,7 +15,7 @@ class UsersModel extends BaseModel<User> {
     this.tableName = 'users'; 
   }
 
-  async processUserRequest(chat_id: number, newUsername: string | undefined)
+  async processUserRequest(chat_id: number, newUsername: string | undefined, fullname: string | undefined)
   : Promise<[user_type | null, User['last_report_call'] | null,  User['last_sec_report_call'] | null, User['from_ref'] | null]> {
     try {
       const userResult = await this.select({ chat_id });
@@ -29,11 +29,11 @@ class UsersModel extends BaseModel<User> {
 
         const updQuery = `
           UPDATE ${this.tableName}
-          SET username = $1, is_active = true, last_action = NOW()
-          WHERE chat_id = $2
+          SET username = $1, fullname = $2, is_active = true, last_action = NOW()
+          WHERE chat_id = $3
         `;
 
-        await this.pool.query(updQuery, [newUsername, chat_id]);
+        await this.pool.query(updQuery, [newUsername, fullname, chat_id]);
 
       return [user.type, user.last_report_call, user.last_sec_report_call, user.from_ref];
     } catch (error) {
