@@ -23,7 +23,11 @@ export async function sendBotStats() {
         "mode": env.MODE!
       }
     };
-    const refStatsData = await getRefProgramStats();
+
+    const refStatsData = {
+      action: 'ref_stats',
+      data: await getRefProgramStats()
+    };
 
     const response = await axios.post(env.STATS_WEB_APP_URL!, baseStatsData, {
       headers: { 'Content-Type': 'application/json' }
