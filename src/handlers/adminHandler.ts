@@ -48,7 +48,7 @@ const helpInfo = `
 /admin__clear_last_report_time_all - очистка времени последнего отчета у всех
 
 <b>📊 СТАТИСТИКА</b>
-/admin__send_base_stats_to_webapp - отправка основной статистики вебапп
+/admin__send_stats_to_webapp - отправка основной статистики вебапп
 /admin__get_stats - вывод основной статистики в чат
 
 /admin__get_fact_users -❗️проверить через рассылку сколько фактических пользователей
@@ -198,7 +198,7 @@ export async function handleAdminCommand(chat_id: number, msg: Message, bot: Tel
     }
 
     // STATISTICS
-    if (action === 'send_base_stats_to_webapp') {
+    if (action === 'send_stats_to_webapp') {
       console.log('admin started sending stats to webapp')
       sendBotStats()
     }
