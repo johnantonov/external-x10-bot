@@ -23,8 +23,8 @@ export const getRefProgramStats = async () => {
         u.chat_id, u.fullname, u.username, u.from_ref, u.api_reg_at, u.added_at
       FROM users u
       WHERE u.from_ref IS NOT NULL
+      AND (u.added_at >= NOW() - INTERVAL '30 minutes' OR u.api_reg_at >= NOW() - INTERVAL '30 minutes')
       `;
-      // AND (u.added_at >= NOW() - INTERVAL '30 minutes' OR u.api_reg_at >= NOW() - INTERVAL '30 minutes')
 
     const usersData: User[] = (await pool.query(query)).rows;
     const result = {
